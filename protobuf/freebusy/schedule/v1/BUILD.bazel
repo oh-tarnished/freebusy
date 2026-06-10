@@ -1,0 +1,48 @@
+load("@protobuf//bazel:proto_library.bzl", "proto_library")
+load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "schedulepbv1_proto",
+    srcs = [
+        "schedule.proto",
+        "schedule_messages.proto",
+        "schedule_service.proto",
+    ],
+    strip_import_prefix = "/protobuf",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//protobuf/freebusy/shared/v1:sharedpbv1_proto",
+        "@googleapis//google/api:annotations_proto",
+        "@googleapis//google/api:client_proto",
+        "@googleapis//google/api:field_behavior_proto",
+        "@googleapis//google/api:resource_proto",
+        "@grpc_mcp_gateway//proto/mcp/protobuf:mcppb_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:empty_proto",
+        "@protobuf//:timestamp_proto",
+    ],
+)
+
+go_proto_library(
+    name = "schedulepbv1_go_proto",
+    compilers = [
+        "@rules_go//proto:go_proto",
+        "@rules_go//proto:go_grpc_v2",
+    ],
+    importpath = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1",
+    proto = ":schedulepbv1_proto",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//protobuf/freebusy/shared/v1:sharedpbv1_go_proto",
+        "@grpc_mcp_gateway//mcp/protobuf",
+        "@org_golang_google_genproto_googleapis_api//annotations",
+    ],
+)
+
+go_library(
+    name = "schedulepbv1",
+    embed = [":schedulepbv1_go_proto"],
+    importpath = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1",
+    visibility = ["//visibility:public"],
+)

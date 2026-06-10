@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package freebusy.schedule.v1;
+
+import "freebusy/schedule/v1/schedule.proto";
+import "freebusy/schedule/v1/schedule_messages.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/protobuf/empty.proto";
+import "mcp/protobuf/annotations.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1;schedulepbv1";
+option java_multiple_files = true;
+option java_outer_classname = "ScheduleServiceProto";
+option java_package = "dev.ohtarnished.freebusy.schedule.v1";
+
+// ScheduleService is the write side of availability configuration: a resource's
+// recurring working hours, blackout/holiday exceptions, buffers, and stay rules.
+// These are the inputs the freebusy engine consumes to compute availability.
+service ScheduleService {
+  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (mcp.protobuf.service) = {
+    app: {
+      name: "Booking Schedule"
+      version: "1.0.0"
+      description: "Configure recurring hours, exceptions, buffers, and stay rules for a resource."
+    }
+  };
+
+  // Reads the full availability configuration for a resource.
+  rpc GetSchedule(GetScheduleRequest) returns (Schedule) {
+    option (google.api.http) = {get: "/v1/{resource=resources/*}/schedule"};
+    option (google.api.method_signature) = "resource";
+    option (mcp.protobuf.tool) = {description: "Get a resource's full availability configuration: recurring hours, buffers, stay rules, and exceptions."};
+  }
+
+  // Replaces the recurring working hours for a resource.
+  rpc SetRecurringHours(SetRecurringHoursRequest) returns (Schedule) {
+    option (google.api.http) = {
+      post: "/v1/{resource=resources/*}/schedule:setRecurringHours"
+      body: "*"
+    };
+    option (google.api.method_signature) = "resource,rules";
+    option (mcp.protobuf.tool) = {description: "Set a resource's recurring working hours as RRULE-based rules, replacing any existing ones."};
+  }
+
+  // Sets the buffer and notice settings for a resource.
+  rpc SetBuffers(SetBuffersRequest) returns (Schedule) {
+    option (google.api.http) = {
+      post: "/v1/{resource=resources/*}/schedule:setBuffers"
+      body: "*"
+    };
+    option (google.api.method_signature) = "resource,buffers";
+    option (mcp.protobuf.tool) = {description: "Set buffers around bookings: prep, turnover, minimum notice, max advance, and minimum gap."};
+  }
+
+  // Sets the stay constraints for a NIGHTLY resource.
+  rpc SetStayConstraints(SetStayConstraintsRequest) returns (Schedule) {
+    option (google.api.http) = {
+      post: "/v1/{resource=resources/*}/schedule:setStayConstraints"
+      body: "*"
+    };
+    option (google.api.method_signature) = "resource,stay_constraints";
+    option (mcp.protobuf.tool) = {description: "Set nightly stay rules: min/max nights, allowed check-in/out weekdays, and advance window."};
+  }
+
+  // Lists the exceptions configured for a resource.
+  rpc ListExceptions(ListExceptionsRequest) returns (ListExceptionsResponse) {
+    option (google.api.http) = {get: "/v1/{parent=resources/*}/exceptions"};
+    option (google.api.method_signature) = "parent";
+    option (mcp.protobuf.tool) = {description: "List the blackout/closure and extra-hours exceptions for a resource."};
+  }
+
+  // Adds an availability exception to a resource.
+  rpc AddException(AddExceptionRequest) returns (AvailabilityException) {
+    option (google.api.http) = {
+      post: "/v1/{parent=resources/*}/exceptions"
+      body: "exception"
+    };
+    option (google.api.method_signature) = "parent,exception";
+    option (mcp.protobuf.tool) = {description: "Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a resource."};
+  }
+
+  // Removes an availability exception.
+  rpc RemoveException(RemoveExceptionRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/v1/{name=resources/*/exceptions/*}"};
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Remove an availability exception by name."};
+  }
+}

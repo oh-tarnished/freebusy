@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package freebusy.organisation.v1;
+
+import "freebusy/organisation/v1/organisation.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/organisation/v1/orgpbv1;orgpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrgActionsProto";
+option java_package = "dev.ohtarnished.freebusy.organisation.v1";
+
+// Request message for InviteMember.
+message InviteMemberRequest {
+  // The organisation to invite the member to.
+  // Format: orgs/{org}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+  ];
+
+  // Email address to invite.
+  string email = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Role to grant on acceptance.
+  OrganisationRole role = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for SetMemberRole.
+message SetMemberRoleRequest {
+  // The member to change.
+  // Format: orgs/{org}/members/{member}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Member"}
+  ];
+
+  // The new role.
+  OrganisationRole role = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for DeleteMember.
+message DeleteMemberRequest {
+  // The member to remove.
+  // Format: orgs/{org}/members/{member}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Member"}
+  ];
+}

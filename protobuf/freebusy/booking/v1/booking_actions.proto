@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package freebusy.booking.v1;
+
+// (-- api-linter: core::0215::foreign-type-reference=disabled
+//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
+//     shared-types package; RescheduleBookingRequest reuses its TimeWindow
+//     rather than inlining a per-package copy. --)
+
+import "freebusy/booking/v1/booking.proto";
+import "freebusy/shared/v1/types.proto";
+import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
+import "google/api/resource.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/booking/v1/bookingpbv1;bookingpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "BookingActionsProto";
+option java_package = "dev.ohtarnished.freebusy.booking.v1";
+
+// Request message for ConfirmBooking. Confirmation normally arrives via the
+// payment webhook rather than a direct client call; either way it flips a
+// PENDING_HOLD to CONFIRMED.
+message ConfirmBookingRequest {
+  // The booking to confirm.
+  // Format: bookings/{booking}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Booking"}
+  ];
+
+  // Opaque reference to the payment/settlement that confirmed this booking.
+  string payment_ref = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for CancelBooking.
+message CancelBookingRequest {
+  // The booking to cancel.
+  // Format: bookings/{booking}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Booking"}
+  ];
+
+  // Why the booking is being cancelled.
+  CancelReason reason = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Free-form note explaining the cancellation.
+  string note = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for RescheduleBooking. Atomically moves a booking to a new
+// span (and optionally offering), re-running availability and the exclusion
+// check on the new window.
+message RescheduleBookingRequest {
+  // The booking to reschedule.
+  // Format: bookings/{booking}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Booking"}
+  ];
+
+  // The new reserved span.
+  freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The new offering, when changing it as part of the reschedule.
+  // Format: resources/{resource}/offerings/{offering}
+  string offering = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+  ];
+
+  // Caller-supplied idempotency key that dedupes retries of this reschedule.
+  string request_id = 4 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}

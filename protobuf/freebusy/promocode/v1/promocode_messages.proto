@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package freebusy.promocode.v1;
+
+import "freebusy/promocode/v1/promocode.proto";
+import "freebusy/shared/v1/enums.proto";
+import "freebusy/shared/v1/types.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1;promocodepbv1";
+option java_multiple_files = true;
+option java_outer_classname = "PromoCodeMessagesProto";
+option java_package = "dev.ohtarnished.freebusy.promocode.v1";
+
+// Request message for ListPromoCodes.
+message ListPromoCodesRequest {
+  // Maximum number of promo codes to return. The server may cap this.
+  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // 1-based page number.
+  int32 page = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Free-text search over code and display name.
+  string query = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Restrict to a single status.
+  PromoCodeStatus status = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Field to sort by (e.g. "code", "create_time").
+  string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort direction.
+  freebusy.shared.v1.OrderDirection order = 6 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListPromoCodes.
+message ListPromoCodesResponse {
+  // The page of promo codes.
+  repeated PromoCode promo_codes = 1;
+
+  // Total matching promo codes across all pages.
+  int64 total = 2;
+
+  // Page number returned.
+  int32 page = 3;
+
+  // Page size applied.
+  int32 page_size = 4;
+}
+
+// Request message for GetPromoCode.
+message GetPromoCodeRequest {
+  // The promo code to retrieve.
+  // Format: promoCodes/{promo_code}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}
+  ];
+}
+
+// Request message for CreatePromoCode.
+message CreatePromoCodeRequest {
+  // The promo code to create. The name and redemption_count fields are ignored.
+  PromoCode promo_code = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for UpdatePromoCode.
+message UpdatePromoCodeRequest {
+  // The promo code to update; its name identifies the target.
+  PromoCode promo_code = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for DeletePromoCode.
+message DeletePromoCodeRequest {
+  // The promo code to delete.
+  // Format: promoCodes/{promo_code}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}
+  ];
+}
+
+// Request message for ValidatePromoCode. Computes the discount a code would
+// apply to a prospective booking without redeeming it.
+message ValidatePromoCodeRequest {
+  // The human-entered code to validate (e.g. "SUMMER25").
+  string code = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Subtotal the discount would apply to.
+  freebusy.shared.v1.Money subtotal = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Resource being booked, for scope checks.
+  // Format: resources/{resource}
+  string resource = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+
+  // Offering being booked, for scope checks.
+  // Format: resources/{resource}/offerings/{offering}
+  string offering = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+  ];
+
+  // Customer redeeming the code, for per-customer limit checks.
+  // Format: users/{user}
+  string customer = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+  ];
+}
+
+// Response message for ValidatePromoCode.
+message ValidatePromoCodeResponse {
+  // Whether the code is valid and applicable to the given context.
+  bool valid = 1;
+
+  // Why the code is not valid, when valid is false.
+  string reason = 2;
+
+  // The resolved promo code, when valid.
+  // Format: promoCodes/{promo_code}
+  string promo_code = 3 [(google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}];
+
+  // Discount the code applies to the subtotal.
+  freebusy.shared.v1.Money discount_amount = 4;
+
+  // Subtotal minus the discount.
+  freebusy.shared.v1.Money final_total = 5;
+}

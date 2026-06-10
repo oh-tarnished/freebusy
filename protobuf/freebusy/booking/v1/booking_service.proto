@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package freebusy.booking.v1;
+
+import "freebusy/booking/v1/booking.proto";
+import "freebusy/booking/v1/booking_actions.proto";
+import "freebusy/booking/v1/booking_messages.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "mcp/protobuf/annotations.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/booking/v1/bookingpbv1;bookingpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "BookingServiceProto";
+option java_package = "dev.ohtarnished.freebusy.booking.v1";
+
+// BookingService is the transactional heart. CreateBooking carries the
+// idempotency key, runs policy checks, and does the exclusion-constraint insert
+// that places a hold. The hold lifecycle is modeled as booking states. Two
+// things are deliberately NOT RPCs: the sweeper that releases expired holds is
+// an internal goroutine/cron, and confirmation usually arrives as a payment
+// webhook that calls ConfirmBooking server-side.
+service BookingService {
+  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (mcp.protobuf.service) = {
+    app: {
+      name: "Bookings"
+      version: "1.0.0"
+      description: "Create, confirm, cancel, reschedule, and list bookings."
+    }
+  };
+
+  // Creates a booking, placing a hold.
+  rpc CreateBooking(CreateBookingRequest) returns (Booking) {
+    option (google.api.http) = {
+      post: "/v1/bookings"
+      body: "booking"
+    };
+    option (google.api.method_signature) = "booking,booking_id";
+    option (mcp.protobuf.tool) = {description: "Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code."};
+    option (mcp.protobuf.prompt) = {
+      name: "book_slot"
+      description: "Book a resource at a given time"
+      schema: "freebusy.booking.v1.BookSlotArgs"
+    };
+  }
+
+  // Gets a single booking.
+  rpc GetBooking(GetBookingRequest) returns (Booking) {
+    option (google.api.http) = {get: "/v1/{name=bookings/*}"};
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Get a single booking by resource name, including status, assigned unit, and totals."};
+  }
+
+  // Lists bookings.
+  rpc ListBookings(ListBookingsRequest) returns (ListBookingsResponse) {
+    option (google.api.http) = {get: "/v1/bookings"};
+    option (mcp.protobuf.tool) = {description: "List bookings. Filter by resource, customer, status, or overlapping time window, and paginate."};
+  }
+
+  // Confirms a held booking.
+  rpc ConfirmBooking(ConfirmBookingRequest) returns (Booking) {
+    option (google.api.http) = {
+      post: "/v1/{name=bookings/*}:confirm"
+      body: "*"
+    };
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference."};
+  }
+
+  // Cancels a booking.
+  rpc CancelBooking(CancelBookingRequest) returns (Booking) {
+    option (google.api.http) = {
+      post: "/v1/{name=bookings/*}:cancel"
+      body: "*"
+    };
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Cancel a booking, optionally with a reason and note. Frees the held units."};
+  }
+
+  // Reschedules a booking to a new span.
+  rpc RescheduleBooking(RescheduleBookingRequest) returns (Booking) {
+    option (google.api.http) = {
+      post: "/v1/{name=bookings/*}:reschedule"
+      body: "*"
+    };
+    option (google.api.method_signature) = "name,window";
+    option (mcp.protobuf.tool) = {description: "Move a booking to a new span (and optionally offering), re-checking availability on the new window."};
+  }
+}

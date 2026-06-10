@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package freebusy.availability.v1;
+
+import "freebusy/availability/v1/availability.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "mcp/protobuf/annotations.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/availability/v1/availabilitypbv1;availabilitypbv1";
+option java_multiple_files = true;
+option java_outer_classname = "AvailabilityServiceProto";
+option java_package = "dev.ohtarnished.freebusy.availability.v1";
+
+// AvailabilityService is the read-only, cacheable surface over the pure freebusy
+// engine. It has no side effects: given a resource and a window it returns what
+// is bookable, in the shape matching the resource's booking_mode.
+//
+// Its operations are custom methods (AIP-136): they compute results rather than
+// fetch or list a resource, so they intentionally do not use the Get/List/Batch
+// standard-method names or shapes.
+service AvailabilityService {
+  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (mcp.protobuf.service) = {
+    app: {
+      name: "Booking Availability"
+      version: "1.0.0"
+      description: "Compute what is bookable for a resource over a window. Read-only."
+    }
+  };
+
+  // Computes availability for a resource over a window.
+  rpc ComputeAvailability(ComputeAvailabilityRequest) returns (ComputeAvailabilityResponse) {
+    option (google.api.http) = {
+      post: "/v1/{resource=resources/*}:computeAvailability"
+      body: "*"
+    };
+    option (google.api.method_signature) = "resource,window";
+    option (mcp.protobuf.tool) = {description: "Compute availability for a resource over a time window. Returns time slots (TIME_SLOT) or per-night counts (NIGHTLY)."};
+  }
+
+  // Tests whether one exact span is bookable.
+  rpc CheckAvailability(CheckAvailabilityRequest) returns (CheckAvailabilityResponse) {
+    option (google.api.http) = {
+      post: "/v1/{resource=resources/*}:checkAvailability"
+      body: "*"
+    };
+    option (google.api.method_signature) = "resource,window";
+    option (mcp.protobuf.tool) = {description: "Check whether one exact span is bookable for a resource, with reasons when it is not."};
+  }
+
+  // Computes contiguous bookable ranges within a window.
+  rpc ComputeBookableRanges(ComputeBookableRangesRequest) returns (ComputeBookableRangesResponse) {
+    option (google.api.http) = {
+      post: "/v1/{resource=resources/*}:computeBookableRanges"
+      body: "*"
+    };
+    option (google.api.method_signature) = "resource,window";
+    option (mcp.protobuf.tool) = {description: "List the contiguous bookable ranges for a resource within a window."};
+  }
+
+  // Computes availability for several resources at once.
+  rpc BatchComputeAvailability(BatchComputeAvailabilityRequest) returns (BatchComputeAvailabilityResponse) {
+    option (google.api.http) = {
+      post: "/v1/availability:batchCompute"
+      body: "*"
+    };
+    option (mcp.protobuf.tool) = {description: "Compute availability for several resources over the same window in one call."};
+  }
+}

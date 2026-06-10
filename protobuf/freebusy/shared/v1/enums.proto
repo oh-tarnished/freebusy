@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package freebusy.shared.v1;
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/shared/v1/sharedpbv1;sharedpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "EnumsProto";
+option java_package = "dev.ohtarnished.freebusy.shared.v1";
+
+// Enums shared across more than one freebusy resource. Resource-specific enums
+// live alongside their resource (e.g. BookingStatus in the booking package), so
+// only the genuinely cross-cutting ones are defined here.
+// Sort direction for list endpoints.
+enum OrderDirection {
+  // Server default (usually descending by creation time).
+  ORDER_DIRECTION_UNSPECIFIED = 0;
+
+  // Ascending.
+  ORDER_DIRECTION_ASC = 1;
+
+  // Descending.
+  ORDER_DIRECTION_DESC = 2;
+}
+
+// Day of the week, numbered to match google.type.DayOfWeek (Monday = 1).
+enum Weekday {
+  // Unspecified.
+  WEEKDAY_UNSPECIFIED = 0;
+  // Monday
+  WEEKDAY_MONDAY = 1;
+  // Tuesday
+  WEEKDAY_TUESDAY = 2;
+  // Wednesday
+  WEEKDAY_WEDNESDAY = 3;
+  // Thursday
+  WEEKDAY_THURSDAY = 4;
+  // Friday
+  WEEKDAY_FRIDAY = 5;
+  // Saturday
+  WEEKDAY_SATURDAY = 6;
+  // Sunday
+  WEEKDAY_SUNDAY = 7;
+}
+
+// How a resource is booked, which decides the availability shape it produces.
+enum BookingMode {
+  // Unset; the server treats this as TIME_SLOT.
+  BOOKING_MODE_UNSPECIFIED = 0;
+
+  // Duration-based discrete slots (appointments, hourly rentals).
+  BOOKING_MODE_TIME_SLOT = 1;
+
+  // Date-range stays over a pool of interchangeable units (lodging).
+  BOOKING_MODE_NIGHTLY = 2;
+}

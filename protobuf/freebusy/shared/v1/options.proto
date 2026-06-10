@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package freebusy.shared.v1;
+
+import "freebusy/shared/v1/enums.proto";
+import "google/api/field_behavior.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/shared/v1/sharedpbv1;sharedpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "OptionsProto";
+option java_package = "dev.ohtarnished.freebusy.shared.v1";
+
+// Client-level defaults a caller can attach so common preferences aren't
+// repeated on every request.
+message FreebusyClientOptions {
+  // Default page size for list endpoints when a request leaves page_size unset.
+  // Zero lets the server pick.
+  int32 default_page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Default sort direction for list endpoints.
+  OrderDirection default_order = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Default IANA timezone (e.g. "America/New_York") applied when a resource or
+  // query leaves it unset.
+  string default_timezone = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Default ISO 4217 currency code for prices that don't specify one.
+  string default_currency_code = 4 [(google.api.field_behavior) = OPTIONAL];
+}

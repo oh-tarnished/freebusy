@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package freebusy.organisation.v1;
+
+import "freebusy/organisation/v1/org_actions.proto";
+import "freebusy/organisation/v1/org_messages.proto";
+import "freebusy/organisation/v1/organisation.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/protobuf/empty.proto";
+import "mcp/protobuf/annotations.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/organisation/v1/orgpbv1;orgpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrgServiceProto";
+option java_package = "dev.ohtarnished.freebusy.organisation.v1";
+
+// OrgService manages tenants and their members. Day-to-day tenancy is enforced
+// by the shell via row-level security from the caller's organisation; this service is
+// where orgs and members are created and administered.
+service OrgService {
+  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (mcp.protobuf.service) = {
+    app: {
+      name: "Organizations"
+      version: "1.0.0"
+      description: "Manage organizations (tenants), members, and roles."
+    }
+  };
+
+  // Lists the orgs the caller belongs to.
+  rpc ListOrgs(ListOrgsRequest) returns (ListOrgsResponse) {
+    option (google.api.http) = {get: "/v1/orgs"};
+    option (mcp.protobuf.tool) = {description: "List the organizations the caller belongs to."};
+  }
+
+  // Gets a single organisation.
+  rpc GetOrg(GetOrgRequest) returns (Org) {
+    option (google.api.http) = {get: "/v1/{name=orgs/*}"};
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Get a single organization by resource name."};
+  }
+
+  // Creates an organisation. The caller becomes its first owner.
+  rpc CreateOrg(CreateOrgRequest) returns (Org) {
+    option (google.api.http) = {
+      post: "/v1/orgs"
+      body: "org"
+    };
+    option (google.api.method_signature) = "org,org_id";
+    option (mcp.protobuf.tool) = {description: "Create an organization; the caller becomes its first owner."};
+  }
+
+  // Updates an organisation.
+  rpc UpdateOrg(UpdateOrgRequest) returns (Org) {
+    option (google.api.http) = {
+      patch: "/v1/{org.name=orgs/*}"
+      body: "org"
+    };
+    option (google.api.method_signature) = "org,update_mask";
+    option (mcp.protobuf.tool) = {description: "Update an organization's display name, slug, billing email, or settings."};
+  }
+
+  // Deletes an organisation.
+  rpc DeleteOrg(DeleteOrgRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/v1/{name=orgs/*}"};
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Delete an organization by resource name."};
+  }
+
+  // Invites a member to an organisation.
+  // (-- api-linter: core::0136::response-message-name=disabled
+  //     aip.dev/not-precedent: invite creates and returns the Member resource;
+  //     an InviteMemberResponse wrapper would only obscure that. --)
+  rpc InviteMember(InviteMemberRequest) returns (Member) {
+    option (google.api.http) = {
+      post: "/v1/{parent=orgs/*}/members:invite"
+      body: "*"
+    };
+    option (google.api.method_signature) = "parent,email,role";
+    option (mcp.protobuf.tool) = {description: "Invite an email address to an organisation with a role (owner, admin, member, or viewer)."};
+    option (mcp.protobuf.prompt) = {
+      name: "invite_member"
+      description: "Invite someone to an organization"
+      schema: "freebusy.organisation.v1.InviteMemberArgs"
+    };
+  }
+
+  // Lists the members of an organisation.
+  rpc ListMembers(ListMembersRequest) returns (ListMembersResponse) {
+    option (google.api.http) = {get: "/v1/{parent=orgs/*}/members"};
+    option (google.api.method_signature) = "parent";
+    option (mcp.protobuf.tool) = {description: "List the members of an organisation. Filter by role or state."};
+  }
+
+  // Gets a single member.
+  rpc GetMember(GetMemberRequest) returns (Member) {
+    option (google.api.http) = {get: "/v1/{name=orgs/*/members/*}"};
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Get a single organisation member by resource name."};
+  }
+
+  // Changes a member's role.
+  // (-- api-linter: core::0134::synonyms=disabled
+  //     aip.dev/not-precedent: SetMemberRole is a deliberate, authz-gated custom
+  //     method, not the standard Update of the Member resource. --)
+  // (-- api-linter: core::0136::response-message-name=disabled
+  //     aip.dev/not-precedent: returns the updated Member resource it operates
+  //     on, rather than a SetMemberRoleResponse wrapper. --)
+  rpc SetMemberRole(SetMemberRoleRequest) returns (Member) {
+    option (google.api.http) = {
+      post: "/v1/{name=orgs/*/members/*}:setRole"
+      body: "*"
+    };
+    option (google.api.method_signature) = "name,role";
+    option (mcp.protobuf.tool) = {description: "Change an organisation member's role."};
+  }
+
+  // Removes a member from an organisation.
+  rpc DeleteMember(DeleteMemberRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/v1/{name=orgs/*/members/*}"};
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Remove a member from an organisation by member resource name."};
+  }
+}

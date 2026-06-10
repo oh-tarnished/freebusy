@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package freebusy.identity.v1;
+
+import "freebusy/identity/v1/identity.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "mcp/protobuf/annotations.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/identity/v1/identitypbv1;identitypbv1";
+option java_multiple_files = true;
+option java_outer_classname = "IdentityServiceProto";
+option java_package = "dev.ohtarnished.freebusy.identity.v1";
+
+// IdentityService is the thin "who am I" surface. Login itself is an OIDC
+// redirect flow over plain HTTP handled by the IdP, never an RPC here.
+service IdentityService {
+  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (mcp.protobuf.service) = {
+    app: {
+      name: "Identity"
+      version: "1.0.0"
+      description: "Read and update the signed-in user's profile."
+    }
+  };
+
+  // Returns the signed-in user.
+  rpc GetCurrentUser(GetCurrentUserRequest) returns (User) {
+    option (google.api.http) = {get: "/v1/users/me"};
+    option (mcp.protobuf.tool) = {description: "Get the signed-in user (\"me\"), including profile and organisation memberships."};
+  }
+
+  // Updates the signed-in user's profile.
+  rpc UpdateProfile(UpdateProfileRequest) returns (User) {
+    option (google.api.http) = {
+      patch: "/v1/{user.name=users/*}"
+      body: "user"
+    };
+    option (google.api.method_signature) = "user,update_mask";
+    option (mcp.protobuf.tool) = {description: "Update the signed-in user's profile: display name, avatar, locale, or timezone."};
+  }
+}

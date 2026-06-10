@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package freebusy.identity.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/identity/v1/identitypbv1;identitypbv1";
+option java_multiple_files = true;
+option java_outer_classname = "IdentityProto";
+option java_package = "dev.ohtarnished.freebusy.identity.v1";
+
+// A signed-in person. Identity is deliberately thin: actual login is an OIDC
+// redirect flow handled over plain HTTP by the IdP, so most of "auth" never
+// appears as an RPC. Email and identity come from the IdP and are read-only
+// here; only profile preferences are editable.
+// (-- api-linter: core::0121::resource-must-support-list=disabled
+//     aip.dev/not-precedent: User is reached only as "users/me"; the identity
+//     service deliberately exposes no list-all-users surface. --)
+message User {
+  option (google.api.resource) = {
+    type: "ohtarnished.freebusy.v1/User"
+    pattern: "users/{user}"
+    singular: "user"
+    plural: "users"
+  };
+
+  // The user name. The alias "users/me" resolves to the caller.
+  // Format: users/{user}
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // Server-assigned stable UUID.
+  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Email address, sourced from the IdP.
+  string email = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Display name.
+  string display_name = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Avatar image URL.
+  string avatar_url = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // BCP 47 locale (e.g. "en-US").
+  string locale = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // IANA time zone (e.g. "America/New_York").
+  string time_zone = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // The orgs this user belongs to, with role.
+  repeated MembershipSummary memberships = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Creation timestamp.
+  google.protobuf.Timestamp create_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Last-modification timestamp.
+  google.protobuf.Timestamp update_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// A compact view of an organisation the user belongs to.
+message MembershipSummary {
+  // The organisation.
+  // Format: orgs/{org}
+  string organisation = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+  ];
+
+  // Cached display name of the organisation.
+  string org_display_name = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The user's role in the organisation (an OrganisationRole value name).
+  string role = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// Request message for GetUser.
+message GetUserRequest {
+  // The user to retrieve. Use "users/me" for the signed-in caller.
+  // Format: users/{user}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+  ];
+}
+
+// Request message for UpdateUser.
+message UpdateUserRequest {
+  // The user to update; its name identifies the target (typically "users/me").
+  User user = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable profile fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}

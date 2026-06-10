@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package freebusy.shared.v1;
+
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/shared/v1/sharedpbv1;sharedpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "TypesProto";
+option java_package = "dev.ohtarnished.freebusy.shared.v1";
+
+// An amount of money in a given currency, mirroring google.type.Money so the
+// shell can adopt the standard type later without a wire change. Defined locally
+// to avoid pulling an extra proto dependency into every booking package.
+message Money {
+  // ISO 4217 currency code, e.g. "USD".
+  string currency_code = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Whole units of the amount. May be negative (e.g. a discount line).
+  int64 units = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Fractional units in nanos (10^-9). Must carry the same sign as units.
+  int32 decimal_places = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// A half-open time interval [start_time, end_time). Used for query windows and
+// for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
+message TimeWindow {
+  // Inclusive start of the interval.
+  google.protobuf.Timestamp start_time = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Exclusive end of the interval.
+  google.protobuf.Timestamp end_time = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// A whole calendar date in the resource's local timezone, mirroring
+// google.type.Date. Used for per-night availability in NIGHTLY mode.
+message CalendarDate {
+  // Year of the date, 1-9999.
+  int32 year = 1;
+
+  // Month of the year, 1-12.
+  int32 month = 2;
+
+  // Day of the month, 1-31, valid for the given year and month.
+  int32 day = 3;
+}

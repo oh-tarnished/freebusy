@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package freebusy.promocode.v1;
+
+import "freebusy/shared/v1/types.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1;promocodepbv1";
+option java_multiple_files = true;
+option java_outer_classname = "PromoCodeProto";
+option java_package = "dev.ohtarnished.freebusy.promocode.v1";
+
+// A redeemable discount applied to a booking's subtotal. Scoped by a redemption
+// window, usage caps, a minimum subtotal, and an optional set of resources /
+// offerings it applies to.
+message PromoCode {
+  option (google.api.resource) = {
+    type: "ohtarnished.freebusy.v1/PromoCode"
+    pattern: "promoCodes/{promo_code}"
+    singular: "promoCode"
+    plural: "promoCodes"
+  };
+
+  // The promo code name.
+  // Format: promoCodes/{promo_code}
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // Server-assigned stable UUID.
+  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The human-entered code, unique across all promo codes (e.g. "SUMMER25").
+  string code = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // Internal display name (not shown to customers).
+  string display_name = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Free-form description.
+  string description = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Whether the discount is a percentage or a fixed amount.
+  DiscountType discount_type = 6 [(google.api.field_behavior) = REQUIRED];
+
+  // Percentage off (1-100), when discount_type is PERCENTAGE.
+  int32 percent_off = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // Fixed amount off, when discount_type is FIXED_AMOUNT.
+  freebusy.shared.v1.Money amount_off = 8 [(google.api.field_behavior) = OPTIONAL];
+
+  // Earliest the code can be redeemed. Unset means no lower bound.
+  google.protobuf.Timestamp redeem_start = 9 [(google.api.field_behavior) = OPTIONAL];
+
+  // Latest the code can be redeemed. Unset means no upper bound.
+  google.protobuf.Timestamp redeem_end = 10 [(google.api.field_behavior) = OPTIONAL];
+
+  // Maximum total redemptions across all customers. Zero means unlimited.
+  int64 max_redemptions = 11 [(google.api.field_behavior) = OPTIONAL];
+
+  // Maximum redemptions per customer. Zero means unlimited.
+  int32 per_customer_limit = 12 [(google.api.field_behavior) = OPTIONAL];
+
+  // Minimum subtotal required for the code to apply.
+  freebusy.shared.v1.Money min_subtotal = 13 [(google.api.field_behavior) = OPTIONAL];
+
+  // Resources the code applies to. Empty means all resources.
+  // Format: resources/{resource}
+  repeated string applies_to_resources = 14 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+
+  // Offerings the code applies to. Empty means all offerings.
+  // Format: resources/{resource}/offerings/{offering}
+  repeated string applies_to_offerings = 15 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+  ];
+
+  // How many times the code has been redeemed.
+  int64 redemption_count = 16 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Lifecycle status.
+  PromoCodeStatus status = 17 [(google.api.field_behavior) = OPTIONAL];
+
+  // Creation timestamp.
+  google.protobuf.Timestamp create_time = 18 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Last-modification timestamp.
+  google.protobuf.Timestamp update_time = 19 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// How a promo code's discount is computed.
+enum DiscountType {
+  // Unset.
+  DISCOUNT_TYPE_UNSPECIFIED = 0;
+
+  // A percentage off the subtotal (percent_off).
+  DISCOUNT_TYPE_PERCENTAGE = 1;
+
+  // A fixed amount off the subtotal (amount_off).
+  DISCOUNT_TYPE_FIXED_AMOUNT = 2;
+}
+
+// Lifecycle status of a promo code.
+enum PromoCodeStatus {
+  // Unset; treated as active.
+  PROMO_CODE_STATUS_UNSPECIFIED = 0;
+
+  // Redeemable (subject to window and caps).
+  PROMO_CODE_STATUS_ACTIVE = 1;
+
+  // Manually disabled.
+  PROMO_CODE_STATUS_DISABLED = 2;
+
+  // Past its redemption window or out of redemptions.
+  PROMO_CODE_STATUS_EXPIRED = 3;
+}

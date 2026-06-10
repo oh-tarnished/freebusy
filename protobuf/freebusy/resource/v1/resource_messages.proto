@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package freebusy.resource.v1;
+
+import "freebusy/resource/v1/resource.proto";
+import "freebusy/shared/v1/enums.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/resource/v1/resourcepbv1;resourcepbv1";
+option java_multiple_files = true;
+option java_outer_classname = "ResourceMessagesProto";
+option java_package = "dev.ohtarnished.freebusy.resource.v1";
+
+// Request message for ListResources.
+message ListResourcesRequest {
+  // Maximum number of resources to return. The server may cap this.
+  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // 1-based page number.
+  int32 page = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Free-text search over resource names and descriptions.
+  string query = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Restrict to a single resource type.
+  ResourceType type = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Restrict to a single lifecycle status (defaults to active only).
+  ResourceStatus status = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Restrict to resources carrying all of these tags.
+  repeated string tags = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // Field to sort by (e.g. "name", "create_time").
+  string order_by = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort direction.
+  freebusy.shared.v1.OrderDirection order = 8 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListResources.
+message ListResourcesResponse {
+  // The page of resources.
+  repeated Resource resources = 1;
+
+  // Total matching resources across all pages.
+  int64 total = 2;
+
+  // Page number returned.
+  int32 page = 3;
+
+  // Page size applied.
+  int32 page_size = 4;
+}
+
+// Request message for GetResource.
+message GetResourceRequest {
+  // The resource to retrieve.
+  // Format: resources/{resource}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+}
+
+// Request message for CreateResource.
+message CreateResourceRequest {
+  // The resource to create. The name, status, and offerings fields are ignored.
+  Resource resource = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for UpdateResource.
+message UpdateResourceRequest {
+  // The resource to update; its name identifies the target.
+  Resource resource = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for ArchiveResource.
+message ArchiveResourceRequest {
+  // The resource to archive.
+  // Format: resources/{resource}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+}
+
+// Request message for ListOfferings.
+message ListOfferingsRequest {
+  // The parent resource whose offerings to list.
+  // Format: resources/{resource}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+
+  // Maximum number of offerings to return.
+  int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // 1-based page number.
+  int32 page = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Field to sort by.
+  string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort direction.
+  freebusy.shared.v1.OrderDirection order = 5 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListOfferings.
+message ListOfferingsResponse {
+  // The page of offerings.
+  repeated Offering offerings = 1;
+
+  // Total matching offerings across all pages.
+  int64 total = 2;
+
+  // Page number returned.
+  int32 page = 3;
+
+  // Page size applied.
+  int32 page_size = 4;
+}
+
+// Request message for GetOffering.
+message GetOfferingRequest {
+  // The offering to retrieve.
+  // Format: resources/{resource}/offerings/{offering}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+  ];
+}
+
+// Request message for CreateOffering.
+message CreateOfferingRequest {
+  // The resource to attach the offering to.
+  // Format: resources/{resource}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+
+  // The offering to create. Its name field is ignored.
+  Offering offering = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for UpdateOffering.
+message UpdateOfferingRequest {
+  // The offering to update; its name identifies the target.
+  Offering offering = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for DeleteOffering.
+message DeleteOfferingRequest {
+  // The offering to delete.
+  // Format: resources/{resource}/offerings/{offering}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+  ];
+}

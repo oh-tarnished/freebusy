@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package freebusy.organisation.v1;
+
+import "freebusy/organisation/v1/organisation.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/organisation/v1/orgpbv1;orgpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "OrgMessagesProto";
+option java_package = "dev.ohtarnished.freebusy.organisation.v1";
+
+// Request message for ListOrgs.
+message ListOrgsRequest {
+  // Maximum number of orgs to return. The server may cap this. Zero lets the
+  // server pick a default.
+  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Page token from a previous ListOrgs call's next_page_token.
+  string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression over organisation fields (e.g. display_name).
+  string filter = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order, e.g. "create_time desc".
+  string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListOrgs.
+message ListOrgsResponse {
+  // The page of orgs (those the caller belongs to).
+  repeated Org orgs = 1;
+
+  // Token to pass as page_token to retrieve the next page; empty when no more.
+  string next_page_token = 2;
+}
+
+// Request message for GetOrg.
+message GetOrgRequest {
+  // The organisation to retrieve.
+  // Format: orgs/{org}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+  ];
+}
+
+// Request message for CreateOrg.
+// (-- api-linter: core::0133::request-parent-required=disabled
+//     aip.dev/not-precedent: Org is the top-level tenant resource; it has no
+//     parent collection, so there is no parent field to require. --)
+message CreateOrgRequest {
+  // The organisation to create. The name and state fields are ignored. The caller
+  // becomes the organisation's first OWNER.
+  Org org = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the org; the server generates one if unset.
+  string org_id = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for UpdateOrg.
+message UpdateOrgRequest {
+  // The organisation to update; its name identifies the target.
+  Org org = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for DeleteOrg.
+message DeleteOrgRequest {
+  // The organisation to delete.
+  // Format: orgs/{org}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+  ];
+
+  // If true, delete the org and its members; otherwise the call fails when the
+  // org still has members.
+  bool force = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for ListMembers.
+// (-- api-linter: core::0132::request-unknown-fields=disabled
+//     aip.dev/not-precedent: role and state are first-class typed filters kept
+//     for caller ergonomics instead of folding them into a filter string. --)
+// (-- api-linter: core::0216::state-field-output-only=disabled
+//     aip.dev/not-precedent: `state` here is an input filter, not the resource's
+//     own lifecycle state field, so it is intentionally settable. --)
+message ListMembersRequest {
+  // The organisation whose members to list.
+  // Format: orgs/{org}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+  ];
+
+  // Maximum number of members to return. The server may cap this.
+  int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Page token from a previous ListMembers call's next_page_token.
+  string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Restrict to a single role.
+  OrganisationRole role = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Restrict to a single membership state.
+  Member.State state = 5 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListMembers.
+message ListMembersResponse {
+  // The page of members.
+  repeated Member members = 1;
+
+  // Token to pass as page_token to retrieve the next page; empty when no more.
+  string next_page_token = 2;
+}
+
+// Request message for GetMember.
+message GetMemberRequest {
+  // The member to retrieve.
+  // Format: orgs/{org}/members/{member}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Member"}
+  ];
+}

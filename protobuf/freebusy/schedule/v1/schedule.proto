@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package freebusy.schedule.v1;
+
+import "freebusy/shared/v1/enums.proto";
+import "freebusy/shared/v1/types.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1;schedulepbv1";
+option java_multiple_files = true;
+option java_outer_classname = "ScheduleProto";
+option java_package = "dev.ohtarnished.freebusy.schedule.v1";
+
+// A recurring availability window expressed as an RRULE plus a daily open span.
+// The freebusy engine expands these against the resource's timezone.
+message RecurringRule {
+  // RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
+  string rrule = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Local time-of-day the window opens, "HH:MM" (e.g. "09:00").
+  string opens_at = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Local time-of-day the window closes, "HH:MM" (e.g. "17:00").
+  string closes_at = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// An override of a resource's normal hours on a specific span: a blackout /
+// holiday closure, or extra hours beyond the recurring rules.
+message AvailabilityException {
+  option (google.api.resource) = {
+    type: "ohtarnished.freebusy.v1/AvailabilityException"
+    pattern: "resources/{resource}/exceptions/{exception}"
+    singular: "availabilityException"
+    plural: "availabilityExceptions"
+  };
+
+  // The exception name.
+  // Format: resources/{resource}/exceptions/{exception}
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // Server-assigned stable UUID.
+  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether this span closes the resource or adds extra availability.
+  ExceptionKind kind = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // The affected span.
+  freebusy.shared.v1.TimeWindow window = 4 [(google.api.field_behavior) = REQUIRED];
+
+  // Human-readable reason (e.g. "Public holiday").
+  string reason = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Creation timestamp.
+  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// Whether an exception removes or adds availability.
+enum ExceptionKind {
+  // Unset.
+  EXCEPTION_KIND_UNSPECIFIED = 0;
+
+  // The resource is closed for the span (blackout / holiday).
+  EXCEPTION_KIND_CLOSURE = 1;
+
+  // The resource is open beyond its recurring hours for the span.
+  EXCEPTION_KIND_EXTRA_HOURS = 2;
+}
+
+// Buffer and notice settings applied around bookings.
+message BufferSettings {
+  // Prep time reserved before each booking.
+  google.protobuf.Duration before = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Turnover / cleaning time reserved after each booking.
+  google.protobuf.Duration after_turnover = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Minimum lead time between now and a booking's start.
+  google.protobuf.Duration min_notice = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // How far into the future bookings may be made.
+  google.protobuf.Duration max_advance = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Minimum gap enforced between two adjacent bookings.
+  google.protobuf.Duration gap = 5 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Stay rules that affect bookability for NIGHTLY resources.
+message StayConstraints {
+  // Minimum number of nights per booking.
+  int32 min_nights = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Maximum number of nights per booking. Zero means no maximum.
+  int32 max_nights = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Allowed check-in weekdays. Empty means any day.
+  repeated freebusy.shared.v1.Weekday checkin_weekdays = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Allowed check-out weekdays. Empty means any day.
+  repeated freebusy.shared.v1.Weekday checkout_weekdays = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Earliest a stay may begin, in days from now.
+  int32 advance_min_days = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Latest a stay may begin, in days from now. Zero means no limit.
+  int32 advance_max_days = 6 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Aggregate read view of a resource's availability configuration: the inputs the
+// freebusy engine consumes.
+message Schedule {
+  // The resource this schedule belongs to.
+  // Format: resources/{resource}
+  string resource = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+  ];
+
+  // Recurring working hours.
+  repeated RecurringRule recurring_rules = 2;
+
+  // Buffer and notice settings.
+  BufferSettings buffers = 3;
+
+  // Stay rules (NIGHTLY resources).
+  StayConstraints stay_constraints = 4;
+
+  // Active exceptions.
+  repeated AvailabilityException exceptions = 5;
+}
