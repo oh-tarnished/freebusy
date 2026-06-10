@@ -269,7 +269,7 @@ func RegisterAvailabilityServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/availability:batchCompute"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/resources:batchCompute"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -378,7 +378,7 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/availability:batchCompute"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/resources:batchCompute"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -398,7 +398,7 @@ var (
 	pattern_AvailabilityService_ComputeAvailability_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "resources", "resource"}, "computeAvailability"))
 	pattern_AvailabilityService_CheckAvailability_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "resources", "resource"}, "checkAvailability"))
 	pattern_AvailabilityService_ComputeBookableRanges_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "resources", "resource"}, "computeBookableRanges"))
-	pattern_AvailabilityService_BatchComputeAvailability_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "availability"}, "batchCompute"))
+	pattern_AvailabilityService_BatchComputeAvailability_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "resources"}, "batchCompute"))
 )
 
 var (

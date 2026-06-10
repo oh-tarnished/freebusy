@@ -203,8 +203,6 @@ type Org struct {
 	// The organisation name.
 	// Format: orgs/{org}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// Human-friendly organisation name (e.g. "Acme Inc.").
 	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// URL-safe slug, unique across orgs.
@@ -258,13 +256,6 @@ func (*Org) Descriptor() ([]byte, []int) {
 func (x *Org) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *Org) GetUuid() string {
-	if x != nil {
-		return x.Uuid
 	}
 	return ""
 }
@@ -331,8 +322,6 @@ type Member struct {
 	// The member name.
 	// Format: orgs/{org}/members/{member}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// The user, once the invite is accepted.
 	// Format: users/{user}
 	User string `protobuf:"bytes,3,opt,name=user,proto3" json:"user,omitempty"`
@@ -388,13 +377,6 @@ func (*Member) Descriptor() ([]byte, []int) {
 func (x *Member) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *Member) GetUuid() string {
-	if x != nil {
-		return x.Uuid
 	}
 	return ""
 }
@@ -459,10 +441,9 @@ var File_freebusy_organisation_v1_organisation_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x89\x04\n" +
+	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf7\x03\n" +
 	"\x03Org\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x12&\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12\x17\n" +
 	"\x04slug\x18\x04 \x01(\tB\x03\xe0A\x01R\x04slug\x12(\n" +
 	"\rbilling_email\x18\x05 \x01(\tB\x03\xe0A\x01R\fbillingEmail\x12F\n" +
@@ -473,20 +454,19 @@ const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime:7\xeaA4\n" +
-	"\x1bohtarnished.freebusy.v1/Org\x12\n" +
-	"orgs/{org}*\x04orgs2\x03org\"\xb0\x05\n" +
+	"updateTime:8\xeaA5\n" +
+	"\x1cfreebusy.ohtarnished.dev/Org\x12\n" +
+	"orgs/{org}*\x04orgs2\x03orgJ\x04\b\x02\x10\x03\"\xa0\x05\n" +
 	"\x06Member\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x128\n" +
-	"\x04user\x18\x03 \x01(\tB$\xe0A\x03\xfaA\x1e\n" +
-	"\x1cohtarnished.freebusy.v1/UserR\x04user\x12\x19\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x129\n" +
+	"\x04user\x18\x03 \x01(\tB%\xe0A\x03\xfaA\x1f\n" +
+	"\x1dfreebusy.ohtarnished.dev/UserR\x04user\x12\x19\n" +
 	"\x05email\x18\x04 \x01(\tB\x03\xe0A\x02R\x05email\x12&\n" +
 	"\fdisplay_name\x18\x05 \x01(\tB\x03\xe0A\x03R\vdisplayName\x12C\n" +
 	"\x04role\x18\x06 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\x12A\n" +
-	"\x05state\x18\a \x01(\x0e2&.freebusy.organisation.v1.Member.StateB\x03\xe0A\x03R\x05state\x12>\n" +
-	"\ainviter\x18\b \x01(\tB$\xe0A\x03\xfaA\x1e\n" +
-	"\x1cohtarnished.freebusy.v1/UserR\ainviter\x12@\n" +
+	"\x05state\x18\a \x01(\x0e2&.freebusy.organisation.v1.Member.StateB\x03\xe0A\x03R\x05state\x12?\n" +
+	"\ainviter\x18\b \x01(\tB%\xe0A\x03\xfaA\x1f\n" +
+	"\x1dfreebusy.ohtarnished.dev/UserR\ainviter\x12@\n" +
 	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
@@ -496,8 +476,8 @@ const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x11\n" +
 	"\rSTATE_INVITED\x10\x01\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x02\x12\x13\n" +
-	"\x0fSTATE_SUSPENDED\x10\x03:Q\xeaAN\n" +
-	"\x1eohtarnished.freebusy.v1/Member\x12\x1borgs/{org}/members/{member}*\amembers2\x06member*\xab\x01\n" +
+	"\x0fSTATE_SUSPENDED\x10\x03:R\xeaAO\n" +
+	"\x1ffreebusy.ohtarnished.dev/Member\x12\x1borgs/{org}/members/{member}*\amembers2\x06memberJ\x04\b\x02\x10\x03*\xab\x01\n" +
 	"\x10OrganisationRole\x12!\n" +
 	"\x1dORGANISATION_ROLE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17ORGANISATION_ROLE_OWNER\x10\x01\x12\x1b\n" +

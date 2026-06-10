@@ -9,6 +9,7 @@ package resourcepbv1
 import (
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
@@ -263,15 +264,15 @@ type Resource struct {
 	// The resource name.
 	// Format: resources/{resource}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// Human-friendly name (e.g. "Dr. Lee", "Deluxe King", "Kayak #3").
 	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Free-form description.
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// What kind of bookable thing this is.
 	Type ResourceType `protobuf:"varint,5,opt,name=type,proto3,enum=freebusy.resource.v1.ResourceType" json:"type,omitempty"`
-	// How this resource is booked, and therefore the availability shape it yields.
+	// How this resource is booked, and therefore the availability shape it
+	// yields. Immutable: flipping it after bookings exist would invalidate every
+	// existing booking and availability computation.
 	BookingMode sharedpbv1.BookingMode `protobuf:"varint,6,opt,name=booking_mode,json=bookingMode,proto3,enum=freebusy.shared.v1.BookingMode" json:"booking_mode,omitempty"`
 	// Number of interchangeable units in the pool. Defaults to 1 when unset.
 	Capacity int32 `protobuf:"varint,7,opt,name=capacity,proto3" json:"capacity,omitempty"`
@@ -286,8 +287,8 @@ type Resource struct {
 	// consult"); manage them with the Offering standard methods.
 	// Format: resources/{resource}/offerings/{offering}
 	Offerings []string `protobuf:"bytes,11,rep,name=offerings,proto3" json:"offerings,omitempty"`
-	// Lifecycle State.
-	ResourceState Resource_State `protobuf:"varint,12,opt,name=resource_state,json=resourceState,proto3,enum=freebusy.resource.v1.Resource_State" json:"resource_state,omitempty"`
+	// Lifecycle state.
+	State Resource_State `protobuf:"varint,12,opt,name=state,proto3,enum=freebusy.resource.v1.Resource_State" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
@@ -329,13 +330,6 @@ func (*Resource) Descriptor() ([]byte, []int) {
 func (x *Resource) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *Resource) GetUuid() string {
-	if x != nil {
-		return x.Uuid
 	}
 	return ""
 }
@@ -403,9 +397,9 @@ func (x *Resource) GetOfferings() []string {
 	return nil
 }
 
-func (x *Resource) GetResourceState() Resource_State {
+func (x *Resource) GetState() Resource_State {
 	if x != nil {
-		return x.ResourceState
+		return x.State
 	}
 	return Resource_STATE_UNSPECIFIED
 }
@@ -432,8 +426,6 @@ type Offering struct {
 	// The offering name.
 	// Format: resources/{resource}/offerings/{offering}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// Human-friendly name (e.g. "30-min consult").
 	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Free-form description.
@@ -441,11 +433,11 @@ type Offering struct {
 	// Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY.
 	Duration *durationpb.Duration `protobuf:"bytes,5,opt,name=duration,proto3" json:"duration,omitempty"`
 	// Price charged for the offering, interpreted per pricing_unit.
-	Price *sharedpbv1.Money `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
+	Price *money.Money `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
 	// What the price is charged per.
 	PricingUnit PricingUnit `protobuf:"varint,7,opt,name=pricing_unit,json=pricingUnit,proto3,enum=freebusy.resource.v1.PricingUnit" json:"pricing_unit,omitempty"`
-	// Lifecycle State.
-	OfferingState Offering_State `protobuf:"varint,8,opt,name=offering_state,json=offeringState,proto3,enum=freebusy.resource.v1.Offering_State" json:"offering_state,omitempty"`
+	// Lifecycle state.
+	State Offering_State `protobuf:"varint,8,opt,name=state,proto3,enum=freebusy.resource.v1.Offering_State" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
@@ -491,13 +483,6 @@ func (x *Offering) GetName() string {
 	return ""
 }
 
-func (x *Offering) GetUuid() string {
-	if x != nil {
-		return x.Uuid
-	}
-	return ""
-}
-
 func (x *Offering) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
@@ -519,7 +504,7 @@ func (x *Offering) GetDuration() *durationpb.Duration {
 	return nil
 }
 
-func (x *Offering) GetPrice() *sharedpbv1.Money {
+func (x *Offering) GetPrice() *money.Money {
 	if x != nil {
 		return x.Price
 	}
@@ -533,9 +518,9 @@ func (x *Offering) GetPricingUnit() PricingUnit {
 	return PricingUnit_PRICING_UNIT_UNSPECIFIED
 }
 
-func (x *Offering) GetOfferingState() Offering_State {
+func (x *Offering) GetState() Offering_State {
 	if x != nil {
-		return x.OfferingState
+		return x.State
 	}
 	return Offering_STATE_UNSPECIFIED
 }
@@ -558,24 +543,23 @@ var File_freebusy_resource_v1_resource_proto protoreflect.FileDescriptor
 
 const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe1\x06\n" +
+	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xc2\x06\n" +
 	"\bResource\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x12&\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x12;\n" +
-	"\x04type\x18\x05 \x01(\x0e2\".freebusy.resource.v1.ResourceTypeB\x03\xe0A\x02R\x04type\x12G\n" +
-	"\fbooking_mode\x18\x06 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeB\x03\xe0A\x02R\vbookingMode\x12\x1f\n" +
+	"\x04type\x18\x05 \x01(\x0e2\".freebusy.resource.v1.ResourceTypeB\x03\xe0A\x02R\x04type\x12J\n" +
+	"\fbooking_mode\x18\x06 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeB\x06\xe0A\x02\xe0A\x05R\vbookingMode\x12\x1f\n" +
 	"\bcapacity\x18\a \x01(\x05B\x03\xe0A\x01R\bcapacity\x12 \n" +
 	"\ttime_zone\x18\b \x01(\tB\x03\xe0A\x02R\btimeZone\x12\x17\n" +
 	"\x04tags\x18\t \x03(\tB\x03\xe0A\x01R\x04tags\x12<\n" +
 	"\n" +
 	"attributes\x18\n" +
 	" \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\n" +
-	"attributes\x12F\n" +
-	"\tofferings\x18\v \x03(\tB(\xe0A\x03\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\tofferings\x12P\n" +
-	"\x0eresource_state\x18\f \x01(\x0e2$.freebusy.resource.v1.Resource.StateB\x03\xe0A\x03R\rresourceState\x12@\n" +
+	"attributes\x12G\n" +
+	"\tofferings\x18\v \x03(\tB)\xe0A\x03\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\tofferings\x12?\n" +
+	"\x05state\x18\f \x01(\x0e2$.freebusy.resource.v1.Resource.StateB\x03\xe0A\x03R\x05state\x12@\n" +
 	"\vcreate_time\x18\r \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
@@ -583,17 +567,16 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
-	"\x0eSTATE_ARCHIVED\x10\x02:P\xeaAM\n" +
-	" ohtarnished.freebusy.v1/Resource\x12\x14resources/{resource}*\tresources2\bresource\"\xcb\x05\n" +
+	"\x0eSTATE_ARCHIVED\x10\x02:Q\xeaAN\n" +
+	"!freebusy.ohtarnished.dev/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xa1\x05\n" +
 	"\bOffering\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x12&\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x12:\n" +
-	"\bduration\x18\x05 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x124\n" +
-	"\x05price\x18\x06 \x01(\v2\x19.freebusy.shared.v1.MoneyB\x03\xe0A\x01R\x05price\x12I\n" +
-	"\fpricing_unit\x18\a \x01(\x0e2!.freebusy.resource.v1.PricingUnitB\x03\xe0A\x01R\vpricingUnit\x12P\n" +
-	"\x0eoffering_state\x18\b \x01(\x0e2$.freebusy.resource.v1.Offering.StateB\x03\xe0A\x03R\rofferingState\x12@\n" +
+	"\bduration\x18\x05 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12-\n" +
+	"\x05price\x18\x06 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\x05price\x12I\n" +
+	"\fpricing_unit\x18\a \x01(\x0e2!.freebusy.resource.v1.PricingUnitB\x03\xe0A\x01R\vpricingUnit\x12?\n" +
+	"\x05state\x18\b \x01(\x0e2$.freebusy.resource.v1.Offering.StateB\x03\xe0A\x03R\x05state\x12@\n" +
 	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
@@ -602,8 +585,8 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
-	"\x0eSTATE_INACTIVE\x10\x02:e\xeaAb\n" +
-	" ohtarnished.freebusy.v1/Offering\x12)resources/{resource}/offerings/{offering}*\tofferings2\boffering*\xb4\x01\n" +
+	"\x0eSTATE_INACTIVE\x10\x02:f\xeaAc\n" +
+	"!freebusy.ohtarnished.dev/Offering\x12)resources/{resource}/offerings/{offering}*\tofferings2\bofferingJ\x04\b\x02\x10\x03*\xb4\x01\n" +
 	"\fResourceType\x12\x1d\n" +
 	"\x19RESOURCE_TYPE_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16RESOURCE_TYPE_PROVIDER\x10\x01\x12\x16\n" +
@@ -643,19 +626,19 @@ var file_freebusy_resource_v1_resource_proto_goTypes = []any{
 	(*structpb.Struct)(nil),       // 7: google.protobuf.Struct
 	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 	(*durationpb.Duration)(nil),   // 9: google.protobuf.Duration
-	(*sharedpbv1.Money)(nil),      // 10: freebusy.shared.v1.Money
+	(*money.Money)(nil),           // 10: google.type.Money
 }
 var file_freebusy_resource_v1_resource_proto_depIdxs = []int32{
 	0,  // 0: freebusy.resource.v1.Resource.type:type_name -> freebusy.resource.v1.ResourceType
 	6,  // 1: freebusy.resource.v1.Resource.booking_mode:type_name -> freebusy.shared.v1.BookingMode
 	7,  // 2: freebusy.resource.v1.Resource.attributes:type_name -> google.protobuf.Struct
-	2,  // 3: freebusy.resource.v1.Resource.resource_state:type_name -> freebusy.resource.v1.Resource.State
+	2,  // 3: freebusy.resource.v1.Resource.state:type_name -> freebusy.resource.v1.Resource.State
 	8,  // 4: freebusy.resource.v1.Resource.create_time:type_name -> google.protobuf.Timestamp
 	8,  // 5: freebusy.resource.v1.Resource.update_time:type_name -> google.protobuf.Timestamp
 	9,  // 6: freebusy.resource.v1.Offering.duration:type_name -> google.protobuf.Duration
-	10, // 7: freebusy.resource.v1.Offering.price:type_name -> freebusy.shared.v1.Money
+	10, // 7: freebusy.resource.v1.Offering.price:type_name -> google.type.Money
 	1,  // 8: freebusy.resource.v1.Offering.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
-	3,  // 9: freebusy.resource.v1.Offering.offering_state:type_name -> freebusy.resource.v1.Offering.State
+	3,  // 9: freebusy.resource.v1.Offering.state:type_name -> freebusy.resource.v1.Offering.State
 	8,  // 10: freebusy.resource.v1.Offering.create_time:type_name -> google.protobuf.Timestamp
 	8,  // 11: freebusy.resource.v1.Offering.update_time:type_name -> google.protobuf.Timestamp
 	12, // [12:12] is the sub-list for method output_type

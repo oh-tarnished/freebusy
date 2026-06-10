@@ -18,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.identity.v1";
 // here; only profile preferences are editable.
 message User {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/User"
+    type: "freebusy.ohtarnished.dev/User"
     pattern: "users/{user}"
     singular: "user"
     plural: "users"
@@ -28,8 +28,8 @@ message User {
   // Format: users/{user}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // Email address, sourced from the IdP.
   string email = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -62,7 +62,7 @@ message MembershipSummary {
   // Format: orgs/{org}
   string organisation = 1 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
   ];
 
   // Cached display name of the organisation.
@@ -78,7 +78,7 @@ message GetUserRequest {
   // Format: users/{user}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
   ];
 }
 
@@ -91,7 +91,10 @@ message UpdateUserRequest {
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Request message for ListUsers.
+// Request message for ListUsers. Users are global, so the visible set is every
+// user sharing at least one organisation with the caller; use
+// `organisation = "orgs/{org}"` in filter to narrow to one org, or
+// OrgService.ListMembers for a single org's roster with roles.
 message ListUsersRequest {
   // Maximum number of users to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
@@ -99,8 +102,12 @@ message ListUsersRequest {
   // Page token from a previous ListUsers call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Filter expression over user fields (AIP-160), e.g. `display_name`.
+  // Filter expression (AIP-160), e.g. `organisation = "orgs/7"` or a match on
+  // display_name.
   string filter = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order, e.g. "display_name" or "create_time desc".
+  string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListUsers.

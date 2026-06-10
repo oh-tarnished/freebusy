@@ -8,6 +8,7 @@ import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
@@ -20,7 +21,7 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 // are never confirmed.
 message Booking {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/Booking"
+    type: "freebusy.ohtarnished.dev/Booking"
     pattern: "bookings/{booking}"
     singular: "booking"
     plural: "bookings"
@@ -54,28 +55,28 @@ message Booking {
   // Format: bookings/{booking}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // The resource being booked.
   // Format: resources/{resource}
   string resource = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
   // The offering being booked, when applicable.
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // The user the booking is for.
   // Format: users/{user}
   string customer = 5 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
   ];
 
   // Number of units / party size reserved. Defaults to 1.
@@ -94,20 +95,20 @@ message Booking {
   google.protobuf.Timestamp hold_expire_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Computed subtotal before discounts.
-  freebusy.shared.v1.Money price = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.type.Money price = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // The promo code to apply to this booking, set at creation, if any.
   // Format: promoCodes/{promo_code}
   string promo_code = 12 [
     (google.api.field_behavior) = IMMUTABLE,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/PromoCode"}
   ];
 
   // Discount applied from the promo code.
-  freebusy.shared.v1.Money discount = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.type.Money discount = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Final total after discounts.
-  freebusy.shared.v1.Money total = 14 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.type.Money total = 14 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Free-form notes on the booking.
   string notes = 15 [(google.api.field_behavior) = OPTIONAL];

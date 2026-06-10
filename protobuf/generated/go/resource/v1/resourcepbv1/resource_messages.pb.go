@@ -29,7 +29,12 @@ type ListResourcesRequest struct {
 	// Maximum number of resources to return. The server may cap this.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListResources call, for pagination.
-	PageToken     string `protobuf:"bytes,9,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	PageToken string `protobuf:"bytes,9,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	// Filter expression (AIP-160), e.g. `type = RESOURCE_TYPE_ROOM`,
+	// `state = STATE_ACTIVE`, `tags:"beachfront"`, or a match on display_name.
+	Filter string `protobuf:"bytes,10,opt,name=filter,proto3" json:"filter,omitempty"`
+	// Sort order, e.g. "display_name" or "create_time desc".
+	OrderBy       string `protobuf:"bytes,11,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -74,6 +79,20 @@ func (x *ListResourcesRequest) GetPageSize() int32 {
 func (x *ListResourcesRequest) GetPageToken() string {
 	if x != nil {
 		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListResourcesRequest) GetFilter() string {
+	if x != nil {
+		return x.Filter
+	}
+	return ""
+}
+
+func (x *ListResourcesRequest) GetOrderBy() string {
+	if x != nil {
+		return x.OrderBy
 	}
 	return ""
 }
@@ -337,6 +356,53 @@ func (x *ArchiveResourceRequest) GetName() string {
 	return ""
 }
 
+// Request message for UnarchiveResource.
+type UnarchiveResourceRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The resource to restore to the active state.
+	// Format: resources/{resource}
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnarchiveResourceRequest) Reset() {
+	*x = UnarchiveResourceRequest{}
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnarchiveResourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnarchiveResourceRequest) ProtoMessage() {}
+
+func (x *UnarchiveResourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnarchiveResourceRequest.ProtoReflect.Descriptor instead.
+func (*UnarchiveResourceRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *UnarchiveResourceRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 // Request message for ListOfferings.
 type ListOfferingsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -355,7 +421,7 @@ type ListOfferingsRequest struct {
 
 func (x *ListOfferingsRequest) Reset() {
 	*x = ListOfferingsRequest{}
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[6]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -367,7 +433,7 @@ func (x *ListOfferingsRequest) String() string {
 func (*ListOfferingsRequest) ProtoMessage() {}
 
 func (x *ListOfferingsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[6]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -380,7 +446,7 @@ func (x *ListOfferingsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOfferingsRequest.ProtoReflect.Descriptor instead.
 func (*ListOfferingsRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{6}
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ListOfferingsRequest) GetParent() string {
@@ -424,7 +490,7 @@ type ListOfferingsResponse struct {
 
 func (x *ListOfferingsResponse) Reset() {
 	*x = ListOfferingsResponse{}
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[7]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -436,7 +502,7 @@ func (x *ListOfferingsResponse) String() string {
 func (*ListOfferingsResponse) ProtoMessage() {}
 
 func (x *ListOfferingsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[7]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -449,7 +515,7 @@ func (x *ListOfferingsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOfferingsResponse.ProtoReflect.Descriptor instead.
 func (*ListOfferingsResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{7}
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ListOfferingsResponse) GetOfferings() []*Offering {
@@ -478,7 +544,7 @@ type GetOfferingRequest struct {
 
 func (x *GetOfferingRequest) Reset() {
 	*x = GetOfferingRequest{}
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[8]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -490,7 +556,7 @@ func (x *GetOfferingRequest) String() string {
 func (*GetOfferingRequest) ProtoMessage() {}
 
 func (x *GetOfferingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[8]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -503,7 +569,7 @@ func (x *GetOfferingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOfferingRequest.ProtoReflect.Descriptor instead.
 func (*GetOfferingRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{8}
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetOfferingRequest) GetName() string {
@@ -529,7 +595,7 @@ type CreateOfferingRequest struct {
 
 func (x *CreateOfferingRequest) Reset() {
 	*x = CreateOfferingRequest{}
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[9]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -541,7 +607,7 @@ func (x *CreateOfferingRequest) String() string {
 func (*CreateOfferingRequest) ProtoMessage() {}
 
 func (x *CreateOfferingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[9]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -554,7 +620,7 @@ func (x *CreateOfferingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOfferingRequest.ProtoReflect.Descriptor instead.
 func (*CreateOfferingRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{9}
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *CreateOfferingRequest) GetParent() string {
@@ -591,7 +657,7 @@ type UpdateOfferingRequest struct {
 
 func (x *UpdateOfferingRequest) Reset() {
 	*x = UpdateOfferingRequest{}
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[10]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -603,7 +669,7 @@ func (x *UpdateOfferingRequest) String() string {
 func (*UpdateOfferingRequest) ProtoMessage() {}
 
 func (x *UpdateOfferingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[10]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -616,7 +682,7 @@ func (x *UpdateOfferingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateOfferingRequest.ProtoReflect.Descriptor instead.
 func (*UpdateOfferingRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{10}
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UpdateOfferingRequest) GetOffering() *Offering {
@@ -645,7 +711,7 @@ type DeleteOfferingRequest struct {
 
 func (x *DeleteOfferingRequest) Reset() {
 	*x = DeleteOfferingRequest{}
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[11]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -657,7 +723,7 @@ func (x *DeleteOfferingRequest) String() string {
 func (*DeleteOfferingRequest) ProtoMessage() {}
 
 func (x *DeleteOfferingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[11]
+	mi := &file_freebusy_resource_v1_resource_messages_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -670,7 +736,7 @@ func (x *DeleteOfferingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOfferingRequest.ProtoReflect.Descriptor instead.
 func (*DeleteOfferingRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{11}
+	return file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteOfferingRequest) GetName() string {
@@ -684,17 +750,20 @@ var File_freebusy_resource_v1_resource_messages_proto protoreflect.FileDescripto
 
 const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\n" +
-	",freebusy/resource/v1/resource_messages.proto\x12\x14freebusy.resource.v1\x1a#freebusy/resource/v1/resource.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\\\n" +
+	",freebusy/resource/v1/resource_messages.proto\x12\x14freebusy.resource.v1\x1a#freebusy/resource/v1/resource.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9f\x01\n" +
 	"\x14ListResourcesRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
-	"page_token\x18\t \x01(\tB\x03\xe0A\x01R\tpageToken\"}\n" +
+	"page_token\x18\t \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
+	"\x06filter\x18\n" +
+	" \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
+	"\border_by\x18\v \x01(\tB\x03\xe0A\x01R\aorderByJ\x04\b\x02\x10\t\"\x83\x01\n" +
 	"\x15ListResourcesResponse\x12<\n" +
 	"\tresources\x18\x01 \x03(\v2\x1e.freebusy.resource.v1.ResourceR\tresources\x12&\n" +
-	"\x0fnext_page_token\x18\x05 \x01(\tR\rnextPageToken\"R\n" +
-	"\x12GetResourceRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x04name\"~\n" +
+	"\x0fnext_page_token\x18\x05 \x01(\tR\rnextPageTokenJ\x04\b\x02\x10\x05\"S\n" +
+	"\x12GetResourceRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x04name\"~\n" +
 	"\x15CreateResourceRequest\x12?\n" +
 	"\bresource\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.ResourceB\x03\xe0A\x02R\bresource\x12$\n" +
 	"\vresource_id\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
@@ -702,36 +771,39 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\x15UpdateResourceRequest\x12?\n" +
 	"\bresource\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.ResourceB\x03\xe0A\x02R\bresource\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"V\n" +
-	"\x16ArchiveResourceRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x04name\"\xbe\x01\n" +
-	"\x14ListOfferingsRequest\x12@\n" +
-	"\x06parent\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x06parent\x12 \n" +
+	"updateMask\"W\n" +
+	"\x16ArchiveResourceRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x04name\"Y\n" +
+	"\x18UnarchiveResourceRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x04name\"\xbf\x01\n" +
+	"\x14ListOfferingsRequest\x12A\n" +
+	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1e\n" +
 	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"}\n" +
 	"\x15ListOfferingsResponse\x12<\n" +
 	"\tofferings\x18\x01 \x03(\v2\x1e.freebusy.resource.v1.OfferingR\tofferings\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"R\n" +
-	"\x12GetOfferingRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\x04name\"\xc0\x01\n" +
-	"\x15CreateOfferingRequest\x12@\n" +
-	"\x06parent\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x06parent\x12?\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"S\n" +
+	"\x12GetOfferingRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\x04name\"\xc1\x01\n" +
+	"\x15CreateOfferingRequest\x12A\n" +
+	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12?\n" +
 	"\boffering\x18\x02 \x01(\v2\x1e.freebusy.resource.v1.OfferingB\x03\xe0A\x02R\boffering\x12$\n" +
 	"\voffering_id\x18\x03 \x01(\tB\x03\xe0A\x01R\n" +
 	"offeringId\"\x9a\x01\n" +
 	"\x15UpdateOfferingRequest\x12?\n" +
 	"\boffering\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.OfferingB\x03\xe0A\x02R\boffering\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"U\n" +
-	"\x15DeleteOfferingRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\x04nameB\x81\x02\n" +
+	"updateMask\"V\n" +
+	"\x15DeleteOfferingRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\x04nameB\x81\x02\n" +
 	"\x18com.freebusy.resource.v1B\x15ResourceMessagesProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1\xa2\x02\x03FRX\xaa\x02\x14Freebusy.Resource.V1\xca\x02\x14Freebusy\\Resource\\V1\xe2\x02 Freebusy\\Resource\\V1\\GPBMetadata\xea\x02\x16Freebusy::Resource::V1b\x06proto3"
 
 var (
@@ -746,33 +818,34 @@ func file_freebusy_resource_v1_resource_messages_proto_rawDescGZIP() []byte {
 	return file_freebusy_resource_v1_resource_messages_proto_rawDescData
 }
 
-var file_freebusy_resource_v1_resource_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_freebusy_resource_v1_resource_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_freebusy_resource_v1_resource_messages_proto_goTypes = []any{
-	(*ListResourcesRequest)(nil),   // 0: freebusy.resource.v1.ListResourcesRequest
-	(*ListResourcesResponse)(nil),  // 1: freebusy.resource.v1.ListResourcesResponse
-	(*GetResourceRequest)(nil),     // 2: freebusy.resource.v1.GetResourceRequest
-	(*CreateResourceRequest)(nil),  // 3: freebusy.resource.v1.CreateResourceRequest
-	(*UpdateResourceRequest)(nil),  // 4: freebusy.resource.v1.UpdateResourceRequest
-	(*ArchiveResourceRequest)(nil), // 5: freebusy.resource.v1.ArchiveResourceRequest
-	(*ListOfferingsRequest)(nil),   // 6: freebusy.resource.v1.ListOfferingsRequest
-	(*ListOfferingsResponse)(nil),  // 7: freebusy.resource.v1.ListOfferingsResponse
-	(*GetOfferingRequest)(nil),     // 8: freebusy.resource.v1.GetOfferingRequest
-	(*CreateOfferingRequest)(nil),  // 9: freebusy.resource.v1.CreateOfferingRequest
-	(*UpdateOfferingRequest)(nil),  // 10: freebusy.resource.v1.UpdateOfferingRequest
-	(*DeleteOfferingRequest)(nil),  // 11: freebusy.resource.v1.DeleteOfferingRequest
-	(*Resource)(nil),               // 12: freebusy.resource.v1.Resource
-	(*fieldmaskpb.FieldMask)(nil),  // 13: google.protobuf.FieldMask
-	(*Offering)(nil),               // 14: freebusy.resource.v1.Offering
+	(*ListResourcesRequest)(nil),     // 0: freebusy.resource.v1.ListResourcesRequest
+	(*ListResourcesResponse)(nil),    // 1: freebusy.resource.v1.ListResourcesResponse
+	(*GetResourceRequest)(nil),       // 2: freebusy.resource.v1.GetResourceRequest
+	(*CreateResourceRequest)(nil),    // 3: freebusy.resource.v1.CreateResourceRequest
+	(*UpdateResourceRequest)(nil),    // 4: freebusy.resource.v1.UpdateResourceRequest
+	(*ArchiveResourceRequest)(nil),   // 5: freebusy.resource.v1.ArchiveResourceRequest
+	(*UnarchiveResourceRequest)(nil), // 6: freebusy.resource.v1.UnarchiveResourceRequest
+	(*ListOfferingsRequest)(nil),     // 7: freebusy.resource.v1.ListOfferingsRequest
+	(*ListOfferingsResponse)(nil),    // 8: freebusy.resource.v1.ListOfferingsResponse
+	(*GetOfferingRequest)(nil),       // 9: freebusy.resource.v1.GetOfferingRequest
+	(*CreateOfferingRequest)(nil),    // 10: freebusy.resource.v1.CreateOfferingRequest
+	(*UpdateOfferingRequest)(nil),    // 11: freebusy.resource.v1.UpdateOfferingRequest
+	(*DeleteOfferingRequest)(nil),    // 12: freebusy.resource.v1.DeleteOfferingRequest
+	(*Resource)(nil),                 // 13: freebusy.resource.v1.Resource
+	(*fieldmaskpb.FieldMask)(nil),    // 14: google.protobuf.FieldMask
+	(*Offering)(nil),                 // 15: freebusy.resource.v1.Offering
 }
 var file_freebusy_resource_v1_resource_messages_proto_depIdxs = []int32{
-	12, // 0: freebusy.resource.v1.ListResourcesResponse.resources:type_name -> freebusy.resource.v1.Resource
-	12, // 1: freebusy.resource.v1.CreateResourceRequest.resource:type_name -> freebusy.resource.v1.Resource
-	12, // 2: freebusy.resource.v1.UpdateResourceRequest.resource:type_name -> freebusy.resource.v1.Resource
-	13, // 3: freebusy.resource.v1.UpdateResourceRequest.update_mask:type_name -> google.protobuf.FieldMask
-	14, // 4: freebusy.resource.v1.ListOfferingsResponse.offerings:type_name -> freebusy.resource.v1.Offering
-	14, // 5: freebusy.resource.v1.CreateOfferingRequest.offering:type_name -> freebusy.resource.v1.Offering
-	14, // 6: freebusy.resource.v1.UpdateOfferingRequest.offering:type_name -> freebusy.resource.v1.Offering
-	13, // 7: freebusy.resource.v1.UpdateOfferingRequest.update_mask:type_name -> google.protobuf.FieldMask
+	13, // 0: freebusy.resource.v1.ListResourcesResponse.resources:type_name -> freebusy.resource.v1.Resource
+	13, // 1: freebusy.resource.v1.CreateResourceRequest.resource:type_name -> freebusy.resource.v1.Resource
+	13, // 2: freebusy.resource.v1.UpdateResourceRequest.resource:type_name -> freebusy.resource.v1.Resource
+	14, // 3: freebusy.resource.v1.UpdateResourceRequest.update_mask:type_name -> google.protobuf.FieldMask
+	15, // 4: freebusy.resource.v1.ListOfferingsResponse.offerings:type_name -> freebusy.resource.v1.Offering
+	15, // 5: freebusy.resource.v1.CreateOfferingRequest.offering:type_name -> freebusy.resource.v1.Offering
+	15, // 6: freebusy.resource.v1.UpdateOfferingRequest.offering:type_name -> freebusy.resource.v1.Offering
+	14, // 7: freebusy.resource.v1.UpdateOfferingRequest.update_mask:type_name -> google.protobuf.FieldMask
 	8,  // [8:8] is the sub-list for method output_type
 	8,  // [8:8] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name
@@ -792,7 +865,7 @@ func file_freebusy_resource_v1_resource_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_resource_v1_resource_messages_proto_rawDesc), len(file_freebusy_resource_v1_resource_messages_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

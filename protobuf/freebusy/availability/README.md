@@ -38,7 +38,7 @@ Per-night availability, produced for NIGHTLY resources.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `night` | `CalendarDate` | - | The night, in the resource's local timezone. |
+| `night` | `Date` | - | The night, in the resource's local timezone. |
 | `free_units` | `int32` | - | Number of units of the pool free that night. |
 | `closed` | `bool` | - | Whether the resource is closed that night (exception/blackout). |
 | `price` | `Money` | - | Nightly price, when an offering was supplied. |
@@ -70,7 +70,8 @@ Request message for ComputeAvailability.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `resource` | `string` | `REQUIRED` | The resource to compute availability for. Format: resources/{resource} |
-| `window` | `TimeWindow` | `REQUIRED` | The window to compute availability over. |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
+| `date_range` | `DateRange` | - | A calendar-date range in the resource's timezone, the natural form for NIGHTLY resources; end_date is the check-out date. |
 | `duration` | `Duration` | `OPTIONAL` | Slot length for TIME_SLOT resources. Ignored when offering is set or for NIGHTLY resources. |
 | `offering` | `string` | `OPTIONAL` | Offering to derive duration and price from. Takes precedence over duration. Format: resources/{resource}/offerings/{offering} |
 | `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
@@ -92,9 +93,19 @@ Request message for CheckAvailability.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `resource` | `string` | `REQUIRED` | The resource to test. Format: resources/{resource} |
-| `window` | `TimeWindow` | `REQUIRED` | The exact span to test for bookability. |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
+| `date_range` | `DateRange` | - | A calendar-date range in the resource's timezone, the natural form for NIGHTLY stays; end_date is the check-out date. |
 | `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
 | `offering` | `string` | `OPTIONAL` | Offering whose duration/rules apply, when relevant. Format: resources/{resource}/offerings/{offering} |
+
+### UnbookableReason
+
+A reason a span is not bookable, as a machine-readable code plus a human-readable explanation. Clients should branch on code, never on message.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `code` | `Code` | - | Why the span is not bookable. |
+| `message` | `string` | - | Human-readable explanation suitable for display, not for parsing. |
 
 ### CheckAvailabilityResponse
 
@@ -104,7 +115,7 @@ Response message for CheckAvailability.
 | --- | --- | --- | --- |
 | `bookable` | `bool` | - | Whether the span is bookable. |
 | `free_count` | `int32` | - | Free units across the span (the minimum over the span). |
-| `reasons` | `string` | - | Human-readable reasons the span is not bookable, when bookable is false. |
+| `reasons` | `UnbookableReason` | - | Why the span is not bookable, when bookable is false. |
 
 ### ComputeBookableRangesRequest
 
@@ -113,7 +124,8 @@ Request message for ComputeBookableRanges.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `resource` | `string` | `REQUIRED` | The resource to compute bookable ranges for. Format: resources/{resource} |
-| `window` | `TimeWindow` | `REQUIRED` | The window to search within. |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
+| `date_range` | `DateRange` | - | A calendar-date range in the resource's timezone, the natural form for NIGHTLY resources. |
 | `duration` | `Duration` | `OPTIONAL` | Minimum span length for TIME_SLOT resources. |
 | `offering` | `string` | `OPTIONAL` | Offering to derive duration/rules from. Format: resources/{resource}/offerings/{offering} |
 | `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
@@ -128,14 +140,11 @@ Response message for ComputeBookableRanges.
 
 ### BatchComputeAvailabilityRequest
 
-Request message for BatchComputeAvailability.
+Request message for BatchComputeAvailability. Each entry is a full ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering, and units all work in batch exactly as they do in the single call.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resources` | `string` | `REQUIRED` | The resources to compute availability for. Format: resources/{resource} |
-| `window` | `TimeWindow` | `REQUIRED` | The window to compute availability over. |
-| `duration` | `Duration` | `OPTIONAL` | Slot length for TIME_SLOT resources. |
-| `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
+| `requests` | `ComputeAvailabilityRequest` | `REQUIRED` | The individual compute requests. Results are returned in the same order. |
 
 ### BatchComputeAvailabilityResponse
 
@@ -143,7 +152,7 @@ Response message for BatchComputeAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resources` | `ResourceAvailability` | - | Availability per requested resource. |
+| `resources` | `ResourceAvailability` | - | Availability per request, in request order. |
 
 ---
 

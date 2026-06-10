@@ -241,10 +241,10 @@ var File_freebusy_organisation_v1_org_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_org_actions_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/organisation/v1/org_actions.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xb2\x01\n" +
-	"\x13InviteMemberRequest\x12;\n" +
-	"\x06parent\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bohtarnished.freebusy.v1/OrgR\x06parent\x12\x19\n" +
+	"*freebusy/organisation/v1/org_actions.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xb3\x01\n" +
+	"\x13InviteMemberRequest\x12<\n" +
+	"\x06parent\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
+	"\x1cfreebusy.ohtarnished.dev/OrgR\x06parent\x12\x19\n" +
 	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x02R\x05email\x12C\n" +
 	"\x04role\x18\x03 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\"P\n" +
 	"\x14InviteMemberResponse\x128\n" +
@@ -252,10 +252,10 @@ const file_freebusy_organisation_v1_org_actions_proto_rawDesc = "" +
 	"\x13UpdateMemberRequest\x12=\n" +
 	"\x06member\x18\x01 \x01(\v2 .freebusy.organisation.v1.MemberB\x03\xe0A\x02R\x06member\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"Q\n" +
-	"\x13DeleteMemberRequest\x12:\n" +
-	"\x04name\x18\x01 \x01(\tB&\xe0A\x02\xfaA \n" +
-	"\x1eohtarnished.freebusy.v1/MemberR\x04nameB\x89\x02\n" +
+	"updateMask\"R\n" +
+	"\x13DeleteMemberRequest\x12;\n" +
+	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.ohtarnished.dev/MemberR\x04nameB\x89\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\x0fOrgActionsProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (

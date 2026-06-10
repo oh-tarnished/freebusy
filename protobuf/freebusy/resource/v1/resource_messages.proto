@@ -14,15 +14,28 @@ option java_package = "dev.ohtarnished.freebusy.resource.v1";
 
 // Request message for ListResources.
 message ListResourcesRequest {
+  // Field numbers of earlier drafts; never reuse them.
+  reserved 2 to 8;
+
   // Maximum number of resources to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
 
   // Page token from a previous ListResources call, for pagination.
   string page_token = 9 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression (AIP-160), e.g. `type = RESOURCE_TYPE_ROOM`,
+  // `state = STATE_ACTIVE`, `tags:"beachfront"`, or a match on display_name.
+  string filter = 10 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order, e.g. "display_name" or "create_time desc".
+  string order_by = 11 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListResources.
 message ListResourcesResponse {
+  // Field numbers of earlier drafts; never reuse them.
+  reserved 2 to 4;
+
   // The page of resources.
   repeated Resource resources = 1;
 
@@ -36,7 +49,7 @@ message GetResourceRequest {
   // Format: resources/{resource}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 }
 
@@ -64,7 +77,17 @@ message ArchiveResourceRequest {
   // Format: resources/{resource}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+  ];
+}
+
+// Request message for UnarchiveResource.
+message UnarchiveResourceRequest {
+  // The resource to restore to the active state.
+  // Format: resources/{resource}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 }
 
@@ -74,7 +97,7 @@ message ListOfferingsRequest {
   // Format: resources/{resource}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
   // Maximum number of offerings to return.
@@ -102,7 +125,7 @@ message GetOfferingRequest {
   // Format: resources/{resource}/offerings/{offering}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 }
 
@@ -112,7 +135,7 @@ message CreateOfferingRequest {
   // Format: resources/{resource}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
   // The offering to create. Its name field is ignored.
@@ -137,6 +160,6 @@ message DeleteOfferingRequest {
   // Format: resources/{resource}/offerings/{offering}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 }

@@ -19,7 +19,7 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 // by the shell via row-level security from the caller's organisation; this service is
 // where orgs and members are created and administered.
 service OrgService {
-  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
       name: "Organizations"

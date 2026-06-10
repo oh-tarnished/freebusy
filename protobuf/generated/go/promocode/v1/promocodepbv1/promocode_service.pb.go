@@ -27,7 +27,7 @@ var File_freebusy_promocode_v1_promocode_service_proto protoreflect.FileDescript
 
 const file_freebusy_promocode_v1_promocode_service_proto_rawDesc = "" +
 	"\n" +
-	"-freebusy/promocode/v1/promocode_service.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a.freebusy/promocode/v1/promocode_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xa1\f\n" +
+	"-freebusy/promocode/v1/promocode_service.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a.freebusy/promocode/v1/promocode_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xa2\f\n" +
 	"\x10PromoCodeService\x12\xcc\x01\n" +
 	"\x0eListPromoCodes\x12,.freebusy.promocode.v1.ListPromoCodesRequest\x1a-.freebusy.promocode.v1.ListPromoCodesResponse\"]\xca\xf3\x18C\x12AList promo codes. Filter by status, search by code, and paginate.\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/promoCodes\x12\xdc\x01\n" +
 	"\fGetPromoCode\x12*.freebusy.promocode.v1.GetPromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"~\xdaA\x04name\xca\xf3\x18T\x12RGet a single promo code by resource name, including its caps and redemption count.\x82\xd3\xe4\x93\x02\x19\x12\x17/v1/{name=promoCodes/*}\x12\x8c\x02\n" +
@@ -36,7 +36,7 @@ const file_freebusy_promocode_v1_promocode_service_proto_rawDesc = "" +
 	"\x0fUpdatePromoCode\x12-.freebusy.promocode.v1.UpdatePromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\x94\x01\xdaA\x16promo_code,update_mask\xca\xf3\x18A\x12?Update a promo code's discount, window, caps, scope, or status.\x82\xd3\xe4\x93\x020:\n" +
 	"promo_code2\"/v1/{promo_code.name=promoCodes/*}\x12\xab\x01\n" +
 	"\x0fDeletePromoCode\x12-.freebusy.promocode.v1.DeletePromoCodeRequest\x1a\x16.google.protobuf.Empty\"Q\xdaA\x04name\xca\xf3\x18'\x12%Delete a promo code by resource name.\x82\xd3\xe4\x93\x02\x19*\x17/v1/{name=promoCodes/*}\x12\xb3\x02\n" +
-	"\x11ValidatePromoCode\x12/.freebusy.promocode.v1.ValidatePromoCodeRequest\x1a0.freebusy.promocode.v1.ValidatePromoCodeResponse\"\xba\x01\xdaA\rcode,subtotal\xca\xf3\x18{\x12yCheck whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/promoCodes:validatePromoCode\x1ap\xcaA\x17ohtarnished.freebusy.v1\xc2\xf3\x18R\n" +
+	"\x11ValidatePromoCode\x12/.freebusy.promocode.v1.ValidatePromoCodeRequest\x1a0.freebusy.promocode.v1.ValidatePromoCodeResponse\"\xba\x01\xdaA\rcode,subtotal\xca\xf3\x18{\x12yCheck whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/promoCodes:validatePromoCode\x1aq\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18R\n" +
 	"P\n" +
 	"\vPromo Codes\x12\x051.0.0\x1a:Manage discount codes and validate them against a booking.B\x89\x02\n" +
 	"\x19com.freebusy.promocode.v1B\x15PromocodeServiceProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"

@@ -15,7 +15,7 @@ option java_package = "dev.ohtarnished.freebusy.identity.v1";
 // IdentityService is the thin "who am I" surface. Login itself is an OIDC
 // redirect flow over plain HTTP handled by the IdP, never an RPC here.
 service IdentityService {
-  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
       name: "Identity"
@@ -31,10 +31,10 @@ service IdentityService {
     option (mcp.protobuf.tool) = {description: "Get a user (\"users/me\" for the signed-in caller), including profile and organisation memberships."};
   }
 
-  // Lists users.
+  // Lists users sharing an organisation with the caller.
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
     option (google.api.http) = {get: "/v1/users"};
-    option (mcp.protobuf.tool) = {description: "List users in the caller's organisation, with optional filtering and pagination."};
+    option (mcp.protobuf.tool) = {description: "List users sharing an organisation with the caller; filter by organisation or display name."};
   }
 
   // Updates the signed-in user's profile.

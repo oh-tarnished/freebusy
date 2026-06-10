@@ -556,34 +556,34 @@ const file_freebusy_organisation_v1_org_messages_proto_rawDesc = "" +
 	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"m\n" +
 	"\x10ListOrgsResponse\x121\n" +
 	"\x04orgs\x18\x01 \x03(\v2\x1d.freebusy.organisation.v1.OrgR\x04orgs\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"H\n" +
-	"\rGetOrgRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bohtarnished.freebusy.v1/OrgR\x04name\"d\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"I\n" +
+	"\rGetOrgRequest\x128\n" +
+	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
+	"\x1cfreebusy.ohtarnished.dev/OrgR\x04name\"d\n" +
 	"\x10CreateOrgRequest\x124\n" +
 	"\x03org\x18\x01 \x01(\v2\x1d.freebusy.organisation.v1.OrgB\x03\xe0A\x02R\x03org\x12\x1a\n" +
 	"\x06org_id\x18\x02 \x01(\tB\x03\xe0A\x01R\x05orgId\"\x8a\x01\n" +
 	"\x10UpdateOrgRequest\x124\n" +
 	"\x03org\x18\x01 \x01(\v2\x1d.freebusy.organisation.v1.OrgB\x03\xe0A\x02R\x03org\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"f\n" +
-	"\x10DeleteOrgRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bohtarnished.freebusy.v1/OrgR\x04name\x12\x19\n" +
-	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xb4\x01\n" +
-	"\x12ListMembersRequest\x12;\n" +
-	"\x06parent\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bohtarnished.freebusy.v1/OrgR\x06parent\x12 \n" +
+	"updateMask\"g\n" +
+	"\x10DeleteOrgRequest\x128\n" +
+	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
+	"\x1cfreebusy.ohtarnished.dev/OrgR\x04name\x12\x19\n" +
+	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xb5\x01\n" +
+	"\x12ListMembersRequest\x12<\n" +
+	"\x06parent\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
+	"\x1cfreebusy.ohtarnished.dev/OrgR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\"y\n" +
 	"\x13ListMembersResponse\x12:\n" +
 	"\amembers\x18\x01 \x03(\v2 .freebusy.organisation.v1.MemberR\amembers\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"N\n" +
-	"\x10GetMemberRequest\x12:\n" +
-	"\x04name\x18\x01 \x01(\tB&\xe0A\x02\xfaA \n" +
-	"\x1eohtarnished.freebusy.v1/MemberR\x04nameB\x8a\x02\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"O\n" +
+	"\x10GetMemberRequest\x12;\n" +
+	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.ohtarnished.dev/MemberR\x04nameB\x8a\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\x10OrgMessagesProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (

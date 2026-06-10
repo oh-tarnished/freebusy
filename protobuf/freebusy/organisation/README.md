@@ -159,7 +159,6 @@ A tenant. Org is the unit of multi-tenancy; the shell enforces isolation with ro
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The organisation name. Format: orgs/{org} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `display_name` | `string` | `REQUIRED` | Human-friendly organisation name (e.g. "Acme Inc."). |
 | `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across orgs. |
 | `billing_email` | `string` | `OPTIONAL` | Billing contact email. |
@@ -176,7 +175,6 @@ The membership of a user in an organisation, with their role.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The member name. Format: orgs/{org}/members/{member} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `user` | `string` | `OUTPUT_ONLY` | The user, once the invite is accepted. Format: users/{user} |
 | `email` | `string` | `REQUIRED` | The invited email address. |
 | `display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the member. |

@@ -20,7 +20,7 @@ option java_package = "dev.ohtarnished.freebusy.availability.v1";
 // fetch or list a resource, so they intentionally do not use the Get/List/Batch
 // standard-method names or shapes.
 service AvailabilityService {
-  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
       name: "Booking Availability"
@@ -62,9 +62,9 @@ service AvailabilityService {
   // Computes availability for several resources at once.
   rpc BatchComputeAvailability(BatchComputeAvailabilityRequest) returns (BatchComputeAvailabilityResponse) {
     option (google.api.http) = {
-      post: "/v1/availability:batchCompute"
+      post: "/v1/resources:batchCompute"
       body: "*"
     };
-    option (mcp.protobuf.tool) = {description: "Compute availability for several resources over the same window in one call."};
+    option (mcp.protobuf.tool) = {description: "Compute availability for several resources in one call; each entry carries its own resource, period, offering, and units."};
   }
 }

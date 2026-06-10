@@ -18,29 +18,31 @@ import (
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.
 var ResourceService_ArchiveResourceSchemaJSON = `{"description":"Archive a resource so it stops appearing in availability and accepting bookings.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var ResourceService_CreateOfferingSchemaJSON = `{"description":"Add an offering (e.g. '30-min consult') with a duration and price to a resource.","properties":{"offering":{"properties":{"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"duration":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"name":{"type":"string"},"offering_state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_INACTIVE"],"type":"string"},"price":{"properties":{"currency_code":{"type":"string"},"decimal_places":{"type":"integer"},"units":{"type":"string"}},"required":["currency_code"],"type":"object"},"pricing_unit":{"enum":["PRICING_UNIT_UNSPECIFIED","PRICING_UNIT_PER_BOOKING","PRICING_UNIT_PER_NIGHT","PRICING_UNIT_PER_PERSON"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"uuid":{"type":"string"}},"required":["display_name"],"type":"object"},"offering_id":{"type":"string"},"parent":{"type":"string"}},"required":["parent","offering"],"type":"object"}`
-var ResourceService_CreateResourceSchemaJSON = `{"description":"Create a bookable resource with a type, booking mode, timezone, and capacity.","properties":{"resource":{"properties":{"attributes":{"additionalProperties":true,"type":"object"},"booking_mode":{"enum":["BOOKING_MODE_UNSPECIFIED","BOOKING_MODE_TIME_SLOT","BOOKING_MODE_NIGHTLY"],"type":"string"},"capacity":{"type":"integer"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"name":{"type":"string"},"offerings":{"items":{"type":"string"},"type":"array"},"resource_state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_ARCHIVED"],"type":"string"},"tags":{"items":{"type":"string"},"type":"array"},"time_zone":{"type":"string"},"type":{"enum":["RESOURCE_TYPE_UNSPECIFIED","RESOURCE_TYPE_PROVIDER","RESOURCE_TYPE_ROOM","RESOURCE_TYPE_EQUIPMENT","RESOURCE_TYPE_UNIT_TYPE","RESOURCE_TYPE_SPACE"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"uuid":{"type":"string"}},"required":["display_name","type","booking_mode","time_zone"],"type":"object"},"resource_id":{"type":"string"}},"required":["resource"],"type":"object"}`
+var ResourceService_CreateOfferingSchemaJSON = `{"description":"Add an offering (e.g. '30-min consult') with a duration and price to a resource.","properties":{"offering":{"properties":{"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"duration":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"name":{"type":"string"},"price":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"pricing_unit":{"enum":["PRICING_UNIT_UNSPECIFIED","PRICING_UNIT_PER_BOOKING","PRICING_UNIT_PER_NIGHT","PRICING_UNIT_PER_PERSON"],"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_INACTIVE"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name"],"type":"object"},"offering_id":{"type":"string"},"parent":{"type":"string"}},"required":["parent","offering"],"type":"object"}`
+var ResourceService_CreateResourceSchemaJSON = `{"description":"Create a bookable resource with a type, booking mode, timezone, and capacity.","properties":{"resource":{"properties":{"attributes":{"additionalProperties":true,"type":"object"},"booking_mode":{"enum":["BOOKING_MODE_UNSPECIFIED","BOOKING_MODE_TIME_SLOT","BOOKING_MODE_NIGHTLY"],"type":"string"},"capacity":{"type":"integer"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"name":{"type":"string"},"offerings":{"items":{"type":"string"},"type":"array"},"state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_ARCHIVED"],"type":"string"},"tags":{"items":{"type":"string"},"type":"array"},"time_zone":{"type":"string"},"type":{"enum":["RESOURCE_TYPE_UNSPECIFIED","RESOURCE_TYPE_PROVIDER","RESOURCE_TYPE_ROOM","RESOURCE_TYPE_EQUIPMENT","RESOURCE_TYPE_UNIT_TYPE","RESOURCE_TYPE_SPACE"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name","type","booking_mode","time_zone"],"type":"object"},"resource_id":{"type":"string"}},"required":["resource"],"type":"object"}`
 var ResourceService_DeleteOfferingSchemaJSON = `{"description":"Delete an offering from a resource by name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var ResourceService_GetOfferingSchemaJSON = `{"description":"Get a single offering by name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var ResourceService_GetResourceSchemaJSON = `{"description":"Get a single resource by name, including its offerings.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var ResourceService_ListOfferingsSchemaJSON = `{"description":"List the offerings (duration + price) attached to a resource.","properties":{"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"parent":{"type":"string"}},"required":["parent"],"type":"object"}`
-var ResourceService_ListResourcesSchemaJSON = `{"description":"List bookable resources. Filter by type, status, or tags, search by name, and paginate.","properties":{"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
-var ResourceService_UpdateOfferingSchemaJSON = `{"description":"Update an offering's name, duration, price, or status.","properties":{"offering":{"properties":{"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"duration":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"name":{"type":"string"},"offering_state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_INACTIVE"],"type":"string"},"price":{"properties":{"currency_code":{"type":"string"},"decimal_places":{"type":"integer"},"units":{"type":"string"}},"required":["currency_code"],"type":"object"},"pricing_unit":{"enum":["PRICING_UNIT_UNSPECIFIED","PRICING_UNIT_PER_BOOKING","PRICING_UNIT_PER_NIGHT","PRICING_UNIT_PER_PERSON"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"uuid":{"type":"string"}},"required":["display_name"],"type":"object"},"update_mask":{"type":"string"}},"required":["offering"],"type":"object"}`
-var ResourceService_UpdateResourceSchemaJSON = `{"description":"Update a resource's name, description, capacity, timezone, tags, or attributes.","properties":{"resource":{"properties":{"attributes":{"additionalProperties":true,"type":"object"},"booking_mode":{"enum":["BOOKING_MODE_UNSPECIFIED","BOOKING_MODE_TIME_SLOT","BOOKING_MODE_NIGHTLY"],"type":"string"},"capacity":{"type":"integer"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"name":{"type":"string"},"offerings":{"items":{"type":"string"},"type":"array"},"resource_state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_ARCHIVED"],"type":"string"},"tags":{"items":{"type":"string"},"type":"array"},"time_zone":{"type":"string"},"type":{"enum":["RESOURCE_TYPE_UNSPECIFIED","RESOURCE_TYPE_PROVIDER","RESOURCE_TYPE_ROOM","RESOURCE_TYPE_EQUIPMENT","RESOURCE_TYPE_UNIT_TYPE","RESOURCE_TYPE_SPACE"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"uuid":{"type":"string"}},"required":["display_name","type","booking_mode","time_zone"],"type":"object"},"update_mask":{"type":"string"}},"required":["resource"],"type":"object"}`
+var ResourceService_ListResourcesSchemaJSON = `{"description":"List bookable resources. Filter by type, status, or tags, search by name, and paginate.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
+var ResourceService_UnarchiveResourceSchemaJSON = `{"description":"Restore an archived resource so it appears in availability and accepts bookings again.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var ResourceService_UpdateOfferingSchemaJSON = `{"description":"Update an offering's name, duration, price, or status.","properties":{"offering":{"properties":{"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"duration":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"name":{"type":"string"},"price":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"pricing_unit":{"enum":["PRICING_UNIT_UNSPECIFIED","PRICING_UNIT_PER_BOOKING","PRICING_UNIT_PER_NIGHT","PRICING_UNIT_PER_PERSON"],"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_INACTIVE"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name"],"type":"object"},"update_mask":{"type":"string"}},"required":["offering"],"type":"object"}`
+var ResourceService_UpdateResourceSchemaJSON = `{"description":"Update a resource's name, description, capacity, timezone, tags, or attributes.","properties":{"resource":{"properties":{"attributes":{"additionalProperties":true,"type":"object"},"booking_mode":{"enum":["BOOKING_MODE_UNSPECIFIED","BOOKING_MODE_TIME_SLOT","BOOKING_MODE_NIGHTLY"],"type":"string"},"capacity":{"type":"integer"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"display_name":{"type":"string"},"name":{"type":"string"},"offerings":{"items":{"type":"string"},"type":"array"},"state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_ARCHIVED"],"type":"string"},"tags":{"items":{"type":"string"},"type":"array"},"time_zone":{"type":"string"},"type":{"enum":["RESOURCE_TYPE_UNSPECIFIED","RESOURCE_TYPE_PROVIDER","RESOURCE_TYPE_ROOM","RESOURCE_TYPE_EQUIPMENT","RESOURCE_TYPE_UNIT_TYPE","RESOURCE_TYPE_SPACE"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name","type","booking_mode","time_zone"],"type":"object"},"update_mask":{"type":"string"}},"required":["resource"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.
 var (
-	ResourceService_ArchiveResourceTool = runtime.MustCreateTool("resource_service-archive_resource_v1", `Archive a resource so it stops appearing in availability and accepting bookings.`, ResourceService_ArchiveResourceSchemaJSON)
-	ResourceService_CreateOfferingTool  = runtime.MustCreateTool("resource_service-create_offering_v1", `Add an offering (e.g. '30-min consult') with a duration and price to a resource.`, ResourceService_CreateOfferingSchemaJSON)
-	ResourceService_CreateResourceTool  = runtime.MustCreateTool("resource_service-create_resource_v1", `Create a bookable resource with a type, booking mode, timezone, and capacity.`, ResourceService_CreateResourceSchemaJSON)
-	ResourceService_DeleteOfferingTool  = runtime.MustCreateTool("resource_service-delete_offering_v1", `Delete an offering from a resource by name.`, ResourceService_DeleteOfferingSchemaJSON)
-	ResourceService_GetOfferingTool     = runtime.MustCreateTool("resource_service-get_offering_v1", `Get a single offering by name.`, ResourceService_GetOfferingSchemaJSON)
-	ResourceService_GetResourceTool     = runtime.MustCreateTool("resource_service-get_resource_v1", `Get a single resource by name, including its offerings.`, ResourceService_GetResourceSchemaJSON)
-	ResourceService_ListOfferingsTool   = runtime.MustCreateTool("resource_service-list_offerings_v1", `List the offerings (duration + price) attached to a resource.`, ResourceService_ListOfferingsSchemaJSON)
-	ResourceService_ListResourcesTool   = runtime.MustCreateTool("resource_service-list_resources_v1", `List bookable resources. Filter by type, status, or tags, search by name, and paginate.`, ResourceService_ListResourcesSchemaJSON)
-	ResourceService_UpdateOfferingTool  = runtime.MustCreateTool("resource_service-update_offering_v1", `Update an offering's name, duration, price, or status.`, ResourceService_UpdateOfferingSchemaJSON)
-	ResourceService_UpdateResourceTool  = runtime.MustCreateTool("resource_service-update_resource_v1", `Update a resource's name, description, capacity, timezone, tags, or attributes.`, ResourceService_UpdateResourceSchemaJSON)
+	ResourceService_ArchiveResourceTool   = runtime.MustCreateTool("resource_service-archive_resource_v1", `Archive a resource so it stops appearing in availability and accepting bookings.`, ResourceService_ArchiveResourceSchemaJSON)
+	ResourceService_CreateOfferingTool    = runtime.MustCreateTool("resource_service-create_offering_v1", `Add an offering (e.g. '30-min consult') with a duration and price to a resource.`, ResourceService_CreateOfferingSchemaJSON)
+	ResourceService_CreateResourceTool    = runtime.MustCreateTool("resource_service-create_resource_v1", `Create a bookable resource with a type, booking mode, timezone, and capacity.`, ResourceService_CreateResourceSchemaJSON)
+	ResourceService_DeleteOfferingTool    = runtime.MustCreateTool("resource_service-delete_offering_v1", `Delete an offering from a resource by name.`, ResourceService_DeleteOfferingSchemaJSON)
+	ResourceService_GetOfferingTool       = runtime.MustCreateTool("resource_service-get_offering_v1", `Get a single offering by name.`, ResourceService_GetOfferingSchemaJSON)
+	ResourceService_GetResourceTool       = runtime.MustCreateTool("resource_service-get_resource_v1", `Get a single resource by name, including its offerings.`, ResourceService_GetResourceSchemaJSON)
+	ResourceService_ListOfferingsTool     = runtime.MustCreateTool("resource_service-list_offerings_v1", `List the offerings (duration + price) attached to a resource.`, ResourceService_ListOfferingsSchemaJSON)
+	ResourceService_ListResourcesTool     = runtime.MustCreateTool("resource_service-list_resources_v1", `List bookable resources. Filter by type, status, or tags, search by name, and paginate.`, ResourceService_ListResourcesSchemaJSON)
+	ResourceService_UnarchiveResourceTool = runtime.MustCreateTool("resource_service-unarchive_resource_v1", `Restore an archived resource so it appears in availability and accepts bookings again.`, ResourceService_UnarchiveResourceSchemaJSON)
+	ResourceService_UpdateOfferingTool    = runtime.MustCreateTool("resource_service-update_offering_v1", `Update an offering's name, duration, price, or status.`, ResourceService_UpdateOfferingSchemaJSON)
+	ResourceService_UpdateResourceTool    = runtime.MustCreateTool("resource_service-update_resource_v1", `Update a resource's name, description, capacity, timezone, tags, or attributes.`, ResourceService_UpdateResourceSchemaJSON)
 )
 
 // ResourceServiceMCPServer is the interface that users implement to handle MCP
@@ -57,6 +59,7 @@ type ResourceServiceMCPServer interface {
 	GetResource(ctx context.Context, req *GetResourceRequest) (*Resource, error)
 	ListOfferings(ctx context.Context, req *ListOfferingsRequest) (*ListOfferingsResponse, error)
 	ListResources(ctx context.Context, req *ListResourcesRequest) (*ListResourcesResponse, error)
+	UnarchiveResource(ctx context.Context, req *UnarchiveResourceRequest) (*Resource, error)
 	UpdateOffering(ctx context.Context, req *UpdateOfferingRequest) (*Offering, error)
 	UpdateResource(ctx context.Context, req *UpdateResourceRequest) (*Resource, error)
 }
@@ -72,6 +75,7 @@ type ResourceServiceMCPClient interface {
 	GetResource(ctx context.Context, req *GetResourceRequest, opts ...grpc.CallOption) (*Resource, error)
 	ListOfferings(ctx context.Context, req *ListOfferingsRequest, opts ...grpc.CallOption) (*ListOfferingsResponse, error)
 	ListResources(ctx context.Context, req *ListResourcesRequest, opts ...grpc.CallOption) (*ListResourcesResponse, error)
+	UnarchiveResource(ctx context.Context, req *UnarchiveResourceRequest, opts ...grpc.CallOption) (*Resource, error)
 	UpdateOffering(ctx context.Context, req *UpdateOfferingRequest, opts ...grpc.CallOption) (*Offering, error)
 	UpdateResource(ctx context.Context, req *UpdateResourceRequest, opts ...grpc.CallOption) (*Resource, error)
 }
@@ -232,6 +236,26 @@ func RegisterResourceServiceMCPHandler(s *mcp.Server, srv ResourceServiceMCPServ
 				return nil, err
 			}
 			resp, err := srv.ListResources(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(ResourceService_UnarchiveResourceTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq UnarchiveResourceRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			resp, err := srv.UnarchiveResource(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -511,6 +535,27 @@ func ForwardToResourceServiceMCPClient(s *mcp.Server, client ResourceServiceMCPC
 			}
 			ctx = runtime.ForwardMetadata(ctx)
 			resp, err := client.ListResources(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(ResourceService_UnarchiveResourceTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq UnarchiveResourceRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			ctx = runtime.ForwardMetadata(ctx)
+			resp, err := client.UnarchiveResource(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}

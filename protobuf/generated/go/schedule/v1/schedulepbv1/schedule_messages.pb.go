@@ -409,34 +409,34 @@ var File_freebusy_schedule_v1_schedule_messages_proto protoreflect.FileDescripto
 
 const file_freebusy_schedule_v1_schedule_messages_proto_rawDesc = "" +
 	"\n" +
-	",freebusy/schedule/v1/schedule_messages.proto\x12\x14freebusy.schedule.v1\x1a#freebusy/schedule/v1/schedule.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"R\n" +
-	"\x12GetScheduleRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ScheduleR\x04name\"\x9a\x01\n" +
+	",freebusy/schedule/v1/schedule_messages.proto\x12\x14freebusy.schedule.v1\x1a#freebusy/schedule/v1/schedule.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"S\n" +
+	"\x12GetScheduleRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ScheduleR\x04name\"\x9a\x01\n" +
 	"\x15UpdateScheduleRequest\x12?\n" +
 	"\bschedule\x18\x01 \x01(\v2\x1e.freebusy.schedule.v1.ScheduleB\x03\xe0A\x02R\bschedule\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"\xab\x01\n" +
-	"!ListAvailabilityExceptionsRequest\x12@\n" +
-	"\x06parent\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x06parent\x12 \n" +
+	"updateMask\"\xac\x01\n" +
+	"!ListAvailabilityExceptionsRequest\x12A\n" +
+	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\"\xb2\x01\n" +
 	"\"ListAvailabilityExceptionsResponse\x12d\n" +
 	"\x17availability_exceptions\x18\x01 \x03(\v2+.freebusy.schedule.v1.AvailabilityExceptionR\x16availabilityExceptions\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"l\n" +
-	"\x1fGetAvailabilityExceptionRequest\x12I\n" +
-	"\x04name\x18\x01 \x01(\tB5\xe0A\x02\xfaA/\n" +
-	"-ohtarnished.freebusy.v1/AvailabilityExceptionR\x04name\"\x90\x02\n" +
-	"\"CreateAvailabilityExceptionRequest\x12@\n" +
-	"\x06parent\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x06parent\x12g\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"m\n" +
+	"\x1fGetAvailabilityExceptionRequest\x12J\n" +
+	"\x04name\x18\x01 \x01(\tB6\xe0A\x02\xfaA0\n" +
+	".freebusy.ohtarnished.dev/AvailabilityExceptionR\x04name\"\x91\x02\n" +
+	"\"CreateAvailabilityExceptionRequest\x12A\n" +
+	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12g\n" +
 	"\x16availability_exception\x18\x02 \x01(\v2+.freebusy.schedule.v1.AvailabilityExceptionB\x03\xe0A\x02R\x15availabilityException\x12?\n" +
-	"\x19availability_exception_id\x18\x03 \x01(\tB\x03\xe0A\x01R\x17availabilityExceptionId\"o\n" +
-	"\"DeleteAvailabilityExceptionRequest\x12I\n" +
-	"\x04name\x18\x01 \x01(\tB5\xe0A\x02\xfaA/\n" +
-	"-ohtarnished.freebusy.v1/AvailabilityExceptionR\x04nameB\x81\x02\n" +
+	"\x19availability_exception_id\x18\x03 \x01(\tB\x03\xe0A\x01R\x17availabilityExceptionId\"p\n" +
+	"\"DeleteAvailabilityExceptionRequest\x12J\n" +
+	"\x04name\x18\x01 \x01(\tB6\xe0A\x02\xfaA0\n" +
+	".freebusy.ohtarnished.dev/AvailabilityExceptionR\x04nameB\x81\x02\n" +
 	"\x18com.freebusy.schedule.v1B\x15ScheduleMessagesProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1;schedulepbv1\xa2\x02\x03FSX\xaa\x02\x14Freebusy.Schedule.V1\xca\x02\x14Freebusy\\Schedule\\V1\xe2\x02 Freebusy\\Schedule\\V1\\GPBMetadata\xea\x02\x16Freebusy::Schedule::V1b\x06proto3"
 
 var (

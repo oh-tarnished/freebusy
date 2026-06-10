@@ -278,10 +278,10 @@ const file_freebusy_booking_v1_booking_messages_proto_rawDesc = "" +
 	"\n" +
 	"request_id\x18\x02 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12\"\n" +
 	"\n" +
-	"booking_id\x18\x03 \x01(\tB\x03\xe0A\x01R\tbookingId\"P\n" +
-	"\x11GetBookingRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1fohtarnished.freebusy.v1/BookingR\x04name\"\x98\x01\n" +
+	"booking_id\x18\x03 \x01(\tB\x03\xe0A\x01R\tbookingId\"Q\n" +
+	"\x11GetBookingRequest\x12<\n" +
+	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
+	" freebusy.ohtarnished.dev/BookingR\x04name\"\x98\x01\n" +
 	"\x13ListBookingsRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +

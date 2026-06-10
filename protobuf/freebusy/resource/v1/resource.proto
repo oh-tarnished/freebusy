@@ -3,12 +3,12 @@ syntax = "proto3";
 package freebusy.resource.v1;
 
 import "freebusy/shared/v1/enums.proto";
-import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1";
 option java_multiple_files = true;
@@ -21,7 +21,7 @@ option java_package = "dev.ohtarnished.freebusy.resource.v1";
 // whether availability is produced as time slots or per-night counts.
 message Resource {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/Resource"
+    type: "freebusy.ohtarnished.dev/Resource"
     pattern: "resources/{resource}"
     singular: "resource"
     plural: "resources"
@@ -31,8 +31,8 @@ message Resource {
   // Format: resources/{resource}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // Human-friendly name (e.g. "Dr. Lee", "Deluxe King", "Kayak #3").
   string display_name = 3 [(google.api.field_behavior) = REQUIRED];
@@ -43,8 +43,13 @@ message Resource {
   // What kind of bookable thing this is.
   ResourceType type = 5 [(google.api.field_behavior) = REQUIRED];
 
-  // How this resource is booked, and therefore the availability shape it yields.
-  freebusy.shared.v1.BookingMode booking_mode = 6 [(google.api.field_behavior) = REQUIRED];
+  // How this resource is booked, and therefore the availability shape it
+  // yields. Immutable: flipping it after bookings exist would invalidate every
+  // existing booking and availability computation.
+  freebusy.shared.v1.BookingMode booking_mode = 6 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
 
   // Number of interchangeable units in the pool. Defaults to 1 when unset.
   int32 capacity = 7 [(google.api.field_behavior) = OPTIONAL];
@@ -64,7 +69,7 @@ message Resource {
   // Format: resources/{resource}/offerings/{offering}
   repeated string offerings = 11 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // Lifecycle status of a resource.
@@ -78,8 +83,8 @@ message Resource {
     // Retired; hidden from availability and new bookings.
     STATE_ARCHIVED = 2;
   }
-  // Lifecycle State.
-  State resource_state = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle state.
+  State state = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -93,7 +98,7 @@ message Resource {
 // provider. For NIGHTLY resources the duration is unused and price is per-night.
 message Offering {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/Offering"
+    type: "freebusy.ohtarnished.dev/Offering"
     pattern: "resources/{resource}/offerings/{offering}"
     singular: "offering"
     plural: "offerings"
@@ -103,8 +108,8 @@ message Offering {
   // Format: resources/{resource}/offerings/{offering}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // Human-friendly name (e.g. "30-min consult").
   string display_name = 3 [(google.api.field_behavior) = REQUIRED];
@@ -116,7 +121,7 @@ message Offering {
   google.protobuf.Duration duration = 5 [(google.api.field_behavior) = OPTIONAL];
 
   // Price charged for the offering, interpreted per pricing_unit.
-  freebusy.shared.v1.Money price = 6 [(google.api.field_behavior) = OPTIONAL];
+  google.type.Money price = 6 [(google.api.field_behavior) = OPTIONAL];
 
   // What the price is charged per.
   PricingUnit pricing_unit = 7 [(google.api.field_behavior) = OPTIONAL];
@@ -131,8 +136,8 @@ message Offering {
     // Hidden from new bookings.
     STATE_INACTIVE = 2;
   }
-  // Lifecycle State.
-  State offering_state = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle state.
+  State state = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];

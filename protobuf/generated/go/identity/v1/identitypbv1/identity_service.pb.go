@@ -26,12 +26,12 @@ var File_freebusy_identity_v1_identity_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_service_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/identity/v1/identity_service.proto\x12\x14freebusy.identity.v1\x1a#freebusy/identity/v1/identity.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xf9\x05\n" +
+	"+freebusy/identity/v1/identity_service.proto\x12\x14freebusy.identity.v1\x1a#freebusy/identity/v1/identity.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\x85\x06\n" +
 	"\x0fIdentityService\x12\xd6\x01\n" +
-	"\aGetUser\x12$.freebusy.identity.v1.GetUserRequest\x1a\x1a.freebusy.identity.v1.User\"\x88\x01\xdaA\x04name\xca\xf3\x18c\x12aGet a user (\"users/me\" for the signed-in caller), including profile and organisation memberships.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/{name=users/*}\x12\xc5\x01\n" +
-	"\tListUsers\x12&.freebusy.identity.v1.ListUsersRequest\x1a'.freebusy.identity.v1.ListUsersResponse\"g\xca\xf3\x18R\x12PList users in the caller's organisation, with optional filtering and pagination.\x82\xd3\xe4\x93\x02\v\x12\t/v1/users\x12\xe2\x01\n" +
+	"\aGetUser\x12$.freebusy.identity.v1.GetUserRequest\x1a\x1a.freebusy.identity.v1.User\"\x88\x01\xdaA\x04name\xca\xf3\x18c\x12aGet a user (\"users/me\" for the signed-in caller), including profile and organisation memberships.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/{name=users/*}\x12\xd0\x01\n" +
+	"\tListUsers\x12&.freebusy.identity.v1.ListUsersRequest\x1a'.freebusy.identity.v1.ListUsersResponse\"r\xca\xf3\x18]\x12[List users sharing an organisation with the caller; filter by organisation or display name.\x82\xd3\xe4\x93\x02\v\x12\t/v1/users\x12\xe2\x01\n" +
 	"\n" +
-	"UpdateUser\x12'.freebusy.identity.v1.UpdateUserRequest\x1a\x1a.freebusy.identity.v1.User\"\x8e\x01\xdaA\x10user,update_mask\xca\xf3\x18R\x12PUpdate the signed-in user's profile: display name, avatar, locale, or time zone.\x82\xd3\xe4\x93\x02\x1f:\x04user2\x17/v1/{user.name=users/*}\x1a`\xcaA\x17ohtarnished.freebusy.v1\xc2\xf3\x18B\n" +
+	"UpdateUser\x12'.freebusy.identity.v1.UpdateUserRequest\x1a\x1a.freebusy.identity.v1.User\"\x8e\x01\xdaA\x10user,update_mask\xca\xf3\x18R\x12PUpdate the signed-in user's profile: display name, avatar, locale, or time zone.\x82\xd3\xe4\x93\x02\x1f:\x04user2\x17/v1/{user.name=users/*}\x1aa\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18B\n" +
 	"@\n" +
 	"\bIdentity\x12\x051.0.0\x1a-Read and update the signed-in user's profile.B\x80\x02\n" +
 	"\x18com.freebusy.identity.v1B\x14IdentityServiceProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1;identitypbv1\xa2\x02\x03FIX\xaa\x02\x14Freebusy.Identity.V1\xca\x02\x14Freebusy\\Identity\\V1\xe2\x02 Freebusy\\Identity\\V1\\GPBMetadata\xea\x02\x16Freebusy::Identity::V1b\x06proto3"

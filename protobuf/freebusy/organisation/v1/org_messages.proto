@@ -43,7 +43,7 @@ message GetOrgRequest {
   // Format: orgs/{org}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
   ];
 }
 
@@ -72,7 +72,7 @@ message DeleteOrgRequest {
   // Format: orgs/{org}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
   ];
 
   // If true, delete the org and its members; otherwise the call fails when the
@@ -86,7 +86,7 @@ message ListMembersRequest {
   // Format: orgs/{org}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
   ];
 
   // Maximum number of members to return. The server may cap this.
@@ -114,6 +114,6 @@ message GetMemberRequest {
   // Format: orgs/{org}/members/{member}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Member"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Member"}
   ];
 }

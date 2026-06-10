@@ -18,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.schedule.v1";
 // recurring working hours, blackout/holiday exceptions, buffers, and stay rules.
 // These are the inputs the freebusy engine consumes to compute availability.
 service ScheduleService {
-  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
       name: "Booking Schedule"

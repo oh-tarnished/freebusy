@@ -7,13 +7,12 @@
 package availabilitypbv1
 
 import (
-	reflect "reflect"
-	unsafe "unsafe"
-
 	_ "github.com/machanirobotics/grpc-mcp-gateway/mcp/protobuf/mcppb"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	unsafe "unsafe"
 )
 
 const (
@@ -27,13 +26,13 @@ var File_freebusy_availability_v1_availability_service_proto protoreflect.FileDe
 
 const file_freebusy_availability_v1_availability_service_proto_rawDesc = "" +
 	"\n" +
-	"3freebusy/availability/v1/availability_service.proto\x12\x18freebusy.availability.v1\x1a+freebusy/availability/v1/availability.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xc0\n" +
+	"3freebusy/availability/v1/availability_service.proto\x12\x18freebusy.availability.v1\x1a+freebusy/availability/v1/availability.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xec\n" +
 	"\n" +
 	"\x13AvailabilityService\x12\xcb\x02\n" +
 	"\x13ComputeAvailability\x124.freebusy.availability.v1.ComputeAvailabilityRequest\x1a5.freebusy.availability.v1.ComputeAvailabilityResponse\"\xc6\x01\xdaA\x0fresource,window\xca\xf3\x18w\x12uCompute availability for a resource over a time window. Returns time slots (TIME_SLOT) or per-night counts (NIGHTLY).\x82\xd3\xe4\x93\x023:\x01*\"./v1/{resource=resources/*}:computeAvailability\x12\xa3\x02\n" +
 	"\x11CheckAvailability\x122.freebusy.availability.v1.CheckAvailabilityRequest\x1a3.freebusy.availability.v1.CheckAvailabilityResponse\"\xa4\x01\xdaA\x0fresource,window\xca\xf3\x18W\x12UCheck whether one exact span is bookable for a resource, with reasons when it is not.\x82\xd3\xe4\x93\x021:\x01*\",/v1/{resource=resources/*}:checkAvailability\x12\xa1\x02\n" +
-	"\x15ComputeBookableRanges\x126.freebusy.availability.v1.ComputeBookableRangesRequest\x1a7.freebusy.availability.v1.ComputeBookableRangesResponse\"\x96\x01\xdaA\x0fresource,window\xca\xf3\x18E\x12CList the contiguous bookable ranges for a resource within a window.\x82\xd3\xe4\x93\x025:\x01*\"0/v1/{resource=resources/*}:computeBookableRanges\x12\x8d\x02\n" +
-	"\x18BatchComputeAvailability\x129.freebusy.availability.v1.BatchComputeAvailabilityRequest\x1a:.freebusy.availability.v1.BatchComputeAvailabilityResponse\"z\xca\xf3\x18N\x12LCompute availability for several resources over the same window in one call.\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/availability:batchCompute\x1a\x80\x01\xcaA\x17ohtarnished.freebusy.v1\xc2\xf3\x18b\n" +
+	"\x15ComputeBookableRanges\x126.freebusy.availability.v1.ComputeBookableRangesRequest\x1a7.freebusy.availability.v1.ComputeBookableRangesResponse\"\x96\x01\xdaA\x0fresource,window\xca\xf3\x18E\x12CList the contiguous bookable ranges for a resource within a window.\x82\xd3\xe4\x93\x025:\x01*\"0/v1/{resource=resources/*}:computeBookableRanges\x12\xb8\x02\n" +
+	"\x18BatchComputeAvailability\x129.freebusy.availability.v1.BatchComputeAvailabilityRequest\x1a:.freebusy.availability.v1.BatchComputeAvailabilityResponse\"\xa4\x01\xca\xf3\x18{\x12yCompute availability for several resources in one call; each entry carries its own resource, period, offering, and units.\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/v1/resources:batchCompute\x1a\x81\x01\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18b\n" +
 	"`\n" +
 	"\x14Booking Availability\x12\x051.0.0\x1aACompute what is bookable for a resource over a window. Read-only.B\xa4\x02\n" +
 	"\x1ccom.freebusy.availability.v1B\x18AvailabilityServiceProtoP\x01Zhgithub.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1;availabilitypbv1\xa2\x02\x03FAX\xaa\x02\x18Freebusy.Availability.V1\xca\x02\x18Freebusy\\Availability\\V1\xe2\x02$Freebusy\\Availability\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Availability::V1b\x06proto3"

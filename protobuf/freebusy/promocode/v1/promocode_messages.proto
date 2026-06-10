@@ -3,10 +3,10 @@ syntax = "proto3";
 package freebusy.promocode.v1;
 
 import "freebusy/promocode/v1/promocode.proto";
-import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
@@ -44,7 +44,7 @@ message GetPromoCodeRequest {
   // Format: promoCodes/{promo_code}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/PromoCode"}
   ];
 }
 
@@ -72,7 +72,7 @@ message DeletePromoCodeRequest {
   // Format: promoCodes/{promo_code}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/PromoCode"}
   ];
 }
 
@@ -83,27 +83,27 @@ message ValidatePromoCodeRequest {
   string code = 1 [(google.api.field_behavior) = REQUIRED];
 
   // Subtotal the discount would apply to.
-  freebusy.shared.v1.Money subtotal = 2 [(google.api.field_behavior) = REQUIRED];
+  google.type.Money subtotal = 2 [(google.api.field_behavior) = REQUIRED];
 
   // Resource being booked, for scope checks.
   // Format: resources/{resource}
   string resource = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
   // Offering being booked, for scope checks.
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // Customer redeeming the code, for per-customer limit checks.
   // Format: users/{user}
   string customer = 5 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
   ];
 }
 
@@ -117,11 +117,11 @@ message ValidatePromoCodeResponse {
 
   // The resolved promo code, when valid.
   // Format: promoCodes/{promo_code}
-  string promo_code = 3 [(google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/PromoCode"}];
+  string promo_code = 3 [(google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/PromoCode"}];
 
   // Discount the code applies to the subtotal.
-  freebusy.shared.v1.Money discount_amount = 4;
+  google.type.Money discount_amount = 4;
 
   // Subtotal minus the discount.
-  freebusy.shared.v1.Money final_total = 5;
+  google.type.Money final_total = 5;
 }

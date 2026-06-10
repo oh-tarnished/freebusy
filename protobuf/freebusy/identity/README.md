@@ -14,7 +14,7 @@ IdentityService is the thin "who am I" surface. Login itself is an OIDC redirect
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
 | `GetUser` | `GetUserRequest` | `User` | Returns a user. Use "users/me" for the signed-in caller. |
-| `ListUsers` | `ListUsersRequest` | `ListUsersResponse` | Lists users. |
+| `ListUsers` | `ListUsersRequest` | `ListUsersResponse` | Lists users sharing an organisation with the caller. |
 | `UpdateUser` | `UpdateUserRequest` | `User` | Updates the signed-in user's profile. |
 
 ## Messages
@@ -26,7 +26,6 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The user name. The alias "users/me" resolves to the caller. Format: users/{user} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `email` | `string` | `OUTPUT_ONLY` | Email address, sourced from the IdP. |
 | `display_name` | `string` | `OPTIONAL` | Display name. |
 | `avatar_url` | `string` | `OPTIONAL` | Avatar image URL. |
@@ -65,13 +64,14 @@ Request message for UpdateUser.
 
 ### ListUsersRequest
 
-Request message for ListUsers.
+Request message for ListUsers. Users are global, so the visible set is every user sharing at least one organisation with the caller; use `organisation = "orgs/{org}"` in filter to narrow to one org, or OrgService.ListMembers for a single org's roster with roles.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of users to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListUsers call's next_page_token. |
-| `filter` | `string` | `OPTIONAL` | Filter expression over user fields (AIP-160), e.g. `display_name`. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `organisation = "orgs/7"` or a match on display_name. |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
 
 ### ListUsersResponse
 

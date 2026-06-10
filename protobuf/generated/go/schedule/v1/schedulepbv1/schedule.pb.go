@@ -84,9 +84,12 @@ type RecurringRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
 	Rrule string `protobuf:"bytes,1,opt,name=rrule,proto3" json:"rrule,omitempty"`
-	// Local time-of-day the window opens, "HH:MM" (e.g. "09:00").
+	// Local time-of-day the window opens, 24-hour "HH:MM" (e.g. "09:00").
+	// Unset (with closes also unset) means open the whole day.
 	Opens string `protobuf:"bytes,2,opt,name=opens,proto3" json:"opens,omitempty"`
-	// Local time-of-day the window closes, "HH:MM" (e.g. "17:00").
+	// Local time-of-day the window closes, 24-hour "HH:MM" (e.g. "17:00").
+	// A closes at or before opens means the span crosses midnight into the next
+	// day (e.g. opens "22:00", closes "02:00").
 	Closes        string `protobuf:"bytes,3,opt,name=closes,proto3" json:"closes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -323,12 +326,15 @@ type AvailabilityException struct {
 	// The exception name.
 	// Format: resources/{resource}/availabilityExceptions/{availability_exception}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// Whether this span closes the resource or adds extra availability.
 	Kind ExceptionKind `protobuf:"varint,3,opt,name=kind,proto3,enum=freebusy.schedule.v1.ExceptionKind" json:"kind,omitempty"`
-	// The affected span.
-	Window *sharedpbv1.TimeWindow `protobuf:"bytes,4,opt,name=window,proto3" json:"window,omitempty"`
+	// The affected span. Exactly one must be set.
+	//
+	// Types that are valid to be assigned to Span:
+	//
+	//	*AvailabilityException_Window
+	//	*AvailabilityException_DateRange
+	Span isAvailabilityException_Span `protobuf_oneof:"span"`
 	// Human-readable reason (e.g. "Public holiday").
 	Reason string `protobuf:"bytes,5,opt,name=reason,proto3" json:"reason,omitempty"`
 	// Creation timestamp.
@@ -374,13 +380,6 @@ func (x *AvailabilityException) GetName() string {
 	return ""
 }
 
-func (x *AvailabilityException) GetUuid() string {
-	if x != nil {
-		return x.Uuid
-	}
-	return ""
-}
-
 func (x *AvailabilityException) GetKind() ExceptionKind {
 	if x != nil {
 		return x.Kind
@@ -388,9 +387,27 @@ func (x *AvailabilityException) GetKind() ExceptionKind {
 	return ExceptionKind_EXCEPTION_KIND_UNSPECIFIED
 }
 
+func (x *AvailabilityException) GetSpan() isAvailabilityException_Span {
+	if x != nil {
+		return x.Span
+	}
+	return nil
+}
+
 func (x *AvailabilityException) GetWindow() *sharedpbv1.TimeWindow {
 	if x != nil {
-		return x.Window
+		if x, ok := x.Span.(*AvailabilityException_Window); ok {
+			return x.Window
+		}
+	}
+	return nil
+}
+
+func (x *AvailabilityException) GetDateRange() *sharedpbv1.DateRange {
+	if x != nil {
+		if x, ok := x.Span.(*AvailabilityException_DateRange); ok {
+			return x.DateRange
+		}
 	}
 	return nil
 }
@@ -408,6 +425,25 @@ func (x *AvailabilityException) GetCreateTime() *timestamppb.Timestamp {
 	}
 	return nil
 }
+
+type isAvailabilityException_Span interface {
+	isAvailabilityException_Span()
+}
+
+type AvailabilityException_Window struct {
+	// An exact time window, the natural form for TIME_SLOT resources.
+	Window *sharedpbv1.TimeWindow `protobuf:"bytes,4,opt,name=window,proto3,oneof"`
+}
+
+type AvailabilityException_DateRange struct {
+	// A range of whole calendar dates in the resource's timezone, the natural
+	// form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
+	DateRange *sharedpbv1.DateRange `protobuf:"bytes,7,opt,name=date_range,json=dateRange,proto3,oneof"`
+}
+
+func (*AvailabilityException_Window) isAvailabilityException_Span() {}
+
+func (*AvailabilityException_DateRange) isAvailabilityException_Span() {}
 
 // Aggregate read view of a resource's availability configuration: the inputs the
 // freebusy engine consumes. Modeled as a singleton resource, one per resource.
@@ -521,26 +557,28 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\x10checkin_weekdays\x18\x03 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x0fcheckinWeekdays\x12M\n" +
 	"\x11checkout_weekdays\x18\x04 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x10checkoutWeekdays\x12-\n" +
 	"\x10advance_min_days\x18\x05 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMinDays\x12-\n" +
-	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\xce\x03\n" +
+	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\x81\x04\n" +
 	"\x15AvailabilityException\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x12<\n" +
-	"\x04kind\x18\x03 \x01(\x0e2#.freebusy.schedule.v1.ExceptionKindB\x03\xe0A\x02R\x04kind\x12;\n" +
-	"\x06window\x18\x04 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12\x1b\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12<\n" +
+	"\x04kind\x18\x03 \x01(\x0e2#.freebusy.schedule.v1.ExceptionKindB\x03\xe0A\x02R\x04kind\x128\n" +
+	"\x06window\x18\x04 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
+	"\n" +
+	"date_range\x18\a \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x1b\n" +
 	"\x06reason\x18\x05 \x01(\tB\x03\xe0A\x01R\x06reason\x12@\n" +
 	"\vcreate_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"createTime:\xa8\x01\xeaA\xa4\x01\n" +
-	"-ohtarnished.freebusy.v1/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityException\"\xc4\x03\n" +
+	"createTime:\xa9\x01\xeaA\xa5\x01\n" +
+	".freebusy.ohtarnished.dev/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
+	"\x04spanJ\x04\b\x02\x10\x03\"\xc6\x03\n" +
 	"\bSchedule\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\x0frecurring_rules\x18\x02 \x03(\v2#.freebusy.schedule.v1.RecurringRuleB\x03\xe0A\x01R\x0erecurringRules\x12C\n" +
 	"\abuffers\x18\x03 \x01(\v2$.freebusy.schedule.v1.BufferSettingsB\x03\xe0A\x01R\abuffers\x12U\n" +
-	"\x10stay_constraints\x18\x04 \x01(\v2%.freebusy.schedule.v1.StayConstraintsB\x03\xe0A\x01R\x0fstayConstraints\x12U\n" +
+	"\x10stay_constraints\x18\x04 \x01(\v2%.freebusy.schedule.v1.StayConstraintsB\x03\xe0A\x01R\x0fstayConstraints\x12V\n" +
 	"\n" +
-	"exceptions\x18\x05 \x03(\tB5\xe0A\x03\xfaA/\n" +
-	"-ohtarnished.freebusy.v1/AvailabilityExceptionR\n" +
-	"exceptions:Y\xeaAV\n" +
-	" ohtarnished.freebusy.v1/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule*k\n" +
+	"exceptions\x18\x05 \x03(\tB6\xe0A\x03\xfaA0\n" +
+	".freebusy.ohtarnished.dev/AvailabilityExceptionR\n" +
+	"exceptions:Z\xeaAW\n" +
+	"!freebusy.ohtarnished.dev/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule*k\n" +
 	"\rExceptionKind\x12\x1e\n" +
 	"\x1aEXCEPTION_KIND_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EXCEPTION_KIND_CLOSURE\x10\x01\x12\x1e\n" +
@@ -571,7 +609,8 @@ var file_freebusy_schedule_v1_schedule_proto_goTypes = []any{
 	(*durationpb.Duration)(nil),   // 6: google.protobuf.Duration
 	(sharedpbv1.Weekday)(0),       // 7: freebusy.shared.v1.Weekday
 	(*sharedpbv1.TimeWindow)(nil), // 8: freebusy.shared.v1.TimeWindow
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*sharedpbv1.DateRange)(nil),  // 9: freebusy.shared.v1.DateRange
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
 }
 var file_freebusy_schedule_v1_schedule_proto_depIdxs = []int32{
 	6,  // 0: freebusy.schedule.v1.BufferSettings.start_delta:type_name -> google.protobuf.Duration
@@ -583,21 +622,26 @@ var file_freebusy_schedule_v1_schedule_proto_depIdxs = []int32{
 	7,  // 6: freebusy.schedule.v1.StayConstraints.checkout_weekdays:type_name -> freebusy.shared.v1.Weekday
 	0,  // 7: freebusy.schedule.v1.AvailabilityException.kind:type_name -> freebusy.schedule.v1.ExceptionKind
 	8,  // 8: freebusy.schedule.v1.AvailabilityException.window:type_name -> freebusy.shared.v1.TimeWindow
-	9,  // 9: freebusy.schedule.v1.AvailabilityException.create_time:type_name -> google.protobuf.Timestamp
-	1,  // 10: freebusy.schedule.v1.Schedule.recurring_rules:type_name -> freebusy.schedule.v1.RecurringRule
-	2,  // 11: freebusy.schedule.v1.Schedule.buffers:type_name -> freebusy.schedule.v1.BufferSettings
-	3,  // 12: freebusy.schedule.v1.Schedule.stay_constraints:type_name -> freebusy.schedule.v1.StayConstraints
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	9,  // 9: freebusy.schedule.v1.AvailabilityException.date_range:type_name -> freebusy.shared.v1.DateRange
+	10, // 10: freebusy.schedule.v1.AvailabilityException.create_time:type_name -> google.protobuf.Timestamp
+	1,  // 11: freebusy.schedule.v1.Schedule.recurring_rules:type_name -> freebusy.schedule.v1.RecurringRule
+	2,  // 12: freebusy.schedule.v1.Schedule.buffers:type_name -> freebusy.schedule.v1.BufferSettings
+	3,  // 13: freebusy.schedule.v1.Schedule.stay_constraints:type_name -> freebusy.schedule.v1.StayConstraints
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_schedule_v1_schedule_proto_init() }
 func file_freebusy_schedule_v1_schedule_proto_init() {
 	if File_freebusy_schedule_v1_schedule_proto != nil {
 		return
+	}
+	file_freebusy_schedule_v1_schedule_proto_msgTypes[3].OneofWrappers = []any{
+		(*AvailabilityException_Window)(nil),
+		(*AvailabilityException_DateRange)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

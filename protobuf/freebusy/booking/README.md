@@ -29,7 +29,6 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The booking name. Format: bookings/{booking} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `resource` | `string` | `REQUIRED` | The resource being booked. Format: resources/{resource} |
 | `offering` | `string` | `OPTIONAL` | The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering} |
 | `customer` | `string` | `OPTIONAL` | The user the booking is for. Format: users/{user} |

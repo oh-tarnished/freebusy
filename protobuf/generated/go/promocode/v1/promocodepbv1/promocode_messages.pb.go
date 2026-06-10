@@ -7,8 +7,8 @@
 package promocodepbv1
 
 import (
-	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
@@ -364,7 +364,7 @@ type ValidatePromoCodeRequest struct {
 	// The human-entered code to validate (e.g. "SUMMER25").
 	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
 	// Subtotal the discount would apply to.
-	Subtotal *sharedpbv1.Money `protobuf:"bytes,2,opt,name=subtotal,proto3" json:"subtotal,omitempty"`
+	Subtotal *money.Money `protobuf:"bytes,2,opt,name=subtotal,proto3" json:"subtotal,omitempty"`
 	// Resource being booked, for scope checks.
 	// Format: resources/{resource}
 	Resource string `protobuf:"bytes,3,opt,name=resource,proto3" json:"resource,omitempty"`
@@ -415,7 +415,7 @@ func (x *ValidatePromoCodeRequest) GetCode() string {
 	return ""
 }
 
-func (x *ValidatePromoCodeRequest) GetSubtotal() *sharedpbv1.Money {
+func (x *ValidatePromoCodeRequest) GetSubtotal() *money.Money {
 	if x != nil {
 		return x.Subtotal
 	}
@@ -454,9 +454,9 @@ type ValidatePromoCodeResponse struct {
 	// Format: promoCodes/{promo_code}
 	PromoCode string `protobuf:"bytes,3,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
 	// Discount the code applies to the subtotal.
-	DiscountAmount *sharedpbv1.Money `protobuf:"bytes,4,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"`
+	DiscountAmount *money.Money `protobuf:"bytes,4,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"`
 	// Subtotal minus the discount.
-	FinalTotal    *sharedpbv1.Money `protobuf:"bytes,5,opt,name=final_total,json=finalTotal,proto3" json:"final_total,omitempty"`
+	FinalTotal    *money.Money `protobuf:"bytes,5,opt,name=final_total,json=finalTotal,proto3" json:"final_total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -512,14 +512,14 @@ func (x *ValidatePromoCodeResponse) GetPromoCode() string {
 	return ""
 }
 
-func (x *ValidatePromoCodeResponse) GetDiscountAmount() *sharedpbv1.Money {
+func (x *ValidatePromoCodeResponse) GetDiscountAmount() *money.Money {
 	if x != nil {
 		return x.DiscountAmount
 	}
 	return nil
 }
 
-func (x *ValidatePromoCodeResponse) GetFinalTotal() *sharedpbv1.Money {
+func (x *ValidatePromoCodeResponse) GetFinalTotal() *money.Money {
 	if x != nil {
 		return x.FinalTotal
 	}
@@ -530,7 +530,7 @@ var File_freebusy_promocode_v1_promocode_messages_proto protoreflect.FileDescrip
 
 const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\n" +
-	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9a\x01\n" +
+	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\x9a\x01\n" +
 	"\x15ListPromoCodesRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
@@ -540,10 +540,10 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\x16ListPromoCodesResponse\x12A\n" +
 	"\vpromo_codes\x18\x01 \x03(\v2 .freebusy.promocode.v1.PromoCodeR\n" +
 	"promoCodes\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"T\n" +
-	"\x13GetPromoCodeRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!ohtarnished.freebusy.v1/PromoCodeR\x04name\"\x87\x01\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"U\n" +
+	"\x13GetPromoCodeRequest\x12>\n" +
+	"\x04name\x18\x01 \x01(\tB*\xe0A\x02\xfaA$\n" +
+	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\x87\x01\n" +
 	"\x16CreatePromoCodeRequest\x12D\n" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12'\n" +
@@ -552,27 +552,27 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"W\n" +
-	"\x16DeletePromoCodeRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!ohtarnished.freebusy.v1/PromoCodeR\x04name\"\xbd\x02\n" +
+	"updateMask\"X\n" +
+	"\x16DeletePromoCodeRequest\x12>\n" +
+	"\x04name\x18\x01 \x01(\tB*\xe0A\x02\xfaA$\n" +
+	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\xb9\x02\n" +
 	"\x18ValidatePromoCodeRequest\x12\x17\n" +
-	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12:\n" +
-	"\bsubtotal\x18\x02 \x01(\v2\x19.freebusy.shared.v1.MoneyB\x03\xe0A\x02R\bsubtotal\x12D\n" +
-	"\bresource\x18\x03 \x01(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\bresource\x12D\n" +
-	"\boffering\x18\x04 \x01(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\boffering\x12@\n" +
-	"\bcustomer\x18\x05 \x01(\tB$\xe0A\x01\xfaA\x1e\n" +
-	"\x1cohtarnished.freebusy.v1/UserR\bcustomer\"\x90\x02\n" +
+	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x123\n" +
+	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\bsubtotal\x12E\n" +
+	"\bresource\x18\x03 \x01(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\bresource\x12E\n" +
+	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12A\n" +
+	"\bcustomer\x18\x05 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.ohtarnished.dev/UserR\bcustomer\"\x83\x02\n" +
 	"\x19ValidatePromoCodeResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\x12E\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\x12F\n" +
 	"\n" +
-	"promo_code\x18\x03 \x01(\tB&\xfaA#\n" +
-	"!ohtarnished.freebusy.v1/PromoCodeR\tpromoCode\x12B\n" +
-	"\x0fdiscount_amount\x18\x04 \x01(\v2\x19.freebusy.shared.v1.MoneyR\x0ediscountAmount\x12:\n" +
-	"\vfinal_total\x18\x05 \x01(\v2\x19.freebusy.shared.v1.MoneyR\n" +
+	"promo_code\x18\x03 \x01(\tB'\xfaA$\n" +
+	"\"freebusy.ohtarnished.dev/PromoCodeR\tpromoCode\x12;\n" +
+	"\x0fdiscount_amount\x18\x04 \x01(\v2\x12.google.type.MoneyR\x0ediscountAmount\x123\n" +
+	"\vfinal_total\x18\x05 \x01(\v2\x12.google.type.MoneyR\n" +
 	"finalTotalB\x8a\x02\n" +
 	"\x19com.freebusy.promocode.v1B\x16PromocodeMessagesProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
 
@@ -600,16 +600,16 @@ var file_freebusy_promocode_v1_promocode_messages_proto_goTypes = []any{
 	(*ValidatePromoCodeResponse)(nil), // 7: freebusy.promocode.v1.ValidatePromoCodeResponse
 	(*PromoCode)(nil),                 // 8: freebusy.promocode.v1.PromoCode
 	(*fieldmaskpb.FieldMask)(nil),     // 9: google.protobuf.FieldMask
-	(*sharedpbv1.Money)(nil),          // 10: freebusy.shared.v1.Money
+	(*money.Money)(nil),               // 10: google.type.Money
 }
 var file_freebusy_promocode_v1_promocode_messages_proto_depIdxs = []int32{
 	8,  // 0: freebusy.promocode.v1.ListPromoCodesResponse.promo_codes:type_name -> freebusy.promocode.v1.PromoCode
 	8,  // 1: freebusy.promocode.v1.CreatePromoCodeRequest.promo_code:type_name -> freebusy.promocode.v1.PromoCode
 	8,  // 2: freebusy.promocode.v1.UpdatePromoCodeRequest.promo_code:type_name -> freebusy.promocode.v1.PromoCode
 	9,  // 3: freebusy.promocode.v1.UpdatePromoCodeRequest.update_mask:type_name -> google.protobuf.FieldMask
-	10, // 4: freebusy.promocode.v1.ValidatePromoCodeRequest.subtotal:type_name -> freebusy.shared.v1.Money
-	10, // 5: freebusy.promocode.v1.ValidatePromoCodeResponse.discount_amount:type_name -> freebusy.shared.v1.Money
-	10, // 6: freebusy.promocode.v1.ValidatePromoCodeResponse.final_total:type_name -> freebusy.shared.v1.Money
+	10, // 4: freebusy.promocode.v1.ValidatePromoCodeRequest.subtotal:type_name -> google.type.Money
+	10, // 5: freebusy.promocode.v1.ValidatePromoCodeResponse.discount_amount:type_name -> google.type.Money
+	10, // 6: freebusy.promocode.v1.ValidatePromoCodeResponse.final_total:type_name -> google.type.Money
 	7,  // [7:7] is the sub-list for method output_type
 	7,  // [7:7] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name

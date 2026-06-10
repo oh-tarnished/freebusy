@@ -21,7 +21,7 @@ message ConfirmBookingRequest {
   // Format: bookings/{booking}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Booking"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Booking"}
   ];
 
   // Opaque reference to the payment/settlement that confirmed this booking.
@@ -34,7 +34,7 @@ message CancelBookingRequest {
   // Format: bookings/{booking}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Booking"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Booking"}
   ];
 
   // Why the booking is being cancelled.
@@ -52,7 +52,7 @@ message RescheduleBookingRequest {
   // Format: bookings/{booking}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Booking"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Booking"}
   ];
 
   // The new reserved span.
@@ -62,7 +62,7 @@ message RescheduleBookingRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // Caller-supplied idempotency key that dedupes retries of this reschedule.

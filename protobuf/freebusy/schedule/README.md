@@ -28,8 +28,8 @@ A recurring availability window expressed as an RRULE plus a daily open span. Th
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `rrule` | `string` | `REQUIRED` | RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR". |
-| `opens` | `string` | `OPTIONAL` | Local time-of-day the window opens, "HH:MM" (e.g. "09:00"). |
-| `closes` | `string` | `OPTIONAL` | Local time-of-day the window closes, "HH:MM" (e.g. "17:00"). |
+| `opens` | `string` | `OPTIONAL` | Local time-of-day the window opens, 24-hour "HH:MM" (e.g. "09:00"). Unset (with closes also unset) means open the whole day. |
+| `closes` | `string` | `OPTIONAL` | Local time-of-day the window closes, 24-hour "HH:MM" (e.g. "17:00"). A closes at or before opens means the span crosses midnight into the next day (e.g. opens "22:00", closes "02:00"). |
 
 ### BufferSettings
 
@@ -63,9 +63,9 @@ An override of a resource's normal hours on a specific span: a blackout / holida
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `kind` | `ExceptionKind` | `REQUIRED` | Whether this span closes the resource or adds extra availability. |
-| `window` | `TimeWindow` | `REQUIRED` | The affected span. |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
+| `date_range` | `DateRange` | - | A range of whole calendar dates in the resource's timezone, the natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26"). |
 | `reason` | `string` | `OPTIONAL` | Human-readable reason (e.g. "Public holiday"). |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 

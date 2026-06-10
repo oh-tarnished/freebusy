@@ -8,6 +8,8 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
+import "google/type/date.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1;availabilitypbv1";
 option java_multiple_files = true;
@@ -29,13 +31,13 @@ message Slot {
   bool bookable = 4;
 
   // Price for booking this slot, when an offering was supplied.
-  freebusy.shared.v1.Money price = 5;
+  google.type.Money price = 5;
 }
 
 // Per-night availability, produced for NIGHTLY resources.
 message NightAvailability {
   // The night, in the resource's local timezone.
-  freebusy.shared.v1.CalendarDate night = 1;
+  google.type.Date night = 1;
 
   // Number of units of the pool free that night.
   int32 free_units = 2;
@@ -44,7 +46,7 @@ message NightAvailability {
   bool closed = 3;
 
   // Nightly price, when an offering was supplied.
-  freebusy.shared.v1.Money price = 4;
+  google.type.Money price = 4;
 }
 
 // A contiguous span that is bookable end to end.
@@ -60,7 +62,7 @@ message BookableRange {
 message ResourceAvailability {
   // The resource these results are for.
   // Format: resources/{resource}
-  string resource = 1 [(google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}];
+  string resource = 1 [(google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}];
 
   // Which shape is populated, matching the resource's booking_mode.
   freebusy.shared.v1.BookingMode mode = 2;
@@ -78,11 +80,18 @@ message ComputeAvailabilityRequest {
   // Format: resources/{resource}
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
-  // The window to compute availability over.
-  freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
+  // The period to compute availability over. Exactly one must be set.
+  oneof period {
+    // An exact time window, the natural form for TIME_SLOT resources.
+    freebusy.shared.v1.TimeWindow window = 2;
+
+    // A calendar-date range in the resource's timezone, the natural form for
+    // NIGHTLY resources; end_date is the check-out date.
+    freebusy.shared.v1.DateRange date_range = 6;
+  }
 
   // Slot length for TIME_SLOT resources. Ignored when offering is set or for
   // NIGHTLY resources.
@@ -92,7 +101,7 @@ message ComputeAvailabilityRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // Number of units required to be free. Defaults to 1.
@@ -117,11 +126,18 @@ message CheckAvailabilityRequest {
   // Format: resources/{resource}
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
-  // The exact span to test for bookability.
-  freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
+  // The exact span to test for bookability. Exactly one must be set.
+  oneof period {
+    // An exact time window, the natural form for TIME_SLOT resources.
+    freebusy.shared.v1.TimeWindow window = 2;
+
+    // A calendar-date range in the resource's timezone, the natural form for
+    // NIGHTLY stays; end_date is the check-out date.
+    freebusy.shared.v1.DateRange date_range = 5;
+  }
 
   // Number of units required to be free. Defaults to 1.
   int32 units = 3 [(google.api.field_behavior) = OPTIONAL];
@@ -130,8 +146,57 @@ message CheckAvailabilityRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
+}
+
+// A reason a span is not bookable, as a machine-readable code plus a
+// human-readable explanation. Clients should branch on code, never on message.
+message UnbookableReason {
+  // Machine-readable reasons a span is not bookable.
+  enum Code {
+    // Unset.
+    CODE_UNSPECIFIED = 0;
+
+    // Not enough free units for the requested count.
+    CODE_NO_CAPACITY = 1;
+
+    // The span falls outside the resource's recurring hours.
+    CODE_OUTSIDE_HOURS = 2;
+
+    // A closure exception (blackout/holiday) covers part of the span.
+    CODE_CLOSED = 3;
+
+    // Shorter than the minimum stay (min_nights).
+    CODE_MIN_NIGHTS = 4;
+
+    // Longer than the maximum stay (max_nights).
+    CODE_MAX_NIGHTS = 5;
+
+    // Check-in falls on a disallowed weekday.
+    CODE_CHECKIN_DAY = 6;
+
+    // Check-out falls on a disallowed weekday.
+    CODE_CHECKOUT_DAY = 7;
+
+    // The span starts sooner than the minimum notice allows.
+    CODE_MIN_NOTICE = 8;
+
+    // The span starts further out than the advance window allows.
+    CODE_MAX_ADVANCE = 9;
+
+    // A buffer or gap rule around an adjacent booking conflicts.
+    CODE_BUFFER_CONFLICT = 10;
+
+    // The resource is archived.
+    CODE_RESOURCE_ARCHIVED = 11;
+  }
+
+  // Why the span is not bookable.
+  Code code = 1;
+
+  // Human-readable explanation suitable for display, not for parsing.
+  string message = 2;
 }
 
 // Response message for CheckAvailability.
@@ -142,8 +207,8 @@ message CheckAvailabilityResponse {
   // Free units across the span (the minimum over the span).
   int32 free_count = 2;
 
-  // Human-readable reasons the span is not bookable, when bookable is false.
-  repeated string reasons = 3;
+  // Why the span is not bookable, when bookable is false.
+  repeated UnbookableReason reasons = 3;
 }
 
 // Request message for ComputeBookableRanges.
@@ -152,11 +217,18 @@ message ComputeBookableRangesRequest {
   // Format: resources/{resource}
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
-  // The window to search within.
-  freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
+  // The period to search within. Exactly one must be set.
+  oneof period {
+    // An exact time window, the natural form for TIME_SLOT resources.
+    freebusy.shared.v1.TimeWindow window = 2;
+
+    // A calendar-date range in the resource's timezone, the natural form for
+    // NIGHTLY resources.
+    freebusy.shared.v1.DateRange date_range = 6;
+  }
 
   // Minimum span length for TIME_SLOT resources.
   google.protobuf.Duration duration = 3 [(google.api.field_behavior) = OPTIONAL];
@@ -165,7 +237,7 @@ message ComputeBookableRangesRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // Number of units required to be free. Defaults to 1.
@@ -178,27 +250,19 @@ message ComputeBookableRangesResponse {
   repeated BookableRange ranges = 1;
 }
 
-// Request message for BatchComputeAvailability.
+// Request message for BatchComputeAvailability. Each entry is a full
+// ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,
+// and units all work in batch exactly as they do in the single call.
 message BatchComputeAvailabilityRequest {
-  // The resources to compute availability for.
-  // Format: resources/{resource}
-  repeated string resources = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
-  ];
+  // Field numbers of the earlier flat shape; never reuse them.
+  reserved 2 to 4;
 
-  // The window to compute availability over.
-  freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
-
-  // Slot length for TIME_SLOT resources.
-  google.protobuf.Duration duration = 3 [(google.api.field_behavior) = OPTIONAL];
-
-  // Number of units required to be free. Defaults to 1.
-  int32 units = 4 [(google.api.field_behavior) = OPTIONAL];
+  // The individual compute requests. Results are returned in the same order.
+  repeated ComputeAvailabilityRequest requests = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Response message for BatchComputeAvailability.
 message BatchComputeAvailabilityResponse {
-  // Availability per requested resource.
+  // Availability per request, in request order.
   repeated ResourceAvailability resources = 1;
 }

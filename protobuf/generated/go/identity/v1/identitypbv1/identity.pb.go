@@ -33,8 +33,6 @@ type User struct {
 	// The user name. The alias "users/me" resolves to the caller.
 	// Format: users/{user}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// Email address, sourced from the IdP.
 	Email string `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 	// Display name.
@@ -88,13 +86,6 @@ func (*User) Descriptor() ([]byte, []int) {
 func (x *User) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *User) GetUuid() string {
-	if x != nil {
-		return x.Uuid
 	}
 	return ""
 }
@@ -322,15 +313,21 @@ func (x *UpdateUserRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	return nil
 }
 
-// Request message for ListUsers.
+// Request message for ListUsers. Users are global, so the visible set is every
+// user sharing at least one organisation with the caller; use
+// `organisation = "orgs/{org}"` in filter to narrow to one org, or
+// OrgService.ListMembers for a single org's roster with roles.
 type ListUsersRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Maximum number of users to return. The server may cap this.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListUsers call's next_page_token.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	// Filter expression over user fields (AIP-160), e.g. `display_name`.
-	Filter        string `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
+	// Filter expression (AIP-160), e.g. `organisation = "orgs/7"` or a match on
+	// display_name.
+	Filter string `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
+	// Sort order, e.g. "display_name" or "create_time desc".
+	OrderBy       string `protobuf:"bytes,4,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -382,6 +379,13 @@ func (x *ListUsersRequest) GetPageToken() string {
 func (x *ListUsersRequest) GetFilter() string {
 	if x != nil {
 		return x.Filter
+	}
+	return ""
+}
+
+func (x *ListUsersRequest) GetOrderBy() string {
+	if x != nil {
+		return x.OrderBy
 	}
 	return ""
 }
@@ -445,10 +449,9 @@ var File_freebusy_identity_v1_identity_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf0\x03\n" +
+	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xde\x03\n" +
 	"\x04User\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x12\x19\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tB\x03\xe0A\x03R\x05email\x12&\n" +
 	"\fdisplay_name\x18\x04 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\"\n" +
 	"\n" +
@@ -460,25 +463,26 @@ const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime:<\xeaA9\n" +
-	"\x1cohtarnished.freebusy.v1/User\x12\fusers/{user}*\x05users2\x04user\"\xa4\x01\n" +
-	"\x11MembershipSummary\x12G\n" +
-	"\forganisation\x18\x01 \x01(\tB#\xe0A\x03\xfaA\x1d\n" +
-	"\x1bohtarnished.freebusy.v1/OrgR\forganisation\x12-\n" +
+	"updateTime:=\xeaA:\n" +
+	"\x1dfreebusy.ohtarnished.dev/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03\"\xa5\x01\n" +
+	"\x11MembershipSummary\x12H\n" +
+	"\forganisation\x18\x01 \x01(\tB$\xe0A\x03\xfaA\x1e\n" +
+	"\x1cfreebusy.ohtarnished.dev/OrgR\forganisation\x12-\n" +
 	"\x10org_display_name\x18\x02 \x01(\tB\x03\xe0A\x03R\x0eorgDisplayName\x12\x17\n" +
-	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x03R\x04role\"J\n" +
-	"\x0eGetUserRequest\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cohtarnished.freebusy.v1/UserR\x04name\"\x8a\x01\n" +
+	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x03R\x04role\"K\n" +
+	"\x0eGetUserRequest\x129\n" +
+	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.ohtarnished.dev/UserR\x04name\"\x8a\x01\n" +
 	"\x11UpdateUserRequest\x123\n" +
 	"\x04user\x18\x01 \x01(\v2\x1a.freebusy.identity.v1.UserB\x03\xe0A\x02R\x04user\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"u\n" +
+	"updateMask\"\x95\x01\n" +
 	"\x10ListUsersRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
-	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\"m\n" +
+	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
+	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"m\n" +
 	"\x11ListUsersResponse\x120\n" +
 	"\x05users\x18\x01 \x03(\v2\x1a.freebusy.identity.v1.UserR\x05users\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageTokenB\xf9\x01\n" +

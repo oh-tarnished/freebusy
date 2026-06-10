@@ -18,6 +18,7 @@ ResourceService is the read-heavy catalog of bookable things (providers, rooms, 
 | `CreateResource` | `CreateResourceRequest` | `Resource` | Creates a resource. |
 | `UpdateResource` | `UpdateResourceRequest` | `Resource` | Updates a resource. |
 | `ArchiveResource` | `ArchiveResourceRequest` | `Resource` | Archives a resource, hiding it from availability and new bookings. |
+| `UnarchiveResource` | `UnarchiveResourceRequest` | `Resource` | Unarchives a resource, restoring it to the active state. |
 | `ListOfferings` | `ListOfferingsRequest` | `ListOfferingsResponse` | Lists the offerings attached to a resource. |
 | `GetOffering` | `GetOfferingRequest` | `Offering` | Gets a single offering. |
 | `CreateOffering` | `CreateOfferingRequest` | `Offering` | Creates an offering on a resource. |
@@ -32,17 +33,16 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The resource name. Format: resources/{resource} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `display_name` | `string` | `REQUIRED` | Human-friendly name (e.g. "Dr. Lee", "Deluxe King", "Kayak #3"). |
 | `description` | `string` | `OPTIONAL` | Free-form description. |
 | `type` | `ResourceType` | `REQUIRED` | What kind of bookable thing this is. |
-| `booking_mode` | `BookingMode` | `REQUIRED` | How this resource is booked, and therefore the availability shape it yields. |
+| `booking_mode` | `BookingMode` | `REQUIRED` | How this resource is booked, and therefore the availability shape it yields. Immutable: flipping it after bookings exist would invalidate every existing booking and availability computation. |
 | `capacity` | `int32` | `OPTIONAL` | Number of interchangeable units in the pool. Defaults to 1 when unset. |
 | `time_zone` | `string` | `REQUIRED` | IANA timezone (e.g. "America/New_York") the resource's hours and dates are evaluated in. Required so availability is timezone-correct. |
 | `tags` | `string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
 | `offerings` | `string` | `OUTPUT_ONLY` | Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering} |
-| `resource_state` | `State` | `OUTPUT_ONLY` | Lifecycle State. |
+| `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 
@@ -53,13 +53,12 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The offering name. Format: resources/{resource}/offerings/{offering} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `display_name` | `string` | `REQUIRED` | Human-friendly name (e.g. "30-min consult"). |
 | `description` | `string` | `OPTIONAL` | Free-form description. |
 | `duration` | `Duration` | `OPTIONAL` | Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY. |
 | `price` | `Money` | `OPTIONAL` | Price charged for the offering, interpreted per pricing_unit. |
 | `pricing_unit` | `PricingUnit` | `OPTIONAL` | What the price is charged per. |
-| `offering_state` | `State` | `OUTPUT_ONLY` | Lifecycle State. |
+| `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 
@@ -83,6 +82,8 @@ Request message for ListResources.
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of resources to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListResources call, for pagination. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `type = RESOURCE_TYPE_ROOM`, `state = STATE_ACTIVE`, `tags:"beachfront"`, or a match on display_name. |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
 
 ### ListResourcesResponse
 
@@ -126,6 +127,14 @@ Request message for ArchiveResource.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The resource to archive. Format: resources/{resource} |
+
+### UnarchiveResourceRequest
+
+Request message for UnarchiveResource.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The resource to restore to the active state. Format: resources/{resource} |
 
 ### ListOfferingsRequest
 

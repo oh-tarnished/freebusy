@@ -7,8 +7,8 @@
 package promocodepbv1
 
 import (
-	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -142,8 +142,6 @@ type PromoCode struct {
 	// The promo code name.
 	// Format: promoCodes/{promo_code}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Server-assigned stable UUID.
-	Uuid string `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`
 	// The human-entered code, unique across all promo codes (e.g. "SUMMER25").
 	Code string `protobuf:"bytes,3,opt,name=code,proto3" json:"code,omitempty"`
 	// Internal display name (not shown to customers).
@@ -155,7 +153,7 @@ type PromoCode struct {
 	// Percentage off (1-100), when discount_type is PERCENTAGE.
 	PercentOff int32 `protobuf:"varint,7,opt,name=percent_off,json=percentOff,proto3" json:"percent_off,omitempty"`
 	// Fixed amount off, when discount_type is FIXED_AMOUNT.
-	AmountOff *sharedpbv1.Money `protobuf:"bytes,8,opt,name=amount_off,json=amountOff,proto3" json:"amount_off,omitempty"`
+	AmountOff *money.Money `protobuf:"bytes,8,opt,name=amount_off,json=amountOff,proto3" json:"amount_off,omitempty"`
 	// Earliest the code can be redeemed. Unset means no lower bound.
 	RedeemStartTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=redeem_start_time,json=redeemStartTime,proto3" json:"redeem_start_time,omitempty"`
 	// Latest the code can be redeemed. Unset means no upper bound.
@@ -165,7 +163,7 @@ type PromoCode struct {
 	// Maximum redemptions per customer. Zero means unlimited.
 	PerCustomerLimit int32 `protobuf:"varint,12,opt,name=per_customer_limit,json=perCustomerLimit,proto3" json:"per_customer_limit,omitempty"`
 	// Minimum subtotal required for the code to apply.
-	MinSubtotal *sharedpbv1.Money `protobuf:"bytes,13,opt,name=min_subtotal,json=minSubtotal,proto3" json:"min_subtotal,omitempty"`
+	MinSubtotal *money.Money `protobuf:"bytes,13,opt,name=min_subtotal,json=minSubtotal,proto3" json:"min_subtotal,omitempty"`
 	// Resources the code applies to. Empty means all resources.
 	// Format: resources/{resource}
 	ApplicableResources []string `protobuf:"bytes,14,rep,name=applicable_resources,json=applicableResources,proto3" json:"applicable_resources,omitempty"`
@@ -224,13 +222,6 @@ func (x *PromoCode) GetName() string {
 	return ""
 }
 
-func (x *PromoCode) GetUuid() string {
-	if x != nil {
-		return x.Uuid
-	}
-	return ""
-}
-
 func (x *PromoCode) GetCode() string {
 	if x != nil {
 		return x.Code
@@ -266,7 +257,7 @@ func (x *PromoCode) GetPercentOff() int32 {
 	return 0
 }
 
-func (x *PromoCode) GetAmountOff() *sharedpbv1.Money {
+func (x *PromoCode) GetAmountOff() *money.Money {
 	if x != nil {
 		return x.AmountOff
 	}
@@ -301,7 +292,7 @@ func (x *PromoCode) GetPerCustomerLimit() int32 {
 	return 0
 }
 
-func (x *PromoCode) GetMinSubtotal() *sharedpbv1.Money {
+func (x *PromoCode) GetMinSubtotal() *money.Money {
 	if x != nil {
 		return x.MinSubtotal
 	}
@@ -361,29 +352,27 @@ var File_freebusy_promocode_v1_promocode_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x96\n" +
-	"\n" +
+	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xf8\t\n" +
 	"\tPromoCode\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04uuid\x18\x02 \x01(\tB\x03\xe0A\x03R\x04uuid\x12\x17\n" +
 	"\x04code\x18\x03 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
 	"\fdisplay_name\x18\x04 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x05 \x01(\tB\x03\xe0A\x01R\vdescription\x12M\n" +
 	"\rdiscount_type\x18\x06 \x01(\x0e2#.freebusy.promocode.v1.DiscountTypeB\x03\xe0A\x02R\fdiscountType\x12$\n" +
 	"\vpercent_off\x18\a \x01(\x05B\x03\xe0A\x01R\n" +
-	"percentOff\x12=\n" +
+	"percentOff\x126\n" +
 	"\n" +
-	"amount_off\x18\b \x01(\v2\x19.freebusy.shared.v1.MoneyB\x03\xe0A\x01R\tamountOff\x12K\n" +
+	"amount_off\x18\b \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\tamountOff\x12K\n" +
 	"\x11redeem_start_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\x0fredeemStartTime\x12G\n" +
 	"\x0fredeem_end_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\rredeemEndTime\x12,\n" +
 	"\x0fmax_redemptions\x18\v \x01(\x03B\x03\xe0A\x01R\x0emaxRedemptions\x121\n" +
-	"\x12per_customer_limit\x18\f \x01(\x05B\x03\xe0A\x01R\x10perCustomerLimit\x12A\n" +
-	"\fmin_subtotal\x18\r \x01(\v2\x19.freebusy.shared.v1.MoneyB\x03\xe0A\x01R\vminSubtotal\x12[\n" +
-	"\x14applicable_resources\x18\x0e \x03(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\x13applicableResources\x12[\n" +
-	"\x14applicable_offerings\x18\x0f \x03(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\x13applicableOfferings\x12.\n" +
+	"\x12per_customer_limit\x18\f \x01(\x05B\x03\xe0A\x01R\x10perCustomerLimit\x12:\n" +
+	"\fmin_subtotal\x18\r \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12\\\n" +
+	"\x14applicable_resources\x18\x0e \x03(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x13applicableResources\x12\\\n" +
+	"\x14applicable_offerings\x18\x0f \x03(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\x13applicableOfferings\x12.\n" +
 	"\x10redemption_count\x18\x10 \x01(\x03B\x03\xe0A\x03R\x0fredemptionCount\x12A\n" +
 	"\x05state\x18\x11 \x01(\x0e2&.freebusy.promocode.v1.PromoCode.StateB\x03\xe0A\x03R\x05state\x12\x1f\n" +
 	"\bdisabled\x18\x14 \x01(\bB\x03\xe0A\x01R\bdisabled\x12@\n" +
@@ -395,9 +384,9 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
 	"\x0eSTATE_DISABLED\x10\x02\x12\x11\n" +
-	"\rSTATE_EXPIRED\x10\x03:V\xeaAS\n" +
-	"!ohtarnished.freebusy.v1/PromoCode\x12\x17promoCodes/{promo_code}*\n" +
-	"promoCodes2\tpromoCode*k\n" +
+	"\rSTATE_EXPIRED\x10\x03:W\xeaAT\n" +
+	"\"freebusy.ohtarnished.dev/PromoCode\x12\x17promoCodes/{promo_code}*\n" +
+	"promoCodes2\tpromoCodeJ\x04\b\x02\x10\x03*k\n" +
 	"\fDiscountType\x12\x1d\n" +
 	"\x19DISCOUNT_TYPE_UNSPECIFIED\x10\x00\x12\x1c\n" +
 	"\x18DISCOUNT_TYPE_PERCENTAGE\x10\x01\x12\x1e\n" +
@@ -422,15 +411,15 @@ var file_freebusy_promocode_v1_promocode_proto_goTypes = []any{
 	(DiscountType)(0),             // 0: freebusy.promocode.v1.DiscountType
 	(PromoCode_State)(0),          // 1: freebusy.promocode.v1.PromoCode.State
 	(*PromoCode)(nil),             // 2: freebusy.promocode.v1.PromoCode
-	(*sharedpbv1.Money)(nil),      // 3: freebusy.shared.v1.Money
+	(*money.Money)(nil),           // 3: google.type.Money
 	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_freebusy_promocode_v1_promocode_proto_depIdxs = []int32{
 	0, // 0: freebusy.promocode.v1.PromoCode.discount_type:type_name -> freebusy.promocode.v1.DiscountType
-	3, // 1: freebusy.promocode.v1.PromoCode.amount_off:type_name -> freebusy.shared.v1.Money
+	3, // 1: freebusy.promocode.v1.PromoCode.amount_off:type_name -> google.type.Money
 	4, // 2: freebusy.promocode.v1.PromoCode.redeem_start_time:type_name -> google.protobuf.Timestamp
 	4, // 3: freebusy.promocode.v1.PromoCode.redeem_end_time:type_name -> google.protobuf.Timestamp
-	3, // 4: freebusy.promocode.v1.PromoCode.min_subtotal:type_name -> freebusy.shared.v1.Money
+	3, // 4: freebusy.promocode.v1.PromoCode.min_subtotal:type_name -> google.type.Money
 	1, // 5: freebusy.promocode.v1.PromoCode.state:type_name -> freebusy.promocode.v1.PromoCode.State
 	4, // 6: freebusy.promocode.v1.PromoCode.create_time:type_name -> google.protobuf.Timestamp
 	4, // 7: freebusy.promocode.v1.PromoCode.update_time:type_name -> google.protobuf.Timestamp

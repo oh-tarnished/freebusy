@@ -28,7 +28,6 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The promo code name. Format: promoCodes/{promo_code} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
 | `code` | `string` | `REQUIRED` | The human-entered code, unique across all promo codes (e.g. "SUMMER25"). |
 | `display_name` | `string` | `OPTIONAL` | Internal display name (not shown to customers). |
 | `description` | `string` | `OPTIONAL` | Free-form description. |

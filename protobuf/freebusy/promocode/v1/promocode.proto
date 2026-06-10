@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package freebusy.promocode.v1;
 
-import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/timestamp.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
@@ -17,7 +17,7 @@ option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 // offerings it applies to.
 message PromoCode {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/PromoCode"
+    type: "freebusy.ohtarnished.dev/PromoCode"
     pattern: "promoCodes/{promo_code}"
     singular: "promoCode"
     plural: "promoCodes"
@@ -42,8 +42,8 @@ message PromoCode {
   // Format: promoCodes/{promo_code}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // The human-entered code, unique across all promo codes (e.g. "SUMMER25").
   string code = 3 [(google.api.field_behavior) = REQUIRED];
@@ -61,7 +61,7 @@ message PromoCode {
   int32 percent_off = 7 [(google.api.field_behavior) = OPTIONAL];
 
   // Fixed amount off, when discount_type is FIXED_AMOUNT.
-  freebusy.shared.v1.Money amount_off = 8 [(google.api.field_behavior) = OPTIONAL];
+  google.type.Money amount_off = 8 [(google.api.field_behavior) = OPTIONAL];
 
   // Earliest the code can be redeemed. Unset means no lower bound.
   google.protobuf.Timestamp redeem_start_time = 9 [(google.api.field_behavior) = OPTIONAL];
@@ -76,20 +76,20 @@ message PromoCode {
   int32 per_customer_limit = 12 [(google.api.field_behavior) = OPTIONAL];
 
   // Minimum subtotal required for the code to apply.
-  freebusy.shared.v1.Money min_subtotal = 13 [(google.api.field_behavior) = OPTIONAL];
+  google.type.Money min_subtotal = 13 [(google.api.field_behavior) = OPTIONAL];
 
   // Resources the code applies to. Empty means all resources.
   // Format: resources/{resource}
   repeated string applicable_resources = 14 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
   ];
 
   // Offerings the code applies to. Empty means all offerings.
   // Format: resources/{resource}/offerings/{offering}
   repeated string applicable_offerings = 15 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
   ];
 
   // How many times the code has been redeemed.

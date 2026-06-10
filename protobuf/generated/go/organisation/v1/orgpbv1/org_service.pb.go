@@ -27,7 +27,7 @@ var File_freebusy_organisation_v1_org_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_org_service_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/organisation/v1/org_service.proto\x12\x18freebusy.organisation.v1\x1a*freebusy/organisation/v1/org_actions.proto\x1a+freebusy/organisation/v1/org_messages.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xb5\x11\n" +
+	"*freebusy/organisation/v1/org_service.proto\x12\x18freebusy.organisation.v1\x1a*freebusy/organisation/v1/org_actions.proto\x1a+freebusy/organisation/v1/org_messages.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xb6\x11\n" +
 	"\n" +
 	"OrgService\x12\xa6\x01\n" +
 	"\bListOrgs\x12).freebusy.organisation.v1.ListOrgsRequest\x1a*.freebusy.organisation.v1.ListOrgsResponse\"C\xca\xf3\x18/\x12-List the organizations the caller belongs to.\x82\xd3\xe4\x93\x02\n" +
@@ -42,7 +42,7 @@ const file_freebusy_organisation_v1_org_service_proto_rawDesc = "" +
 	"\vListMembers\x12,.freebusy.organisation.v1.ListMembersRequest\x1a-.freebusy.organisation.v1.ListMembersResponse\"o\xdaA\x06parent\xca\xf3\x18?\x12=List the members of an organisation. Filter by role or state.\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/{parent=orgs/*}/members\x12\xbd\x01\n" +
 	"\tGetMember\x12*.freebusy.organisation.v1.GetMemberRequest\x1a .freebusy.organisation.v1.Member\"b\xdaA\x04name\xca\xf3\x184\x122Get a single organisation member by resource name.\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/{name=orgs/*/members/*}\x12\xd3\x01\n" +
 	"\fUpdateMember\x12-.freebusy.organisation.v1.UpdateMemberRequest\x1a .freebusy.organisation.v1.Member\"r\xdaA\x12member,update_mask\xca\xf3\x18'\x12%Change an organisation member's role.\x82\xd3\xe4\x93\x02,:\x06member2\"/v1/{member.name=orgs/*/members/*}\x12\xc4\x01\n" +
-	"\fDeleteMember\x12-.freebusy.organisation.v1.DeleteMemberRequest\x1a\x16.google.protobuf.Empty\"m\xdaA\x04name\xca\xf3\x18?\x12=Remove a member from an organisation by member resource name.\x82\xd3\xe4\x93\x02\x1d*\x1b/v1/{name=orgs/*/members/*}\x1ak\xcaA\x17ohtarnished.freebusy.v1\xc2\xf3\x18M\n" +
+	"\fDeleteMember\x12-.freebusy.organisation.v1.DeleteMemberRequest\x1a\x16.google.protobuf.Empty\"m\xdaA\x04name\xca\xf3\x18?\x12=Remove a member from an organisation by member resource name.\x82\xd3\xe4\x93\x02\x1d*\x1b/v1/{name=orgs/*/members/*}\x1al\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18M\n" +
 	"K\n" +
 	"\rOrganizations\x12\x051.0.0\x1a3Manage organizations (tenants), members, and roles.B\x89\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\x0fOrgServiceProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"

@@ -9,6 +9,8 @@ package availabilitypbv1
 import (
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	date "google.golang.org/genproto/googleapis/type/date"
+	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
@@ -25,6 +27,95 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Machine-readable reasons a span is not bookable.
+type UnbookableReason_Code int32
+
+const (
+	// Unset.
+	UnbookableReason_CODE_UNSPECIFIED UnbookableReason_Code = 0
+	// Not enough free units for the requested count.
+	UnbookableReason_CODE_NO_CAPACITY UnbookableReason_Code = 1
+	// The span falls outside the resource's recurring hours.
+	UnbookableReason_CODE_OUTSIDE_HOURS UnbookableReason_Code = 2
+	// A closure exception (blackout/holiday) covers part of the span.
+	UnbookableReason_CODE_CLOSED UnbookableReason_Code = 3
+	// Shorter than the minimum stay (min_nights).
+	UnbookableReason_CODE_MIN_NIGHTS UnbookableReason_Code = 4
+	// Longer than the maximum stay (max_nights).
+	UnbookableReason_CODE_MAX_NIGHTS UnbookableReason_Code = 5
+	// Check-in falls on a disallowed weekday.
+	UnbookableReason_CODE_CHECKIN_DAY UnbookableReason_Code = 6
+	// Check-out falls on a disallowed weekday.
+	UnbookableReason_CODE_CHECKOUT_DAY UnbookableReason_Code = 7
+	// The span starts sooner than the minimum notice allows.
+	UnbookableReason_CODE_MIN_NOTICE UnbookableReason_Code = 8
+	// The span starts further out than the advance window allows.
+	UnbookableReason_CODE_MAX_ADVANCE UnbookableReason_Code = 9
+	// A buffer or gap rule around an adjacent booking conflicts.
+	UnbookableReason_CODE_BUFFER_CONFLICT UnbookableReason_Code = 10
+	// The resource is archived.
+	UnbookableReason_CODE_RESOURCE_ARCHIVED UnbookableReason_Code = 11
+)
+
+// Enum value maps for UnbookableReason_Code.
+var (
+	UnbookableReason_Code_name = map[int32]string{
+		0:  "CODE_UNSPECIFIED",
+		1:  "CODE_NO_CAPACITY",
+		2:  "CODE_OUTSIDE_HOURS",
+		3:  "CODE_CLOSED",
+		4:  "CODE_MIN_NIGHTS",
+		5:  "CODE_MAX_NIGHTS",
+		6:  "CODE_CHECKIN_DAY",
+		7:  "CODE_CHECKOUT_DAY",
+		8:  "CODE_MIN_NOTICE",
+		9:  "CODE_MAX_ADVANCE",
+		10: "CODE_BUFFER_CONFLICT",
+		11: "CODE_RESOURCE_ARCHIVED",
+	}
+	UnbookableReason_Code_value = map[string]int32{
+		"CODE_UNSPECIFIED":       0,
+		"CODE_NO_CAPACITY":       1,
+		"CODE_OUTSIDE_HOURS":     2,
+		"CODE_CLOSED":            3,
+		"CODE_MIN_NIGHTS":        4,
+		"CODE_MAX_NIGHTS":        5,
+		"CODE_CHECKIN_DAY":       6,
+		"CODE_CHECKOUT_DAY":      7,
+		"CODE_MIN_NOTICE":        8,
+		"CODE_MAX_ADVANCE":       9,
+		"CODE_BUFFER_CONFLICT":   10,
+		"CODE_RESOURCE_ARCHIVED": 11,
+	}
+)
+
+func (x UnbookableReason_Code) Enum() *UnbookableReason_Code {
+	p := new(UnbookableReason_Code)
+	*p = x
+	return p
+}
+
+func (x UnbookableReason_Code) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (UnbookableReason_Code) Descriptor() protoreflect.EnumDescriptor {
+	return file_freebusy_availability_v1_availability_proto_enumTypes[0].Descriptor()
+}
+
+func (UnbookableReason_Code) Type() protoreflect.EnumType {
+	return &file_freebusy_availability_v1_availability_proto_enumTypes[0]
+}
+
+func (x UnbookableReason_Code) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use UnbookableReason_Code.Descriptor instead.
+func (UnbookableReason_Code) EnumDescriptor() ([]byte, []int) {
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{7, 0}
+}
+
 // A discrete bookable time slot, produced for TIME_SLOT resources.
 type Slot struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -37,7 +128,7 @@ type Slot struct {
 	// Whether the slot can actually be booked (free and passes policy).
 	Bookable bool `protobuf:"varint,4,opt,name=bookable,proto3" json:"bookable,omitempty"`
 	// Price for booking this slot, when an offering was supplied.
-	Price         *sharedpbv1.Money `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
+	Price         *money.Money `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -100,7 +191,7 @@ func (x *Slot) GetBookable() bool {
 	return false
 }
 
-func (x *Slot) GetPrice() *sharedpbv1.Money {
+func (x *Slot) GetPrice() *money.Money {
 	if x != nil {
 		return x.Price
 	}
@@ -111,13 +202,13 @@ func (x *Slot) GetPrice() *sharedpbv1.Money {
 type NightAvailability struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The night, in the resource's local timezone.
-	Night *sharedpbv1.CalendarDate `protobuf:"bytes,1,opt,name=night,proto3" json:"night,omitempty"`
+	Night *date.Date `protobuf:"bytes,1,opt,name=night,proto3" json:"night,omitempty"`
 	// Number of units of the pool free that night.
 	FreeUnits int32 `protobuf:"varint,2,opt,name=free_units,json=freeUnits,proto3" json:"free_units,omitempty"`
 	// Whether the resource is closed that night (exception/blackout).
 	Closed bool `protobuf:"varint,3,opt,name=closed,proto3" json:"closed,omitempty"`
 	// Nightly price, when an offering was supplied.
-	Price         *sharedpbv1.Money `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
+	Price         *money.Money `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +243,7 @@ func (*NightAvailability) Descriptor() ([]byte, []int) {
 	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *NightAvailability) GetNight() *sharedpbv1.CalendarDate {
+func (x *NightAvailability) GetNight() *date.Date {
 	if x != nil {
 		return x.Night
 	}
@@ -173,7 +264,7 @@ func (x *NightAvailability) GetClosed() bool {
 	return false
 }
 
-func (x *NightAvailability) GetPrice() *sharedpbv1.Money {
+func (x *NightAvailability) GetPrice() *money.Money {
 	if x != nil {
 		return x.Price
 	}
@@ -315,8 +406,13 @@ type ComputeAvailabilityRequest struct {
 	// The resource to compute availability for.
 	// Format: resources/{resource}
 	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
-	// The window to compute availability over.
-	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3" json:"window,omitempty"`
+	// The period to compute availability over. Exactly one must be set.
+	//
+	// Types that are valid to be assigned to Period:
+	//
+	//	*ComputeAvailabilityRequest_Window
+	//	*ComputeAvailabilityRequest_DateRange
+	Period isComputeAvailabilityRequest_Period `protobuf_oneof:"period"`
 	// Slot length for TIME_SLOT resources. Ignored when offering is set or for
 	// NIGHTLY resources.
 	Duration *durationpb.Duration `protobuf:"bytes,3,opt,name=duration,proto3" json:"duration,omitempty"`
@@ -366,9 +462,27 @@ func (x *ComputeAvailabilityRequest) GetResource() string {
 	return ""
 }
 
+func (x *ComputeAvailabilityRequest) GetPeriod() isComputeAvailabilityRequest_Period {
+	if x != nil {
+		return x.Period
+	}
+	return nil
+}
+
 func (x *ComputeAvailabilityRequest) GetWindow() *sharedpbv1.TimeWindow {
 	if x != nil {
-		return x.Window
+		if x, ok := x.Period.(*ComputeAvailabilityRequest_Window); ok {
+			return x.Window
+		}
+	}
+	return nil
+}
+
+func (x *ComputeAvailabilityRequest) GetDateRange() *sharedpbv1.DateRange {
+	if x != nil {
+		if x, ok := x.Period.(*ComputeAvailabilityRequest_DateRange); ok {
+			return x.DateRange
+		}
 	}
 	return nil
 }
@@ -393,6 +507,25 @@ func (x *ComputeAvailabilityRequest) GetUnits() int32 {
 	}
 	return 0
 }
+
+type isComputeAvailabilityRequest_Period interface {
+	isComputeAvailabilityRequest_Period()
+}
+
+type ComputeAvailabilityRequest_Window struct {
+	// An exact time window, the natural form for TIME_SLOT resources.
+	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3,oneof"`
+}
+
+type ComputeAvailabilityRequest_DateRange struct {
+	// A calendar-date range in the resource's timezone, the natural form for
+	// NIGHTLY resources; end_date is the check-out date.
+	DateRange *sharedpbv1.DateRange `protobuf:"bytes,6,opt,name=date_range,json=dateRange,proto3,oneof"`
+}
+
+func (*ComputeAvailabilityRequest_Window) isComputeAvailabilityRequest_Period() {}
+
+func (*ComputeAvailabilityRequest_DateRange) isComputeAvailabilityRequest_Period() {}
 
 // Response message for ComputeAvailability.
 type ComputeAvailabilityResponse struct {
@@ -464,8 +597,13 @@ type CheckAvailabilityRequest struct {
 	// The resource to test.
 	// Format: resources/{resource}
 	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
-	// The exact span to test for bookability.
-	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3" json:"window,omitempty"`
+	// The exact span to test for bookability. Exactly one must be set.
+	//
+	// Types that are valid to be assigned to Period:
+	//
+	//	*CheckAvailabilityRequest_Window
+	//	*CheckAvailabilityRequest_DateRange
+	Period isCheckAvailabilityRequest_Period `protobuf_oneof:"period"`
 	// Number of units required to be free. Defaults to 1.
 	Units int32 `protobuf:"varint,3,opt,name=units,proto3" json:"units,omitempty"`
 	// Offering whose duration/rules apply, when relevant.
@@ -512,9 +650,27 @@ func (x *CheckAvailabilityRequest) GetResource() string {
 	return ""
 }
 
+func (x *CheckAvailabilityRequest) GetPeriod() isCheckAvailabilityRequest_Period {
+	if x != nil {
+		return x.Period
+	}
+	return nil
+}
+
 func (x *CheckAvailabilityRequest) GetWindow() *sharedpbv1.TimeWindow {
 	if x != nil {
-		return x.Window
+		if x, ok := x.Period.(*CheckAvailabilityRequest_Window); ok {
+			return x.Window
+		}
+	}
+	return nil
+}
+
+func (x *CheckAvailabilityRequest) GetDateRange() *sharedpbv1.DateRange {
+	if x != nil {
+		if x, ok := x.Period.(*CheckAvailabilityRequest_DateRange); ok {
+			return x.DateRange
+		}
 	}
 	return nil
 }
@@ -533,6 +689,81 @@ func (x *CheckAvailabilityRequest) GetOffering() string {
 	return ""
 }
 
+type isCheckAvailabilityRequest_Period interface {
+	isCheckAvailabilityRequest_Period()
+}
+
+type CheckAvailabilityRequest_Window struct {
+	// An exact time window, the natural form for TIME_SLOT resources.
+	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3,oneof"`
+}
+
+type CheckAvailabilityRequest_DateRange struct {
+	// A calendar-date range in the resource's timezone, the natural form for
+	// NIGHTLY stays; end_date is the check-out date.
+	DateRange *sharedpbv1.DateRange `protobuf:"bytes,5,opt,name=date_range,json=dateRange,proto3,oneof"`
+}
+
+func (*CheckAvailabilityRequest_Window) isCheckAvailabilityRequest_Period() {}
+
+func (*CheckAvailabilityRequest_DateRange) isCheckAvailabilityRequest_Period() {}
+
+// A reason a span is not bookable, as a machine-readable code plus a
+// human-readable explanation. Clients should branch on code, never on message.
+type UnbookableReason struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Why the span is not bookable.
+	Code UnbookableReason_Code `protobuf:"varint,1,opt,name=code,proto3,enum=freebusy.availability.v1.UnbookableReason_Code" json:"code,omitempty"`
+	// Human-readable explanation suitable for display, not for parsing.
+	Message       string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnbookableReason) Reset() {
+	*x = UnbookableReason{}
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnbookableReason) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnbookableReason) ProtoMessage() {}
+
+func (x *UnbookableReason) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnbookableReason.ProtoReflect.Descriptor instead.
+func (*UnbookableReason) Descriptor() ([]byte, []int) {
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UnbookableReason) GetCode() UnbookableReason_Code {
+	if x != nil {
+		return x.Code
+	}
+	return UnbookableReason_CODE_UNSPECIFIED
+}
+
+func (x *UnbookableReason) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 // Response message for CheckAvailability.
 type CheckAvailabilityResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -540,15 +771,15 @@ type CheckAvailabilityResponse struct {
 	Bookable bool `protobuf:"varint,1,opt,name=bookable,proto3" json:"bookable,omitempty"`
 	// Free units across the span (the minimum over the span).
 	FreeCount int32 `protobuf:"varint,2,opt,name=free_count,json=freeCount,proto3" json:"free_count,omitempty"`
-	// Human-readable reasons the span is not bookable, when bookable is false.
-	Reasons       []string `protobuf:"bytes,3,rep,name=reasons,proto3" json:"reasons,omitempty"`
+	// Why the span is not bookable, when bookable is false.
+	Reasons       []*UnbookableReason `protobuf:"bytes,3,rep,name=reasons,proto3" json:"reasons,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CheckAvailabilityResponse) Reset() {
 	*x = CheckAvailabilityResponse{}
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[7]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -560,7 +791,7 @@ func (x *CheckAvailabilityResponse) String() string {
 func (*CheckAvailabilityResponse) ProtoMessage() {}
 
 func (x *CheckAvailabilityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[7]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -573,7 +804,7 @@ func (x *CheckAvailabilityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAvailabilityResponse.ProtoReflect.Descriptor instead.
 func (*CheckAvailabilityResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{7}
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CheckAvailabilityResponse) GetBookable() bool {
@@ -590,7 +821,7 @@ func (x *CheckAvailabilityResponse) GetFreeCount() int32 {
 	return 0
 }
 
-func (x *CheckAvailabilityResponse) GetReasons() []string {
+func (x *CheckAvailabilityResponse) GetReasons() []*UnbookableReason {
 	if x != nil {
 		return x.Reasons
 	}
@@ -603,8 +834,13 @@ type ComputeBookableRangesRequest struct {
 	// The resource to compute bookable ranges for.
 	// Format: resources/{resource}
 	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
-	// The window to search within.
-	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3" json:"window,omitempty"`
+	// The period to search within. Exactly one must be set.
+	//
+	// Types that are valid to be assigned to Period:
+	//
+	//	*ComputeBookableRangesRequest_Window
+	//	*ComputeBookableRangesRequest_DateRange
+	Period isComputeBookableRangesRequest_Period `protobuf_oneof:"period"`
 	// Minimum span length for TIME_SLOT resources.
 	Duration *durationpb.Duration `protobuf:"bytes,3,opt,name=duration,proto3" json:"duration,omitempty"`
 	// Offering to derive duration/rules from.
@@ -618,7 +854,7 @@ type ComputeBookableRangesRequest struct {
 
 func (x *ComputeBookableRangesRequest) Reset() {
 	*x = ComputeBookableRangesRequest{}
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[8]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -630,7 +866,7 @@ func (x *ComputeBookableRangesRequest) String() string {
 func (*ComputeBookableRangesRequest) ProtoMessage() {}
 
 func (x *ComputeBookableRangesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[8]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -643,7 +879,7 @@ func (x *ComputeBookableRangesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ComputeBookableRangesRequest.ProtoReflect.Descriptor instead.
 func (*ComputeBookableRangesRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{8}
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ComputeBookableRangesRequest) GetResource() string {
@@ -653,9 +889,27 @@ func (x *ComputeBookableRangesRequest) GetResource() string {
 	return ""
 }
 
+func (x *ComputeBookableRangesRequest) GetPeriod() isComputeBookableRangesRequest_Period {
+	if x != nil {
+		return x.Period
+	}
+	return nil
+}
+
 func (x *ComputeBookableRangesRequest) GetWindow() *sharedpbv1.TimeWindow {
 	if x != nil {
-		return x.Window
+		if x, ok := x.Period.(*ComputeBookableRangesRequest_Window); ok {
+			return x.Window
+		}
+	}
+	return nil
+}
+
+func (x *ComputeBookableRangesRequest) GetDateRange() *sharedpbv1.DateRange {
+	if x != nil {
+		if x, ok := x.Period.(*ComputeBookableRangesRequest_DateRange); ok {
+			return x.DateRange
+		}
 	}
 	return nil
 }
@@ -681,6 +935,25 @@ func (x *ComputeBookableRangesRequest) GetUnits() int32 {
 	return 0
 }
 
+type isComputeBookableRangesRequest_Period interface {
+	isComputeBookableRangesRequest_Period()
+}
+
+type ComputeBookableRangesRequest_Window struct {
+	// An exact time window, the natural form for TIME_SLOT resources.
+	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3,oneof"`
+}
+
+type ComputeBookableRangesRequest_DateRange struct {
+	// A calendar-date range in the resource's timezone, the natural form for
+	// NIGHTLY resources.
+	DateRange *sharedpbv1.DateRange `protobuf:"bytes,6,opt,name=date_range,json=dateRange,proto3,oneof"`
+}
+
+func (*ComputeBookableRangesRequest_Window) isComputeBookableRangesRequest_Period() {}
+
+func (*ComputeBookableRangesRequest_DateRange) isComputeBookableRangesRequest_Period() {}
+
 // Response message for ComputeBookableRanges.
 type ComputeBookableRangesResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -692,7 +965,7 @@ type ComputeBookableRangesResponse struct {
 
 func (x *ComputeBookableRangesResponse) Reset() {
 	*x = ComputeBookableRangesResponse{}
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[9]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -704,7 +977,7 @@ func (x *ComputeBookableRangesResponse) String() string {
 func (*ComputeBookableRangesResponse) ProtoMessage() {}
 
 func (x *ComputeBookableRangesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[9]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -717,7 +990,7 @@ func (x *ComputeBookableRangesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ComputeBookableRangesResponse.ProtoReflect.Descriptor instead.
 func (*ComputeBookableRangesResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{9}
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ComputeBookableRangesResponse) GetRanges() []*BookableRange {
@@ -727,25 +1000,20 @@ func (x *ComputeBookableRangesResponse) GetRanges() []*BookableRange {
 	return nil
 }
 
-// Request message for BatchComputeAvailability.
+// Request message for BatchComputeAvailability. Each entry is a full
+// ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,
+// and units all work in batch exactly as they do in the single call.
 type BatchComputeAvailabilityRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The resources to compute availability for.
-	// Format: resources/{resource}
-	Resources []string `protobuf:"bytes,1,rep,name=resources,proto3" json:"resources,omitempty"`
-	// The window to compute availability over.
-	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3" json:"window,omitempty"`
-	// Slot length for TIME_SLOT resources.
-	Duration *durationpb.Duration `protobuf:"bytes,3,opt,name=duration,proto3" json:"duration,omitempty"`
-	// Number of units required to be free. Defaults to 1.
-	Units         int32 `protobuf:"varint,4,opt,name=units,proto3" json:"units,omitempty"`
+	// The individual compute requests. Results are returned in the same order.
+	Requests      []*ComputeAvailabilityRequest `protobuf:"bytes,1,rep,name=requests,proto3" json:"requests,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *BatchComputeAvailabilityRequest) Reset() {
 	*x = BatchComputeAvailabilityRequest{}
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[10]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -757,7 +1025,7 @@ func (x *BatchComputeAvailabilityRequest) String() string {
 func (*BatchComputeAvailabilityRequest) ProtoMessage() {}
 
 func (x *BatchComputeAvailabilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[10]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -770,41 +1038,20 @@ func (x *BatchComputeAvailabilityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BatchComputeAvailabilityRequest.ProtoReflect.Descriptor instead.
 func (*BatchComputeAvailabilityRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{10}
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *BatchComputeAvailabilityRequest) GetResources() []string {
+func (x *BatchComputeAvailabilityRequest) GetRequests() []*ComputeAvailabilityRequest {
 	if x != nil {
-		return x.Resources
+		return x.Requests
 	}
 	return nil
-}
-
-func (x *BatchComputeAvailabilityRequest) GetWindow() *sharedpbv1.TimeWindow {
-	if x != nil {
-		return x.Window
-	}
-	return nil
-}
-
-func (x *BatchComputeAvailabilityRequest) GetDuration() *durationpb.Duration {
-	if x != nil {
-		return x.Duration
-	}
-	return nil
-}
-
-func (x *BatchComputeAvailabilityRequest) GetUnits() int32 {
-	if x != nil {
-		return x.Units
-	}
-	return 0
 }
 
 // Response message for BatchComputeAvailability.
 type BatchComputeAvailabilityResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Availability per requested resource.
+	// Availability per request, in request order.
 	Resources     []*ResourceAvailability `protobuf:"bytes,1,rep,name=resources,proto3" json:"resources,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -812,7 +1059,7 @@ type BatchComputeAvailabilityResponse struct {
 
 func (x *BatchComputeAvailabilityResponse) Reset() {
 	*x = BatchComputeAvailabilityResponse{}
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[11]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -824,7 +1071,7 @@ func (x *BatchComputeAvailabilityResponse) String() string {
 func (*BatchComputeAvailabilityResponse) ProtoMessage() {}
 
 func (x *BatchComputeAvailabilityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[11]
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -837,7 +1084,7 @@ func (x *BatchComputeAvailabilityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BatchComputeAvailabilityResponse.ProtoReflect.Descriptor instead.
 func (*BatchComputeAvailabilityResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{11}
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *BatchComputeAvailabilityResponse) GetResources() []*ResourceAvailability {
@@ -851,70 +1098,92 @@ var File_freebusy_availability_v1_availability_proto protoreflect.FileDescriptor
 
 const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/availability/v1/availability.proto\x12\x18freebusy.availability.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe4\x01\n" +
+	"+freebusy/availability/v1/availability.proto\x12\x18freebusy.availability.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\xdd\x01\n" +
 	"\x04Slot\x129\n" +
 	"\n" +
 	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
 	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\aendTime\x12\x1d\n" +
 	"\n" +
 	"free_count\x18\x03 \x01(\x05R\tfreeCount\x12\x1a\n" +
-	"\bbookable\x18\x04 \x01(\bR\bbookable\x12/\n" +
-	"\x05price\x18\x05 \x01(\v2\x19.freebusy.shared.v1.MoneyR\x05price\"\xb3\x01\n" +
-	"\x11NightAvailability\x126\n" +
-	"\x05night\x18\x01 \x01(\v2 .freebusy.shared.v1.CalendarDateR\x05night\x12\x1d\n" +
+	"\bbookable\x18\x04 \x01(\bR\bbookable\x12(\n" +
+	"\x05price\x18\x05 \x01(\v2\x12.google.type.MoneyR\x05price\"\x9d\x01\n" +
+	"\x11NightAvailability\x12'\n" +
+	"\x05night\x18\x01 \x01(\v2\x11.google.type.DateR\x05night\x12\x1d\n" +
 	"\n" +
 	"free_units\x18\x02 \x01(\x05R\tfreeUnits\x12\x16\n" +
-	"\x06closed\x18\x03 \x01(\bR\x06closed\x12/\n" +
-	"\x05price\x18\x04 \x01(\v2\x19.freebusy.shared.v1.MoneyR\x05price\"c\n" +
+	"\x06closed\x18\x03 \x01(\bR\x06closed\x12(\n" +
+	"\x05price\x18\x04 \x01(\v2\x12.google.type.MoneyR\x05price\"c\n" +
 	"\rBookableRange\x126\n" +
 	"\x06window\x18\x01 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowR\x06window\x12\x1a\n" +
-	"\bbookable\x18\x02 \x01(\bR\bbookable\"\x89\x02\n" +
-	"\x14ResourceAvailability\x12A\n" +
-	"\bresource\x18\x01 \x01(\tB%\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\bresource\x123\n" +
+	"\bbookable\x18\x02 \x01(\bR\bbookable\"\x8a\x02\n" +
+	"\x14ResourceAvailability\x12B\n" +
+	"\bresource\x18\x01 \x01(\tB&\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\bresource\x123\n" +
 	"\x04mode\x18\x02 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x124\n" +
 	"\x05slots\x18\x03 \x03(\v2\x1e.freebusy.availability.v1.SlotR\x05slots\x12C\n" +
-	"\x06nights\x18\x04 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xbc\x02\n" +
-	"\x1aComputeAvailabilityRequest\x12D\n" +
-	"\bresource\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\bresource\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12D\n" +
-	"\boffering\x18\x04 \x01(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\boffering\x12\x19\n" +
-	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05units\"\xcd\x01\n" +
+	"\x06nights\x18\x04 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\x85\x03\n" +
+	"\x1aComputeAvailabilityRequest\x12E\n" +
+	"\bresource\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\bresource\x128\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
+	"\n" +
+	"date_range\x18\x06 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12:\n" +
+	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12E\n" +
+	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12\x19\n" +
+	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
+	"\x06period\"\xcd\x01\n" +
 	"\x1bComputeAvailabilityResponse\x123\n" +
 	"\x04mode\x18\x01 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x124\n" +
 	"\x05slots\x18\x02 \x03(\v2\x1e.freebusy.availability.v1.SlotR\x05slots\x12C\n" +
-	"\x06nights\x18\x03 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xfe\x01\n" +
-	"\x18CheckAvailabilityRequest\x12D\n" +
-	"\bresource\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\bresource\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12\x19\n" +
-	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05units\x12D\n" +
-	"\boffering\x18\x04 \x01(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\boffering\"p\n" +
+	"\x06nights\x18\x03 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xc7\x02\n" +
+	"\x18CheckAvailabilityRequest\x12E\n" +
+	"\bresource\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\bresource\x128\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
+	"\n" +
+	"date_range\x18\x05 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x19\n" +
+	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05units\x12E\n" +
+	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\bofferingB\b\n" +
+	"\x06period\"\x87\x03\n" +
+	"\x10UnbookableReason\x12C\n" +
+	"\x04code\x18\x01 \x01(\x0e2/.freebusy.availability.v1.UnbookableReason.CodeR\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x93\x02\n" +
+	"\x04Code\x12\x14\n" +
+	"\x10CODE_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10CODE_NO_CAPACITY\x10\x01\x12\x16\n" +
+	"\x12CODE_OUTSIDE_HOURS\x10\x02\x12\x0f\n" +
+	"\vCODE_CLOSED\x10\x03\x12\x13\n" +
+	"\x0fCODE_MIN_NIGHTS\x10\x04\x12\x13\n" +
+	"\x0fCODE_MAX_NIGHTS\x10\x05\x12\x14\n" +
+	"\x10CODE_CHECKIN_DAY\x10\x06\x12\x15\n" +
+	"\x11CODE_CHECKOUT_DAY\x10\a\x12\x13\n" +
+	"\x0fCODE_MIN_NOTICE\x10\b\x12\x14\n" +
+	"\x10CODE_MAX_ADVANCE\x10\t\x12\x18\n" +
+	"\x14CODE_BUFFER_CONFLICT\x10\n" +
+	"\x12\x1a\n" +
+	"\x16CODE_RESOURCE_ARCHIVED\x10\v\"\x9c\x01\n" +
 	"\x19CheckAvailabilityResponse\x12\x1a\n" +
 	"\bbookable\x18\x01 \x01(\bR\bbookable\x12\x1d\n" +
 	"\n" +
-	"free_count\x18\x02 \x01(\x05R\tfreeCount\x12\x18\n" +
-	"\areasons\x18\x03 \x03(\tR\areasons\"\xbe\x02\n" +
-	"\x1cComputeBookableRangesRequest\x12D\n" +
-	"\bresource\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\bresource\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12D\n" +
-	"\boffering\x18\x04 \x01(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\boffering\x12\x19\n" +
-	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05units\"`\n" +
+	"free_count\x18\x02 \x01(\x05R\tfreeCount\x12D\n" +
+	"\areasons\x18\x03 \x03(\v2*.freebusy.availability.v1.UnbookableReasonR\areasons\"\x87\x03\n" +
+	"\x1cComputeBookableRangesRequest\x12E\n" +
+	"\bresource\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\bresource\x128\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
+	"\n" +
+	"date_range\x18\x06 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12:\n" +
+	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12E\n" +
+	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12\x19\n" +
+	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
+	"\x06period\"`\n" +
 	"\x1dComputeBookableRangesResponse\x12?\n" +
-	"\x06ranges\x18\x01 \x03(\v2'.freebusy.availability.v1.BookableRangeR\x06ranges\"\xfd\x01\n" +
-	"\x1fBatchComputeAvailabilityRequest\x12F\n" +
-	"\tresources\x18\x01 \x03(\tB(\xe0A\x02\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/ResourceR\tresources\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12\x19\n" +
-	"\x05units\x18\x04 \x01(\x05B\x03\xe0A\x01R\x05units\"p\n" +
+	"\x06ranges\x18\x01 \x03(\v2'.freebusy.availability.v1.BookableRangeR\x06ranges\"~\n" +
+	"\x1fBatchComputeAvailabilityRequest\x12U\n" +
+	"\brequests\x18\x01 \x03(\v24.freebusy.availability.v1.ComputeAvailabilityRequestB\x03\xe0A\x02R\brequestsJ\x04\b\x02\x10\x05\"p\n" +
 	" BatchComputeAvailabilityResponse\x12L\n" +
 	"\tresources\x18\x01 \x03(\v2..freebusy.availability.v1.ResourceAvailabilityR\tresourcesB\x9d\x02\n" +
 	"\x1ccom.freebusy.availability.v1B\x11AvailabilityProtoP\x01Zhgithub.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1;availabilitypbv1\xa2\x02\x03FAX\xaa\x02\x18Freebusy.Availability.V1\xca\x02\x18Freebusy\\Availability\\V1\xe2\x02$Freebusy\\Availability\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Availability::V1b\x06proto3"
@@ -931,54 +1200,62 @@ func file_freebusy_availability_v1_availability_proto_rawDescGZIP() []byte {
 	return file_freebusy_availability_v1_availability_proto_rawDescData
 }
 
-var file_freebusy_availability_v1_availability_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_freebusy_availability_v1_availability_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_freebusy_availability_v1_availability_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_freebusy_availability_v1_availability_proto_goTypes = []any{
-	(*Slot)(nil),                             // 0: freebusy.availability.v1.Slot
-	(*NightAvailability)(nil),                // 1: freebusy.availability.v1.NightAvailability
-	(*BookableRange)(nil),                    // 2: freebusy.availability.v1.BookableRange
-	(*ResourceAvailability)(nil),             // 3: freebusy.availability.v1.ResourceAvailability
-	(*ComputeAvailabilityRequest)(nil),       // 4: freebusy.availability.v1.ComputeAvailabilityRequest
-	(*ComputeAvailabilityResponse)(nil),      // 5: freebusy.availability.v1.ComputeAvailabilityResponse
-	(*CheckAvailabilityRequest)(nil),         // 6: freebusy.availability.v1.CheckAvailabilityRequest
-	(*CheckAvailabilityResponse)(nil),        // 7: freebusy.availability.v1.CheckAvailabilityResponse
-	(*ComputeBookableRangesRequest)(nil),     // 8: freebusy.availability.v1.ComputeBookableRangesRequest
-	(*ComputeBookableRangesResponse)(nil),    // 9: freebusy.availability.v1.ComputeBookableRangesResponse
-	(*BatchComputeAvailabilityRequest)(nil),  // 10: freebusy.availability.v1.BatchComputeAvailabilityRequest
-	(*BatchComputeAvailabilityResponse)(nil), // 11: freebusy.availability.v1.BatchComputeAvailabilityResponse
-	(*timestamppb.Timestamp)(nil),            // 12: google.protobuf.Timestamp
-	(*sharedpbv1.Money)(nil),                 // 13: freebusy.shared.v1.Money
-	(*sharedpbv1.CalendarDate)(nil),          // 14: freebusy.shared.v1.CalendarDate
-	(*sharedpbv1.TimeWindow)(nil),            // 15: freebusy.shared.v1.TimeWindow
-	(sharedpbv1.BookingMode)(0),              // 16: freebusy.shared.v1.BookingMode
-	(*durationpb.Duration)(nil),              // 17: google.protobuf.Duration
+	(UnbookableReason_Code)(0),               // 0: freebusy.availability.v1.UnbookableReason.Code
+	(*Slot)(nil),                             // 1: freebusy.availability.v1.Slot
+	(*NightAvailability)(nil),                // 2: freebusy.availability.v1.NightAvailability
+	(*BookableRange)(nil),                    // 3: freebusy.availability.v1.BookableRange
+	(*ResourceAvailability)(nil),             // 4: freebusy.availability.v1.ResourceAvailability
+	(*ComputeAvailabilityRequest)(nil),       // 5: freebusy.availability.v1.ComputeAvailabilityRequest
+	(*ComputeAvailabilityResponse)(nil),      // 6: freebusy.availability.v1.ComputeAvailabilityResponse
+	(*CheckAvailabilityRequest)(nil),         // 7: freebusy.availability.v1.CheckAvailabilityRequest
+	(*UnbookableReason)(nil),                 // 8: freebusy.availability.v1.UnbookableReason
+	(*CheckAvailabilityResponse)(nil),        // 9: freebusy.availability.v1.CheckAvailabilityResponse
+	(*ComputeBookableRangesRequest)(nil),     // 10: freebusy.availability.v1.ComputeBookableRangesRequest
+	(*ComputeBookableRangesResponse)(nil),    // 11: freebusy.availability.v1.ComputeBookableRangesResponse
+	(*BatchComputeAvailabilityRequest)(nil),  // 12: freebusy.availability.v1.BatchComputeAvailabilityRequest
+	(*BatchComputeAvailabilityResponse)(nil), // 13: freebusy.availability.v1.BatchComputeAvailabilityResponse
+	(*timestamppb.Timestamp)(nil),            // 14: google.protobuf.Timestamp
+	(*money.Money)(nil),                      // 15: google.type.Money
+	(*date.Date)(nil),                        // 16: google.type.Date
+	(*sharedpbv1.TimeWindow)(nil),            // 17: freebusy.shared.v1.TimeWindow
+	(sharedpbv1.BookingMode)(0),              // 18: freebusy.shared.v1.BookingMode
+	(*sharedpbv1.DateRange)(nil),             // 19: freebusy.shared.v1.DateRange
+	(*durationpb.Duration)(nil),              // 20: google.protobuf.Duration
 }
 var file_freebusy_availability_v1_availability_proto_depIdxs = []int32{
-	12, // 0: freebusy.availability.v1.Slot.start_time:type_name -> google.protobuf.Timestamp
-	12, // 1: freebusy.availability.v1.Slot.end_time:type_name -> google.protobuf.Timestamp
-	13, // 2: freebusy.availability.v1.Slot.price:type_name -> freebusy.shared.v1.Money
-	14, // 3: freebusy.availability.v1.NightAvailability.night:type_name -> freebusy.shared.v1.CalendarDate
-	13, // 4: freebusy.availability.v1.NightAvailability.price:type_name -> freebusy.shared.v1.Money
-	15, // 5: freebusy.availability.v1.BookableRange.window:type_name -> freebusy.shared.v1.TimeWindow
-	16, // 6: freebusy.availability.v1.ResourceAvailability.mode:type_name -> freebusy.shared.v1.BookingMode
-	0,  // 7: freebusy.availability.v1.ResourceAvailability.slots:type_name -> freebusy.availability.v1.Slot
-	1,  // 8: freebusy.availability.v1.ResourceAvailability.nights:type_name -> freebusy.availability.v1.NightAvailability
-	15, // 9: freebusy.availability.v1.ComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	17, // 10: freebusy.availability.v1.ComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
-	16, // 11: freebusy.availability.v1.ComputeAvailabilityResponse.mode:type_name -> freebusy.shared.v1.BookingMode
-	0,  // 12: freebusy.availability.v1.ComputeAvailabilityResponse.slots:type_name -> freebusy.availability.v1.Slot
-	1,  // 13: freebusy.availability.v1.ComputeAvailabilityResponse.nights:type_name -> freebusy.availability.v1.NightAvailability
-	15, // 14: freebusy.availability.v1.CheckAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	15, // 15: freebusy.availability.v1.ComputeBookableRangesRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	17, // 16: freebusy.availability.v1.ComputeBookableRangesRequest.duration:type_name -> google.protobuf.Duration
-	2,  // 17: freebusy.availability.v1.ComputeBookableRangesResponse.ranges:type_name -> freebusy.availability.v1.BookableRange
-	15, // 18: freebusy.availability.v1.BatchComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	17, // 19: freebusy.availability.v1.BatchComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
-	3,  // 20: freebusy.availability.v1.BatchComputeAvailabilityResponse.resources:type_name -> freebusy.availability.v1.ResourceAvailability
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	14, // 0: freebusy.availability.v1.Slot.start_time:type_name -> google.protobuf.Timestamp
+	14, // 1: freebusy.availability.v1.Slot.end_time:type_name -> google.protobuf.Timestamp
+	15, // 2: freebusy.availability.v1.Slot.price:type_name -> google.type.Money
+	16, // 3: freebusy.availability.v1.NightAvailability.night:type_name -> google.type.Date
+	15, // 4: freebusy.availability.v1.NightAvailability.price:type_name -> google.type.Money
+	17, // 5: freebusy.availability.v1.BookableRange.window:type_name -> freebusy.shared.v1.TimeWindow
+	18, // 6: freebusy.availability.v1.ResourceAvailability.mode:type_name -> freebusy.shared.v1.BookingMode
+	1,  // 7: freebusy.availability.v1.ResourceAvailability.slots:type_name -> freebusy.availability.v1.Slot
+	2,  // 8: freebusy.availability.v1.ResourceAvailability.nights:type_name -> freebusy.availability.v1.NightAvailability
+	17, // 9: freebusy.availability.v1.ComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	19, // 10: freebusy.availability.v1.ComputeAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	20, // 11: freebusy.availability.v1.ComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
+	18, // 12: freebusy.availability.v1.ComputeAvailabilityResponse.mode:type_name -> freebusy.shared.v1.BookingMode
+	1,  // 13: freebusy.availability.v1.ComputeAvailabilityResponse.slots:type_name -> freebusy.availability.v1.Slot
+	2,  // 14: freebusy.availability.v1.ComputeAvailabilityResponse.nights:type_name -> freebusy.availability.v1.NightAvailability
+	17, // 15: freebusy.availability.v1.CheckAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	19, // 16: freebusy.availability.v1.CheckAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	0,  // 17: freebusy.availability.v1.UnbookableReason.code:type_name -> freebusy.availability.v1.UnbookableReason.Code
+	8,  // 18: freebusy.availability.v1.CheckAvailabilityResponse.reasons:type_name -> freebusy.availability.v1.UnbookableReason
+	17, // 19: freebusy.availability.v1.ComputeBookableRangesRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	19, // 20: freebusy.availability.v1.ComputeBookableRangesRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	20, // 21: freebusy.availability.v1.ComputeBookableRangesRequest.duration:type_name -> google.protobuf.Duration
+	3,  // 22: freebusy.availability.v1.ComputeBookableRangesResponse.ranges:type_name -> freebusy.availability.v1.BookableRange
+	5,  // 23: freebusy.availability.v1.BatchComputeAvailabilityRequest.requests:type_name -> freebusy.availability.v1.ComputeAvailabilityRequest
+	4,  // 24: freebusy.availability.v1.BatchComputeAvailabilityResponse.resources:type_name -> freebusy.availability.v1.ResourceAvailability
+	25, // [25:25] is the sub-list for method output_type
+	25, // [25:25] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_availability_v1_availability_proto_init() }
@@ -986,18 +1263,31 @@ func file_freebusy_availability_v1_availability_proto_init() {
 	if File_freebusy_availability_v1_availability_proto != nil {
 		return
 	}
+	file_freebusy_availability_v1_availability_proto_msgTypes[4].OneofWrappers = []any{
+		(*ComputeAvailabilityRequest_Window)(nil),
+		(*ComputeAvailabilityRequest_DateRange)(nil),
+	}
+	file_freebusy_availability_v1_availability_proto_msgTypes[6].OneofWrappers = []any{
+		(*CheckAvailabilityRequest_Window)(nil),
+		(*CheckAvailabilityRequest_DateRange)(nil),
+	}
+	file_freebusy_availability_v1_availability_proto_msgTypes[9].OneofWrappers = []any{
+		(*ComputeBookableRangesRequest_Window)(nil),
+		(*ComputeBookableRangesRequest_DateRange)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_availability_v1_availability_proto_rawDesc), len(file_freebusy_availability_v1_availability_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   12,
+			NumEnums:      1,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_freebusy_availability_v1_availability_proto_goTypes,
 		DependencyIndexes: file_freebusy_availability_v1_availability_proto_depIdxs,
+		EnumInfos:         file_freebusy_availability_v1_availability_proto_enumTypes,
 		MessageInfos:      file_freebusy_availability_v1_availability_proto_msgTypes,
 	}.Build()
 	File_freebusy_availability_v1_availability_proto = out.File

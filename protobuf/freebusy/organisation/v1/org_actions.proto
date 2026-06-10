@@ -18,7 +18,7 @@ message InviteMemberRequest {
   // Format: orgs/{org}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
   ];
 
   // Email address to invite.
@@ -50,6 +50,6 @@ message DeleteMemberRequest {
   // Format: orgs/{org}/members/{member}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Member"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Member"}
   ];
 }

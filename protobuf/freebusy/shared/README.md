@@ -7,27 +7,6 @@
 
 ## Messages
 
-### FreebusyClientOptions
-
-Client-level defaults a caller can attach so common preferences aren't repeated on every request.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `default_page_size` | `int32` | `OPTIONAL` | Default page size for list endpoints when a request leaves page_size unset. Zero lets the server pick. |
-| `default_order` | `OrderDirection` | `OPTIONAL` | Default sort direction for list endpoints. |
-| `default_timezone` | `string` | `OPTIONAL` | Default IANA timezone (e.g. "America/New_York") applied when a resource or query leaves it unset. |
-| `default_currency_code` | `string` | `OPTIONAL` | Default ISO 4217 currency code for prices that don't specify one. |
-
-### Money
-
-An amount of money in a given currency, mirroring google.type.Money so the shell can adopt the standard type later without a wire change. Defined locally to avoid pulling an extra proto dependency into every booking package.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `currency_code` | `string` | `REQUIRED` | ISO 4217 currency code, e.g. "USD". |
-| `units` | `int64` | `OPTIONAL` | Whole units of the amount. May be negative (e.g. a discount line). |
-| `decimal_places` | `int32` | `OPTIONAL` | Fractional units in nanos (10^-9). Must carry the same sign as units. |
-
 ### TimeWindow
 
 A half-open time interval [start_time, end_time). Used for query windows and for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
@@ -37,15 +16,14 @@ A half-open time interval [start_time, end_time). Used for query windows and for
 | `start_time` | `Timestamp` | `REQUIRED` | Inclusive start of the interval. |
 | `end_time` | `Timestamp` | `REQUIRED` | Exclusive end of the interval. |
 
-### CalendarDate
+### DateRange
 
-A whole calendar date in the resource's local timezone, mirroring google.type.Date. Used for per-night availability in NIGHTLY mode.
+A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `year` | `int32` | - | Year of the date, 1-9999. |
-| `month` | `int32` | - | Month of the year, 1-12. |
-| `day` | `int32` | - | Day of the month, 1-31, valid for the given year and month. |
+| `start_date` | `Date` | `REQUIRED` | Inclusive first date of the range. |
+| `end_date` | `Date` | `REQUIRED` | Exclusive end date of the range. |
 
 ## Enums
 

@@ -17,7 +17,7 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 // flat and the organisation appears explicitly only here.
 message Org {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/Org"
+    type: "freebusy.ohtarnished.dev/Org"
     pattern: "orgs/{org}"
     singular: "org"
     plural: "orgs"
@@ -27,8 +27,8 @@ message Org {
   // Format: orgs/{org}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // Human-friendly organisation name (e.g. "Acme Inc.").
   string display_name = 3 [(google.api.field_behavior) = REQUIRED];
@@ -58,7 +58,7 @@ message Org {
 // The membership of a user in an organisation, with their role.
 message Member {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/Member"
+    type: "freebusy.ohtarnished.dev/Member"
     pattern: "orgs/{org}/members/{member}"
     singular: "member"
     plural: "members"
@@ -68,14 +68,14 @@ message Member {
   // Format: orgs/{org}/members/{member}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // The user, once the invite is accepted.
   // Format: users/{user}
   string user = 3 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
   ];
 
   // The invited email address.
@@ -94,7 +94,7 @@ message Member {
   // Format: users/{user}
   string inviter = 8 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
   ];
 
   // Creation timestamp (when the invite was created).

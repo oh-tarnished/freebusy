@@ -20,16 +20,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ResourceService_ListResources_FullMethodName   = "/freebusy.resource.v1.ResourceService/ListResources"
-	ResourceService_GetResource_FullMethodName     = "/freebusy.resource.v1.ResourceService/GetResource"
-	ResourceService_CreateResource_FullMethodName  = "/freebusy.resource.v1.ResourceService/CreateResource"
-	ResourceService_UpdateResource_FullMethodName  = "/freebusy.resource.v1.ResourceService/UpdateResource"
-	ResourceService_ArchiveResource_FullMethodName = "/freebusy.resource.v1.ResourceService/ArchiveResource"
-	ResourceService_ListOfferings_FullMethodName   = "/freebusy.resource.v1.ResourceService/ListOfferings"
-	ResourceService_GetOffering_FullMethodName     = "/freebusy.resource.v1.ResourceService/GetOffering"
-	ResourceService_CreateOffering_FullMethodName  = "/freebusy.resource.v1.ResourceService/CreateOffering"
-	ResourceService_UpdateOffering_FullMethodName  = "/freebusy.resource.v1.ResourceService/UpdateOffering"
-	ResourceService_DeleteOffering_FullMethodName  = "/freebusy.resource.v1.ResourceService/DeleteOffering"
+	ResourceService_ListResources_FullMethodName     = "/freebusy.resource.v1.ResourceService/ListResources"
+	ResourceService_GetResource_FullMethodName       = "/freebusy.resource.v1.ResourceService/GetResource"
+	ResourceService_CreateResource_FullMethodName    = "/freebusy.resource.v1.ResourceService/CreateResource"
+	ResourceService_UpdateResource_FullMethodName    = "/freebusy.resource.v1.ResourceService/UpdateResource"
+	ResourceService_ArchiveResource_FullMethodName   = "/freebusy.resource.v1.ResourceService/ArchiveResource"
+	ResourceService_UnarchiveResource_FullMethodName = "/freebusy.resource.v1.ResourceService/UnarchiveResource"
+	ResourceService_ListOfferings_FullMethodName     = "/freebusy.resource.v1.ResourceService/ListOfferings"
+	ResourceService_GetOffering_FullMethodName       = "/freebusy.resource.v1.ResourceService/GetOffering"
+	ResourceService_CreateOffering_FullMethodName    = "/freebusy.resource.v1.ResourceService/CreateOffering"
+	ResourceService_UpdateOffering_FullMethodName    = "/freebusy.resource.v1.ResourceService/UpdateOffering"
+	ResourceService_DeleteOffering_FullMethodName    = "/freebusy.resource.v1.ResourceService/DeleteOffering"
 )
 
 // ResourceServiceClient is the client API for ResourceService service.
@@ -49,6 +50,8 @@ type ResourceServiceClient interface {
 	UpdateResource(ctx context.Context, in *UpdateResourceRequest, opts ...grpc.CallOption) (*Resource, error)
 	// Archives a resource, hiding it from availability and new bookings.
 	ArchiveResource(ctx context.Context, in *ArchiveResourceRequest, opts ...grpc.CallOption) (*Resource, error)
+	// Unarchives a resource, restoring it to the active state.
+	UnarchiveResource(ctx context.Context, in *UnarchiveResourceRequest, opts ...grpc.CallOption) (*Resource, error)
 	// Lists the offerings attached to a resource.
 	ListOfferings(ctx context.Context, in *ListOfferingsRequest, opts ...grpc.CallOption) (*ListOfferingsResponse, error)
 	// Gets a single offering.
@@ -113,6 +116,16 @@ func (c *resourceServiceClient) ArchiveResource(ctx context.Context, in *Archive
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Resource)
 	err := c.cc.Invoke(ctx, ResourceService_ArchiveResource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resourceServiceClient) UnarchiveResource(ctx context.Context, in *UnarchiveResourceRequest, opts ...grpc.CallOption) (*Resource, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Resource)
+	err := c.cc.Invoke(ctx, ResourceService_UnarchiveResource_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -186,6 +199,8 @@ type ResourceServiceServer interface {
 	UpdateResource(context.Context, *UpdateResourceRequest) (*Resource, error)
 	// Archives a resource, hiding it from availability and new bookings.
 	ArchiveResource(context.Context, *ArchiveResourceRequest) (*Resource, error)
+	// Unarchives a resource, restoring it to the active state.
+	UnarchiveResource(context.Context, *UnarchiveResourceRequest) (*Resource, error)
 	// Lists the offerings attached to a resource.
 	ListOfferings(context.Context, *ListOfferingsRequest) (*ListOfferingsResponse, error)
 	// Gets a single offering.
@@ -220,6 +235,9 @@ func (UnimplementedResourceServiceServer) UpdateResource(context.Context, *Updat
 }
 func (UnimplementedResourceServiceServer) ArchiveResource(context.Context, *ArchiveResourceRequest) (*Resource, error) {
 	return nil, status.Error(codes.Unimplemented, "method ArchiveResource not implemented")
+}
+func (UnimplementedResourceServiceServer) UnarchiveResource(context.Context, *UnarchiveResourceRequest) (*Resource, error) {
+	return nil, status.Error(codes.Unimplemented, "method UnarchiveResource not implemented")
 }
 func (UnimplementedResourceServiceServer) ListOfferings(context.Context, *ListOfferingsRequest) (*ListOfferingsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListOfferings not implemented")
@@ -347,6 +365,24 @@ func _ResourceService_ArchiveResource_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResourceService_UnarchiveResource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnarchiveResourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServiceServer).UnarchiveResource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResourceService_UnarchiveResource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServiceServer).UnarchiveResource(ctx, req.(*UnarchiveResourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ResourceService_ListOfferings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListOfferingsRequest)
 	if err := dec(in); err != nil {
@@ -463,6 +499,10 @@ var ResourceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArchiveResource",
 			Handler:    _ResourceService_ArchiveResource_Handler,
+		},
+		{
+			MethodName: "UnarchiveResource",
+			Handler:    _ResourceService_UnarchiveResource_Handler,
 		},
 		{
 			MethodName: "ListOfferings",

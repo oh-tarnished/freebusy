@@ -17,7 +17,7 @@ option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 // PromoCodeService manages redeemable discount codes and validates them against
 // a prospective booking. Redemption itself happens inside CreateBooking.
 service PromoCodeService {
-  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
       name: "Promo Codes"

@@ -26,7 +26,7 @@ var File_freebusy_booking_v1_booking_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_service_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_service.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a)freebusy/booking/v1/booking_actions.proto\x1a*freebusy/booking/v1/booking_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xe4\f\n" +
+	")freebusy/booking/v1/booking_service.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a)freebusy/booking/v1/booking_actions.proto\x1a*freebusy/booking/v1/booking_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xe5\f\n" +
 	"\x0eBookingService\x12\xdc\x02\n" +
 	"\rCreateBooking\x12).freebusy.booking.v1.CreateBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\x81\x02\xdaA\x12booking,booking_id\xca\xf3\x18y\x12wCreate a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code.\xd2\xf3\x18N\n" +
 	"\tbook_slot\x12\x1fBook a resource at a given time\x1a freebusy.booking.v1.BookSlotArgs\x82\xd3\xe4\x93\x02\x17:\abooking\"\f/v1/bookings\x12\xd1\x01\n" +
@@ -35,7 +35,7 @@ const file_freebusy_booking_v1_booking_service_proto_rawDesc = "" +
 	"\fListBookings\x12(.freebusy.booking.v1.ListBookingsRequest\x1a).freebusy.booking.v1.ListBookingsResponse\"x\xca\xf3\x18`\x12^List bookings. Filter by resource, customer, status, or overlapping time window, and paginate.\x82\xd3\xe4\x93\x02\x0e\x12\f/v1/bookings\x12\xef\x01\n" +
 	"\x0eConfirmBooking\x12*.freebusy.booking.v1.ConfirmBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\x92\x01\xdaA\x04name\xca\xf3\x18_\x12]Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference.\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/{name=bookings/*}:confirm\x12\xd8\x01\n" +
 	"\rCancelBooking\x12).freebusy.booking.v1.CancelBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"~\xdaA\x04name\xca\xf3\x18L\x12JCancel a booking, optionally with a reason and note. Frees the held units.\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/{name=bookings/*}:cancel\x12\x85\x02\n" +
-	"\x11RescheduleBooking\x12-.freebusy.booking.v1.RescheduleBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\xa2\x01\xdaA\vname,window\xca\xf3\x18e\x12cMove a booking to a new span (and optionally offering), re-checking availability on the new window.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/{name=bookings/*}:reschedule\x1aj\xcaA\x17ohtarnished.freebusy.v1\xc2\xf3\x18L\n" +
+	"\x11RescheduleBooking\x12-.freebusy.booking.v1.RescheduleBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\xa2\x01\xdaA\vname,window\xca\xf3\x18e\x12cMove a booking to a new span (and optionally offering), re-checking availability on the new window.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/{name=bookings/*}:reschedule\x1ak\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18L\n" +
 	"J\n" +
 	"\bBookings\x12\x051.0.0\x1a7Create, confirm, cancel, reschedule, and list bookings.B\xf7\x01\n" +
 	"\x17com.freebusy.booking.v1B\x13BookingServiceProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"

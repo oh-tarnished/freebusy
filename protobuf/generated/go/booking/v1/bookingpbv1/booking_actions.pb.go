@@ -227,23 +227,23 @@ var File_freebusy_booking_v1_booking_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"z\n" +
-	"\x15ConfirmBookingRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1fohtarnished.freebusy.v1/BookingR\x04name\x12$\n" +
+	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"{\n" +
+	"\x15ConfirmBookingRequest\x12<\n" +
+	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
+	" freebusy.ohtarnished.dev/BookingR\x04name\x12$\n" +
 	"\vpayment_ref\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
-	"paymentRef\"\xac\x01\n" +
-	"\x14CancelBookingRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1fohtarnished.freebusy.v1/BookingR\x04name\x12>\n" +
+	"paymentRef\"\xad\x01\n" +
+	"\x14CancelBookingRequest\x12<\n" +
+	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
+	" freebusy.ohtarnished.dev/BookingR\x04name\x12>\n" +
 	"\x06reason\x18\x02 \x01(\x0e2!.freebusy.booking.v1.CancelReasonB\x03\xe0A\x01R\x06reason\x12\x17\n" +
-	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\"\x86\x02\n" +
-	"\x18RescheduleBookingRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1fohtarnished.freebusy.v1/BookingR\x04name\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12D\n" +
-	"\boffering\x18\x03 \x01(\tB(\xe0A\x01\xfaA\"\n" +
-	" ohtarnished.freebusy.v1/OfferingR\boffering\x12*\n" +
+	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\"\x88\x02\n" +
+	"\x18RescheduleBookingRequest\x12<\n" +
+	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
+	" freebusy.ohtarnished.dev/BookingR\x04name\x12;\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12E\n" +
+	"\boffering\x18\x03 \x01(\tB)\xe0A\x01\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12*\n" +
 	"\n" +
 	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestIdB\xf7\x01\n" +
 	"\x17com.freebusy.booking.v1B\x13BookingActionsProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"

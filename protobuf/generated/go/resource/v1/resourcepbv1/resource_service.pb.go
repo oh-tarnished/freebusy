@@ -27,39 +27,41 @@ var File_freebusy_resource_v1_resource_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_resource_v1_resource_service_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/resource/v1/resource_service.proto\x12\x14freebusy.resource.v1\x1a#freebusy/resource/v1/resource.proto\x1a,freebusy/resource/v1/resource_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xc9\x13\n" +
+	"+freebusy/resource/v1/resource_service.proto\x12\x14freebusy.resource.v1\x1a#freebusy/resource/v1/resource.proto\x1a,freebusy/resource/v1/resource_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xc1\x15\n" +
 	"\x0fResourceService\x12\xdc\x01\n" +
 	"\rListResources\x12*.freebusy.resource.v1.ListResourcesRequest\x1a+.freebusy.resource.v1.ListResourcesResponse\"r\xca\xf3\x18Y\x12WList bookable resources. Filter by type, status, or tags, search by name, and paginate.\x82\xd3\xe4\x93\x02\x0f\x12\r/v1/resources\x12\xbb\x01\n" +
 	"\vGetResource\x12(.freebusy.resource.v1.GetResourceRequest\x1a\x1e.freebusy.resource.v1.Resource\"b\xdaA\x04name\xca\xf3\x189\x127Get a single resource by name, including its offerings.\x82\xd3\xe4\x93\x02\x18\x12\x16/v1/{name=resources/*}\x12\xe4\x02\n" +
 	"\x0eCreateResource\x12+.freebusy.resource.v1.CreateResourceRequest\x1a\x1e.freebusy.resource.v1.Resource\"\x84\x02\xdaA\x14resource,resource_id\xca\xf3\x18O\x12MCreate a bookable resource with a type, booking mode, timezone, and capacity.\xd2\xf3\x18w\n" +
 	"\fadd_resource\x12AAdd a bookable resource (provider, room, equipment, or unit type)\x1a$freebusy.resource.v1.AddResourceArgs\x82\xd3\xe4\x93\x02\x19:\bresource\"\r/v1/resources\x12\xfd\x01\n" +
 	"\x0eUpdateResource\x12+.freebusy.resource.v1.UpdateResourceRequest\x1a\x1e.freebusy.resource.v1.Resource\"\x9d\x01\xdaA\x14resource,update_mask\xca\xf3\x18Q\x12OUpdate a resource's name, description, capacity, timezone, tags, or attributes.\x82\xd3\xe4\x93\x02+:\bresource2\x1f/v1/{resource.name=resources/*}\x12\xe8\x01\n" +
-	"\x0fArchiveResource\x12,.freebusy.resource.v1.ArchiveResourceRequest\x1a\x1e.freebusy.resource.v1.Resource\"\x86\x01\xdaA\x04name\xca\xf3\x18R\x12PArchive a resource so it stops appearing in availability and accepting bookings.\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/v1/{name=resources/*}:archive\x12\xe0\x01\n" +
+	"\x0fArchiveResource\x12,.freebusy.resource.v1.ArchiveResourceRequest\x1a\x1e.freebusy.resource.v1.Resource\"\x86\x01\xdaA\x04name\xca\xf3\x18R\x12PArchive a resource so it stops appearing in availability and accepting bookings.\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/v1/{name=resources/*}:archive\x12\xf4\x01\n" +
+	"\x11UnarchiveResource\x12..freebusy.resource.v1.UnarchiveResourceRequest\x1a\x1e.freebusy.resource.v1.Resource\"\x8e\x01\xdaA\x04name\xca\xf3\x18X\x12VRestore an archived resource so it appears in availability and accepts bookings again.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/{name=resources/*}:unarchive\x12\xe0\x01\n" +
 	"\rListOfferings\x12*.freebusy.resource.v1.ListOfferingsRequest\x1a+.freebusy.resource.v1.ListOfferingsResponse\"v\xdaA\x06parent\xca\xf3\x18?\x12=List the offerings (duration + price) attached to a resource.\x82\xd3\xe4\x93\x02$\x12\"/v1/{parent=resources/*}/offerings\x12\xae\x01\n" +
 	"\vGetOffering\x12(.freebusy.resource.v1.GetOfferingRequest\x1a\x1e.freebusy.resource.v1.Offering\"U\xdaA\x04name\xca\xf3\x18 \x12\x1eGet a single offering by name.\x82\xd3\xe4\x93\x02$\x12\"/v1/{name=resources/*/offerings/*}\x12\x88\x02\n" +
 	"\x0eCreateOffering\x12+.freebusy.resource.v1.CreateOfferingRequest\x1a\x1e.freebusy.resource.v1.Offering\"\xa8\x01\xdaA\x1bparent,offering,offering_id\xca\xf3\x18R\x12PAdd an offering (e.g. '30-min consult') with a duration and price to a resource.\x82\xd3\xe4\x93\x02.:\boffering\"\"/v1/{parent=resources/*}/offerings\x12\xf0\x01\n" +
 	"\x0eUpdateOffering\x12+.freebusy.resource.v1.UpdateOfferingRequest\x1a\x1e.freebusy.resource.v1.Offering\"\x90\x01\xdaA\x14offering,update_mask\xca\xf3\x188\x126Update an offering's name, duration, price, or status.\x82\xd3\xe4\x93\x027:\boffering2+/v1/{offering.name=resources/*/offerings/*}\x12\xb9\x01\n" +
-	"\x0eDeleteOffering\x12+.freebusy.resource.v1.DeleteOfferingRequest\x1a\x16.google.protobuf.Empty\"b\xdaA\x04name\xca\xf3\x18-\x12+Delete an offering from a resource by name.\x82\xd3\xe4\x93\x02$*\"/v1/{name=resources/*/offerings/*}\x1ay\xcaA\x17ohtarnished.freebusy.v1\xc2\xf3\x18[\n" +
+	"\x0eDeleteOffering\x12+.freebusy.resource.v1.DeleteOfferingRequest\x1a\x16.google.protobuf.Empty\"b\xdaA\x04name\xca\xf3\x18-\x12+Delete an offering from a resource by name.\x82\xd3\xe4\x93\x02$*\"/v1/{name=resources/*/offerings/*}\x1az\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18[\n" +
 	"Y\n" +
 	"\x11Booking Resources\x12\x051.0.0\x1a=Manage the catalog of bookable resources and their offerings.B\x80\x02\n" +
 	"\x18com.freebusy.resource.v1B\x14ResourceServiceProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1\xa2\x02\x03FRX\xaa\x02\x14Freebusy.Resource.V1\xca\x02\x14Freebusy\\Resource\\V1\xe2\x02 Freebusy\\Resource\\V1\\GPBMetadata\xea\x02\x16Freebusy::Resource::V1b\x06proto3"
 
 var file_freebusy_resource_v1_resource_service_proto_goTypes = []any{
-	(*ListResourcesRequest)(nil),   // 0: freebusy.resource.v1.ListResourcesRequest
-	(*GetResourceRequest)(nil),     // 1: freebusy.resource.v1.GetResourceRequest
-	(*CreateResourceRequest)(nil),  // 2: freebusy.resource.v1.CreateResourceRequest
-	(*UpdateResourceRequest)(nil),  // 3: freebusy.resource.v1.UpdateResourceRequest
-	(*ArchiveResourceRequest)(nil), // 4: freebusy.resource.v1.ArchiveResourceRequest
-	(*ListOfferingsRequest)(nil),   // 5: freebusy.resource.v1.ListOfferingsRequest
-	(*GetOfferingRequest)(nil),     // 6: freebusy.resource.v1.GetOfferingRequest
-	(*CreateOfferingRequest)(nil),  // 7: freebusy.resource.v1.CreateOfferingRequest
-	(*UpdateOfferingRequest)(nil),  // 8: freebusy.resource.v1.UpdateOfferingRequest
-	(*DeleteOfferingRequest)(nil),  // 9: freebusy.resource.v1.DeleteOfferingRequest
-	(*ListResourcesResponse)(nil),  // 10: freebusy.resource.v1.ListResourcesResponse
-	(*Resource)(nil),               // 11: freebusy.resource.v1.Resource
-	(*ListOfferingsResponse)(nil),  // 12: freebusy.resource.v1.ListOfferingsResponse
-	(*Offering)(nil),               // 13: freebusy.resource.v1.Offering
-	(*emptypb.Empty)(nil),          // 14: google.protobuf.Empty
+	(*ListResourcesRequest)(nil),     // 0: freebusy.resource.v1.ListResourcesRequest
+	(*GetResourceRequest)(nil),       // 1: freebusy.resource.v1.GetResourceRequest
+	(*CreateResourceRequest)(nil),    // 2: freebusy.resource.v1.CreateResourceRequest
+	(*UpdateResourceRequest)(nil),    // 3: freebusy.resource.v1.UpdateResourceRequest
+	(*ArchiveResourceRequest)(nil),   // 4: freebusy.resource.v1.ArchiveResourceRequest
+	(*UnarchiveResourceRequest)(nil), // 5: freebusy.resource.v1.UnarchiveResourceRequest
+	(*ListOfferingsRequest)(nil),     // 6: freebusy.resource.v1.ListOfferingsRequest
+	(*GetOfferingRequest)(nil),       // 7: freebusy.resource.v1.GetOfferingRequest
+	(*CreateOfferingRequest)(nil),    // 8: freebusy.resource.v1.CreateOfferingRequest
+	(*UpdateOfferingRequest)(nil),    // 9: freebusy.resource.v1.UpdateOfferingRequest
+	(*DeleteOfferingRequest)(nil),    // 10: freebusy.resource.v1.DeleteOfferingRequest
+	(*ListResourcesResponse)(nil),    // 11: freebusy.resource.v1.ListResourcesResponse
+	(*Resource)(nil),                 // 12: freebusy.resource.v1.Resource
+	(*ListOfferingsResponse)(nil),    // 13: freebusy.resource.v1.ListOfferingsResponse
+	(*Offering)(nil),                 // 14: freebusy.resource.v1.Offering
+	(*emptypb.Empty)(nil),            // 15: google.protobuf.Empty
 }
 var file_freebusy_resource_v1_resource_service_proto_depIdxs = []int32{
 	0,  // 0: freebusy.resource.v1.ResourceService.ListResources:input_type -> freebusy.resource.v1.ListResourcesRequest
@@ -67,23 +69,25 @@ var file_freebusy_resource_v1_resource_service_proto_depIdxs = []int32{
 	2,  // 2: freebusy.resource.v1.ResourceService.CreateResource:input_type -> freebusy.resource.v1.CreateResourceRequest
 	3,  // 3: freebusy.resource.v1.ResourceService.UpdateResource:input_type -> freebusy.resource.v1.UpdateResourceRequest
 	4,  // 4: freebusy.resource.v1.ResourceService.ArchiveResource:input_type -> freebusy.resource.v1.ArchiveResourceRequest
-	5,  // 5: freebusy.resource.v1.ResourceService.ListOfferings:input_type -> freebusy.resource.v1.ListOfferingsRequest
-	6,  // 6: freebusy.resource.v1.ResourceService.GetOffering:input_type -> freebusy.resource.v1.GetOfferingRequest
-	7,  // 7: freebusy.resource.v1.ResourceService.CreateOffering:input_type -> freebusy.resource.v1.CreateOfferingRequest
-	8,  // 8: freebusy.resource.v1.ResourceService.UpdateOffering:input_type -> freebusy.resource.v1.UpdateOfferingRequest
-	9,  // 9: freebusy.resource.v1.ResourceService.DeleteOffering:input_type -> freebusy.resource.v1.DeleteOfferingRequest
-	10, // 10: freebusy.resource.v1.ResourceService.ListResources:output_type -> freebusy.resource.v1.ListResourcesResponse
-	11, // 11: freebusy.resource.v1.ResourceService.GetResource:output_type -> freebusy.resource.v1.Resource
-	11, // 12: freebusy.resource.v1.ResourceService.CreateResource:output_type -> freebusy.resource.v1.Resource
-	11, // 13: freebusy.resource.v1.ResourceService.UpdateResource:output_type -> freebusy.resource.v1.Resource
-	11, // 14: freebusy.resource.v1.ResourceService.ArchiveResource:output_type -> freebusy.resource.v1.Resource
-	12, // 15: freebusy.resource.v1.ResourceService.ListOfferings:output_type -> freebusy.resource.v1.ListOfferingsResponse
-	13, // 16: freebusy.resource.v1.ResourceService.GetOffering:output_type -> freebusy.resource.v1.Offering
-	13, // 17: freebusy.resource.v1.ResourceService.CreateOffering:output_type -> freebusy.resource.v1.Offering
-	13, // 18: freebusy.resource.v1.ResourceService.UpdateOffering:output_type -> freebusy.resource.v1.Offering
-	14, // 19: freebusy.resource.v1.ResourceService.DeleteOffering:output_type -> google.protobuf.Empty
-	10, // [10:20] is the sub-list for method output_type
-	0,  // [0:10] is the sub-list for method input_type
+	5,  // 5: freebusy.resource.v1.ResourceService.UnarchiveResource:input_type -> freebusy.resource.v1.UnarchiveResourceRequest
+	6,  // 6: freebusy.resource.v1.ResourceService.ListOfferings:input_type -> freebusy.resource.v1.ListOfferingsRequest
+	7,  // 7: freebusy.resource.v1.ResourceService.GetOffering:input_type -> freebusy.resource.v1.GetOfferingRequest
+	8,  // 8: freebusy.resource.v1.ResourceService.CreateOffering:input_type -> freebusy.resource.v1.CreateOfferingRequest
+	9,  // 9: freebusy.resource.v1.ResourceService.UpdateOffering:input_type -> freebusy.resource.v1.UpdateOfferingRequest
+	10, // 10: freebusy.resource.v1.ResourceService.DeleteOffering:input_type -> freebusy.resource.v1.DeleteOfferingRequest
+	11, // 11: freebusy.resource.v1.ResourceService.ListResources:output_type -> freebusy.resource.v1.ListResourcesResponse
+	12, // 12: freebusy.resource.v1.ResourceService.GetResource:output_type -> freebusy.resource.v1.Resource
+	12, // 13: freebusy.resource.v1.ResourceService.CreateResource:output_type -> freebusy.resource.v1.Resource
+	12, // 14: freebusy.resource.v1.ResourceService.UpdateResource:output_type -> freebusy.resource.v1.Resource
+	12, // 15: freebusy.resource.v1.ResourceService.ArchiveResource:output_type -> freebusy.resource.v1.Resource
+	12, // 16: freebusy.resource.v1.ResourceService.UnarchiveResource:output_type -> freebusy.resource.v1.Resource
+	13, // 17: freebusy.resource.v1.ResourceService.ListOfferings:output_type -> freebusy.resource.v1.ListOfferingsResponse
+	14, // 18: freebusy.resource.v1.ResourceService.GetOffering:output_type -> freebusy.resource.v1.Offering
+	14, // 19: freebusy.resource.v1.ResourceService.CreateOffering:output_type -> freebusy.resource.v1.Offering
+	14, // 20: freebusy.resource.v1.ResourceService.UpdateOffering:output_type -> freebusy.resource.v1.Offering
+	15, // 21: freebusy.resource.v1.ResourceService.DeleteOffering:output_type -> google.protobuf.Empty
+	11, // [11:22] is the sub-list for method output_type
+	0,  // [0:11] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

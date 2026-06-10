@@ -8,6 +8,7 @@ package sharedpbv1
 
 import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	date "google.golang.org/genproto/googleapis/type/date"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -23,72 +24,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// An amount of money in a given currency, mirroring google.type.Money so the
-// shell can adopt the standard type later without a wire change. Defined locally
-// to avoid pulling an extra proto dependency into every booking package.
-type Money struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// ISO 4217 currency code, e.g. "USD".
-	CurrencyCode string `protobuf:"bytes,1,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
-	// Whole units of the amount. May be negative (e.g. a discount line).
-	Units int64 `protobuf:"varint,2,opt,name=units,proto3" json:"units,omitempty"`
-	// Fractional units in nanos (10^-9). Must carry the same sign as units.
-	DecimalPlaces int32 `protobuf:"varint,3,opt,name=decimal_places,json=decimalPlaces,proto3" json:"decimal_places,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Money) Reset() {
-	*x = Money{}
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Money) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Money) ProtoMessage() {}
-
-func (x *Money) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Money.ProtoReflect.Descriptor instead.
-func (*Money) Descriptor() ([]byte, []int) {
-	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Money) GetCurrencyCode() string {
-	if x != nil {
-		return x.CurrencyCode
-	}
-	return ""
-}
-
-func (x *Money) GetUnits() int64 {
-	if x != nil {
-		return x.Units
-	}
-	return 0
-}
-
-func (x *Money) GetDecimalPlaces() int32 {
-	if x != nil {
-		return x.DecimalPlaces
-	}
-	return 0
-}
-
 // A half-open time interval [start_time, end_time). Used for query windows and
 // for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
 type TimeWindow struct {
@@ -103,7 +38,7 @@ type TimeWindow struct {
 
 func (x *TimeWindow) Reset() {
 	*x = TimeWindow{}
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[1]
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -115,7 +50,7 @@ func (x *TimeWindow) String() string {
 func (*TimeWindow) ProtoMessage() {}
 
 func (x *TimeWindow) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[1]
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -128,7 +63,7 @@ func (x *TimeWindow) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TimeWindow.ProtoReflect.Descriptor instead.
 func (*TimeWindow) Descriptor() ([]byte, []int) {
-	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{1}
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *TimeWindow) GetStartTime() *timestamppb.Timestamp {
@@ -145,35 +80,34 @@ func (x *TimeWindow) GetEndTime() *timestamppb.Timestamp {
 	return nil
 }
 
-// A whole calendar date in the resource's local timezone, mirroring
-// google.type.Date. Used for per-night availability in NIGHTLY mode.
-type CalendarDate struct {
+// A half-open range of calendar dates [start_date, end_date), evaluated in the
+// resource's local timezone. The natural query and exception shape for NIGHTLY
+// resources: end_date is the check-out date and is not itself included.
+type DateRange struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Year of the date, 1-9999.
-	Year int32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
-	// Month of the year, 1-12.
-	Month int32 `protobuf:"varint,2,opt,name=month,proto3" json:"month,omitempty"`
-	// Day of the month, 1-31, valid for the given year and month.
-	Day           int32 `protobuf:"varint,3,opt,name=day,proto3" json:"day,omitempty"`
+	// Inclusive first date of the range.
+	StartDate *date.Date `protobuf:"bytes,1,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	// Exclusive end date of the range.
+	EndDate       *date.Date `protobuf:"bytes,2,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CalendarDate) Reset() {
-	*x = CalendarDate{}
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[2]
+func (x *DateRange) Reset() {
+	*x = DateRange{}
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CalendarDate) String() string {
+func (x *DateRange) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CalendarDate) ProtoMessage() {}
+func (*DateRange) ProtoMessage() {}
 
-func (x *CalendarDate) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[2]
+func (x *DateRange) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -184,50 +118,39 @@ func (x *CalendarDate) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CalendarDate.ProtoReflect.Descriptor instead.
-func (*CalendarDate) Descriptor() ([]byte, []int) {
-	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use DateRange.ProtoReflect.Descriptor instead.
+func (*DateRange) Descriptor() ([]byte, []int) {
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CalendarDate) GetYear() int32 {
+func (x *DateRange) GetStartDate() *date.Date {
 	if x != nil {
-		return x.Year
+		return x.StartDate
 	}
-	return 0
+	return nil
 }
 
-func (x *CalendarDate) GetMonth() int32 {
+func (x *DateRange) GetEndDate() *date.Date {
 	if x != nil {
-		return x.Month
+		return x.EndDate
 	}
-	return 0
-}
-
-func (x *CalendarDate) GetDay() int32 {
-	if x != nil {
-		return x.Day
-	}
-	return 0
+	return nil
 }
 
 var File_freebusy_shared_v1_types_proto protoreflect.FileDescriptor
 
 const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"x\n" +
-	"\x05Money\x12(\n" +
-	"\rcurrency_code\x18\x01 \x01(\tB\x03\xe0A\x02R\fcurrencyCode\x12\x19\n" +
-	"\x05units\x18\x02 \x01(\x03B\x03\xe0A\x01R\x05units\x12*\n" +
-	"\x0edecimal_places\x18\x03 \x01(\x05B\x03\xe0A\x01R\rdecimalPlaces\"\x88\x01\n" +
+	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\"\x88\x01\n" +
 	"\n" +
 	"TimeWindow\x12>\n" +
 	"\n" +
 	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x02R\tstartTime\x12:\n" +
-	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x02R\aendTime\"J\n" +
-	"\fCalendarDate\x12\x12\n" +
-	"\x04year\x18\x01 \x01(\x05R\x04year\x12\x14\n" +
-	"\x05month\x18\x02 \x01(\x05R\x05month\x12\x10\n" +
-	"\x03day\x18\x03 \x01(\x05R\x03dayB\xe6\x01\n" +
+	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x02R\aendTime\"u\n" +
+	"\tDateRange\x125\n" +
+	"\n" +
+	"start_date\x18\x01 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\tstartDate\x121\n" +
+	"\bend_date\x18\x02 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\aendDateB\xe6\x01\n" +
 	"\x16com.freebusy.shared.v1B\n" +
 	"TypesProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1\xa2\x02\x03FSX\xaa\x02\x12Freebusy.Shared.V1\xca\x02\x12Freebusy\\Shared\\V1\xe2\x02\x1eFreebusy\\Shared\\V1\\GPBMetadata\xea\x02\x14Freebusy::Shared::V1b\x06proto3"
 
@@ -243,21 +166,23 @@ func file_freebusy_shared_v1_types_proto_rawDescGZIP() []byte {
 	return file_freebusy_shared_v1_types_proto_rawDescData
 }
 
-var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_freebusy_shared_v1_types_proto_goTypes = []any{
-	(*Money)(nil),                 // 0: freebusy.shared.v1.Money
-	(*TimeWindow)(nil),            // 1: freebusy.shared.v1.TimeWindow
-	(*CalendarDate)(nil),          // 2: freebusy.shared.v1.CalendarDate
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*TimeWindow)(nil),            // 0: freebusy.shared.v1.TimeWindow
+	(*DateRange)(nil),             // 1: freebusy.shared.v1.DateRange
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*date.Date)(nil),             // 3: google.type.Date
 }
 var file_freebusy_shared_v1_types_proto_depIdxs = []int32{
-	3, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
-	3, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
+	2, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
+	3, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
+	3, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_shared_v1_types_proto_init() }
@@ -271,7 +196,7 @@ func file_freebusy_shared_v1_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_shared_v1_types_proto_rawDesc), len(file_freebusy_shared_v1_types_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

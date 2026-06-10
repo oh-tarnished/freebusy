@@ -20,10 +20,13 @@ message RecurringRule {
   // RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
   string rrule = 1 [(google.api.field_behavior) = REQUIRED];
 
-  // Local time-of-day the window opens, "HH:MM" (e.g. "09:00").
+  // Local time-of-day the window opens, 24-hour "HH:MM" (e.g. "09:00").
+  // Unset (with closes also unset) means open the whole day.
   string opens = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Local time-of-day the window closes, "HH:MM" (e.g. "17:00").
+  // Local time-of-day the window closes, 24-hour "HH:MM" (e.g. "17:00").
+  // A closes at or before opens means the span crosses midnight into the next
+  // day (e.g. opens "22:00", closes "02:00").
   string closes = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
@@ -70,7 +73,7 @@ message StayConstraints {
 // holiday closure, or extra hours beyond the recurring rules.
 message AvailabilityException {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/AvailabilityException"
+    type: "freebusy.ohtarnished.dev/AvailabilityException"
     pattern: "resources/{resource}/availabilityExceptions/{availability_exception}"
     singular: "availabilityException"
     plural: "availabilityExceptions"
@@ -80,14 +83,21 @@ message AvailabilityException {
   // Format: resources/{resource}/availabilityExceptions/{availability_exception}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Was `uid`; the name's final segment (a ULID) is the canonical ID.
+  reserved 2;
 
   // Whether this span closes the resource or adds extra availability.
   ExceptionKind kind = 3 [(google.api.field_behavior) = REQUIRED];
 
-  // The affected span.
-  freebusy.shared.v1.TimeWindow window = 4 [(google.api.field_behavior) = REQUIRED];
+  // The affected span. Exactly one must be set.
+  oneof span {
+    // An exact time window, the natural form for TIME_SLOT resources.
+    freebusy.shared.v1.TimeWindow window = 4;
+
+    // A range of whole calendar dates in the resource's timezone, the natural
+    // form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
+    freebusy.shared.v1.DateRange date_range = 7;
+  }
 
   // Human-readable reason (e.g. "Public holiday").
   string reason = 5 [(google.api.field_behavior) = OPTIONAL];
@@ -100,7 +110,7 @@ message AvailabilityException {
 // freebusy engine consumes. Modeled as a singleton resource, one per resource.
 message Schedule {
   option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/Schedule"
+    type: "freebusy.ohtarnished.dev/Schedule"
     pattern: "resources/{resource}/schedule"
     singular: "schedule"
     plural: "schedules"
@@ -124,7 +134,7 @@ message Schedule {
   // Format: resources/{resource}/availabilityExceptions/{availability_exception}
   repeated string exceptions = 5 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/AvailabilityException"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/AvailabilityException"}
   ];
 }
 

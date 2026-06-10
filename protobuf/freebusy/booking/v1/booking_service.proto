@@ -21,7 +21,7 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 // an internal goroutine/cron, and confirmation usually arrives as a payment
 // webhook that calls ConfirmBooking server-side.
 service BookingService {
-  option (google.api.default_host) = "ohtarnished.freebusy.v1";
+  option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
       name: "Bookings"
