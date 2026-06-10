@@ -33,7 +33,7 @@ go_proto_library(
         "@rules_go//proto:go_proto",
         "@rules_go//proto:go_grpc_v2",
     ],
-    importpath = "github.com/oh-tarnished/freebusy/gen/resource/v1/resourcepbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1",
     proto = ":resourcepbv1_proto",
     visibility = ["//visibility:public"],
     deps = [
@@ -46,6 +46,6 @@ go_proto_library(
 go_library(
     name = "resourcepbv1",
     embed = [":resourcepbv1_go_proto"],
-    importpath = "github.com/oh-tarnished/freebusy/gen/resource/v1/resourcepbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1",
     visibility = ["//visibility:public"],
 )

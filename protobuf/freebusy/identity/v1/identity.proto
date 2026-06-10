@@ -7,7 +7,7 @@ import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/identity/v1/identitypbv1;identitypbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/identity/v1/identitypbv1;identitypbv1";
 option java_multiple_files = true;
 option java_outer_classname = "IdentityProto";
 option java_package = "dev.ohtarnished.freebusy.identity.v1";

@@ -6,7 +6,7 @@ import "freebusy/schedule/v1/schedule.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1;schedulepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/schedule/v1/schedulepbv1;schedulepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ScheduleMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.schedule.v1";
@@ -72,8 +72,8 @@ message ListExceptionsRequest {
   // Maximum number of exceptions to return.
   int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // 1-based page number.
-  int32 page = 3 [(google.api.field_behavior) = OPTIONAL];
+  // Token for the page of results to return. Empty for the first page.
+  string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListExceptions.
@@ -81,14 +81,8 @@ message ListExceptionsResponse {
   // The page of exceptions.
   repeated AvailabilityException exceptions = 1;
 
-  // Total matching exceptions across all pages.
-  int64 total = 2;
-
-  // Page number returned.
-  int32 page = 3;
-
-  // Page size applied.
-  int32 page_size = 4;
+  // Token for the next page of results. Empty if there are no more pages.
+  string next_page_token = 2;
 }
 
 // Request message for AddException.

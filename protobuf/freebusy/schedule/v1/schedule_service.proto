@@ -9,7 +9,7 @@ import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 import "mcp/protobuf/annotations.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1;schedulepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/schedule/v1/schedulepbv1;schedulepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ScheduleServiceProto";
 option java_package = "dev.ohtarnished.freebusy.schedule.v1";

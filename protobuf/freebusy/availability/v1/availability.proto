@@ -15,7 +15,7 @@ import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/availability/v1/availabilitypbv1;availabilitypbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/availability/v1/availabilitypbv1;availabilitypbv1";
 option java_multiple_files = true;
 option java_outer_classname = "AvailabilityProto";
 option java_package = "dev.ohtarnished.freebusy.availability.v1";

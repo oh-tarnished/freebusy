@@ -9,7 +9,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1;promocodepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "PromoCodeMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";

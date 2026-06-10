@@ -14,7 +14,7 @@ import "google/api/field_info.proto";
 import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/booking/v1/bookingpbv1;bookingpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "BookingMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.booking.v1";

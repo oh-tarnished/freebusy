@@ -27,7 +27,7 @@ go_proto_library(
         "@rules_go//proto:go_proto",
         "@rules_go//proto:go_grpc_v2",
     ],
-    importpath = "github.com/oh-tarnished/freebusy/gen/identity/v1/identitypbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/identity/v1/identitypbv1",
     proto = ":identitypbv1_proto",
     visibility = ["//visibility:public"],
     deps = [
@@ -39,6 +39,6 @@ go_proto_library(
 go_library(
     name = "identitypbv1",
     embed = [":identitypbv1_go_proto"],
-    importpath = "github.com/oh-tarnished/freebusy/gen/identity/v1/identitypbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/identity/v1/identitypbv1",
     visibility = ["//visibility:public"],
 )

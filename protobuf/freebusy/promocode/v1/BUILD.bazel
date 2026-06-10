@@ -30,7 +30,7 @@ go_proto_library(
         "@rules_go//proto:go_proto",
         "@rules_go//proto:go_grpc_v2",
     ],
-    importpath = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1",
     proto = ":promocodepbv1_proto",
     visibility = ["//visibility:public"],
     deps = [
@@ -43,6 +43,6 @@ go_proto_library(
 go_library(
     name = "promocodepbv1",
     embed = [":promocodepbv1_go_proto"],
-    importpath = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1",
     visibility = ["//visibility:public"],
 )

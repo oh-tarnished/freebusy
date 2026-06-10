@@ -7,7 +7,7 @@ import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "mcp/protobuf/annotations.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/availability/v1/availabilitypbv1;availabilitypbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/availability/v1/availabilitypbv1;availabilitypbv1";
 option java_multiple_files = true;
 option java_outer_classname = "AvailabilityServiceProto";
 option java_package = "dev.ohtarnished.freebusy.availability.v1";

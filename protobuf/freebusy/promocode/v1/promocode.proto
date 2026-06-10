@@ -7,7 +7,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1;promocodepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "PromoCodeProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";
@@ -49,10 +49,10 @@ message PromoCode {
   freebusy.shared.v1.Money amount_off = 8 [(google.api.field_behavior) = OPTIONAL];
 
   // Earliest the code can be redeemed. Unset means no lower bound.
-  google.protobuf.Timestamp redeem_start = 9 [(google.api.field_behavior) = OPTIONAL];
+  google.protobuf.Timestamp redeem_start_time = 9 [(google.api.field_behavior) = OPTIONAL];
 
   // Latest the code can be redeemed. Unset means no upper bound.
-  google.protobuf.Timestamp redeem_end = 10 [(google.api.field_behavior) = OPTIONAL];
+  google.protobuf.Timestamp redeem_end_time = 10 [(google.api.field_behavior) = OPTIONAL];
 
   // Maximum total redemptions across all customers. Zero means unlimited.
   int64 max_redemptions = 11 [(google.api.field_behavior) = OPTIONAL];

@@ -30,7 +30,7 @@ go_proto_library(
         "@rules_go//proto:go_proto",
         "@rules_go//proto:go_grpc_v2",
     ],
-    importpath = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/schedule/v1/schedulepbv1",
     proto = ":schedulepbv1_proto",
     visibility = ["//visibility:public"],
     deps = [
@@ -43,6 +43,6 @@ go_proto_library(
 go_library(
     name = "schedulepbv1",
     embed = [":schedulepbv1_go_proto"],
-    importpath = "github.com/oh-tarnished/freebusy/gen/schedule/v1/schedulepbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/schedule/v1/schedulepbv1",
     visibility = ["//visibility:public"],
 )

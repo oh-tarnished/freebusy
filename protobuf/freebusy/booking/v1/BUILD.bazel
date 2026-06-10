@@ -32,7 +32,7 @@ go_proto_library(
         "@rules_go//proto:go_proto",
         "@rules_go//proto:go_grpc_v2",
     ],
-    importpath = "github.com/oh-tarnished/freebusy/gen/booking/v1/bookingpbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/booking/v1/bookingpbv1",
     proto = ":bookingpbv1_proto",
     visibility = ["//visibility:public"],
     deps = [
@@ -45,6 +45,6 @@ go_proto_library(
 go_library(
     name = "bookingpbv1",
     embed = [":bookingpbv1_go_proto"],
-    importpath = "github.com/oh-tarnished/freebusy/gen/booking/v1/bookingpbv1",
+    importpath = "github.com/oh-tarnished/freebusy/generated/go/booking/v1/bookingpbv1",
     visibility = ["//visibility:public"],
 )

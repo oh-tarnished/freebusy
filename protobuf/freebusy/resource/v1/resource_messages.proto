@@ -8,7 +8,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/resource/v1/resourcepbv1;resourcepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1;resourcepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ResourceMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.resource.v1";

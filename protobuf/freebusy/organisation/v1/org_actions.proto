@@ -6,7 +6,7 @@ import "freebusy/organisation/v1/organisation.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/organisation/v1/orgpbv1;orgpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "OrgActionsProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";

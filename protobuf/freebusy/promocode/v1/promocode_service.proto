@@ -9,7 +9,7 @@ import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 import "mcp/protobuf/annotations.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/promocode/v1/promocodepbv1;promocodepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "PromoCodeServiceProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";

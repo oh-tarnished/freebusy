@@ -10,7 +10,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/gen/resource/v1/resourcepbv1;resourcepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1;resourcepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ResourceProto";
 option java_package = "dev.ohtarnished.freebusy.resource.v1";
