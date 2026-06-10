@@ -2,18 +2,13 @@ syntax = "proto3";
 
 package freebusy.booking.v1;
 
-// (-- api-linter: core::0215::foreign-type-reference=disabled
-//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
-//     shared-types package; RescheduleBookingRequest reuses its TimeWindow
-//     rather than inlining a per-package copy. --)
-
 import "freebusy/booking/v1/booking.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/field_info.proto";
 import "google/api/resource.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/booking/v1/bookingpbv1;bookingpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "BookingActionsProto";
 option java_package = "dev.ohtarnished.freebusy.booking.v1";

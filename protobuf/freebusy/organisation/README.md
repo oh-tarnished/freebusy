@@ -17,10 +17,10 @@ OrgService manages tenants and their members. Day-to-day tenancy is enforced by 
 | `GetOrg` | `GetOrgRequest` | `Org` | Gets a single organisation. |
 | `CreateOrg` | `CreateOrgRequest` | `Org` | Creates an organisation. The caller becomes its first owner. |
 | `UpdateOrg` | `UpdateOrgRequest` | `Org` | Updates an organisation. |
-| `InviteMember` | `InviteMemberRequest` | `Member` | Invites a member to an organisation. (-- api-linter: core::0136::response-message-name=disabled     aip.dev/not-precedent: invite creates and returns the Member resource;     an InviteMemberResponse wrapper would only obscure that. --) |
+| `InviteMember` | `InviteMemberRequest` | `InviteMemberResponse` | Invites a member to an organisation. |
 | `ListMembers` | `ListMembersRequest` | `ListMembersResponse` | Lists the members of an organisation. |
 | `GetMember` | `GetMemberRequest` | `Member` | Gets a single member. |
-| `SetMemberRole` | `SetMemberRoleRequest` | `Member` | Changes a member's role. (-- api-linter: core::0134::synonyms=disabled     aip.dev/not-precedent: SetMemberRole is a deliberate, authz-gated custom     method, not the standard Update of the Member resource. --) (-- api-linter: core::0136::response-message-name=disabled     aip.dev/not-precedent: returns the updated Member resource it operates     on, rather than a SetMemberRoleResponse wrapper. --) |
+| `UpdateMember` | `UpdateMemberRequest` | `Member` | Updates a member; the role is the only mutable field. |
 
 ## Messages
 
@@ -34,14 +34,22 @@ Request message for InviteMember.
 | `email` | `string` | `REQUIRED` | Email address to invite. |
 | `role` | `OrganisationRole` | `REQUIRED` | Role to grant on acceptance. |
 
-### SetMemberRoleRequest
+### InviteMemberResponse
 
-Request message for SetMemberRole.
+Response message for InviteMember.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The member to change. Format: orgs/{org}/members/{member} |
-| `role` | `OrganisationRole` | `REQUIRED` | The new role. |
+| `member` | `Member` | - | The created member (in INVITED state). |
+
+### UpdateMemberRequest
+
+Request message for UpdateMember. The role is the only mutable field; set update_mask to "role" to change it.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `member` | `Member` | `REQUIRED` | The member to update; its name identifies the target. |
+| `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable fields. |
 
 ### DeleteMemberRequest
 
@@ -91,7 +99,7 @@ Request message for GetOrg.
 
 ### CreateOrgRequest
 
-Request message for CreateOrg. (-- api-linter: core::0133::request-parent-required=disabled     aip.dev/not-precedent: Org is the top-level tenant resource; it has no     parent collection, so there is no parent field to require. --)
+Request message for CreateOrg.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -118,15 +126,14 @@ Request message for DeleteOrg.
 
 ### ListMembersRequest
 
-Request message for ListMembers. (-- api-linter: core::0132::request-unknown-fields=disabled     aip.dev/not-precedent: role and state are first-class typed filters kept     for caller ergonomics instead of folding them into a filter string. --) (-- api-linter: core::0216::state-field-output-only=disabled     aip.dev/not-precedent: `state` here is an input filter, not the resource's     own lifecycle state field, so it is intentionally settable. --)
+Request message for ListMembers.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The organisation whose members to list. Format: orgs/{org} |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of members to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListMembers call's next_page_token. |
-| `role` | `OrganisationRole` | `OPTIONAL` | Restrict to a single role. |
-| `state` | `State` | `OPTIONAL` | Restrict to a single membership state. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `role = ADMIN` or `state = ACTIVE`. |
 
 ### ListMembersResponse
 

@@ -14,11 +14,10 @@ ScheduleService is the write side of availability configuration: a resource's re
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
 | `GetSchedule` | `GetScheduleRequest` | `Schedule` | Reads the full availability configuration for a resource. |
-| `SetRecurringHours` | `SetRecurringHoursRequest` | `Schedule` | Replaces the recurring working hours for a resource. |
-| `SetBuffers` | `SetBuffersRequest` | `Schedule` | Sets the buffer and notice settings for a resource. |
-| `SetStayConstraints` | `SetStayConstraintsRequest` | `Schedule` | Sets the stay constraints for a NIGHTLY resource. |
-| `ListExceptions` | `ListExceptionsRequest` | `ListExceptionsResponse` | Lists the exceptions configured for a resource. |
-| `AddException` | `AddExceptionRequest` | `AvailabilityException` | Adds an availability exception to a resource. |
+| `UpdateSchedule` | `UpdateScheduleRequest` | `Schedule` | Updates a resource's availability configuration. Set update_mask to the section(s) to replace: recurring_rules, buffers, and/or stay_constraints. |
+| `ListAvailabilityExceptions` | `ListAvailabilityExceptionsRequest` | `ListAvailabilityExceptionsResponse` | Lists the exceptions configured for a resource. |
+| `GetAvailabilityException` | `GetAvailabilityExceptionRequest` | `AvailabilityException` | Gets a single availability exception. |
+| `CreateAvailabilityException` | `CreateAvailabilityExceptionRequest` | `AvailabilityException` | Adds an availability exception to a resource. |
 
 ## Messages
 
@@ -29,21 +28,8 @@ A recurring availability window expressed as an RRULE plus a daily open span. Th
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `rrule` | `string` | `REQUIRED` | RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR". |
-| `opens_at` | `string` | `OPTIONAL` | Local time-of-day the window opens, "HH:MM" (e.g. "09:00"). |
-| `closes_at` | `string` | `OPTIONAL` | Local time-of-day the window closes, "HH:MM" (e.g. "17:00"). |
-
-### AvailabilityException
-
-An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The exception name. Format: resources/{resource}/exceptions/{exception} |
-| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
-| `kind` | `ExceptionKind` | `REQUIRED` | Whether this span closes the resource or adds extra availability. |
-| `window` | `TimeWindow` | `REQUIRED` | The affected span. |
-| `reason` | `string` | `OPTIONAL` | Human-readable reason (e.g. "Public holiday"). |
-| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
+| `opens` | `string` | `OPTIONAL` | Local time-of-day the window opens, "HH:MM" (e.g. "09:00"). |
+| `closes` | `string` | `OPTIONAL` | Local time-of-day the window closes, "HH:MM" (e.g. "17:00"). |
 
 ### BufferSettings
 
@@ -51,8 +37,8 @@ Buffer and notice settings applied around bookings.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `before` | `Duration` | `OPTIONAL` | Prep time reserved before each booking. |
-| `after_turnover` | `Duration` | `OPTIONAL` | Turnover / cleaning time reserved after each booking. |
+| `start_delta` | `Duration` | `OPTIONAL` | Prep time reserved before each booking. |
+| `end_delta` | `Duration` | `OPTIONAL` | Turnover / cleaning time reserved after each booking. |
 | `min_notice` | `Duration` | `OPTIONAL` | Minimum lead time between now and a booking's start. |
 | `max_advance` | `Duration` | `OPTIONAL` | How far into the future bookings may be made. |
 | `gap` | `Duration` | `OPTIONAL` | Minimum gap enforced between two adjacent bookings. |
@@ -70,17 +56,30 @@ Stay rules that affect bookability for NIGHTLY resources.
 | `advance_min_days` | `int32` | `OPTIONAL` | Earliest a stay may begin, in days from now. |
 | `advance_max_days` | `int32` | `OPTIONAL` | Latest a stay may begin, in days from now. Zero means no limit. |
 
-### Schedule
+### AvailabilityException
 
-Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes.
+An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `OUTPUT_ONLY` | The resource this schedule belongs to. Format: resources/{resource} |
-| `recurring_rules` | `RecurringRule` | - | Recurring working hours. |
-| `buffers` | `BufferSettings` | - | Buffer and notice settings. |
-| `stay_constraints` | `StayConstraints` | - | Stay rules (NIGHTLY resources). |
-| `exceptions` | `AvailabilityException` | - | Active exceptions. |
+| `name` | `string` | `IDENTIFIER` | The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+| `uuid` | `string` | `OUTPUT_ONLY` | Server-assigned stable UUID. |
+| `kind` | `ExceptionKind` | `REQUIRED` | Whether this span closes the resource or adds extra availability. |
+| `window` | `TimeWindow` | `REQUIRED` | The affected span. |
+| `reason` | `string` | `OPTIONAL` | Human-readable reason (e.g. "Public holiday"). |
+| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
+
+### Schedule
+
+Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The schedule name. Format: resources/{resource}/schedule |
+| `recurring_rules` | `RecurringRule` | `OPTIONAL` | Recurring working hours. |
+| `buffers` | `BufferSettings` | `OPTIONAL` | Buffer and notice settings. |
+| `stay_constraints` | `StayConstraints` | `OPTIONAL` | Stay rules (NIGHTLY resources). |
+| `exceptions` | `string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
 
 ### GetScheduleRequest
 
@@ -88,72 +87,61 @@ Request message for GetSchedule.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource whose schedule to read. Format: resources/{resource} |
+| `name` | `string` | `REQUIRED` | The schedule to read. Format: resources/{resource}/schedule |
 
-### SetRecurringHoursRequest
+### UpdateScheduleRequest
 
-Request message for SetRecurringHours. Replaces the resource's recurring rules.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource whose recurring hours are being set. Format: resources/{resource} |
-| `rules` | `RecurringRule` | `REQUIRED` | The complete set of recurring rules to apply, replacing any existing ones. |
-
-### SetBuffersRequest
-
-Request message for SetBuffers.
+Request message for UpdateSchedule. Set update_mask to the section(s) to replace: "recurring_rules", "buffers", and/or "stay_constraints".
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource whose buffers are being set. Format: resources/{resource} |
-| `buffers` | `BufferSettings` | `REQUIRED` | The buffer settings to apply. |
+| `schedule` | `Schedule` | `REQUIRED` | The schedule to update; its name identifies the target. |
+| `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable sections. |
 
-### SetStayConstraintsRequest
+### ListAvailabilityExceptionsRequest
 
-Request message for SetStayConstraints.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource whose stay constraints are being set. Format: resources/{resource} |
-| `stay_constraints` | `StayConstraints` | `REQUIRED` | The stay constraints to apply. |
-
-### ListExceptionsRequest
-
-Request message for ListExceptions.
+Request message for ListAvailabilityExceptions.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The resource whose exceptions to list. Format: resources/{resource} |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of exceptions to return. |
-| `page` | `int32` | `OPTIONAL` | 1-based page number. |
+| `page_token` | `string` | `OPTIONAL` | Token for the page of results to return. Empty for the first page. |
 
-### ListExceptionsResponse
+### ListAvailabilityExceptionsResponse
 
-Response message for ListExceptions.
+Response message for ListAvailabilityExceptions.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `exceptions` | `AvailabilityException` | - | The page of exceptions. |
-| `total` | `int64` | - | Total matching exceptions across all pages. |
-| `page` | `int32` | - | Page number returned. |
-| `page_size` | `int32` | - | Page size applied. |
+| `availability_exceptions` | `AvailabilityException` | - | The page of exceptions. |
+| `next_page_token` | `string` | - | Token for the next page of results. Empty if there are no more pages. |
 
-### AddExceptionRequest
+### GetAvailabilityExceptionRequest
 
-Request message for AddException.
+Request message for GetAvailabilityException.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The exception to retrieve. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+
+### CreateAvailabilityExceptionRequest
+
+Request message for CreateAvailabilityException.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The resource to add the exception to. Format: resources/{resource} |
-| `exception` | `AvailabilityException` | `REQUIRED` | The exception to add. Its name field is ignored. |
+| `availability_exception` | `AvailabilityException` | `REQUIRED` | The exception to add. Its name field is ignored. |
+| `availability_exception_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the exception; the server generates one if unset. |
 
-### RemoveExceptionRequest
+### DeleteAvailabilityExceptionRequest
 
-Request message for RemoveException.
+Request message for DeleteAvailabilityException.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The exception to remove. Format: resources/{resource}/exceptions/{exception} |
+| `name` | `string` | `REQUIRED` | The exception to remove. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
 
 ## Enums
 

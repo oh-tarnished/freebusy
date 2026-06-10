@@ -3,8 +3,9 @@ syntax = "proto3";
 package freebusy.booking.v1;
 
 import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/booking/v1/bookingpbv1;bookingpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "BookingMcpProto";
 option java_package = "dev.ohtarnished.freebusy.booking.v1";
@@ -17,12 +18,8 @@ message BookSlotArgs {
   // Offering to book, as a resource name or a display name (e.g. "30-min consult").
   string offering = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Start of the booking, RFC 3339 (e.g. "2026-07-01T14:00:00Z").
-  // (-- api-linter: core::0142::time-field-type=disabled
-  //     aip.dev/not-precedent: this is an MCP prompt argument the model fills as
-  //     a string, not an API resource field; a Timestamp message can't be passed
-  //     as a prompt arg. --)
-  string start_time = 3 [(google.api.field_behavior) = REQUIRED];
+  // Start of the booking (RFC 3339, e.g. "2026-07-01T14:00:00Z").
+  google.protobuf.Timestamp start_time = 3 [(google.api.field_behavior) = REQUIRED];
 
   // Number of units / party size. Defaults to 1.
   int32 units = 4 [(google.api.field_behavior) = OPTIONAL];

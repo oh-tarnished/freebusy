@@ -9,7 +9,7 @@ import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/schedule/v1/schedulepbv1;schedulepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1;schedulepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ScheduleProto";
 option java_package = "dev.ohtarnished.freebusy.schedule.v1";
@@ -21,61 +21,19 @@ message RecurringRule {
   string rrule = 1 [(google.api.field_behavior) = REQUIRED];
 
   // Local time-of-day the window opens, "HH:MM" (e.g. "09:00").
-  string opens_at = 2 [(google.api.field_behavior) = OPTIONAL];
+  string opens = 2 [(google.api.field_behavior) = OPTIONAL];
 
   // Local time-of-day the window closes, "HH:MM" (e.g. "17:00").
-  string closes_at = 3 [(google.api.field_behavior) = OPTIONAL];
-}
-
-// An override of a resource's normal hours on a specific span: a blackout /
-// holiday closure, or extra hours beyond the recurring rules.
-message AvailabilityException {
-  option (google.api.resource) = {
-    type: "ohtarnished.freebusy.v1/AvailabilityException"
-    pattern: "resources/{resource}/exceptions/{exception}"
-    singular: "availabilityException"
-    plural: "availabilityExceptions"
-  };
-
-  // The exception name.
-  // Format: resources/{resource}/exceptions/{exception}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
-
-  // Server-assigned stable UUID.
-  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
-
-  // Whether this span closes the resource or adds extra availability.
-  ExceptionKind kind = 3 [(google.api.field_behavior) = REQUIRED];
-
-  // The affected span.
-  freebusy.shared.v1.TimeWindow window = 4 [(google.api.field_behavior) = REQUIRED];
-
-  // Human-readable reason (e.g. "Public holiday").
-  string reason = 5 [(google.api.field_behavior) = OPTIONAL];
-
-  // Creation timestamp.
-  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
-}
-
-// Whether an exception removes or adds availability.
-enum ExceptionKind {
-  // Unset.
-  EXCEPTION_KIND_UNSPECIFIED = 0;
-
-  // The resource is closed for the span (blackout / holiday).
-  EXCEPTION_KIND_CLOSURE = 1;
-
-  // The resource is open beyond its recurring hours for the span.
-  EXCEPTION_KIND_EXTRA_HOURS = 2;
+  string closes = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Buffer and notice settings applied around bookings.
 message BufferSettings {
   // Prep time reserved before each booking.
-  google.protobuf.Duration before = 1 [(google.api.field_behavior) = OPTIONAL];
+  google.protobuf.Duration start_delta = 1 [(google.api.field_behavior) = OPTIONAL];
 
   // Turnover / cleaning time reserved after each booking.
-  google.protobuf.Duration after_turnover = 2 [(google.api.field_behavior) = OPTIONAL];
+  google.protobuf.Duration end_delta = 2 [(google.api.field_behavior) = OPTIONAL];
 
   // Minimum lead time between now and a booking's start.
   google.protobuf.Duration min_notice = 3 [(google.api.field_behavior) = OPTIONAL];
@@ -108,25 +66,76 @@ message StayConstraints {
   int32 advance_max_days = 6 [(google.api.field_behavior) = OPTIONAL];
 }
 
+// An override of a resource's normal hours on a specific span: a blackout /
+// holiday closure, or extra hours beyond the recurring rules.
+message AvailabilityException {
+  option (google.api.resource) = {
+    type: "ohtarnished.freebusy.v1/AvailabilityException"
+    pattern: "resources/{resource}/availabilityExceptions/{availability_exception}"
+    singular: "availabilityException"
+    plural: "availabilityExceptions"
+  };
+
+  // The exception name.
+  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // Server-assigned stable UUID.
+  string uuid = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether this span closes the resource or adds extra availability.
+  ExceptionKind kind = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // The affected span.
+  freebusy.shared.v1.TimeWindow window = 4 [(google.api.field_behavior) = REQUIRED];
+
+  // Human-readable reason (e.g. "Public holiday").
+  string reason = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Creation timestamp.
+  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
 // Aggregate read view of a resource's availability configuration: the inputs the
-// freebusy engine consumes.
+// freebusy engine consumes. Modeled as a singleton resource, one per resource.
 message Schedule {
-  // The resource this schedule belongs to.
-  // Format: resources/{resource}
-  string resource = 1 [
-    (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
-  ];
+  option (google.api.resource) = {
+    type: "ohtarnished.freebusy.v1/Schedule"
+    pattern: "resources/{resource}/schedule"
+    singular: "schedule"
+    plural: "schedules"
+  };
+
+  // The schedule name.
+  // Format: resources/{resource}/schedule
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // Recurring working hours.
-  repeated RecurringRule recurring_rules = 2;
+  repeated RecurringRule recurring_rules = 2 [(google.api.field_behavior) = OPTIONAL];
 
   // Buffer and notice settings.
-  BufferSettings buffers = 3;
+  BufferSettings buffers = 3 [(google.api.field_behavior) = OPTIONAL];
 
   // Stay rules (NIGHTLY resources).
-  StayConstraints stay_constraints = 4;
+  StayConstraints stay_constraints = 4 [(google.api.field_behavior) = OPTIONAL];
 
-  // Active exceptions.
-  repeated AvailabilityException exceptions = 5;
+  // Resource names of the active exceptions; manage them with the
+  // AvailabilityException standard methods.
+  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  repeated string exceptions = 5 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/AvailabilityException"}
+  ];
+}
+
+// Whether an exception removes or adds availability.
+enum ExceptionKind {
+  // Unset.
+  EXCEPTION_KIND_UNSPECIFIED = 0;
+
+  // The resource is closed for the span (blackout / holiday).
+  EXCEPTION_KIND_CLOSURE = 1;
+
+  // The resource is open beyond its recurring hours for the span.
+  EXCEPTION_KIND_EXTRA_HOURS = 2;
 }

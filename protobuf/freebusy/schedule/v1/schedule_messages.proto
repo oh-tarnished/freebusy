@@ -5,63 +5,35 @@ package freebusy.schedule.v1;
 import "freebusy/schedule/v1/schedule.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/schedule/v1/schedulepbv1;schedulepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1;schedulepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ScheduleMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.schedule.v1";
 
 // Request message for GetSchedule.
 message GetScheduleRequest {
-  // The resource whose schedule to read.
-  // Format: resources/{resource}
-  string resource = 1 [
+  // The schedule to read.
+  // Format: resources/{resource}/schedule
+  string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Schedule"}
   ];
 }
 
-// Request message for SetRecurringHours. Replaces the resource's recurring rules.
-message SetRecurringHoursRequest {
-  // The resource whose recurring hours are being set.
-  // Format: resources/{resource}
-  string resource = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
-  ];
+// Request message for UpdateSchedule. Set update_mask to the section(s) to
+// replace: "recurring_rules", "buffers", and/or "stay_constraints".
+message UpdateScheduleRequest {
+  // The schedule to update; its name identifies the target.
+  Schedule schedule = 1 [(google.api.field_behavior) = REQUIRED];
 
-  // The complete set of recurring rules to apply, replacing any existing ones.
-  repeated RecurringRule rules = 2 [(google.api.field_behavior) = REQUIRED];
+  // Fields to overwrite. Omit to replace all mutable sections.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Request message for SetBuffers.
-message SetBuffersRequest {
-  // The resource whose buffers are being set.
-  // Format: resources/{resource}
-  string resource = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
-  ];
-
-  // The buffer settings to apply.
-  BufferSettings buffers = 2 [(google.api.field_behavior) = REQUIRED];
-}
-
-// Request message for SetStayConstraints.
-message SetStayConstraintsRequest {
-  // The resource whose stay constraints are being set.
-  // Format: resources/{resource}
-  string resource = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
-  ];
-
-  // The stay constraints to apply.
-  StayConstraints stay_constraints = 2 [(google.api.field_behavior) = REQUIRED];
-}
-
-// Request message for ListExceptions.
-message ListExceptionsRequest {
+// Request message for ListAvailabilityExceptions.
+message ListAvailabilityExceptionsRequest {
   // The resource whose exceptions to list.
   // Format: resources/{resource}
   string parent = 1 [
@@ -76,17 +48,27 @@ message ListExceptionsRequest {
   string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Response message for ListExceptions.
-message ListExceptionsResponse {
+// Response message for ListAvailabilityExceptions.
+message ListAvailabilityExceptionsResponse {
   // The page of exceptions.
-  repeated AvailabilityException exceptions = 1;
+  repeated AvailabilityException availability_exceptions = 1;
 
   // Token for the next page of results. Empty if there are no more pages.
   string next_page_token = 2;
 }
 
-// Request message for AddException.
-message AddExceptionRequest {
+// Request message for GetAvailabilityException.
+message GetAvailabilityExceptionRequest {
+  // The exception to retrieve.
+  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/AvailabilityException"}
+  ];
+}
+
+// Request message for CreateAvailabilityException.
+message CreateAvailabilityExceptionRequest {
   // The resource to add the exception to.
   // Format: resources/{resource}
   string parent = 1 [
@@ -95,13 +77,16 @@ message AddExceptionRequest {
   ];
 
   // The exception to add. Its name field is ignored.
-  AvailabilityException exception = 2 [(google.api.field_behavior) = REQUIRED];
+  AvailabilityException availability_exception = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the exception; the server generates one if unset.
+  string availability_exception_id = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Request message for RemoveException.
-message RemoveExceptionRequest {
+// Request message for DeleteAvailabilityException.
+message DeleteAvailabilityExceptionRequest {
   // The exception to remove.
-  // Format: resources/{resource}/exceptions/{exception}
+  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/AvailabilityException"}

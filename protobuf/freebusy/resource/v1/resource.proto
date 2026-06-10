@@ -10,7 +10,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1;resourcepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ResourceProto";
 option java_package = "dev.ohtarnished.freebusy.resource.v1";
@@ -51,7 +51,7 @@ message Resource {
 
   // IANA timezone (e.g. "America/New_York") the resource's hours and dates are
   // evaluated in. Required so availability is timezone-correct.
-  string timezone = 8 [(google.api.field_behavior) = REQUIRED];
+  string time_zone = 8 [(google.api.field_behavior) = REQUIRED];
 
   // Arbitrary tags for grouping and filtering.
   repeated string tags = 9 [(google.api.field_behavior) = OPTIONAL];
@@ -59,12 +59,27 @@ message Resource {
   // Arbitrary attributes used for templating, policy, and segmentation.
   google.protobuf.Struct attributes = 10 [(google.api.field_behavior) = OPTIONAL];
 
-  // The offerings attached to this resource (e.g. "30-min consult"). Read-only
-  // here; mutate them with the Offering methods.
-  repeated Offering offerings = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Resource names of the offerings attached to this resource (e.g. "30-min
+  // consult"); manage them with the Offering standard methods.
+  // Format: resources/{resource}/offerings/{offering}
+  repeated string offerings = 11 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
+  ];
 
-  // Lifecycle status.
-  ResourceStatus status = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle status of a resource.
+  enum State {
+    // Unset.
+    STATE_UNSPECIFIED = 0;
+
+    // Bookable.
+    STATE_ACTIVE = 1;
+
+    // Retired; hidden from availability and new bookings.
+    STATE_ARCHIVED = 2;
+  }
+  // Lifecycle State.
+  State resource_state = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -105,9 +120,19 @@ message Offering {
 
   // What the price is charged per.
   PricingUnit pricing_unit = 7 [(google.api.field_behavior) = OPTIONAL];
+  // Lifecycle STATE of an offering.
+  enum State {
+    // Unset; treated as active.
+    STATE_UNSPECIFIED = 0;
 
-  // Lifecycle status.
-  OfferingStatus status = 8 [(google.api.field_behavior) = OPTIONAL];
+    // Bookable.
+    STATE_ACTIVE = 1;
+
+    // Hidden from new bookings.
+    STATE_INACTIVE = 2;
+  }
+  // Lifecycle State.
+  State offering_state = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -135,30 +160,6 @@ enum ResourceType {
 
   // A generic space or venue.
   RESOURCE_TYPE_SPACE = 5;
-}
-
-// Lifecycle status of a resource.
-enum ResourceStatus {
-  // Unset.
-  RESOURCE_STATUS_UNSPECIFIED = 0;
-
-  // Bookable.
-  RESOURCE_STATUS_ACTIVE = 1;
-
-  // Retired; hidden from availability and new bookings.
-  RESOURCE_STATUS_ARCHIVED = 2;
-}
-
-// Lifecycle status of an offering.
-enum OfferingStatus {
-  // Unset; treated as active.
-  OFFERING_STATUS_UNSPECIFIED = 0;
-
-  // Bookable.
-  OFFERING_STATUS_ACTIVE = 1;
-
-  // Hidden from new bookings.
-  OFFERING_STATUS_INACTIVE = 2;
 }
 
 // What an offering's price is charged per.

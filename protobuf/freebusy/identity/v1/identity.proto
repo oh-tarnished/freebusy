@@ -7,7 +7,7 @@ import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/identity/v1/identitypbv1;identitypbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1;identitypbv1";
 option java_multiple_files = true;
 option java_outer_classname = "IdentityProto";
 option java_package = "dev.ohtarnished.freebusy.identity.v1";
@@ -16,9 +16,6 @@ option java_package = "dev.ohtarnished.freebusy.identity.v1";
 // redirect flow handled over plain HTTP by the IdP, so most of "auth" never
 // appears as an RPC. Email and identity come from the IdP and are read-only
 // here; only profile preferences are editable.
-// (-- api-linter: core::0121::resource-must-support-list=disabled
-//     aip.dev/not-precedent: User is reached only as "users/me"; the identity
-//     service deliberately exposes no list-all-users surface. --)
 message User {
   option (google.api.resource) = {
     type: "ohtarnished.freebusy.v1/User"
@@ -92,4 +89,25 @@ message UpdateUserRequest {
 
   // Fields to overwrite. Omit to replace all mutable profile fields.
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for ListUsers.
+message ListUsersRequest {
+  // Maximum number of users to return. The server may cap this.
+  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Page token from a previous ListUsers call's next_page_token.
+  string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression over user fields (AIP-160), e.g. `display_name`.
+  string filter = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListUsers.
+message ListUsersResponse {
+  // The page of users.
+  repeated User users = 1;
+
+  // Token to pass as page_token to retrieve the next page; empty when no more.
+  string next_page_token = 2;
 }

@@ -7,7 +7,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/organisation/v1/orgpbv1;orgpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "OrgMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
@@ -48,9 +48,6 @@ message GetOrgRequest {
 }
 
 // Request message for CreateOrg.
-// (-- api-linter: core::0133::request-parent-required=disabled
-//     aip.dev/not-precedent: Org is the top-level tenant resource; it has no
-//     parent collection, so there is no parent field to require. --)
 message CreateOrgRequest {
   // The organisation to create. The name and state fields are ignored. The caller
   // becomes the organisation's first OWNER.
@@ -84,12 +81,6 @@ message DeleteOrgRequest {
 }
 
 // Request message for ListMembers.
-// (-- api-linter: core::0132::request-unknown-fields=disabled
-//     aip.dev/not-precedent: role and state are first-class typed filters kept
-//     for caller ergonomics instead of folding them into a filter string. --)
-// (-- api-linter: core::0216::state-field-output-only=disabled
-//     aip.dev/not-precedent: `state` here is an input filter, not the resource's
-//     own lifecycle state field, so it is intentionally settable. --)
 message ListMembersRequest {
   // The organisation whose members to list.
   // Format: orgs/{org}
@@ -104,11 +95,8 @@ message ListMembersRequest {
   // Page token from a previous ListMembers call's next_page_token.
   string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
 
-  // Restrict to a single role.
-  OrganisationRole role = 4 [(google.api.field_behavior) = OPTIONAL];
-
-  // Restrict to a single membership state.
-  Member.State state = 5 [(google.api.field_behavior) = OPTIONAL];
+  // Filter expression (AIP-160), e.g. `role = ADMIN` or `state = ACTIVE`.
+  string filter = 4 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListMembers.

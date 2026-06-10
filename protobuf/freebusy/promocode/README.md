@@ -35,15 +35,16 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `discount_type` | `DiscountType` | `REQUIRED` | Whether the discount is a percentage or a fixed amount. |
 | `percent_off` | `int32` | `OPTIONAL` | Percentage off (1-100), when discount_type is PERCENTAGE. |
 | `amount_off` | `Money` | `OPTIONAL` | Fixed amount off, when discount_type is FIXED_AMOUNT. |
-| `redeem_start` | `Timestamp` | `OPTIONAL` | Earliest the code can be redeemed. Unset means no lower bound. |
-| `redeem_end` | `Timestamp` | `OPTIONAL` | Latest the code can be redeemed. Unset means no upper bound. |
+| `redeem_start_time` | `Timestamp` | `OPTIONAL` | Earliest the code can be redeemed. Unset means no lower bound. |
+| `redeem_end_time` | `Timestamp` | `OPTIONAL` | Latest the code can be redeemed. Unset means no upper bound. |
 | `max_redemptions` | `int64` | `OPTIONAL` | Maximum total redemptions across all customers. Zero means unlimited. |
 | `per_customer_limit` | `int32` | `OPTIONAL` | Maximum redemptions per customer. Zero means unlimited. |
 | `min_subtotal` | `Money` | `OPTIONAL` | Minimum subtotal required for the code to apply. |
-| `applies_to_resources` | `string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
-| `applies_to_offerings` | `string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
+| `applicable_resources` | `string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
+| `applicable_offerings` | `string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
 | `redemption_count` | `int64` | `OUTPUT_ONLY` | How many times the code has been redeemed. |
-| `status` | `PromoCodeStatus` | `OPTIONAL` | Lifecycle status. |
+| `state` | `State` | `OUTPUT_ONLY` | Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions). |
+| `disabled` | `bool` | `OPTIONAL` | If true, the code is manually disabled regardless of its window and caps. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 
@@ -54,11 +55,9 @@ Request message for ListPromoCodes.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of promo codes to return. The server may cap this. |
-| `page` | `int32` | `OPTIONAL` | 1-based page number. |
-| `query` | `string` | `OPTIONAL` | Free-text search over code and display name. |
-| `status` | `PromoCodeStatus` | `OPTIONAL` | Restrict to a single status. |
-| `order_by` | `string` | `OPTIONAL` | Field to sort by (e.g. "code", "create_time"). |
-| `order` | `OrderDirection` | `OPTIONAL` | Sort direction. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListPromoCodes call's next_page_token. |
+| `filter` | `string` | `OPTIONAL` | Filter expression over promo code fields, e.g. `state = ACTIVE` or a substring match on code/display_name (AIP-160). |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "code" or "create_time desc". |
 
 ### ListPromoCodesResponse
 
@@ -67,9 +66,7 @@ Response message for ListPromoCodes.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `promo_codes` | `PromoCode` | - | The page of promo codes. |
-| `total` | `int64` | - | Total matching promo codes across all pages. |
-| `page` | `int32` | - | Page number returned. |
-| `page_size` | `int32` | - | Page size applied. |
+| `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ### GetPromoCodeRequest
 
@@ -86,6 +83,7 @@ Request message for CreatePromoCode.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `promo_code` | `PromoCode` | `REQUIRED` | The promo code to create. The name and redemption_count fields are ignored. |
+| `promo_code_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the promo code; the server generates one if unset. |
 
 ### UpdatePromoCodeRequest
 
@@ -139,17 +137,6 @@ How a promo code's discount is computed.
 | `DISCOUNT_TYPE_UNSPECIFIED` | 0 | Unset. |
 | `DISCOUNT_TYPE_PERCENTAGE` | 1 | A percentage off the subtotal (percent_off). |
 | `DISCOUNT_TYPE_FIXED_AMOUNT` | 2 | A fixed amount off the subtotal (amount_off). |
-
-### PromoCodeStatus
-
-Lifecycle status of a promo code.
-
-| Value | Number | Description |
-| --- | --- | --- |
-| `PROMO_CODE_STATUS_UNSPECIFIED` | 0 | Unset; treated as active. |
-| `PROMO_CODE_STATUS_ACTIVE` | 1 | Redeemable (subject to window and caps). |
-| `PROMO_CODE_STATUS_DISABLED` | 2 | Manually disabled. |
-| `PROMO_CODE_STATUS_EXPIRED` | 3 | Past its redemption window or out of redemptions. |
 
 ---
 

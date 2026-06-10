@@ -39,7 +39,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `state` | `State` | `OUTPUT_ONLY` | Current lifecycle state. |
 | `hold_expire_time` | `Timestamp` | `OUTPUT_ONLY` | When the pending hold lapses, if not confirmed first. |
 | `price` | `Money` | `OUTPUT_ONLY` | Computed subtotal before discounts. |
-| `promo_code` | `string` | `OUTPUT_ONLY` | The promo code applied to this booking, if any. Format: promoCodes/{promo_code} |
+| `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code} |
 | `discount` | `Money` | `OUTPUT_ONLY` | Discount applied from the promo code. |
 | `total` | `Money` | `OUTPUT_ONLY` | Final total after discounts. |
 | `notes` | `string` | `OPTIONAL` | Free-form notes on the booking. |
@@ -49,6 +49,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `confirm_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was confirmed, if at all. |
 | `cancel_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was cancelled, if at all. |
+| `hold_ttl` | `Duration` | `IMMUTABLE` | Requested time-to-live of the hold, set at creation. The server caps this and reflects the effective expiry in hold_expire_time. |
 
 ### ConfirmBookingRequest
 
@@ -88,20 +89,18 @@ Arguments for the "book_slot" prompt.
 | --- | --- | --- | --- |
 | `resource` | `string` | `REQUIRED` | Resource to book, as a resource name ("resources/42") or a display name. |
 | `offering` | `string` | `OPTIONAL` | Offering to book, as a resource name or a display name (e.g. "30-min consult"). |
-| `start_time` | `string` | `REQUIRED` | Start of the booking, RFC 3339 (e.g. "2026-07-01T14:00:00Z"). (-- api-linter: core::0142::time-field-type=disabled     aip.dev/not-precedent: this is an MCP prompt argument the model fills as     a string, not an API resource field; a Timestamp message can't be passed     as a prompt arg. --) |
+| `start_time` | `Timestamp` | `REQUIRED` | Start of the booking (RFC 3339, e.g. "2026-07-01T14:00:00Z"). |
 | `units` | `int32` | `OPTIONAL` | Number of units / party size. Defaults to 1. |
 | `promo_code` | `string` | `OPTIONAL` | Promo code to apply, if any. |
 
 ### CreateBookingRequest
 
-Request message for CreateBooking. This places a hold transactionally; the request_id makes retries safe (the same id always yields the same booking instead of a duplicate hold). (-- api-linter: core::0133::request-unknown-fields=disabled     aip.dev/not-precedent: promo_code and hold_ttl are create-time inputs with     no home on the Booking resource (its promo_code is the resolved, output-only     reference; hold lifetime is not resource state), so they ride the request. --)
+Request message for CreateBooking. This places a hold transactionally; the request_id makes retries safe (the same id always yields the same booking instead of a duplicate hold). The promo code and hold TTL are set on the Booking resource itself.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `booking` | `Booking` | `REQUIRED` | The booking to create. Supply resource, window, and optionally offering, units, customer, notes, and attributes. Output-only fields are ignored. |
+| `booking` | `Booking` | `REQUIRED` | The booking to create. Supply resource, window, and optionally offering, units, customer, notes, attributes, promo_code, and hold_ttl. Output-only fields are ignored. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this create. Reusing an id returns the booking created by the first call. |
-| `promo_code` | `string` | `OPTIONAL` | Human promo code to apply to the booking (e.g. "SUMMER25"). |
-| `hold_ttl` | `Duration` | `OPTIONAL` | Overrides the default time-to-live of the hold. Server caps this. |
 | `booking_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the booking; the server generates one if unset. |
 
 ### GetBookingRequest
@@ -114,16 +113,13 @@ Request message for GetBooking.
 
 ### ListBookingsRequest
 
-Request message for ListBookings. (-- api-linter: core::0132::request-unknown-fields=disabled     aip.dev/not-precedent: resource, customer, state, and window are first-class     typed filters kept for caller ergonomics instead of a filter string. --) (-- api-linter: core::0216::state-field-output-only=disabled     aip.dev/not-precedent: `state` here is an input filter, not the resource's     own lifecycle state field, so it is intentionally settable. --)
+Request message for ListBookings.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of bookings to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListBookings call's next_page_token. |
-| `resource` | `string` | `OPTIONAL` | Restrict to bookings of this resource. Format: resources/{resource} |
-| `customer` | `string` | `OPTIONAL` | Restrict to bookings for this customer. Format: users/{user} |
-| `state` | `State` | `OPTIONAL` | Restrict to a single state. |
-| `window` | `TimeWindow` | `OPTIONAL` | Restrict to bookings whose window overlaps this range. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `resource = "resources/42"`, `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc" or "window.start_time". |
 
 ### ListBookingsResponse

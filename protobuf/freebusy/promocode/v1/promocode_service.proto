@@ -9,7 +9,7 @@ import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 import "mcp/protobuf/annotations.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "PromoCodeServiceProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";
@@ -45,7 +45,7 @@ service PromoCodeService {
       post: "/v1/promoCodes"
       body: "promo_code"
     };
-    option (google.api.method_signature) = "promo_code";
+    option (google.api.method_signature) = "promo_code,promo_code_id";
     option (mcp.protobuf.tool) = {description: "Create a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope."};
   }
 
@@ -69,7 +69,7 @@ service PromoCodeService {
   // Validates a code against a prospective booking and returns the discount.
   rpc ValidatePromoCode(ValidatePromoCodeRequest) returns (ValidatePromoCodeResponse) {
     option (google.api.http) = {
-      post: "/v1/promoCodes:validate"
+      post: "/v1/promoCodes:validatePromoCode"
       body: "*"
     };
     option (google.api.method_signature) = "code,subtotal";

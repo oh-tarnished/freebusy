@@ -3,13 +3,12 @@ syntax = "proto3";
 package freebusy.promocode.v1;
 
 import "freebusy/promocode/v1/promocode.proto";
-import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "PromoCodeMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";
@@ -19,20 +18,15 @@ message ListPromoCodesRequest {
   // Maximum number of promo codes to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // 1-based page number.
-  int32 page = 2 [(google.api.field_behavior) = OPTIONAL];
+  // Page token from a previous ListPromoCodes call's next_page_token.
+  string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Free-text search over code and display name.
-  string query = 3 [(google.api.field_behavior) = OPTIONAL];
+  // Filter expression over promo code fields, e.g. `state = ACTIVE` or a
+  // substring match on code/display_name (AIP-160).
+  string filter = 3 [(google.api.field_behavior) = OPTIONAL];
 
-  // Restrict to a single status.
-  PromoCodeStatus status = 4 [(google.api.field_behavior) = OPTIONAL];
-
-  // Field to sort by (e.g. "code", "create_time").
-  string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
-
-  // Sort direction.
-  freebusy.shared.v1.OrderDirection order = 6 [(google.api.field_behavior) = OPTIONAL];
+  // Sort order, e.g. "code" or "create_time desc".
+  string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListPromoCodes.
@@ -40,14 +34,8 @@ message ListPromoCodesResponse {
   // The page of promo codes.
   repeated PromoCode promo_codes = 1;
 
-  // Total matching promo codes across all pages.
-  int64 total = 2;
-
-  // Page number returned.
-  int32 page = 3;
-
-  // Page size applied.
-  int32 page_size = 4;
+  // Token to pass as page_token to retrieve the next page; empty when no more.
+  string next_page_token = 2;
 }
 
 // Request message for GetPromoCode.
@@ -64,6 +52,9 @@ message GetPromoCodeRequest {
 message CreatePromoCodeRequest {
   // The promo code to create. The name and redemption_count fields are ignored.
   PromoCode promo_code = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the promo code; the server generates one if unset.
+  string promo_code_id = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for UpdatePromoCode.

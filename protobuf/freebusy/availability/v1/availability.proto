@@ -2,12 +2,6 @@ syntax = "proto3";
 
 package freebusy.availability.v1;
 
-// (-- api-linter: core::0215::foreign-type-reference=disabled
-//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
-//     shared-types package (Money, TimeWindow, CalendarDate, BookingMode).
-//     Inlining these per service package would be strictly worse than the
-//     shared package this API is built around. --)
-
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
@@ -15,7 +9,7 @@ import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/availability/v1/availabilitypbv1;availabilitypbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1;availabilitypbv1";
 option java_multiple_files = true;
 option java_outer_classname = "AvailabilityProto";
 option java_package = "dev.ohtarnished.freebusy.availability.v1";

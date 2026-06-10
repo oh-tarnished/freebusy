@@ -11,7 +11,7 @@ prek *args:
 generate language="all" descriptors="true":
     #!/usr/bin/env sh
     if $descriptors ; then
-        ./tools/protobuf/protobuf/buf/gen_descriptor.sh
+        ./tools/protobuf/buf/gen_descriptor.sh
     else
         echo "==> Error: Script for descriptors not found!"
     fi

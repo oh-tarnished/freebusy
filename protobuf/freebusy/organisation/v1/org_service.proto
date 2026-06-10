@@ -10,7 +10,7 @@ import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 import "mcp/protobuf/annotations.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/organisation/v1/orgpbv1;orgpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "OrgServiceProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
@@ -69,10 +69,7 @@ service OrgService {
   }
 
   // Invites a member to an organisation.
-  // (-- api-linter: core::0136::response-message-name=disabled
-  //     aip.dev/not-precedent: invite creates and returns the Member resource;
-  //     an InviteMemberResponse wrapper would only obscure that. --)
-  rpc InviteMember(InviteMemberRequest) returns (Member) {
+  rpc InviteMember(InviteMemberRequest) returns (InviteMemberResponse) {
     option (google.api.http) = {
       post: "/v1/{parent=orgs/*}/members:invite"
       body: "*"
@@ -100,19 +97,13 @@ service OrgService {
     option (mcp.protobuf.tool) = {description: "Get a single organisation member by resource name."};
   }
 
-  // Changes a member's role.
-  // (-- api-linter: core::0134::synonyms=disabled
-  //     aip.dev/not-precedent: SetMemberRole is a deliberate, authz-gated custom
-  //     method, not the standard Update of the Member resource. --)
-  // (-- api-linter: core::0136::response-message-name=disabled
-  //     aip.dev/not-precedent: returns the updated Member resource it operates
-  //     on, rather than a SetMemberRoleResponse wrapper. --)
-  rpc SetMemberRole(SetMemberRoleRequest) returns (Member) {
+  // Updates a member; the role is the only mutable field.
+  rpc UpdateMember(UpdateMemberRequest) returns (Member) {
     option (google.api.http) = {
-      post: "/v1/{name=orgs/*/members/*}:setRole"
-      body: "*"
+      patch: "/v1/{member.name=orgs/*/members/*}"
+      body: "member"
     };
-    option (google.api.method_signature) = "name,role";
+    option (google.api.method_signature) = "member,update_mask";
     option (mcp.protobuf.tool) = {description: "Change an organisation member's role."};
   }
 

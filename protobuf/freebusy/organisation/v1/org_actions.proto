@@ -5,8 +5,9 @@ package freebusy.organisation.v1;
 import "freebusy/organisation/v1/organisation.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/organisation/v1/orgpbv1;orgpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "OrgActionsProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
@@ -27,17 +28,20 @@ message InviteMemberRequest {
   OrganisationRole role = 3 [(google.api.field_behavior) = REQUIRED];
 }
 
-// Request message for SetMemberRole.
-message SetMemberRoleRequest {
-  // The member to change.
-  // Format: orgs/{org}/members/{member}
-  string name = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Member"}
-  ];
+// Response message for InviteMember.
+message InviteMemberResponse {
+  // The created member (in INVITED state).
+  Member member = 1;
+}
 
-  // The new role.
-  OrganisationRole role = 2 [(google.api.field_behavior) = REQUIRED];
+// Request message for UpdateMember. The role is the only mutable field; set
+// update_mask to "role" to change it.
+message UpdateMemberRequest {
+  // The member to update; its name identifies the target.
+  Member member = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for DeleteMember.

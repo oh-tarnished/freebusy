@@ -13,14 +13,15 @@ IdentityService is the thin "who am I" surface. Login itself is an OIDC redirect
 
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
-| `GetCurrentUser` | `GetCurrentUserRequest` | `User` | Returns the signed-in user. |
-| `UpdateProfile` | `UpdateProfileRequest` | `User` | Updates the signed-in user's profile. |
+| `GetUser` | `GetUserRequest` | `User` | Returns a user. Use "users/me" for the signed-in caller. |
+| `ListUsers` | `ListUsersRequest` | `ListUsersResponse` | Lists users. |
+| `UpdateUser` | `UpdateUserRequest` | `User` | Updates the signed-in user's profile. |
 
 ## Messages
 
 ### User
 
-A signed-in person. Identity is deliberately thin: actual login is an OIDC redirect flow handled over plain HTTP by the IdP, so most of "auth" never appears as an RPC. Email and identity come from the IdP and are read-only here; only profile preferences are editable. (-- api-linter: core::0121::resource-must-support-list=disabled     aip.dev/not-precedent: User is reached only as "users/me"; the identity     service deliberately exposes no list-all-users surface. --)
+A signed-in person. Identity is deliberately thin: actual login is an OIDC redirect flow handled over plain HTTP by the IdP, so most of "auth" never appears as an RPC. Email and identity come from the IdP and are read-only here; only profile preferences are editable.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -61,6 +62,25 @@ Request message for UpdateUser.
 | --- | --- | --- | --- |
 | `user` | `User` | `REQUIRED` | The user to update; its name identifies the target (typically "users/me"). |
 | `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable profile fields. |
+
+### ListUsersRequest
+
+Request message for ListUsers.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of users to return. The server may cap this. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListUsers call's next_page_token. |
+| `filter` | `string` | `OPTIONAL` | Filter expression over user fields (AIP-160), e.g. `display_name`. |
+
+### ListUsersResponse
+
+Response message for ListUsers.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `users` | `User` | - | The page of users. |
+| `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ---
 

@@ -7,7 +7,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "PromoCodeProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";
@@ -22,6 +22,21 @@ message PromoCode {
     singular: "promoCode"
     plural: "promoCodes"
   };
+
+  // Lifecycle state of a promo code.
+  enum State {
+    // Unset; treated as active.
+    STATE_UNSPECIFIED = 0;
+
+    // Redeemable (subject to window and caps).
+    STATE_ACTIVE = 1;
+
+    // Manually disabled.
+    STATE_DISABLED = 2;
+
+    // Past its redemption window or out of redemptions.
+    STATE_EXPIRED = 3;
+  }
 
   // The promo code name.
   // Format: promoCodes/{promo_code}
@@ -65,14 +80,14 @@ message PromoCode {
 
   // Resources the code applies to. Empty means all resources.
   // Format: resources/{resource}
-  repeated string applies_to_resources = 14 [
+  repeated string applicable_resources = 14 [
     (google.api.field_behavior) = OPTIONAL,
     (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
   ];
 
   // Offerings the code applies to. Empty means all offerings.
   // Format: resources/{resource}/offerings/{offering}
-  repeated string applies_to_offerings = 15 [
+  repeated string applicable_offerings = 15 [
     (google.api.field_behavior) = OPTIONAL,
     (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Offering"}
   ];
@@ -80,8 +95,12 @@ message PromoCode {
   // How many times the code has been redeemed.
   int64 redemption_count = 16 [(google.api.field_behavior) = OUTPUT_ONLY];
 
-  // Lifecycle status.
-  PromoCodeStatus status = 17 [(google.api.field_behavior) = OPTIONAL];
+  // Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or
+  // EXPIRED (past the window or out of redemptions).
+  State state = 17 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // If true, the code is manually disabled regardless of its window and caps.
+  bool disabled = 20 [(google.api.field_behavior) = OPTIONAL];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 18 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -100,19 +119,4 @@ enum DiscountType {
 
   // A fixed amount off the subtotal (amount_off).
   DISCOUNT_TYPE_FIXED_AMOUNT = 2;
-}
-
-// Lifecycle status of a promo code.
-enum PromoCodeStatus {
-  // Unset; treated as active.
-  PROMO_CODE_STATUS_UNSPECIFIED = 0;
-
-  // Redeemable (subject to window and caps).
-  PROMO_CODE_STATUS_ACTIVE = 1;
-
-  // Manually disabled.
-  PROMO_CODE_STATUS_DISABLED = 2;
-
-  // Past its redemption window or out of redemptions.
-  PROMO_CODE_STATUS_EXPIRED = 3;
 }

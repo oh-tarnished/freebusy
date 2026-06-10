@@ -38,11 +38,11 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `type` | `ResourceType` | `REQUIRED` | What kind of bookable thing this is. |
 | `booking_mode` | `BookingMode` | `REQUIRED` | How this resource is booked, and therefore the availability shape it yields. |
 | `capacity` | `int32` | `OPTIONAL` | Number of interchangeable units in the pool. Defaults to 1 when unset. |
-| `timezone` | `string` | `REQUIRED` | IANA timezone (e.g. "America/New_York") the resource's hours and dates are evaluated in. Required so availability is timezone-correct. |
+| `time_zone` | `string` | `REQUIRED` | IANA timezone (e.g. "America/New_York") the resource's hours and dates are evaluated in. Required so availability is timezone-correct. |
 | `tags` | `string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
-| `offerings` | `Offering` | `OUTPUT_ONLY` | The offerings attached to this resource (e.g. "30-min consult"). Read-only here; mutate them with the Offering methods. |
-| `status` | `ResourceStatus` | `OUTPUT_ONLY` | Lifecycle status. |
+| `offerings` | `string` | `OUTPUT_ONLY` | Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering} |
+| `resource_state` | `State` | `OUTPUT_ONLY` | Lifecycle State. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 
@@ -59,7 +59,7 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `duration` | `Duration` | `OPTIONAL` | Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY. |
 | `price` | `Money` | `OPTIONAL` | Price charged for the offering, interpreted per pricing_unit. |
 | `pricing_unit` | `PricingUnit` | `OPTIONAL` | What the price is charged per. |
-| `status` | `OfferingStatus` | `OPTIONAL` | Lifecycle status. |
+| `offering_state` | `State` | `OUTPUT_ONLY` | Lifecycle State. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 
@@ -72,7 +72,7 @@ Arguments for the "add_resource" prompt.
 | `display_name` | `string` | `REQUIRED` | Human-friendly name of the resource. |
 | `type` | `string` | `REQUIRED` | What kind of bookable thing it is (e.g. "provider", "room", "unit_type"). |
 | `booking_mode` | `BookingMode` | `REQUIRED` | How it is booked: time-slot appointments or nightly stays. |
-| `timezone` | `string` | `REQUIRED` | IANA timezone the resource operates in (e.g. "America/New_York"). |
+| `time_zone` | `string` | `REQUIRED` | IANA timezone the resource operates in (e.g. "America/New_York"). |
 | `capacity` | `int32` | `OPTIONAL` | Number of interchangeable units in the pool. Defaults to 1. |
 
 ### ListResourcesRequest
@@ -82,13 +82,7 @@ Request message for ListResources.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of resources to return. The server may cap this. |
-| `page` | `int32` | `OPTIONAL` | 1-based page number. |
-| `query` | `string` | `OPTIONAL` | Free-text search over resource names and descriptions. |
-| `type` | `ResourceType` | `OPTIONAL` | Restrict to a single resource type. |
-| `status` | `ResourceStatus` | `OPTIONAL` | Restrict to a single lifecycle status (defaults to active only). |
-| `tags` | `string` | `OPTIONAL` | Restrict to resources carrying all of these tags. |
-| `order_by` | `string` | `OPTIONAL` | Field to sort by (e.g. "name", "create_time"). |
-| `order` | `OrderDirection` | `OPTIONAL` | Sort direction. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListResources call, for pagination. |
 
 ### ListResourcesResponse
 
@@ -97,9 +91,7 @@ Response message for ListResources.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `resources` | `Resource` | - | The page of resources. |
-| `total` | `int64` | - | Total matching resources across all pages. |
-| `page` | `int32` | - | Page number returned. |
-| `page_size` | `int32` | - | Page size applied. |
+| `next_page_token` | `string` | - | Next page token, if more results remain. Omitted if this is the last page. |
 
 ### GetResourceRequest
 
@@ -115,7 +107,8 @@ Request message for CreateResource.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `Resource` | `REQUIRED` | The resource to create. The name, status, and offerings fields are ignored. |
+| `resource` | `Resource` | `REQUIRED` | The resource to create. The name, state, and offerings fields are ignored. |
+| `resource_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the resource; the server generates one if unset. |
 
 ### UpdateResourceRequest
 
@@ -142,9 +135,8 @@ Request message for ListOfferings.
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The parent resource whose offerings to list. Format: resources/{resource} |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of offerings to return. |
-| `page` | `int32` | `OPTIONAL` | 1-based page number. |
-| `order_by` | `string` | `OPTIONAL` | Field to sort by. |
-| `order` | `OrderDirection` | `OPTIONAL` | Sort direction. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListOfferings call's next_page_token. |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
 
 ### ListOfferingsResponse
 
@@ -153,9 +145,7 @@ Response message for ListOfferings.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `offerings` | `Offering` | - | The page of offerings. |
-| `total` | `int64` | - | Total matching offerings across all pages. |
-| `page` | `int32` | - | Page number returned. |
-| `page_size` | `int32` | - | Page size applied. |
+| `next_page_token` | `string` | - | next page token. Omitted if this is the last page. |
 
 ### GetOfferingRequest
 
@@ -173,6 +163,7 @@ Request message for CreateOffering.
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The resource to attach the offering to. Format: resources/{resource} |
 | `offering` | `Offering` | `REQUIRED` | The offering to create. Its name field is ignored. |
+| `offering_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the offering; the server generates one if unset. |
 
 ### UpdateOfferingRequest
 
@@ -205,26 +196,6 @@ Kind of bookable resource.
 | `RESOURCE_TYPE_EQUIPMENT` | 3 | A bookable piece of equipment (e.g. a kayak). |
 | `RESOURCE_TYPE_UNIT_TYPE` | 4 | A lodging unit type backed by a pool of identical units. |
 | `RESOURCE_TYPE_SPACE` | 5 | A generic space or venue. |
-
-### ResourceStatus
-
-Lifecycle status of a resource.
-
-| Value | Number | Description |
-| --- | --- | --- |
-| `RESOURCE_STATUS_UNSPECIFIED` | 0 | Unset. |
-| `RESOURCE_STATUS_ACTIVE` | 1 | Bookable. |
-| `RESOURCE_STATUS_ARCHIVED` | 2 | Retired; hidden from availability and new bookings. |
-
-### OfferingStatus
-
-Lifecycle status of an offering.
-
-| Value | Number | Description |
-| --- | --- | --- |
-| `OFFERING_STATUS_UNSPECIFIED` | 0 | Unset; treated as active. |
-| `OFFERING_STATUS_ACTIVE` | 1 | Bookable. |
-| `OFFERING_STATUS_INACTIVE` | 2 | Hidden from new bookings. |
 
 ### PricingUnit
 

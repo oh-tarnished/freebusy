@@ -9,7 +9,7 @@ import "google/api/client.proto";
 import "google/protobuf/empty.proto";
 import "mcp/protobuf/annotations.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1;resourcepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ResourceServiceProto";
 option java_package = "dev.ohtarnished.freebusy.resource.v1";
@@ -45,7 +45,7 @@ service ResourceService {
       post: "/v1/resources"
       body: "resource"
     };
-    option (google.api.method_signature) = "resource";
+    option (google.api.method_signature) = "resource,resource_id";
     option (mcp.protobuf.tool) = {description: "Create a bookable resource with a type, booking mode, timezone, and capacity."};
     option (mcp.protobuf.prompt) = {
       name: "add_resource"
@@ -94,7 +94,7 @@ service ResourceService {
       post: "/v1/{parent=resources/*}/offerings"
       body: "offering"
     };
-    option (google.api.method_signature) = "parent,offering";
+    option (google.api.method_signature) = "parent,offering,offering_id";
     option (mcp.protobuf.tool) = {description: "Add an offering (e.g. '30-min consult') with a duration and price to a resource."};
   }
 

@@ -2,33 +2,24 @@ syntax = "proto3";
 
 package freebusy.booking.v1;
 
-// (-- api-linter: core::0215::foreign-type-reference=disabled
-//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
-//     shared-types package; the TimeWindow filter reuses it rather than
-//     inlining a per-package copy. --)
-
 import "freebusy/booking/v1/booking.proto";
-import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/field_info.proto";
 import "google/api/resource.proto";
-import "google/protobuf/duration.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/booking/v1/bookingpbv1;bookingpbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
 option java_outer_classname = "BookingMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.booking.v1";
 
 // Request message for CreateBooking. This places a hold transactionally; the
 // request_id makes retries safe (the same id always yields the same booking
-// instead of a duplicate hold).
-// (-- api-linter: core::0133::request-unknown-fields=disabled
-//     aip.dev/not-precedent: promo_code and hold_ttl are create-time inputs with
-//     no home on the Booking resource (its promo_code is the resolved, output-only
-//     reference; hold lifetime is not resource state), so they ride the request. --)
+// instead of a duplicate hold). The promo code and hold TTL are set on the
+// Booking resource itself.
 message CreateBookingRequest {
   // The booking to create. Supply resource, window, and optionally offering,
-  // units, customer, notes, and attributes. Output-only fields are ignored.
+  // units, customer, notes, attributes, promo_code, and hold_ttl. Output-only
+  // fields are ignored.
   Booking booking = 1 [(google.api.field_behavior) = REQUIRED];
 
   // Caller-supplied idempotency key that dedupes retries of this create. Reusing
@@ -38,14 +29,8 @@ message CreateBookingRequest {
     (google.api.field_behavior) = OPTIONAL
   ];
 
-  // Human promo code to apply to the booking (e.g. "SUMMER25").
-  string promo_code = 3 [(google.api.field_behavior) = OPTIONAL];
-
-  // Overrides the default time-to-live of the hold. Server caps this.
-  google.protobuf.Duration hold_ttl = 4 [(google.api.field_behavior) = OPTIONAL];
-
   // Optional caller-chosen ID for the booking; the server generates one if unset.
-  string booking_id = 5 [(google.api.field_behavior) = OPTIONAL];
+  string booking_id = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for GetBooking.
@@ -59,12 +44,6 @@ message GetBookingRequest {
 }
 
 // Request message for ListBookings.
-// (-- api-linter: core::0132::request-unknown-fields=disabled
-//     aip.dev/not-precedent: resource, customer, state, and window are first-class
-//     typed filters kept for caller ergonomics instead of a filter string. --)
-// (-- api-linter: core::0216::state-field-output-only=disabled
-//     aip.dev/not-precedent: `state` here is an input filter, not the resource's
-//     own lifecycle state field, so it is intentionally settable. --)
 message ListBookingsRequest {
   // Maximum number of bookings to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
@@ -72,28 +51,12 @@ message ListBookingsRequest {
   // Page token from a previous ListBookings call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Restrict to bookings of this resource.
-  // Format: resources/{resource}
-  string resource = 3 [
-    (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/Resource"}
-  ];
-
-  // Restrict to bookings for this customer.
-  // Format: users/{user}
-  string customer = 4 [
-    (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "ohtarnished.freebusy.v1/User"}
-  ];
-
-  // Restrict to a single state.
-  Booking.State state = 5 [(google.api.field_behavior) = OPTIONAL];
-
-  // Restrict to bookings whose window overlaps this range.
-  freebusy.shared.v1.TimeWindow window = 6 [(google.api.field_behavior) = OPTIONAL];
+  // Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+  // `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
+  string filter = 3 [(google.api.field_behavior) = OPTIONAL];
 
   // Sort order, e.g. "create_time desc" or "window.start_time".
-  string order_by = 7 [(google.api.field_behavior) = OPTIONAL];
+  string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListBookings.

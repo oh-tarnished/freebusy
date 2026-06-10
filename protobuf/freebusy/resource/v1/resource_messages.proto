@@ -3,12 +3,11 @@ syntax = "proto3";
 package freebusy.resource.v1;
 
 import "freebusy/resource/v1/resource.proto";
-import "freebusy/shared/v1/enums.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
-option go_package = "github.com/oh-tarnished/freebusy/generated/go/resource/v1/resourcepbv1;resourcepbv1";
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1";
 option java_multiple_files = true;
 option java_outer_classname = "ResourceMessagesProto";
 option java_package = "dev.ohtarnished.freebusy.resource.v1";
@@ -18,26 +17,8 @@ message ListResourcesRequest {
   // Maximum number of resources to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // 1-based page number.
-  int32 page = 2 [(google.api.field_behavior) = OPTIONAL];
-
-  // Free-text search over resource names and descriptions.
-  string query = 3 [(google.api.field_behavior) = OPTIONAL];
-
-  // Restrict to a single resource type.
-  ResourceType type = 4 [(google.api.field_behavior) = OPTIONAL];
-
-  // Restrict to a single lifecycle status (defaults to active only).
-  ResourceStatus status = 5 [(google.api.field_behavior) = OPTIONAL];
-
-  // Restrict to resources carrying all of these tags.
-  repeated string tags = 6 [(google.api.field_behavior) = OPTIONAL];
-
-  // Field to sort by (e.g. "name", "create_time").
-  string order_by = 7 [(google.api.field_behavior) = OPTIONAL];
-
-  // Sort direction.
-  freebusy.shared.v1.OrderDirection order = 8 [(google.api.field_behavior) = OPTIONAL];
+  // Page token from a previous ListResources call, for pagination.
+  string page_token = 9 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListResources.
@@ -45,14 +26,8 @@ message ListResourcesResponse {
   // The page of resources.
   repeated Resource resources = 1;
 
-  // Total matching resources across all pages.
-  int64 total = 2;
-
-  // Page number returned.
-  int32 page = 3;
-
-  // Page size applied.
-  int32 page_size = 4;
+  // Next page token, if more results remain. Omitted if this is the last page.
+  string next_page_token = 5;
 }
 
 // Request message for GetResource.
@@ -67,8 +42,11 @@ message GetResourceRequest {
 
 // Request message for CreateResource.
 message CreateResourceRequest {
-  // The resource to create. The name, status, and offerings fields are ignored.
+  // The resource to create. The name, state, and offerings fields are ignored.
   Resource resource = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the resource; the server generates one if unset.
+  string resource_id = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for UpdateResource.
@@ -102,14 +80,11 @@ message ListOfferingsRequest {
   // Maximum number of offerings to return.
   int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // 1-based page number.
-  int32 page = 3 [(google.api.field_behavior) = OPTIONAL];
+  // Page token from a previous ListOfferings call's next_page_token.
+  string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
 
-  // Field to sort by.
+  // Sort order, e.g. "display_name" or "create_time desc".
   string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
-
-  // Sort direction.
-  freebusy.shared.v1.OrderDirection order = 5 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListOfferings.
@@ -117,14 +92,8 @@ message ListOfferingsResponse {
   // The page of offerings.
   repeated Offering offerings = 1;
 
-  // Total matching offerings across all pages.
-  int64 total = 2;
-
-  // Page number returned.
-  int32 page = 3;
-
-  // Page size applied.
-  int32 page_size = 4;
+  // next page token. Omitted if this is the last page.
+  string next_page_token = 2;
 }
 
 // Request message for GetOffering.
@@ -148,6 +117,9 @@ message CreateOfferingRequest {
 
   // The offering to create. Its name field is ignored.
   Offering offering = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the offering; the server generates one if unset.
+  string offering_id = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for UpdateOffering.
