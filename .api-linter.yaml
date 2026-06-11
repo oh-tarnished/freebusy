@@ -1,3 +1,0 @@
-# Disable specific rules
-disabled_rules:
-  - core::0215::foreign-type-reference
