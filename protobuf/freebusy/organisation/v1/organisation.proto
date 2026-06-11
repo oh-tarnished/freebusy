@@ -12,19 +12,19 @@ option java_multiple_files = true;
 option java_outer_classname = "OrganisationProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
-// A tenant. Org is the unit of multi-tenancy; the shell enforces isolation with
-// row-level security keyed off the caller's organisation, so most resource names stay
-// flat and the organisation appears explicitly only here.
-message Org {
+// A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation
+// with row-level security keyed off the caller's organisation, so most resource names
+// stay flat and the organisation appears explicitly only here.
+message Organisation {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Org"
-    pattern: "orgs/{org}"
-    singular: "org"
-    plural: "orgs"
+    type: "freebusy.ohtarnished.dev/Organisation"
+    pattern: "organisations/{organisation}"
+    singular: "organisation"
+    plural: "organisations"
   };
 
   // The organisation name.
-  // Format: orgs/{org}
+  // Format: organisations/{organisation}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
@@ -33,14 +33,14 @@ message Org {
   // Human-friendly organisation name (e.g. "Acme Inc.").
   string display_name = 3 [(google.api.field_behavior) = REQUIRED];
 
-  // URL-safe slug, unique across orgs.
+  // URL-safe slug, unique across organisations.
   string slug = 4 [(google.api.field_behavior) = OPTIONAL];
 
   // Billing contact email.
   string billing_email = 5 [(google.api.field_behavior) = OPTIONAL];
 
   // Lifecycle state.
-  OrganisationState state = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+  State state = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Arbitrary organisation-level settings.
   google.protobuf.Struct settings = 7 [(google.api.field_behavior) = OPTIONAL];
@@ -53,19 +53,34 @@ message Org {
 
   // Last-modification timestamp.
   google.protobuf.Timestamp update_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+  string etag = 11;
+
+  // Lifecycle state of an organisation.
+  enum State {
+    // Unset.
+    STATE_UNSPECIFIED = 0;
+
+    // Active.
+    STATE_ACTIVE = 1;
+
+    // Suspended; access blocked.
+    STATE_SUSPENDED = 2;
+  }
 }
 
 // The membership of a user in an organisation, with their role.
 message Member {
   option (google.api.resource) = {
     type: "freebusy.ohtarnished.dev/Member"
-    pattern: "orgs/{org}/members/{member}"
+    pattern: "organisations/{organisation}/members/{member}"
     singular: "member"
     plural: "members"
   };
 
   // The member name.
-  // Format: orgs/{org}/members/{member}
+  // Format: organisations/{organisation}/members/{member}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
@@ -103,6 +118,9 @@ message Member {
   // Last-modification timestamp.
   google.protobuf.Timestamp update_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
 
+  // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+  string etag = 11;
+
   // Confirmation state of a membership.
   enum State {
     // Unset.
@@ -135,16 +153,4 @@ enum OrganisationRole {
 
   // Read-only access.
   ORGANISATION_ROLE_VIEWER = 4;
-}
-
-// Lifecycle state of an organisation.
-enum OrganisationState {
-  // Unset.
-  ORGANISATION_STATE_UNSPECIFIED = 0;
-
-  // Active.
-  ORGANISATION_STATE_ACTIVE = 1;
-
-  // Suspended; access blocked.
-  ORGANISATION_STATE_SUSPENDED = 2;
 }

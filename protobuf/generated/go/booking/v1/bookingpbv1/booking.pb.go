@@ -214,7 +214,9 @@ type Booking struct {
 	CancelTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=cancel_time,json=cancelTime,proto3" json:"cancel_time,omitempty"`
 	// Requested time-to-live of the hold, set at creation. The server caps this
 	// and reflects the effective expiry in hold_expire_time.
-	HoldTtl       *durationpb.Duration `protobuf:"bytes,22,opt,name=hold_ttl,json=holdTtl,proto3" json:"hold_ttl,omitempty"`
+	HoldTtl *durationpb.Duration `protobuf:"bytes,22,opt,name=hold_ttl,json=holdTtl,proto3" json:"hold_ttl,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,23,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -396,11 +398,18 @@ func (x *Booking) GetHoldTtl() *durationpb.Duration {
 	return nil
 }
 
+func (x *Booking) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xba\v\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xce\v\n" +
 	"\aBooking\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12E\n" +
 	"\bresource\x18\x03 \x01(\tB)\xe0A\x02\xfaA#\n" +
@@ -433,7 +442,8 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\fconfirm_time\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\vconfirmTime\x12@\n" +
 	"\vcancel_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"cancelTime\x129\n" +
-	"\bhold_ttl\x18\x16 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x05R\aholdTtl\"\x9b\x01\n" +
+	"\bhold_ttl\x18\x16 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x05R\aholdTtl\x12\x12\n" +
+	"\x04etag\x18\x17 \x01(\tR\x04etag\"\x9b\x01\n" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x16\n" +
 	"\x12STATE_PENDING_HOLD\x10\x01\x12\x13\n" +

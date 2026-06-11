@@ -7,16 +7,16 @@
 
 ## Services
 
-### OrgService
+### OrganisationService
 
-OrgService manages tenants and their members. Day-to-day tenancy is enforced by the shell via row-level security from the caller's organisation; this service is where orgs and members are created and administered.
+OrganisationService manages tenants and their members. Day-to-day tenancy is enforced by the shell via row-level security from the caller's organisation; this service is where organisations and members are created and administered.
 
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
-| `ListOrgs` | `ListOrgsRequest` | `ListOrgsResponse` | Lists the orgs the caller belongs to. |
-| `GetOrg` | `GetOrgRequest` | `Org` | Gets a single organisation. |
-| `CreateOrg` | `CreateOrgRequest` | `Org` | Creates an organisation. The caller becomes its first owner. |
-| `UpdateOrg` | `UpdateOrgRequest` | `Org` | Updates an organisation. |
+| `ListOrganisations` | `ListOrganisationsRequest` | `ListOrganisationsResponse` | Lists the organisations the caller belongs to. |
+| `GetOrganisation` | `GetOrganisationRequest` | `Organisation` | Gets a single organisation. |
+| `CreateOrganisation` | `CreateOrganisationRequest` | `Organisation` | Creates an organisation. The caller becomes its first owner. |
+| `UpdateOrganisation` | `UpdateOrganisationRequest` | `Organisation` | Updates an organisation. |
 | `InviteMember` | `InviteMemberRequest` | `InviteMemberResponse` | Invites a member to an organisation. |
 | `ListMembers` | `ListMembersRequest` | `ListMembersResponse` | Lists the members of an organisation. |
 | `GetMember` | `GetMemberRequest` | `Member` | Gets a single member. |
@@ -30,9 +30,10 @@ Request message for InviteMember.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `parent` | `string` | `REQUIRED` | The organisation to invite the member to. Format: orgs/{org} |
+| `parent` | `string` | `REQUIRED` | The organisation to invite the member to. Format: organisations/{organisation} |
 | `email` | `string` | `REQUIRED` | Email address to invite. |
 | `role` | `OrganisationRole` | `REQUIRED` | Role to grant on acceptance. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 
 ### InviteMemberResponse
 
@@ -57,7 +58,7 @@ Request message for DeleteMember.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The member to remove. Format: orgs/{org}/members/{member} |
+| `name` | `string` | `REQUIRED` | The member to remove. Format: organisations/{organisation}/members/{member} |
 
 ### InviteMemberArgs
 
@@ -65,64 +66,65 @@ Arguments for the "invite_member" prompt.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `organisation` | `string` | `REQUIRED` | Org to invite into, as a resource name ("orgs/7") or a display name. |
+| `organisation` | `string` | `REQUIRED` | Organisation to invite into, as a resource name ("organisations/7") or a display name. |
 | `email` | `string` | `REQUIRED` | Email address to invite. |
 | `role` | `string` | `REQUIRED` | Role to grant, e.g. "owner", "admin", "member", or "viewer". |
 
-### ListOrgsRequest
+### ListOrganisationsRequest
 
-Request message for ListOrgs.
+Request message for ListOrganisations.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of orgs to return. The server may cap this. Zero lets the server pick a default. |
-| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListOrgs call's next_page_token. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of organisations to return. The server may cap this. Zero lets the server pick a default. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListOrganisations call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression over organisation fields (e.g. display_name). |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc". |
 
-### ListOrgsResponse
+### ListOrganisationsResponse
 
-Response message for ListOrgs.
+Response message for ListOrganisations.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `orgs` | `Org` | - | The page of orgs (those the caller belongs to). |
+| `organisations` | `Organisation` | - | The page of organisations (those the caller belongs to). |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
-### GetOrgRequest
+### GetOrganisationRequest
 
-Request message for GetOrg.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The organisation to retrieve. Format: orgs/{org} |
-
-### CreateOrgRequest
-
-Request message for CreateOrg.
+Request message for GetOrganisation.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `org` | `Org` | `REQUIRED` | The organisation to create. The name and state fields are ignored. The caller becomes the organisation's first OWNER. |
-| `org_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the org; the server generates one if unset. |
+| `name` | `string` | `REQUIRED` | The organisation to retrieve. Format: organisations/{organisation} |
 
-### UpdateOrgRequest
+### CreateOrganisationRequest
 
-Request message for UpdateOrg.
+Request message for CreateOrganisation.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `org` | `Org` | `REQUIRED` | The organisation to update; its name identifies the target. |
+| `organisation` | `Organisation` | `REQUIRED` | The organisation to create. The name and state fields are ignored. The caller becomes the organisation's first OWNER. |
+| `organisation_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the organisation; the server generates one if unset. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
+
+### UpdateOrganisationRequest
+
+Request message for UpdateOrganisation.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `organisation` | `Organisation` | `REQUIRED` | The organisation to update; its name identifies the target. |
 | `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable fields. |
 
-### DeleteOrgRequest
+### DeleteOrganisationRequest
 
-Request message for DeleteOrg.
+Request message for DeleteOrganisation.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The organisation to delete. Format: orgs/{org} |
-| `force` | `bool` | `OPTIONAL` | If true, delete the org and its members; otherwise the call fails when the org still has members. |
+| `name` | `string` | `REQUIRED` | The organisation to delete. Format: organisations/{organisation} |
+| `force` | `bool` | `OPTIONAL` | If true, delete the organisation and its members; otherwise the call fails when the organisation still has members. |
 
 ### ListMembersRequest
 
@@ -130,10 +132,11 @@ Request message for ListMembers.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `parent` | `string` | `REQUIRED` | The organisation whose members to list. Format: orgs/{org} |
+| `parent` | `string` | `REQUIRED` | The organisation whose members to list. Format: organisations/{organisation} |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of members to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListMembers call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `role = ADMIN` or `state = ACTIVE`. |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc". |
 
 ### ListMembersResponse
 
@@ -150,23 +153,24 @@ Request message for GetMember.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The member to retrieve. Format: orgs/{org}/members/{member} |
+| `name` | `string` | `REQUIRED` | The member to retrieve. Format: organisations/{organisation}/members/{member} |
 
-### Org
+### Organisation
 
-A tenant. Org is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
+A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The organisation name. Format: orgs/{org} |
+| `name` | `string` | `IDENTIFIER` | The organisation name. Format: organisations/{organisation} |
 | `display_name` | `string` | `REQUIRED` | Human-friendly organisation name (e.g. "Acme Inc."). |
-| `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across orgs. |
+| `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across organisations. |
 | `billing_email` | `string` | `OPTIONAL` | Billing contact email. |
-| `state` | `OrganisationState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `settings` | `Struct` | `OPTIONAL` | Arbitrary organisation-level settings. |
 | `member_count` | `int64` | `OUTPUT_ONLY` | Number of members across all states. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ### Member
 
@@ -174,7 +178,7 @@ The membership of a user in an organisation, with their role.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The member name. Format: orgs/{org}/members/{member} |
+| `name` | `string` | `IDENTIFIER` | The member name. Format: organisations/{organisation}/members/{member} |
 | `user` | `string` | `OUTPUT_ONLY` | The user, once the invite is accepted. Format: users/{user} |
 | `email` | `string` | `REQUIRED` | The invited email address. |
 | `display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the member. |
@@ -183,6 +187,7 @@ The membership of a user in an organisation, with their role.
 | `inviter` | `string` | `OUTPUT_ONLY` | The user who issued the invite. Format: users/{user} |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp (when the invite was created). |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ## Enums
 
@@ -197,16 +202,6 @@ A member's role within an organisation.
 | `ORGANISATION_ROLE_ADMIN` | 2 | Manage members and resources. |
 | `ORGANISATION_ROLE_MEMBER` | 3 | Create and manage bookings and resources. |
 | `ORGANISATION_ROLE_VIEWER` | 4 | Read-only access. |
-
-### OrganisationState
-
-Lifecycle state of an organisation.
-
-| Value | Number | Description |
-| --- | --- | --- |
-| `ORGANISATION_STATE_UNSPECIFIED` | 0 | Unset. |
-| `ORGANISATION_STATE_ACTIVE` | 1 | Active. |
-| `ORGANISATION_STATE_SUSPENDED` | 2 | Suspended; access blocked. |
 
 ---
 

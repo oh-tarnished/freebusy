@@ -91,6 +91,9 @@ message Resource {
 
   // Last-modification timestamp.
   google.protobuf.Timestamp update_time = 14 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+  string etag = 15;
 }
 
 // A specific way a resource can be booked, carrying its duration and price. A
@@ -144,6 +147,9 @@ message Offering {
 
   // Last-modification timestamp.
   google.protobuf.Timestamp update_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+  string etag = 11;
 }
 
 // Kind of bookable resource.

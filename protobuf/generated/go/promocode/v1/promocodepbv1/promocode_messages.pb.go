@@ -206,7 +206,11 @@ type CreatePromoCodeRequest struct {
 	// The promo code to create. The name and redemption_count fields are ignored.
 	PromoCode *PromoCode `protobuf:"bytes,1,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
 	// Optional caller-chosen ID for the promo code; the server generates one if unset.
-	PromoCodeId   string `protobuf:"bytes,2,opt,name=promo_code_id,json=promoCodeId,proto3" json:"promo_code_id,omitempty"`
+	PromoCodeId string `protobuf:"bytes,2,opt,name=promo_code_id,json=promoCodeId,proto3" json:"promo_code_id,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId string `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	// If true, validate the request and return what would happen, but don't commit.
+	ValidateOnly  bool `protobuf:"varint,4,opt,name=validate_only,json=validateOnly,proto3" json:"validate_only,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -255,13 +259,29 @@ func (x *CreatePromoCodeRequest) GetPromoCodeId() string {
 	return ""
 }
 
+func (x *CreatePromoCodeRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
+}
+
+func (x *CreatePromoCodeRequest) GetValidateOnly() bool {
+	if x != nil {
+		return x.ValidateOnly
+	}
+	return false
+}
+
 // Request message for UpdatePromoCode.
 type UpdatePromoCodeRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The promo code to update; its name identifies the target.
 	PromoCode *PromoCode `protobuf:"bytes,1,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
 	// Fields to overwrite. Omit to replace all mutable fields.
-	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	UpdateMask *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	// If true, validate the request and return what would happen, but don't commit.
+	ValidateOnly  bool `protobuf:"varint,3,opt,name=validate_only,json=validateOnly,proto3" json:"validate_only,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -308,6 +328,13 @@ func (x *UpdatePromoCodeRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 		return x.UpdateMask
 	}
 	return nil
+}
+
+func (x *UpdatePromoCodeRequest) GetValidateOnly() bool {
+	if x != nil {
+		return x.ValidateOnly
+	}
+	return false
 }
 
 // Request message for DeletePromoCode.
@@ -530,7 +557,7 @@ var File_freebusy_promocode_v1_promocode_messages_proto protoreflect.FileDescrip
 
 const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\n" +
-	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\x9a\x01\n" +
+	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\x9a\x01\n" +
 	"\x15ListPromoCodesRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
@@ -543,16 +570,20 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"U\n" +
 	"\x13GetPromoCodeRequest\x12>\n" +
 	"\x04name\x18\x01 \x01(\tB*\xe0A\x02\xfaA$\n" +
-	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\x87\x01\n" +
+	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\xdd\x01\n" +
 	"\x16CreatePromoCodeRequest\x12D\n" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12'\n" +
-	"\rpromo_code_id\x18\x02 \x01(\tB\x03\xe0A\x01R\vpromoCodeId\"\xa0\x01\n" +
+	"\rpromo_code_id\x18\x02 \x01(\tB\x03\xe0A\x01R\vpromoCodeId\x12*\n" +
+	"\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12(\n" +
+	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"\xca\x01\n" +
 	"\x16UpdatePromoCodeRequest\x12D\n" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"X\n" +
+	"updateMask\x12(\n" +
+	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"X\n" +
 	"\x16DeletePromoCodeRequest\x12>\n" +
 	"\x04name\x18\x01 \x01(\tB*\xe0A\x02\xfaA$\n" +
 	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\xb9\x02\n" +

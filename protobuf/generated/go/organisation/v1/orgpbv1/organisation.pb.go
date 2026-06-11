@@ -86,56 +86,56 @@ func (OrganisationRole) EnumDescriptor() ([]byte, []int) {
 }
 
 // Lifecycle state of an organisation.
-type OrganisationState int32
+type Organisation_State int32
 
 const (
 	// Unset.
-	OrganisationState_ORGANISATION_STATE_UNSPECIFIED OrganisationState = 0
+	Organisation_STATE_UNSPECIFIED Organisation_State = 0
 	// Active.
-	OrganisationState_ORGANISATION_STATE_ACTIVE OrganisationState = 1
+	Organisation_STATE_ACTIVE Organisation_State = 1
 	// Suspended; access blocked.
-	OrganisationState_ORGANISATION_STATE_SUSPENDED OrganisationState = 2
+	Organisation_STATE_SUSPENDED Organisation_State = 2
 )
 
-// Enum value maps for OrganisationState.
+// Enum value maps for Organisation_State.
 var (
-	OrganisationState_name = map[int32]string{
-		0: "ORGANISATION_STATE_UNSPECIFIED",
-		1: "ORGANISATION_STATE_ACTIVE",
-		2: "ORGANISATION_STATE_SUSPENDED",
+	Organisation_State_name = map[int32]string{
+		0: "STATE_UNSPECIFIED",
+		1: "STATE_ACTIVE",
+		2: "STATE_SUSPENDED",
 	}
-	OrganisationState_value = map[string]int32{
-		"ORGANISATION_STATE_UNSPECIFIED": 0,
-		"ORGANISATION_STATE_ACTIVE":      1,
-		"ORGANISATION_STATE_SUSPENDED":   2,
+	Organisation_State_value = map[string]int32{
+		"STATE_UNSPECIFIED": 0,
+		"STATE_ACTIVE":      1,
+		"STATE_SUSPENDED":   2,
 	}
 )
 
-func (x OrganisationState) Enum() *OrganisationState {
-	p := new(OrganisationState)
+func (x Organisation_State) Enum() *Organisation_State {
+	p := new(Organisation_State)
 	*p = x
 	return p
 }
 
-func (x OrganisationState) String() string {
+func (x Organisation_State) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (OrganisationState) Descriptor() protoreflect.EnumDescriptor {
+func (Organisation_State) Descriptor() protoreflect.EnumDescriptor {
 	return file_freebusy_organisation_v1_organisation_proto_enumTypes[1].Descriptor()
 }
 
-func (OrganisationState) Type() protoreflect.EnumType {
+func (Organisation_State) Type() protoreflect.EnumType {
 	return &file_freebusy_organisation_v1_organisation_proto_enumTypes[1]
 }
 
-func (x OrganisationState) Number() protoreflect.EnumNumber {
+func (x Organisation_State) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use OrganisationState.Descriptor instead.
-func (OrganisationState) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_organisation_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use Organisation_State.Descriptor instead.
+func (Organisation_State) EnumDescriptor() ([]byte, []int) {
+	return file_freebusy_organisation_v1_organisation_proto_rawDescGZIP(), []int{0, 0}
 }
 
 // Confirmation state of a membership.
@@ -195,22 +195,22 @@ func (Member_State) EnumDescriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_organisation_proto_rawDescGZIP(), []int{1, 0}
 }
 
-// A tenant. Org is the unit of multi-tenancy; the shell enforces isolation with
-// row-level security keyed off the caller's organisation, so most resource names stay
-// flat and the organisation appears explicitly only here.
-type Org struct {
+// A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation
+// with row-level security keyed off the caller's organisation, so most resource names
+// stay flat and the organisation appears explicitly only here.
+type Organisation struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation name.
-	// Format: orgs/{org}
+	// Format: organisations/{organisation}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Human-friendly organisation name (e.g. "Acme Inc.").
 	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	// URL-safe slug, unique across orgs.
+	// URL-safe slug, unique across organisations.
 	Slug string `protobuf:"bytes,4,opt,name=slug,proto3" json:"slug,omitempty"`
 	// Billing contact email.
 	BillingEmail string `protobuf:"bytes,5,opt,name=billing_email,json=billingEmail,proto3" json:"billing_email,omitempty"`
 	// Lifecycle state.
-	State OrganisationState `protobuf:"varint,6,opt,name=state,proto3,enum=freebusy.organisation.v1.OrganisationState" json:"state,omitempty"`
+	State Organisation_State `protobuf:"varint,6,opt,name=state,proto3,enum=freebusy.organisation.v1.Organisation_State" json:"state,omitempty"`
 	// Arbitrary organisation-level settings.
 	Settings *structpb.Struct `protobuf:"bytes,7,opt,name=settings,proto3" json:"settings,omitempty"`
 	// Number of members across all states.
@@ -218,25 +218,27 @@ type Org struct {
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,11,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Org) Reset() {
-	*x = Org{}
+func (x *Organisation) Reset() {
+	*x = Organisation{}
 	mi := &file_freebusy_organisation_v1_organisation_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Org) String() string {
+func (x *Organisation) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Org) ProtoMessage() {}
+func (*Organisation) ProtoMessage() {}
 
-func (x *Org) ProtoReflect() protoreflect.Message {
+func (x *Organisation) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_organisation_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -248,79 +250,86 @@ func (x *Org) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Org.ProtoReflect.Descriptor instead.
-func (*Org) Descriptor() ([]byte, []int) {
+// Deprecated: Use Organisation.ProtoReflect.Descriptor instead.
+func (*Organisation) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_organisation_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Org) GetName() string {
+func (x *Organisation) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Org) GetDisplayName() string {
+func (x *Organisation) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-func (x *Org) GetSlug() string {
+func (x *Organisation) GetSlug() string {
 	if x != nil {
 		return x.Slug
 	}
 	return ""
 }
 
-func (x *Org) GetBillingEmail() string {
+func (x *Organisation) GetBillingEmail() string {
 	if x != nil {
 		return x.BillingEmail
 	}
 	return ""
 }
 
-func (x *Org) GetState() OrganisationState {
+func (x *Organisation) GetState() Organisation_State {
 	if x != nil {
 		return x.State
 	}
-	return OrganisationState_ORGANISATION_STATE_UNSPECIFIED
+	return Organisation_STATE_UNSPECIFIED
 }
 
-func (x *Org) GetSettings() *structpb.Struct {
+func (x *Organisation) GetSettings() *structpb.Struct {
 	if x != nil {
 		return x.Settings
 	}
 	return nil
 }
 
-func (x *Org) GetMemberCount() int64 {
+func (x *Organisation) GetMemberCount() int64 {
 	if x != nil {
 		return x.MemberCount
 	}
 	return 0
 }
 
-func (x *Org) GetCreateTime() *timestamppb.Timestamp {
+func (x *Organisation) GetCreateTime() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreateTime
 	}
 	return nil
 }
 
-func (x *Org) GetUpdateTime() *timestamppb.Timestamp {
+func (x *Organisation) GetUpdateTime() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdateTime
 	}
 	return nil
 }
 
+func (x *Organisation) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 // The membership of a user in an organisation, with their role.
 type Member struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The member name.
-	// Format: orgs/{org}/members/{member}
+	// Format: organisations/{organisation}/members/{member}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The user, once the invite is accepted.
 	// Format: users/{user}
@@ -339,7 +348,9 @@ type Member struct {
 	// Creation timestamp (when the invite was created).
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,11,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -437,26 +448,37 @@ func (x *Member) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Member) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 var File_freebusy_organisation_v1_organisation_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf7\x03\n" +
-	"\x03Org\x12\x17\n" +
+	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x89\x05\n" +
+	"\fOrganisation\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12\x17\n" +
 	"\x04slug\x18\x04 \x01(\tB\x03\xe0A\x01R\x04slug\x12(\n" +
-	"\rbilling_email\x18\x05 \x01(\tB\x03\xe0A\x01R\fbillingEmail\x12F\n" +
-	"\x05state\x18\x06 \x01(\x0e2+.freebusy.organisation.v1.OrganisationStateB\x03\xe0A\x03R\x05state\x128\n" +
+	"\rbilling_email\x18\x05 \x01(\tB\x03\xe0A\x01R\fbillingEmail\x12G\n" +
+	"\x05state\x18\x06 \x01(\x0e2,.freebusy.organisation.v1.Organisation.StateB\x03\xe0A\x03R\x05state\x128\n" +
 	"\bsettings\x18\a \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\bsettings\x12&\n" +
 	"\fmember_count\x18\b \x01(\x03B\x03\xe0A\x03R\vmemberCount\x12@\n" +
 	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime:8\xeaA5\n" +
-	"\x1cfreebusy.ohtarnished.dev/Org\x12\n" +
-	"orgs/{org}*\x04orgs2\x03orgJ\x04\b\x02\x10\x03\"\xa0\x05\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\v \x01(\tR\x04etag\"E\n" +
+	"\x05State\x12\x15\n" +
+	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
+	"\fSTATE_ACTIVE\x10\x01\x12\x13\n" +
+	"\x0fSTATE_SUSPENDED\x10\x02:e\xeaAb\n" +
+	"%freebusy.ohtarnished.dev/Organisation\x12\x1corganisations/{organisation}*\rorganisations2\forganisationJ\x04\b\x02\x10\x03\"\xc6\x05\n" +
 	"\x06Member\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x129\n" +
 	"\x04user\x18\x03 \x01(\tB%\xe0A\x03\xfaA\x1f\n" +
@@ -471,23 +493,20 @@ const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime\"X\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\v \x01(\tR\x04etag\"X\n" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x11\n" +
 	"\rSTATE_INVITED\x10\x01\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x02\x12\x13\n" +
-	"\x0fSTATE_SUSPENDED\x10\x03:R\xeaAO\n" +
-	"\x1ffreebusy.ohtarnished.dev/Member\x12\x1borgs/{org}/members/{member}*\amembers2\x06memberJ\x04\b\x02\x10\x03*\xab\x01\n" +
+	"\x0fSTATE_SUSPENDED\x10\x03:d\xeaAa\n" +
+	"\x1ffreebusy.ohtarnished.dev/Member\x12-organisations/{organisation}/members/{member}*\amembers2\x06memberJ\x04\b\x02\x10\x03*\xab\x01\n" +
 	"\x10OrganisationRole\x12!\n" +
 	"\x1dORGANISATION_ROLE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17ORGANISATION_ROLE_OWNER\x10\x01\x12\x1b\n" +
 	"\x17ORGANISATION_ROLE_ADMIN\x10\x02\x12\x1c\n" +
 	"\x18ORGANISATION_ROLE_MEMBER\x10\x03\x12\x1c\n" +
-	"\x18ORGANISATION_ROLE_VIEWER\x10\x04*x\n" +
-	"\x11OrganisationState\x12\"\n" +
-	"\x1eORGANISATION_STATE_UNSPECIFIED\x10\x00\x12\x1d\n" +
-	"\x19ORGANISATION_STATE_ACTIVE\x10\x01\x12 \n" +
-	"\x1cORGANISATION_STATE_SUSPENDED\x10\x02B\x8b\x02\n" +
+	"\x18ORGANISATION_ROLE_VIEWER\x10\x04B\x8b\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\x11OrganisationProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (
@@ -506,18 +525,18 @@ var file_freebusy_organisation_v1_organisation_proto_enumTypes = make([]protoimp
 var file_freebusy_organisation_v1_organisation_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_freebusy_organisation_v1_organisation_proto_goTypes = []any{
 	(OrganisationRole)(0),         // 0: freebusy.organisation.v1.OrganisationRole
-	(OrganisationState)(0),        // 1: freebusy.organisation.v1.OrganisationState
+	(Organisation_State)(0),       // 1: freebusy.organisation.v1.Organisation.State
 	(Member_State)(0),             // 2: freebusy.organisation.v1.Member.State
-	(*Org)(nil),                   // 3: freebusy.organisation.v1.Org
+	(*Organisation)(nil),          // 3: freebusy.organisation.v1.Organisation
 	(*Member)(nil),                // 4: freebusy.organisation.v1.Member
 	(*structpb.Struct)(nil),       // 5: google.protobuf.Struct
 	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
 }
 var file_freebusy_organisation_v1_organisation_proto_depIdxs = []int32{
-	1, // 0: freebusy.organisation.v1.Org.state:type_name -> freebusy.organisation.v1.OrganisationState
-	5, // 1: freebusy.organisation.v1.Org.settings:type_name -> google.protobuf.Struct
-	6, // 2: freebusy.organisation.v1.Org.create_time:type_name -> google.protobuf.Timestamp
-	6, // 3: freebusy.organisation.v1.Org.update_time:type_name -> google.protobuf.Timestamp
+	1, // 0: freebusy.organisation.v1.Organisation.state:type_name -> freebusy.organisation.v1.Organisation.State
+	5, // 1: freebusy.organisation.v1.Organisation.settings:type_name -> google.protobuf.Struct
+	6, // 2: freebusy.organisation.v1.Organisation.create_time:type_name -> google.protobuf.Timestamp
+	6, // 3: freebusy.organisation.v1.Organisation.update_time:type_name -> google.protobuf.Timestamp
 	0, // 4: freebusy.organisation.v1.Member.role:type_name -> freebusy.organisation.v1.OrganisationRole
 	2, // 5: freebusy.organisation.v1.Member.state:type_name -> freebusy.organisation.v1.Member.State
 	6, // 6: freebusy.organisation.v1.Member.create_time:type_name -> google.protobuf.Timestamp

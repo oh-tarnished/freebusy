@@ -36,7 +36,10 @@ type CreateBookingRequest struct {
 	// an id returns the booking created by the first call.
 	RequestId string `protobuf:"bytes,2,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	// Optional caller-chosen ID for the booking; the server generates one if unset.
-	BookingId     string `protobuf:"bytes,3,opt,name=booking_id,json=bookingId,proto3" json:"booking_id,omitempty"`
+	BookingId string `protobuf:"bytes,3,opt,name=booking_id,json=bookingId,proto3" json:"booking_id,omitempty"`
+	// If true, validate the request (availability + policy) and report what would
+	// happen, but place no hold.
+	ValidateOnly  bool `protobuf:"varint,4,opt,name=validate_only,json=validateOnly,proto3" json:"validate_only,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -90,6 +93,13 @@ func (x *CreateBookingRequest) GetBookingId() string {
 		return x.BookingId
 	}
 	return ""
+}
+
+func (x *CreateBookingRequest) GetValidateOnly() bool {
+	if x != nil {
+		return x.ValidateOnly
+	}
+	return false
 }
 
 // Request message for GetBooking.
@@ -272,13 +282,14 @@ var File_freebusy_booking_v1_booking_messages_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_messages_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/booking/v1/booking_messages.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"\xa3\x01\n" +
+	"*freebusy/booking/v1/booking_messages.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"\xcd\x01\n" +
 	"\x14CreateBookingRequest\x12;\n" +
 	"\abooking\x18\x01 \x01(\v2\x1c.freebusy.booking.v1.BookingB\x03\xe0A\x02R\abooking\x12*\n" +
 	"\n" +
 	"request_id\x18\x02 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12\"\n" +
 	"\n" +
-	"booking_id\x18\x03 \x01(\tB\x03\xe0A\x01R\tbookingId\"Q\n" +
+	"booking_id\x18\x03 \x01(\tB\x03\xe0A\x01R\tbookingId\x12(\n" +
+	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"Q\n" +
 	"\x11GetBookingRequest\x12<\n" +
 	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
 	" freebusy.ohtarnished.dev/BookingR\x04name\"\x98\x01\n" +

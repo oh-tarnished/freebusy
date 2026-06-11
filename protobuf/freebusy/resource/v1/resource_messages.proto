@@ -4,6 +4,7 @@ package freebusy.resource.v1;
 
 import "freebusy/resource/v1/resource.proto";
 import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
@@ -60,6 +61,12 @@ message CreateResourceRequest {
 
   // Optional caller-chosen ID for the resource; the server generates one if unset.
   string resource_id = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 3 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
 }
 
 // Request message for UpdateResource.
@@ -108,6 +115,9 @@ message ListOfferingsRequest {
 
   // Sort order, e.g. "display_name" or "create_time desc".
   string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression (AIP-160), e.g. a match on display_name.
+  string filter = 5 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListOfferings.
@@ -143,6 +153,12 @@ message CreateOfferingRequest {
 
   // Optional caller-chosen ID for the offering; the server generates one if unset.
   string offering_id = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 4 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
 }
 
 // Request message for UpdateOffering.

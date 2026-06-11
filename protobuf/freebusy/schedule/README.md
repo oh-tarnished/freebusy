@@ -80,6 +80,7 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | `buffers` | `BufferSettings` | `OPTIONAL` | Buffer and notice settings. |
 | `stay_constraints` | `StayConstraints` | `OPTIONAL` | Stay rules (NIGHTLY resources). |
 | `exceptions` | `string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update. |
 
 ### GetScheduleRequest
 
@@ -107,6 +108,8 @@ Request message for ListAvailabilityExceptions.
 | `parent` | `string` | `REQUIRED` | The resource whose exceptions to list. Format: resources/{resource} |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of exceptions to return. |
 | `page_token` | `string` | `OPTIONAL` | Token for the page of results to return. Empty for the first page. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `kind = EXCEPTION_KIND_CLOSURE`. |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "window.start_time" or "create_time desc". |
 
 ### ListAvailabilityExceptionsResponse
 
@@ -134,6 +137,7 @@ Request message for CreateAvailabilityException.
 | `parent` | `string` | `REQUIRED` | The resource to add the exception to. Format: resources/{resource} |
 | `availability_exception` | `AvailabilityException` | `REQUIRED` | The exception to add. Its name field is ignored. |
 | `availability_exception_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the exception; the server generates one if unset. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 
 ### DeleteAvailabilityExceptionRequest
 

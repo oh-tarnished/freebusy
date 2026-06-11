@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package freebusy.schedule.v1;
 
+// (-- api-linter: core::0215::foreign-type-reference=disabled
+//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
+//     shared-types package; reusing it beats inlining per-package copies. --)
+
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
@@ -136,6 +140,9 @@ message Schedule {
     (google.api.field_behavior) = OUTPUT_ONLY,
     (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/AvailabilityException"}
   ];
+
+  // Opaque version for optimistic concurrency (AIP-154); echo on update.
+  string etag = 6;
 }
 
 // Whether an exception removes or adds availability.

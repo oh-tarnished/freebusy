@@ -107,6 +107,9 @@ message PromoCode {
 
   // Last-modification timestamp.
   google.protobuf.Timestamp update_time = 19 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+  string etag = 21;
 }
 
 // How a promo code's discount is computed.

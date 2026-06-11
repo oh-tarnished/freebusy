@@ -461,7 +461,9 @@ type Schedule struct {
 	// Resource names of the active exceptions; manage them with the
 	// AvailabilityException standard methods.
 	// Format: resources/{resource}/availabilityExceptions/{availability_exception}
-	Exceptions    []string `protobuf:"bytes,5,rep,name=exceptions,proto3" json:"exceptions,omitempty"`
+	Exceptions []string `protobuf:"bytes,5,rep,name=exceptions,proto3" json:"exceptions,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update.
+	Etag          string `protobuf:"bytes,6,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -531,6 +533,13 @@ func (x *Schedule) GetExceptions() []string {
 	return nil
 }
 
+func (x *Schedule) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 var File_freebusy_schedule_v1_schedule_proto protoreflect.FileDescriptor
 
 const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
@@ -568,7 +577,7 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\vcreate_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime:\xa9\x01\xeaA\xa5\x01\n" +
 	".freebusy.ohtarnished.dev/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
-	"\x04spanJ\x04\b\x02\x10\x03\"\xc6\x03\n" +
+	"\x04spanJ\x04\b\x02\x10\x03\"\xda\x03\n" +
 	"\bSchedule\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\x0frecurring_rules\x18\x02 \x03(\v2#.freebusy.schedule.v1.RecurringRuleB\x03\xe0A\x01R\x0erecurringRules\x12C\n" +
@@ -577,7 +586,8 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\n" +
 	"exceptions\x18\x05 \x03(\tB6\xe0A\x03\xfaA0\n" +
 	".freebusy.ohtarnished.dev/AvailabilityExceptionR\n" +
-	"exceptions:Z\xeaAW\n" +
+	"exceptions\x12\x12\n" +
+	"\x04etag\x18\x06 \x01(\tR\x04etag:Z\xeaAW\n" +
 	"!freebusy.ohtarnished.dev/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule*k\n" +
 	"\rExceptionKind\x12\x1e\n" +
 	"\x1aEXCEPTION_KIND_UNSPECIFIED\x10\x00\x12\x1a\n" +

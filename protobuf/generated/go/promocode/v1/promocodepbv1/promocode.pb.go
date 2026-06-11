@@ -180,7 +180,9 @@ type PromoCode struct {
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,18,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,19,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,19,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,21,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -348,11 +350,19 @@ func (x *PromoCode) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *PromoCode) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 var File_freebusy_promocode_v1_promocode_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xf8\t\n" +
+	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\x8c\n" +
+	"\n" +
 	"\tPromoCode\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
 	"\x04code\x18\x03 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
@@ -379,7 +389,8 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\vcreate_time\x18\x12 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x13 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime\"W\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\x15 \x01(\tR\x04etag\"W\n" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +

@@ -4,6 +4,7 @@ package freebusy.promocode.v1;
 
 import "freebusy/promocode/v1/promocode.proto";
 import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 import "google/type/money.proto";
@@ -55,6 +56,15 @@ message CreatePromoCodeRequest {
 
   // Optional caller-chosen ID for the promo code; the server generates one if unset.
   string promo_code_id = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 3 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
+
+  // If true, validate the request and return what would happen, but don't commit.
+  bool validate_only = 4 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for UpdatePromoCode.
@@ -64,6 +74,9 @@ message UpdatePromoCodeRequest {
 
   // Fields to overwrite. Omit to replace all mutable fields.
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // If true, validate the request and return what would happen, but don't commit.
+  bool validate_only = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for DeletePromoCode.

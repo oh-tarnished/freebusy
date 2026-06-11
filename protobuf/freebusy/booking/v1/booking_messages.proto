@@ -31,6 +31,10 @@ message CreateBookingRequest {
 
   // Optional caller-chosen ID for the booking; the server generates one if unset.
   string booking_id = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // If true, validate the request (availability + policy) and report what would
+  // happen, but place no hold.
+  bool validate_only = 4 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for GetBooking.

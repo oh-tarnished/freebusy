@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package freebusy.booking.v1;
 
+// (-- api-linter: core::0215::foreign-type-reference=disabled
+//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
+//     shared-types package; reusing it beats inlining per-package copies. --)
+
 import "freebusy/booking/v1/booking.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
@@ -26,6 +30,12 @@ message ConfirmBookingRequest {
 
   // Opaque reference to the payment/settlement that confirmed this booking.
   string payment_ref = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 3 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
 }
 
 // Request message for CancelBooking.
@@ -42,6 +52,12 @@ message CancelBookingRequest {
 
   // Free-form note explaining the cancellation.
   string note = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 4 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
 }
 
 // Request message for RescheduleBooking. Atomically moves a booking to a new

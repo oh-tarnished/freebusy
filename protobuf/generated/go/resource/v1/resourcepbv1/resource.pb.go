@@ -292,7 +292,9 @@ type Resource struct {
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,15,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -418,6 +420,13 @@ func (x *Resource) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Resource) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 // A specific way a resource can be booked, carrying its duration and price. A
 // "30-min consult" and a "60-min session" are two offerings on the same
 // provider. For NIGHTLY resources the duration is unused and price is per-night.
@@ -441,7 +450,9 @@ type Offering struct {
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,11,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -539,11 +550,18 @@ func (x *Offering) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Offering) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 var File_freebusy_resource_v1_resource_proto protoreflect.FileDescriptor
 
 const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xc2\x06\n" +
+	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xd6\x06\n" +
 	"\bResource\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
@@ -563,12 +581,13 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\vcreate_time\x18\r \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime\"D\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\x0f \x01(\tR\x04etag\"D\n" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
 	"\x0eSTATE_ARCHIVED\x10\x02:Q\xeaAN\n" +
-	"!freebusy.ohtarnished.dev/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xa1\x05\n" +
+	"!freebusy.ohtarnished.dev/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xb5\x05\n" +
 	"\bOffering\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
@@ -581,7 +600,8 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime\"D\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\v \x01(\tR\x04etag\"D\n" +
 	"\x05State\x12\x15\n" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +

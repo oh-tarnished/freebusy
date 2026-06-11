@@ -205,7 +205,9 @@ type CreateResourceRequest struct {
 	// The resource to create. The name, state, and offerings fields are ignored.
 	Resource *Resource `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
 	// Optional caller-chosen ID for the resource; the server generates one if unset.
-	ResourceId    string `protobuf:"bytes,2,opt,name=resource_id,json=resourceId,proto3" json:"resource_id,omitempty"`
+	ResourceId string `protobuf:"bytes,2,opt,name=resource_id,json=resourceId,proto3" json:"resource_id,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId     string `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -250,6 +252,13 @@ func (x *CreateResourceRequest) GetResource() *Resource {
 func (x *CreateResourceRequest) GetResourceId() string {
 	if x != nil {
 		return x.ResourceId
+	}
+	return ""
+}
+
+func (x *CreateResourceRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
 	}
 	return ""
 }
@@ -414,7 +423,9 @@ type ListOfferingsRequest struct {
 	// Page token from a previous ListOfferings call's next_page_token.
 	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	// Sort order, e.g. "display_name" or "create_time desc".
-	OrderBy       string `protobuf:"bytes,4,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	OrderBy string `protobuf:"bytes,4,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	// Filter expression (AIP-160), e.g. a match on display_name.
+	Filter        string `protobuf:"bytes,5,opt,name=filter,proto3" json:"filter,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -473,6 +484,13 @@ func (x *ListOfferingsRequest) GetPageToken() string {
 func (x *ListOfferingsRequest) GetOrderBy() string {
 	if x != nil {
 		return x.OrderBy
+	}
+	return ""
+}
+
+func (x *ListOfferingsRequest) GetFilter() string {
+	if x != nil {
+		return x.Filter
 	}
 	return ""
 }
@@ -588,7 +606,9 @@ type CreateOfferingRequest struct {
 	// The offering to create. Its name field is ignored.
 	Offering *Offering `protobuf:"bytes,2,opt,name=offering,proto3" json:"offering,omitempty"`
 	// Optional caller-chosen ID for the offering; the server generates one if unset.
-	OfferingId    string `protobuf:"bytes,3,opt,name=offering_id,json=offeringId,proto3" json:"offering_id,omitempty"`
+	OfferingId string `protobuf:"bytes,3,opt,name=offering_id,json=offeringId,proto3" json:"offering_id,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId     string `protobuf:"bytes,4,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -640,6 +660,13 @@ func (x *CreateOfferingRequest) GetOffering() *Offering {
 func (x *CreateOfferingRequest) GetOfferingId() string {
 	if x != nil {
 		return x.OfferingId
+	}
+	return ""
+}
+
+func (x *CreateOfferingRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
 	}
 	return ""
 }
@@ -750,7 +777,7 @@ var File_freebusy_resource_v1_resource_messages_proto protoreflect.FileDescripto
 
 const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\n" +
-	",freebusy/resource/v1/resource_messages.proto\x12\x14freebusy.resource.v1\x1a#freebusy/resource/v1/resource.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9f\x01\n" +
+	",freebusy/resource/v1/resource_messages.proto\x12\x14freebusy.resource.v1\x1a#freebusy/resource/v1/resource.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9f\x01\n" +
 	"\x14ListResourcesRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
@@ -763,11 +790,13 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\x0fnext_page_token\x18\x05 \x01(\tR\rnextPageTokenJ\x04\b\x02\x10\x05\"S\n" +
 	"\x12GetResourceRequest\x12=\n" +
 	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x04name\"~\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x04name\"\xaa\x01\n" +
 	"\x15CreateResourceRequest\x12?\n" +
 	"\bresource\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.ResourceB\x03\xe0A\x02R\bresource\x12$\n" +
 	"\vresource_id\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
-	"resourceId\"\x9a\x01\n" +
+	"resourceId\x12*\n" +
+	"\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x9a\x01\n" +
 	"\x15UpdateResourceRequest\x12?\n" +
 	"\bresource\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.ResourceB\x03\xe0A\x02R\bresource\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
@@ -777,26 +806,29 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"!freebusy.ohtarnished.dev/ResourceR\x04name\"Y\n" +
 	"\x18UnarchiveResourceRequest\x12=\n" +
 	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x04name\"\xbf\x01\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\x04name\"\xdc\x01\n" +
 	"\x14ListOfferingsRequest\x12A\n" +
 	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
 	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1e\n" +
-	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"}\n" +
+	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\x12\x1b\n" +
+	"\x06filter\x18\x05 \x01(\tB\x03\xe0A\x01R\x06filter\"}\n" +
 	"\x15ListOfferingsResponse\x12<\n" +
 	"\tofferings\x18\x01 \x03(\v2\x1e.freebusy.resource.v1.OfferingR\tofferings\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"S\n" +
 	"\x12GetOfferingRequest\x12=\n" +
 	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\x04name\"\xc1\x01\n" +
+	"!freebusy.ohtarnished.dev/OfferingR\x04name\"\xed\x01\n" +
 	"\x15CreateOfferingRequest\x12A\n" +
 	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
 	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12?\n" +
 	"\boffering\x18\x02 \x01(\v2\x1e.freebusy.resource.v1.OfferingB\x03\xe0A\x02R\boffering\x12$\n" +
 	"\voffering_id\x18\x03 \x01(\tB\x03\xe0A\x01R\n" +
-	"offeringId\"\x9a\x01\n" +
+	"offeringId\x12*\n" +
+	"\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x9a\x01\n" +
 	"\x15UpdateOfferingRequest\x12?\n" +
 	"\boffering\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.OfferingB\x03\xe0A\x02R\boffering\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +

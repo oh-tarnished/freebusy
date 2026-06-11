@@ -32,7 +32,9 @@ type ConfirmBookingRequest struct {
 	// Format: bookings/{booking}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Opaque reference to the payment/settlement that confirmed this booking.
-	PaymentRef    string `protobuf:"bytes,2,opt,name=payment_ref,json=paymentRef,proto3" json:"payment_ref,omitempty"`
+	PaymentRef string `protobuf:"bytes,2,opt,name=payment_ref,json=paymentRef,proto3" json:"payment_ref,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId     string `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -81,6 +83,13 @@ func (x *ConfirmBookingRequest) GetPaymentRef() string {
 	return ""
 }
 
+func (x *ConfirmBookingRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
+}
+
 // Request message for CancelBooking.
 type CancelBookingRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -90,7 +99,9 @@ type CancelBookingRequest struct {
 	// Why the booking is being cancelled.
 	Reason CancelReason `protobuf:"varint,2,opt,name=reason,proto3,enum=freebusy.booking.v1.CancelReason" json:"reason,omitempty"`
 	// Free-form note explaining the cancellation.
-	Note          string `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
+	Note string `protobuf:"bytes,3,opt,name=note,proto3" json:"note,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId     string `protobuf:"bytes,4,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -142,6 +153,13 @@ func (x *CancelBookingRequest) GetReason() CancelReason {
 func (x *CancelBookingRequest) GetNote() string {
 	if x != nil {
 		return x.Note
+	}
+	return ""
+}
+
+func (x *CancelBookingRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
 	}
 	return ""
 }
@@ -227,17 +245,21 @@ var File_freebusy_booking_v1_booking_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"{\n" +
+	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"\xa7\x01\n" +
 	"\x15ConfirmBookingRequest\x12<\n" +
 	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
 	" freebusy.ohtarnished.dev/BookingR\x04name\x12$\n" +
 	"\vpayment_ref\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
-	"paymentRef\"\xad\x01\n" +
+	"paymentRef\x12*\n" +
+	"\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xd9\x01\n" +
 	"\x14CancelBookingRequest\x12<\n" +
 	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
 	" freebusy.ohtarnished.dev/BookingR\x04name\x12>\n" +
 	"\x06reason\x18\x02 \x01(\x0e2!.freebusy.booking.v1.CancelReasonB\x03\xe0A\x01R\x06reason\x12\x17\n" +
-	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\"\x88\x02\n" +
+	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\x12*\n" +
+	"\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x88\x02\n" +
 	"\x18RescheduleBookingRequest\x12<\n" +
 	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
 	" freebusy.ohtarnished.dev/BookingR\x04name\x12;\n" +

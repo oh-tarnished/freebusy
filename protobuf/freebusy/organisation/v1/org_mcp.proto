@@ -11,7 +11,7 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
 // Arguments for the "invite_member" prompt.
 message InviteMemberArgs {
-  // Org to invite into, as a resource name ("orgs/7") or a display name.
+  // Organisation to invite into, as a resource name ("organisations/7") or a display name.
   string organisation = 1 [(google.api.field_behavior) = REQUIRED];
 
   // Email address to invite.

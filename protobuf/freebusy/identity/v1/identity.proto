@@ -46,7 +46,7 @@ message User {
   // IANA time zone (e.g. "America/New_York").
   string time_zone = 7 [(google.api.field_behavior) = OPTIONAL];
 
-  // The orgs this user belongs to, with role.
+  // The organisations this user belongs to, with role.
   repeated MembershipSummary memberships = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
@@ -54,15 +54,18 @@ message User {
 
   // Last-modification timestamp.
   google.protobuf.Timestamp update_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Opaque version for optimistic concurrency (AIP-154); echo on update.
+  string etag = 11;
 }
 
 // A compact view of an organisation the user belongs to.
 message MembershipSummary {
   // The organisation.
-  // Format: orgs/{org}
+  // Format: organisations/{organisation}
   string organisation = 1 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
   ];
 
   // Cached display name of the organisation.
@@ -93,8 +96,9 @@ message UpdateUserRequest {
 
 // Request message for ListUsers. Users are global, so the visible set is every
 // user sharing at least one organisation with the caller; use
-// `organisation = "orgs/{org}"` in filter to narrow to one org, or
-// OrgService.ListMembers for a single org's roster with roles.
+// `organisation = "organisations/{organisation}"` in filter to narrow to one
+// organisation, or OrganisationService.ListMembers for a single organisation's
+// roster with roles.
 message ListUsersRequest {
   // Maximum number of users to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
@@ -102,8 +106,8 @@ message ListUsersRequest {
   // Page token from a previous ListUsers call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Filter expression (AIP-160), e.g. `organisation = "orgs/7"` or a match on
-  // display_name.
+  // Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
+  // match on display_name.
   string filter = 3 [(google.api.field_behavior) = OPTIONAL];
 
   // Sort order, e.g. "display_name" or "create_time desc".

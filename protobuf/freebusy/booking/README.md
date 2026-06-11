@@ -49,6 +49,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `confirm_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was confirmed, if at all. |
 | `cancel_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was cancelled, if at all. |
 | `hold_ttl` | `Duration` | `IMMUTABLE` | Requested time-to-live of the hold, set at creation. The server caps this and reflects the effective expiry in hold_expire_time. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ### ConfirmBookingRequest
 
@@ -58,6 +59,7 @@ Request message for ConfirmBooking. Confirmation normally arrives via the paymen
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The booking to confirm. Format: bookings/{booking} |
 | `payment_ref` | `string` | `OPTIONAL` | Opaque reference to the payment/settlement that confirmed this booking. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 
 ### CancelBookingRequest
 
@@ -68,6 +70,7 @@ Request message for CancelBooking.
 | `name` | `string` | `REQUIRED` | The booking to cancel. Format: bookings/{booking} |
 | `reason` | `CancelReason` | `OPTIONAL` | Why the booking is being cancelled. |
 | `note` | `string` | `OPTIONAL` | Free-form note explaining the cancellation. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 
 ### RescheduleBookingRequest
 
@@ -101,6 +104,7 @@ Request message for CreateBooking. This places a hold transactionally; the reque
 | `booking` | `Booking` | `REQUIRED` | The booking to create. Supply resource, window, and optionally offering, units, customer, notes, attributes, promo_code, and hold_ttl. Output-only fields are ignored. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this create. Reusing an id returns the booking created by the first call. |
 | `booking_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the booking; the server generates one if unset. |
+| `validate_only` | `bool` | `OPTIONAL` | If true, validate the request (availability + policy) and report what would happen, but place no hold. |
 
 ### GetBookingRequest
 

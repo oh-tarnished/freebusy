@@ -43,12 +43,14 @@ type User struct {
 	Locale string `protobuf:"bytes,6,opt,name=locale,proto3" json:"locale,omitempty"`
 	// IANA time zone (e.g. "America/New_York").
 	TimeZone string `protobuf:"bytes,7,opt,name=time_zone,json=timeZone,proto3" json:"time_zone,omitempty"`
-	// The orgs this user belongs to, with role.
+	// The organisations this user belongs to, with role.
 	Memberships []*MembershipSummary `protobuf:"bytes,8,rep,name=memberships,proto3" json:"memberships,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update.
+	Etag          string `protobuf:"bytes,11,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,11 +148,18 @@ func (x *User) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *User) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 // A compact view of an organisation the user belongs to.
 type MembershipSummary struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation.
-	// Format: orgs/{org}
+	// Format: organisations/{organisation}
 	Organisation string `protobuf:"bytes,1,opt,name=organisation,proto3" json:"organisation,omitempty"`
 	// Cached display name of the organisation.
 	OrgDisplayName string `protobuf:"bytes,2,opt,name=org_display_name,json=orgDisplayName,proto3" json:"org_display_name,omitempty"`
@@ -315,16 +324,17 @@ func (x *UpdateUserRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 
 // Request message for ListUsers. Users are global, so the visible set is every
 // user sharing at least one organisation with the caller; use
-// `organisation = "orgs/{org}"` in filter to narrow to one org, or
-// OrgService.ListMembers for a single org's roster with roles.
+// `organisation = "organisations/{organisation}"` in filter to narrow to one
+// organisation, or OrganisationService.ListMembers for a single organisation's
+// roster with roles.
 type ListUsersRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Maximum number of users to return. The server may cap this.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListUsers call's next_page_token.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	// Filter expression (AIP-160), e.g. `organisation = "orgs/7"` or a match on
-	// display_name.
+	// Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
+	// match on display_name.
 	Filter string `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Sort order, e.g. "display_name" or "create_time desc".
 	OrderBy       string `protobuf:"bytes,4,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
@@ -449,7 +459,7 @@ var File_freebusy_identity_v1_identity_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xde\x03\n" +
+	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf2\x03\n" +
 	"\x04User\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tB\x03\xe0A\x03R\x05email\x12&\n" +
@@ -463,11 +473,12 @@ const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"updateTime:=\xeaA:\n" +
-	"\x1dfreebusy.ohtarnished.dev/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03\"\xa5\x01\n" +
-	"\x11MembershipSummary\x12H\n" +
-	"\forganisation\x18\x01 \x01(\tB$\xe0A\x03\xfaA\x1e\n" +
-	"\x1cfreebusy.ohtarnished.dev/OrgR\forganisation\x12-\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\v \x01(\tR\x04etag:=\xeaA:\n" +
+	"\x1dfreebusy.ohtarnished.dev/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03\"\xae\x01\n" +
+	"\x11MembershipSummary\x12Q\n" +
+	"\forganisation\x18\x01 \x01(\tB-\xe0A\x03\xfaA'\n" +
+	"%freebusy.ohtarnished.dev/OrganisationR\forganisation\x12-\n" +
 	"\x10org_display_name\x18\x02 \x01(\tB\x03\xe0A\x03R\x0eorgDisplayName\x12\x17\n" +
 	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x03R\x04role\"K\n" +
 	"\x0eGetUserRequest\x129\n" +

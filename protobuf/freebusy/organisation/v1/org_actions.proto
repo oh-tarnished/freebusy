@@ -4,6 +4,7 @@ package freebusy.organisation.v1;
 
 import "freebusy/organisation/v1/organisation.proto";
 import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
@@ -15,10 +16,10 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 // Request message for InviteMember.
 message InviteMemberRequest {
   // The organisation to invite the member to.
-  // Format: orgs/{org}
+  // Format: organisations/{organisation}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Org"}
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
   ];
 
   // Email address to invite.
@@ -26,6 +27,12 @@ message InviteMemberRequest {
 
   // Role to grant on acceptance.
   OrganisationRole role = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 4 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
 }
 
 // Response message for InviteMember.
@@ -47,7 +54,7 @@ message UpdateMemberRequest {
 // Request message for DeleteMember.
 message DeleteMemberRequest {
   // The member to remove.
-  // Format: orgs/{org}/members/{member}
+  // Format: organisations/{organisation}/members/{member}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Member"}

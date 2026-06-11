@@ -23,13 +23,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Request message for ListOrgs.
-type ListOrgsRequest struct {
+// Request message for ListOrganisations.
+type ListOrganisationsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maximum number of orgs to return. The server may cap this. Zero lets the
-	// server pick a default.
+	// Maximum number of organisations to return. The server may cap this. Zero lets
+	// the server pick a default.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	// Page token from a previous ListOrgs call's next_page_token.
+	// Page token from a previous ListOrganisations call's next_page_token.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	// Filter expression over organisation fields (e.g. display_name).
 	Filter string `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
@@ -39,20 +39,20 @@ type ListOrgsRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ListOrgsRequest) Reset() {
-	*x = ListOrgsRequest{}
+func (x *ListOrganisationsRequest) Reset() {
+	*x = ListOrganisationsRequest{}
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListOrgsRequest) String() string {
+func (x *ListOrganisationsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListOrgsRequest) ProtoMessage() {}
+func (*ListOrganisationsRequest) ProtoMessage() {}
 
-func (x *ListOrgsRequest) ProtoReflect() protoreflect.Message {
+func (x *ListOrganisationsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,64 +64,64 @@ func (x *ListOrgsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListOrgsRequest.ProtoReflect.Descriptor instead.
-func (*ListOrgsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListOrganisationsRequest.ProtoReflect.Descriptor instead.
+func (*ListOrganisationsRequest) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ListOrgsRequest) GetPageSize() int32 {
+func (x *ListOrganisationsRequest) GetPageSize() int32 {
 	if x != nil {
 		return x.PageSize
 	}
 	return 0
 }
 
-func (x *ListOrgsRequest) GetPageToken() string {
+func (x *ListOrganisationsRequest) GetPageToken() string {
 	if x != nil {
 		return x.PageToken
 	}
 	return ""
 }
 
-func (x *ListOrgsRequest) GetFilter() string {
+func (x *ListOrganisationsRequest) GetFilter() string {
 	if x != nil {
 		return x.Filter
 	}
 	return ""
 }
 
-func (x *ListOrgsRequest) GetOrderBy() string {
+func (x *ListOrganisationsRequest) GetOrderBy() string {
 	if x != nil {
 		return x.OrderBy
 	}
 	return ""
 }
 
-// Response message for ListOrgs.
-type ListOrgsResponse struct {
+// Response message for ListOrganisations.
+type ListOrganisationsResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The page of orgs (those the caller belongs to).
-	Orgs []*Org `protobuf:"bytes,1,rep,name=orgs,proto3" json:"orgs,omitempty"`
+	// The page of organisations (those the caller belongs to).
+	Organisations []*Organisation `protobuf:"bytes,1,rep,name=organisations,proto3" json:"organisations,omitempty"`
 	// Token to pass as page_token to retrieve the next page; empty when no more.
 	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ListOrgsResponse) Reset() {
-	*x = ListOrgsResponse{}
+func (x *ListOrganisationsResponse) Reset() {
+	*x = ListOrganisationsResponse{}
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListOrgsResponse) String() string {
+func (x *ListOrganisationsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListOrgsResponse) ProtoMessage() {}
+func (*ListOrganisationsResponse) ProtoMessage() {}
 
-func (x *ListOrgsResponse) ProtoReflect() protoreflect.Message {
+func (x *ListOrganisationsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -133,49 +133,49 @@ func (x *ListOrgsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListOrgsResponse.ProtoReflect.Descriptor instead.
-func (*ListOrgsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListOrganisationsResponse.ProtoReflect.Descriptor instead.
+func (*ListOrganisationsResponse) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ListOrgsResponse) GetOrgs() []*Org {
+func (x *ListOrganisationsResponse) GetOrganisations() []*Organisation {
 	if x != nil {
-		return x.Orgs
+		return x.Organisations
 	}
 	return nil
 }
 
-func (x *ListOrgsResponse) GetNextPageToken() string {
+func (x *ListOrganisationsResponse) GetNextPageToken() string {
 	if x != nil {
 		return x.NextPageToken
 	}
 	return ""
 }
 
-// Request message for GetOrg.
-type GetOrgRequest struct {
+// Request message for GetOrganisation.
+type GetOrganisationRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation to retrieve.
-	// Format: orgs/{org}
+	// Format: organisations/{organisation}
 	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetOrgRequest) Reset() {
-	*x = GetOrgRequest{}
+func (x *GetOrganisationRequest) Reset() {
+	*x = GetOrganisationRequest{}
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetOrgRequest) String() string {
+func (x *GetOrganisationRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetOrgRequest) ProtoMessage() {}
+func (*GetOrganisationRequest) ProtoMessage() {}
 
-func (x *GetOrgRequest) ProtoReflect() protoreflect.Message {
+func (x *GetOrganisationRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -187,44 +187,46 @@ func (x *GetOrgRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetOrgRequest.ProtoReflect.Descriptor instead.
-func (*GetOrgRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetOrganisationRequest.ProtoReflect.Descriptor instead.
+func (*GetOrganisationRequest) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetOrgRequest) GetName() string {
+func (x *GetOrganisationRequest) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-// Request message for CreateOrg.
-type CreateOrgRequest struct {
+// Request message for CreateOrganisation.
+type CreateOrganisationRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation to create. The name and state fields are ignored. The caller
 	// becomes the organisation's first OWNER.
-	Org *Org `protobuf:"bytes,1,opt,name=org,proto3" json:"org,omitempty"`
-	// Optional caller-chosen ID for the org; the server generates one if unset.
-	OrgId         string `protobuf:"bytes,2,opt,name=org_id,json=orgId,proto3" json:"org_id,omitempty"`
+	Organisation *Organisation `protobuf:"bytes,1,opt,name=organisation,proto3" json:"organisation,omitempty"`
+	// Optional caller-chosen ID for the organisation; the server generates one if unset.
+	OrganisationId string `protobuf:"bytes,2,opt,name=organisation_id,json=organisationId,proto3" json:"organisation_id,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId     string `protobuf:"bytes,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateOrgRequest) Reset() {
-	*x = CreateOrgRequest{}
+func (x *CreateOrganisationRequest) Reset() {
+	*x = CreateOrganisationRequest{}
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateOrgRequest) String() string {
+func (x *CreateOrganisationRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateOrgRequest) ProtoMessage() {}
+func (*CreateOrganisationRequest) ProtoMessage() {}
 
-func (x *CreateOrgRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateOrganisationRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -236,50 +238,57 @@ func (x *CreateOrgRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateOrgRequest.ProtoReflect.Descriptor instead.
-func (*CreateOrgRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateOrganisationRequest.ProtoReflect.Descriptor instead.
+func (*CreateOrganisationRequest) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateOrgRequest) GetOrg() *Org {
+func (x *CreateOrganisationRequest) GetOrganisation() *Organisation {
 	if x != nil {
-		return x.Org
+		return x.Organisation
 	}
 	return nil
 }
 
-func (x *CreateOrgRequest) GetOrgId() string {
+func (x *CreateOrganisationRequest) GetOrganisationId() string {
 	if x != nil {
-		return x.OrgId
+		return x.OrganisationId
 	}
 	return ""
 }
 
-// Request message for UpdateOrg.
-type UpdateOrgRequest struct {
+func (x *CreateOrganisationRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
+}
+
+// Request message for UpdateOrganisation.
+type UpdateOrganisationRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation to update; its name identifies the target.
-	Org *Org `protobuf:"bytes,1,opt,name=org,proto3" json:"org,omitempty"`
+	Organisation *Organisation `protobuf:"bytes,1,opt,name=organisation,proto3" json:"organisation,omitempty"`
 	// Fields to overwrite. Omit to replace all mutable fields.
 	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateOrgRequest) Reset() {
-	*x = UpdateOrgRequest{}
+func (x *UpdateOrganisationRequest) Reset() {
+	*x = UpdateOrganisationRequest{}
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateOrgRequest) String() string {
+func (x *UpdateOrganisationRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateOrgRequest) ProtoMessage() {}
+func (*UpdateOrganisationRequest) ProtoMessage() {}
 
-func (x *UpdateOrgRequest) ProtoReflect() protoreflect.Message {
+func (x *UpdateOrganisationRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -291,52 +300,52 @@ func (x *UpdateOrgRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateOrgRequest.ProtoReflect.Descriptor instead.
-func (*UpdateOrgRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateOrganisationRequest.ProtoReflect.Descriptor instead.
+func (*UpdateOrganisationRequest) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *UpdateOrgRequest) GetOrg() *Org {
+func (x *UpdateOrganisationRequest) GetOrganisation() *Organisation {
 	if x != nil {
-		return x.Org
+		return x.Organisation
 	}
 	return nil
 }
 
-func (x *UpdateOrgRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+func (x *UpdateOrganisationRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.UpdateMask
 	}
 	return nil
 }
 
-// Request message for DeleteOrg.
-type DeleteOrgRequest struct {
+// Request message for DeleteOrganisation.
+type DeleteOrganisationRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation to delete.
-	// Format: orgs/{org}
+	// Format: organisations/{organisation}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// If true, delete the org and its members; otherwise the call fails when the
-	// org still has members.
+	// If true, delete the organisation and its members; otherwise the call fails when
+	// the organisation still has members.
 	Force         bool `protobuf:"varint,2,opt,name=force,proto3" json:"force,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteOrgRequest) Reset() {
-	*x = DeleteOrgRequest{}
+func (x *DeleteOrganisationRequest) Reset() {
+	*x = DeleteOrganisationRequest{}
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteOrgRequest) String() string {
+func (x *DeleteOrganisationRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteOrgRequest) ProtoMessage() {}
+func (*DeleteOrganisationRequest) ProtoMessage() {}
 
-func (x *DeleteOrgRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteOrganisationRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -348,19 +357,19 @@ func (x *DeleteOrgRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteOrgRequest.ProtoReflect.Descriptor instead.
-func (*DeleteOrgRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteOrganisationRequest.ProtoReflect.Descriptor instead.
+func (*DeleteOrganisationRequest) Descriptor() ([]byte, []int) {
 	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *DeleteOrgRequest) GetName() string {
+func (x *DeleteOrganisationRequest) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *DeleteOrgRequest) GetForce() bool {
+func (x *DeleteOrganisationRequest) GetForce() bool {
 	if x != nil {
 		return x.Force
 	}
@@ -371,14 +380,16 @@ func (x *DeleteOrgRequest) GetForce() bool {
 type ListMembersRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation whose members to list.
-	// Format: orgs/{org}
+	// Format: organisations/{organisation}
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// Maximum number of members to return. The server may cap this.
 	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListMembers call's next_page_token.
 	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	// Filter expression (AIP-160), e.g. `role = ADMIN` or `state = ACTIVE`.
-	Filter        string `protobuf:"bytes,4,opt,name=filter,proto3" json:"filter,omitempty"`
+	Filter string `protobuf:"bytes,4,opt,name=filter,proto3" json:"filter,omitempty"`
+	// Sort order, e.g. "create_time desc".
+	OrderBy       string `protobuf:"bytes,5,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -437,6 +448,13 @@ func (x *ListMembersRequest) GetPageToken() string {
 func (x *ListMembersRequest) GetFilter() string {
 	if x != nil {
 		return x.Filter
+	}
+	return ""
+}
+
+func (x *ListMembersRequest) GetOrderBy() string {
+	if x != nil {
+		return x.OrderBy
 	}
 	return ""
 }
@@ -500,7 +518,7 @@ func (x *ListMembersResponse) GetNextPageToken() string {
 type GetMemberRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The member to retrieve.
-	// Format: orgs/{org}/members/{member}
+	// Format: organisations/{organisation}/members/{member}
 	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -547,37 +565,40 @@ var File_freebusy_organisation_v1_org_messages_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_org_messages_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/organisation/v1/org_messages.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x94\x01\n" +
-	"\x0fListOrgsRequest\x12 \n" +
+	"+freebusy/organisation/v1/org_messages.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9d\x01\n" +
+	"\x18ListOrganisationsRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
-	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"m\n" +
-	"\x10ListOrgsResponse\x121\n" +
-	"\x04orgs\x18\x01 \x03(\v2\x1d.freebusy.organisation.v1.OrgR\x04orgs\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"I\n" +
-	"\rGetOrgRequest\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cfreebusy.ohtarnished.dev/OrgR\x04name\"d\n" +
-	"\x10CreateOrgRequest\x124\n" +
-	"\x03org\x18\x01 \x01(\v2\x1d.freebusy.organisation.v1.OrgB\x03\xe0A\x02R\x03org\x12\x1a\n" +
-	"\x06org_id\x18\x02 \x01(\tB\x03\xe0A\x01R\x05orgId\"\x8a\x01\n" +
-	"\x10UpdateOrgRequest\x124\n" +
-	"\x03org\x18\x01 \x01(\v2\x1d.freebusy.organisation.v1.OrgB\x03\xe0A\x02R\x03org\x12@\n" +
+	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"\x91\x01\n" +
+	"\x19ListOrganisationsResponse\x12L\n" +
+	"\rorganisations\x18\x01 \x03(\v2&.freebusy.organisation.v1.OrganisationR\rorganisations\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"[\n" +
+	"\x16GetOrganisationRequest\x12A\n" +
+	"\x04name\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
+	"%freebusy.ohtarnished.dev/OrganisationR\x04name\"\xc6\x01\n" +
+	"\x19CreateOrganisationRequest\x12O\n" +
+	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationB\x03\xe0A\x02R\forganisation\x12,\n" +
+	"\x0forganisation_id\x18\x02 \x01(\tB\x03\xe0A\x01R\x0eorganisationId\x12*\n" +
+	"\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xae\x01\n" +
+	"\x19UpdateOrganisationRequest\x12O\n" +
+	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationB\x03\xe0A\x02R\forganisation\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"g\n" +
-	"\x10DeleteOrgRequest\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cfreebusy.ohtarnished.dev/OrgR\x04name\x12\x19\n" +
-	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xb5\x01\n" +
-	"\x12ListMembersRequest\x12<\n" +
-	"\x06parent\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cfreebusy.ohtarnished.dev/OrgR\x06parent\x12 \n" +
+	"updateMask\"y\n" +
+	"\x19DeleteOrganisationRequest\x12A\n" +
+	"\x04name\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
+	"%freebusy.ohtarnished.dev/OrganisationR\x04name\x12\x19\n" +
+	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xde\x01\n" +
+	"\x12ListMembersRequest\x12E\n" +
+	"\x06parent\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
+	"%freebusy.ohtarnished.dev/OrganisationR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
-	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\"y\n" +
+	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
+	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\"y\n" +
 	"\x13ListMembersResponse\x12:\n" +
 	"\amembers\x18\x01 \x03(\v2 .freebusy.organisation.v1.MemberR\amembers\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"O\n" +
@@ -600,24 +621,24 @@ func file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP() []byte {
 
 var file_freebusy_organisation_v1_org_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_freebusy_organisation_v1_org_messages_proto_goTypes = []any{
-	(*ListOrgsRequest)(nil),       // 0: freebusy.organisation.v1.ListOrgsRequest
-	(*ListOrgsResponse)(nil),      // 1: freebusy.organisation.v1.ListOrgsResponse
-	(*GetOrgRequest)(nil),         // 2: freebusy.organisation.v1.GetOrgRequest
-	(*CreateOrgRequest)(nil),      // 3: freebusy.organisation.v1.CreateOrgRequest
-	(*UpdateOrgRequest)(nil),      // 4: freebusy.organisation.v1.UpdateOrgRequest
-	(*DeleteOrgRequest)(nil),      // 5: freebusy.organisation.v1.DeleteOrgRequest
-	(*ListMembersRequest)(nil),    // 6: freebusy.organisation.v1.ListMembersRequest
-	(*ListMembersResponse)(nil),   // 7: freebusy.organisation.v1.ListMembersResponse
-	(*GetMemberRequest)(nil),      // 8: freebusy.organisation.v1.GetMemberRequest
-	(*Org)(nil),                   // 9: freebusy.organisation.v1.Org
-	(*fieldmaskpb.FieldMask)(nil), // 10: google.protobuf.FieldMask
-	(*Member)(nil),                // 11: freebusy.organisation.v1.Member
+	(*ListOrganisationsRequest)(nil),  // 0: freebusy.organisation.v1.ListOrganisationsRequest
+	(*ListOrganisationsResponse)(nil), // 1: freebusy.organisation.v1.ListOrganisationsResponse
+	(*GetOrganisationRequest)(nil),    // 2: freebusy.organisation.v1.GetOrganisationRequest
+	(*CreateOrganisationRequest)(nil), // 3: freebusy.organisation.v1.CreateOrganisationRequest
+	(*UpdateOrganisationRequest)(nil), // 4: freebusy.organisation.v1.UpdateOrganisationRequest
+	(*DeleteOrganisationRequest)(nil), // 5: freebusy.organisation.v1.DeleteOrganisationRequest
+	(*ListMembersRequest)(nil),        // 6: freebusy.organisation.v1.ListMembersRequest
+	(*ListMembersResponse)(nil),       // 7: freebusy.organisation.v1.ListMembersResponse
+	(*GetMemberRequest)(nil),          // 8: freebusy.organisation.v1.GetMemberRequest
+	(*Organisation)(nil),              // 9: freebusy.organisation.v1.Organisation
+	(*fieldmaskpb.FieldMask)(nil),     // 10: google.protobuf.FieldMask
+	(*Member)(nil),                    // 11: freebusy.organisation.v1.Member
 }
 var file_freebusy_organisation_v1_org_messages_proto_depIdxs = []int32{
-	9,  // 0: freebusy.organisation.v1.ListOrgsResponse.orgs:type_name -> freebusy.organisation.v1.Org
-	9,  // 1: freebusy.organisation.v1.CreateOrgRequest.org:type_name -> freebusy.organisation.v1.Org
-	9,  // 2: freebusy.organisation.v1.UpdateOrgRequest.org:type_name -> freebusy.organisation.v1.Org
-	10, // 3: freebusy.organisation.v1.UpdateOrgRequest.update_mask:type_name -> google.protobuf.FieldMask
+	9,  // 0: freebusy.organisation.v1.ListOrganisationsResponse.organisations:type_name -> freebusy.organisation.v1.Organisation
+	9,  // 1: freebusy.organisation.v1.CreateOrganisationRequest.organisation:type_name -> freebusy.organisation.v1.Organisation
+	9,  // 2: freebusy.organisation.v1.UpdateOrganisationRequest.organisation:type_name -> freebusy.organisation.v1.Organisation
+	10, // 3: freebusy.organisation.v1.UpdateOrganisationRequest.update_mask:type_name -> google.protobuf.FieldMask
 	11, // 4: freebusy.organisation.v1.ListMembersResponse.members:type_name -> freebusy.organisation.v1.Member
 	5,  // [5:5] is the sub-list for method output_type
 	5,  // [5:5] is the sub-list for method input_type

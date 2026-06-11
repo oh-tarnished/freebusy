@@ -27,65 +27,62 @@ var File_freebusy_organisation_v1_org_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_org_service_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/organisation/v1/org_service.proto\x12\x18freebusy.organisation.v1\x1a*freebusy/organisation/v1/org_actions.proto\x1a+freebusy/organisation/v1/org_messages.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xb6\x11\n" +
-	"\n" +
-	"OrgService\x12\xa6\x01\n" +
-	"\bListOrgs\x12).freebusy.organisation.v1.ListOrgsRequest\x1a*.freebusy.organisation.v1.ListOrgsResponse\"C\xca\xf3\x18/\x12-List the organizations the caller belongs to.\x82\xd3\xe4\x93\x02\n" +
-	"\x12\b/v1/orgs\x12\xa3\x01\n" +
-	"\x06GetOrg\x12'.freebusy.organisation.v1.GetOrgRequest\x1a\x1d.freebusy.organisation.v1.Org\"Q\xdaA\x04name\xca\xf3\x18-\x12+Get a single organization by resource name.\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/{name=orgs/*}\x12\xbb\x01\n" +
-	"\tCreateOrg\x12*.freebusy.organisation.v1.CreateOrgRequest\x1a\x1d.freebusy.organisation.v1.Org\"c\xdaA\n" +
-	"org,org_id\xca\xf3\x18=\x12;Create an organization; the caller becomes its first owner.\x82\xd3\xe4\x93\x02\x0f:\x03org\"\b/v1/orgs\x12\xdb\x01\n" +
-	"\tUpdateOrg\x12*.freebusy.organisation.v1.UpdateOrgRequest\x1a\x1d.freebusy.organisation.v1.Org\"\x82\x01\xdaA\x0forg,update_mask\xca\xf3\x18J\x12HUpdate an organization's display name, slug, billing email, or settings.\x82\xd3\xe4\x93\x02\x1c:\x03org2\x15/v1/{org.name=orgs/*}\x12\x9f\x01\n" +
-	"\tDeleteOrg\x12*.freebusy.organisation.v1.DeleteOrgRequest\x1a\x16.google.protobuf.Empty\"N\xdaA\x04name\xca\xf3\x18*\x12(Delete an organization by resource name.\x82\xd3\xe4\x93\x02\x13*\x11/v1/{name=orgs/*}\x12\xf1\x02\n" +
-	"\fInviteMember\x12-.freebusy.organisation.v1.InviteMemberRequest\x1a..freebusy.organisation.v1.InviteMemberResponse\"\x81\x02\xdaA\x11parent,email,role\xca\xf3\x18[\x12YInvite an email address to an organisation with a role (owner, admin, member, or viewer).\xd2\xf3\x18]\n" +
-	"\rinvite_member\x12!Invite someone to an organization\x1a)freebusy.organisation.v1.InviteMemberArgs\x82\xd3\xe4\x93\x02':\x01*\"\"/v1/{parent=orgs/*}/members:invite\x12\xdb\x01\n" +
-	"\vListMembers\x12,.freebusy.organisation.v1.ListMembersRequest\x1a-.freebusy.organisation.v1.ListMembersResponse\"o\xdaA\x06parent\xca\xf3\x18?\x12=List the members of an organisation. Filter by role or state.\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/{parent=orgs/*}/members\x12\xbd\x01\n" +
-	"\tGetMember\x12*.freebusy.organisation.v1.GetMemberRequest\x1a .freebusy.organisation.v1.Member\"b\xdaA\x04name\xca\xf3\x184\x122Get a single organisation member by resource name.\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/{name=orgs/*/members/*}\x12\xd3\x01\n" +
-	"\fUpdateMember\x12-.freebusy.organisation.v1.UpdateMemberRequest\x1a .freebusy.organisation.v1.Member\"r\xdaA\x12member,update_mask\xca\xf3\x18'\x12%Change an organisation member's role.\x82\xd3\xe4\x93\x02,:\x06member2\"/v1/{member.name=orgs/*/members/*}\x12\xc4\x01\n" +
-	"\fDeleteMember\x12-.freebusy.organisation.v1.DeleteMemberRequest\x1a\x16.google.protobuf.Empty\"m\xdaA\x04name\xca\xf3\x18?\x12=Remove a member from an organisation by member resource name.\x82\xd3\xe4\x93\x02\x1d*\x1b/v1/{name=orgs/*/members/*}\x1al\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18M\n" +
+	"*freebusy/organisation/v1/org_service.proto\x12\x18freebusy.organisation.v1\x1a*freebusy/organisation/v1/org_actions.proto\x1a+freebusy/organisation/v1/org_messages.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xce\x13\n" +
+	"\x13OrganisationService\x12\xca\x01\n" +
+	"\x11ListOrganisations\x122.freebusy.organisation.v1.ListOrganisationsRequest\x1a3.freebusy.organisation.v1.ListOrganisationsResponse\"L\xca\xf3\x18/\x12-List the organizations the caller belongs to.\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/organisations\x12\xc7\x01\n" +
+	"\x0fGetOrganisation\x120.freebusy.organisation.v1.GetOrganisationRequest\x1a&.freebusy.organisation.v1.Organisation\"Z\xdaA\x04name\xca\xf3\x18-\x12+Get a single organization by resource name.\x82\xd3\xe4\x93\x02\x1c\x12\x1a/v1/{name=organisations/*}\x12\xfb\x01\n" +
+	"\x12CreateOrganisation\x123.freebusy.organisation.v1.CreateOrganisationRequest\x1a&.freebusy.organisation.v1.Organisation\"\x87\x01\xdaA\x1corganisation,organisation_id\xca\xf3\x18=\x12;Create an organization; the caller becomes its first owner.\x82\xd3\xe4\x93\x02!:\forganisation\"\x11/v1/organisations\x12\x9a\x02\n" +
+	"\x12UpdateOrganisation\x123.freebusy.organisation.v1.UpdateOrganisationRequest\x1a&.freebusy.organisation.v1.Organisation\"\xa6\x01\xdaA\x18organisation,update_mask\xca\xf3\x18J\x12HUpdate an organization's display name, slug, billing email, or settings.\x82\xd3\xe4\x93\x027:\forganisation2'/v1/{organisation.name=organisations/*}\x12\xba\x01\n" +
+	"\x12DeleteOrganisation\x123.freebusy.organisation.v1.DeleteOrganisationRequest\x1a\x16.google.protobuf.Empty\"W\xdaA\x04name\xca\xf3\x18*\x12(Delete an organization by resource name.\x82\xd3\xe4\x93\x02\x1c*\x1a/v1/{name=organisations/*}\x12\xfa\x02\n" +
+	"\fInviteMember\x12-.freebusy.organisation.v1.InviteMemberRequest\x1a..freebusy.organisation.v1.InviteMemberResponse\"\x8a\x02\xdaA\x11parent,email,role\xca\xf3\x18[\x12YInvite an email address to an organisation with a role (owner, admin, member, or viewer).\xd2\xf3\x18]\n" +
+	"\rinvite_member\x12!Invite someone to an organization\x1a)freebusy.organisation.v1.InviteMemberArgs\x82\xd3\xe4\x93\x020:\x01*\"+/v1/{parent=organisations/*}/members:invite\x12\xe4\x01\n" +
+	"\vListMembers\x12,.freebusy.organisation.v1.ListMembersRequest\x1a-.freebusy.organisation.v1.ListMembersResponse\"x\xdaA\x06parent\xca\xf3\x18?\x12=List the members of an organisation. Filter by role or state.\x82\xd3\xe4\x93\x02&\x12$/v1/{parent=organisations/*}/members\x12\xc6\x01\n" +
+	"\tGetMember\x12*.freebusy.organisation.v1.GetMemberRequest\x1a .freebusy.organisation.v1.Member\"k\xdaA\x04name\xca\xf3\x184\x122Get a single organisation member by resource name.\x82\xd3\xe4\x93\x02&\x12$/v1/{name=organisations/*/members/*}\x12\xdc\x01\n" +
+	"\fUpdateMember\x12-.freebusy.organisation.v1.UpdateMemberRequest\x1a .freebusy.organisation.v1.Member\"{\xdaA\x12member,update_mask\xca\xf3\x18'\x12%Change an organisation member's role.\x82\xd3\xe4\x93\x025:\x06member2+/v1/{member.name=organisations/*/members/*}\x12\xcd\x01\n" +
+	"\fDeleteMember\x12-.freebusy.organisation.v1.DeleteMemberRequest\x1a\x16.google.protobuf.Empty\"v\xdaA\x04name\xca\xf3\x18?\x12=Remove a member from an organisation by member resource name.\x82\xd3\xe4\x93\x02&*$/v1/{name=organisations/*/members/*}\x1al\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18M\n" +
 	"K\n" +
 	"\rOrganizations\x12\x051.0.0\x1a3Manage organizations (tenants), members, and roles.B\x89\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\x0fOrgServiceProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var file_freebusy_organisation_v1_org_service_proto_goTypes = []any{
-	(*ListOrgsRequest)(nil),      // 0: freebusy.organisation.v1.ListOrgsRequest
-	(*GetOrgRequest)(nil),        // 1: freebusy.organisation.v1.GetOrgRequest
-	(*CreateOrgRequest)(nil),     // 2: freebusy.organisation.v1.CreateOrgRequest
-	(*UpdateOrgRequest)(nil),     // 3: freebusy.organisation.v1.UpdateOrgRequest
-	(*DeleteOrgRequest)(nil),     // 4: freebusy.organisation.v1.DeleteOrgRequest
-	(*InviteMemberRequest)(nil),  // 5: freebusy.organisation.v1.InviteMemberRequest
-	(*ListMembersRequest)(nil),   // 6: freebusy.organisation.v1.ListMembersRequest
-	(*GetMemberRequest)(nil),     // 7: freebusy.organisation.v1.GetMemberRequest
-	(*UpdateMemberRequest)(nil),  // 8: freebusy.organisation.v1.UpdateMemberRequest
-	(*DeleteMemberRequest)(nil),  // 9: freebusy.organisation.v1.DeleteMemberRequest
-	(*ListOrgsResponse)(nil),     // 10: freebusy.organisation.v1.ListOrgsResponse
-	(*Org)(nil),                  // 11: freebusy.organisation.v1.Org
-	(*emptypb.Empty)(nil),        // 12: google.protobuf.Empty
-	(*InviteMemberResponse)(nil), // 13: freebusy.organisation.v1.InviteMemberResponse
-	(*ListMembersResponse)(nil),  // 14: freebusy.organisation.v1.ListMembersResponse
-	(*Member)(nil),               // 15: freebusy.organisation.v1.Member
+	(*ListOrganisationsRequest)(nil),  // 0: freebusy.organisation.v1.ListOrganisationsRequest
+	(*GetOrganisationRequest)(nil),    // 1: freebusy.organisation.v1.GetOrganisationRequest
+	(*CreateOrganisationRequest)(nil), // 2: freebusy.organisation.v1.CreateOrganisationRequest
+	(*UpdateOrganisationRequest)(nil), // 3: freebusy.organisation.v1.UpdateOrganisationRequest
+	(*DeleteOrganisationRequest)(nil), // 4: freebusy.organisation.v1.DeleteOrganisationRequest
+	(*InviteMemberRequest)(nil),       // 5: freebusy.organisation.v1.InviteMemberRequest
+	(*ListMembersRequest)(nil),        // 6: freebusy.organisation.v1.ListMembersRequest
+	(*GetMemberRequest)(nil),          // 7: freebusy.organisation.v1.GetMemberRequest
+	(*UpdateMemberRequest)(nil),       // 8: freebusy.organisation.v1.UpdateMemberRequest
+	(*DeleteMemberRequest)(nil),       // 9: freebusy.organisation.v1.DeleteMemberRequest
+	(*ListOrganisationsResponse)(nil), // 10: freebusy.organisation.v1.ListOrganisationsResponse
+	(*Organisation)(nil),              // 11: freebusy.organisation.v1.Organisation
+	(*emptypb.Empty)(nil),             // 12: google.protobuf.Empty
+	(*InviteMemberResponse)(nil),      // 13: freebusy.organisation.v1.InviteMemberResponse
+	(*ListMembersResponse)(nil),       // 14: freebusy.organisation.v1.ListMembersResponse
+	(*Member)(nil),                    // 15: freebusy.organisation.v1.Member
 }
 var file_freebusy_organisation_v1_org_service_proto_depIdxs = []int32{
-	0,  // 0: freebusy.organisation.v1.OrgService.ListOrgs:input_type -> freebusy.organisation.v1.ListOrgsRequest
-	1,  // 1: freebusy.organisation.v1.OrgService.GetOrg:input_type -> freebusy.organisation.v1.GetOrgRequest
-	2,  // 2: freebusy.organisation.v1.OrgService.CreateOrg:input_type -> freebusy.organisation.v1.CreateOrgRequest
-	3,  // 3: freebusy.organisation.v1.OrgService.UpdateOrg:input_type -> freebusy.organisation.v1.UpdateOrgRequest
-	4,  // 4: freebusy.organisation.v1.OrgService.DeleteOrg:input_type -> freebusy.organisation.v1.DeleteOrgRequest
-	5,  // 5: freebusy.organisation.v1.OrgService.InviteMember:input_type -> freebusy.organisation.v1.InviteMemberRequest
-	6,  // 6: freebusy.organisation.v1.OrgService.ListMembers:input_type -> freebusy.organisation.v1.ListMembersRequest
-	7,  // 7: freebusy.organisation.v1.OrgService.GetMember:input_type -> freebusy.organisation.v1.GetMemberRequest
-	8,  // 8: freebusy.organisation.v1.OrgService.UpdateMember:input_type -> freebusy.organisation.v1.UpdateMemberRequest
-	9,  // 9: freebusy.organisation.v1.OrgService.DeleteMember:input_type -> freebusy.organisation.v1.DeleteMemberRequest
-	10, // 10: freebusy.organisation.v1.OrgService.ListOrgs:output_type -> freebusy.organisation.v1.ListOrgsResponse
-	11, // 11: freebusy.organisation.v1.OrgService.GetOrg:output_type -> freebusy.organisation.v1.Org
-	11, // 12: freebusy.organisation.v1.OrgService.CreateOrg:output_type -> freebusy.organisation.v1.Org
-	11, // 13: freebusy.organisation.v1.OrgService.UpdateOrg:output_type -> freebusy.organisation.v1.Org
-	12, // 14: freebusy.organisation.v1.OrgService.DeleteOrg:output_type -> google.protobuf.Empty
-	13, // 15: freebusy.organisation.v1.OrgService.InviteMember:output_type -> freebusy.organisation.v1.InviteMemberResponse
-	14, // 16: freebusy.organisation.v1.OrgService.ListMembers:output_type -> freebusy.organisation.v1.ListMembersResponse
-	15, // 17: freebusy.organisation.v1.OrgService.GetMember:output_type -> freebusy.organisation.v1.Member
-	15, // 18: freebusy.organisation.v1.OrgService.UpdateMember:output_type -> freebusy.organisation.v1.Member
-	12, // 19: freebusy.organisation.v1.OrgService.DeleteMember:output_type -> google.protobuf.Empty
+	0,  // 0: freebusy.organisation.v1.OrganisationService.ListOrganisations:input_type -> freebusy.organisation.v1.ListOrganisationsRequest
+	1,  // 1: freebusy.organisation.v1.OrganisationService.GetOrganisation:input_type -> freebusy.organisation.v1.GetOrganisationRequest
+	2,  // 2: freebusy.organisation.v1.OrganisationService.CreateOrganisation:input_type -> freebusy.organisation.v1.CreateOrganisationRequest
+	3,  // 3: freebusy.organisation.v1.OrganisationService.UpdateOrganisation:input_type -> freebusy.organisation.v1.UpdateOrganisationRequest
+	4,  // 4: freebusy.organisation.v1.OrganisationService.DeleteOrganisation:input_type -> freebusy.organisation.v1.DeleteOrganisationRequest
+	5,  // 5: freebusy.organisation.v1.OrganisationService.InviteMember:input_type -> freebusy.organisation.v1.InviteMemberRequest
+	6,  // 6: freebusy.organisation.v1.OrganisationService.ListMembers:input_type -> freebusy.organisation.v1.ListMembersRequest
+	7,  // 7: freebusy.organisation.v1.OrganisationService.GetMember:input_type -> freebusy.organisation.v1.GetMemberRequest
+	8,  // 8: freebusy.organisation.v1.OrganisationService.UpdateMember:input_type -> freebusy.organisation.v1.UpdateMemberRequest
+	9,  // 9: freebusy.organisation.v1.OrganisationService.DeleteMember:input_type -> freebusy.organisation.v1.DeleteMemberRequest
+	10, // 10: freebusy.organisation.v1.OrganisationService.ListOrganisations:output_type -> freebusy.organisation.v1.ListOrganisationsResponse
+	11, // 11: freebusy.organisation.v1.OrganisationService.GetOrganisation:output_type -> freebusy.organisation.v1.Organisation
+	11, // 12: freebusy.organisation.v1.OrganisationService.CreateOrganisation:output_type -> freebusy.organisation.v1.Organisation
+	11, // 13: freebusy.organisation.v1.OrganisationService.UpdateOrganisation:output_type -> freebusy.organisation.v1.Organisation
+	12, // 14: freebusy.organisation.v1.OrganisationService.DeleteOrganisation:output_type -> google.protobuf.Empty
+	13, // 15: freebusy.organisation.v1.OrganisationService.InviteMember:output_type -> freebusy.organisation.v1.InviteMemberResponse
+	14, // 16: freebusy.organisation.v1.OrganisationService.ListMembers:output_type -> freebusy.organisation.v1.ListMembersResponse
+	15, // 17: freebusy.organisation.v1.OrganisationService.GetMember:output_type -> freebusy.organisation.v1.Member
+	15, // 18: freebusy.organisation.v1.OrganisationService.UpdateMember:output_type -> freebusy.organisation.v1.Member
+	12, // 19: freebusy.organisation.v1.OrganisationService.DeleteMember:output_type -> google.protobuf.Empty
 	10, // [10:20] is the sub-list for method output_type
 	0,  // [0:10] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name

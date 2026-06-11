@@ -46,6 +46,7 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `disabled` | `bool` | `OPTIONAL` | If true, the code is manually disabled regardless of its window and caps. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ### ListPromoCodesRequest
 
@@ -83,6 +84,8 @@ Request message for CreatePromoCode.
 | --- | --- | --- | --- |
 | `promo_code` | `PromoCode` | `REQUIRED` | The promo code to create. The name and redemption_count fields are ignored. |
 | `promo_code_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the promo code; the server generates one if unset. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
+| `validate_only` | `bool` | `OPTIONAL` | If true, validate the request and return what would happen, but don't commit. |
 
 ### UpdatePromoCodeRequest
 
@@ -92,6 +95,7 @@ Request message for UpdatePromoCode.
 | --- | --- | --- | --- |
 | `promo_code` | `PromoCode` | `REQUIRED` | The promo code to update; its name identifies the target. |
 | `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable fields. |
+| `validate_only` | `bool` | `OPTIONAL` | If true, validate the request and return what would happen, but don't commit. |
 
 ### DeletePromoCodeRequest
 

@@ -17,81 +17,81 @@ import (
 )
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.
-var OrgService_CreateOrgSchemaJSON = `{"description":"Create an organization; the caller becomes its first owner.","properties":{"org":{"properties":{"billing_email":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"member_count":{"type":"string"},"name":{"type":"string"},"settings":{"additionalProperties":true,"type":"object"},"slug":{"type":"string"},"state":{"enum":["ORGANISATION_STATE_UNSPECIFIED","ORGANISATION_STATE_ACTIVE","ORGANISATION_STATE_SUSPENDED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name"],"type":"object"},"org_id":{"type":"string"}},"required":["org"],"type":"object"}`
-var OrgService_DeleteMemberSchemaJSON = `{"description":"Remove a member from an organisation by member resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var OrgService_DeleteOrgSchemaJSON = `{"description":"Delete an organization by resource name.","properties":{"force":{"type":"boolean"},"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var OrgService_GetMemberSchemaJSON = `{"description":"Get a single organisation member by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var OrgService_GetOrgSchemaJSON = `{"description":"Get a single organization by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var OrgService_InviteMemberSchemaJSON = `{"description":"Invite an email address to an organisation with a role (owner, admin, member, or viewer).","properties":{"email":{"type":"string"},"parent":{"type":"string"},"role":{"enum":["ORGANISATION_ROLE_UNSPECIFIED","ORGANISATION_ROLE_OWNER","ORGANISATION_ROLE_ADMIN","ORGANISATION_ROLE_MEMBER","ORGANISATION_ROLE_VIEWER"],"type":"string"}},"required":["parent","email","role"],"type":"object"}`
-var OrgService_ListMembersSchemaJSON = `{"description":"List the members of an organisation. Filter by role or state.","properties":{"filter":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"parent":{"type":"string"}},"required":["parent"],"type":"object"}`
-var OrgService_ListOrgsSchemaJSON = `{"description":"List the organizations the caller belongs to.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
-var OrgService_UpdateMemberSchemaJSON = `{"description":"Change an organisation member's role.","properties":{"member":{"properties":{"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"email":{"type":"string"},"inviter":{"type":"string"},"name":{"type":"string"},"role":{"enum":["ORGANISATION_ROLE_UNSPECIFIED","ORGANISATION_ROLE_OWNER","ORGANISATION_ROLE_ADMIN","ORGANISATION_ROLE_MEMBER","ORGANISATION_ROLE_VIEWER"],"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_INVITED","STATE_ACTIVE","STATE_SUSPENDED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"user":{"type":"string"}},"required":["email","role"],"type":"object"},"update_mask":{"type":"string"}},"required":["member"],"type":"object"}`
-var OrgService_UpdateOrgSchemaJSON = `{"description":"Update an organization's display name, slug, billing email, or settings.","properties":{"org":{"properties":{"billing_email":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"member_count":{"type":"string"},"name":{"type":"string"},"settings":{"additionalProperties":true,"type":"object"},"slug":{"type":"string"},"state":{"enum":["ORGANISATION_STATE_UNSPECIFIED","ORGANISATION_STATE_ACTIVE","ORGANISATION_STATE_SUSPENDED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name"],"type":"object"},"update_mask":{"type":"string"}},"required":["org"],"type":"object"}`
+var OrganisationService_CreateOrganisationSchemaJSON = `{"description":"Create an organization; the caller becomes its first owner.","properties":{"organisation":{"properties":{"billing_email":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"etag":{"type":"string"},"member_count":{"type":"string"},"name":{"type":"string"},"settings":{"additionalProperties":true,"type":"object"},"slug":{"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_SUSPENDED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name"],"type":"object"},"organisation_id":{"type":"string"},"request_id":{"type":"string"}},"required":["organisation"],"type":"object"}`
+var OrganisationService_DeleteMemberSchemaJSON = `{"description":"Remove a member from an organisation by member resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var OrganisationService_DeleteOrganisationSchemaJSON = `{"description":"Delete an organization by resource name.","properties":{"force":{"type":"boolean"},"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var OrganisationService_GetMemberSchemaJSON = `{"description":"Get a single organisation member by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var OrganisationService_GetOrganisationSchemaJSON = `{"description":"Get a single organization by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var OrganisationService_InviteMemberSchemaJSON = `{"description":"Invite an email address to an organisation with a role (owner, admin, member, or viewer).","properties":{"email":{"type":"string"},"parent":{"type":"string"},"request_id":{"type":"string"},"role":{"enum":["ORGANISATION_ROLE_UNSPECIFIED","ORGANISATION_ROLE_OWNER","ORGANISATION_ROLE_ADMIN","ORGANISATION_ROLE_MEMBER","ORGANISATION_ROLE_VIEWER"],"type":"string"}},"required":["parent","email","role"],"type":"object"}`
+var OrganisationService_ListMembersSchemaJSON = `{"description":"List the members of an organisation. Filter by role or state.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"parent":{"type":"string"}},"required":["parent"],"type":"object"}`
+var OrganisationService_ListOrganisationsSchemaJSON = `{"description":"List the organizations the caller belongs to.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
+var OrganisationService_UpdateMemberSchemaJSON = `{"description":"Change an organisation member's role.","properties":{"member":{"properties":{"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"email":{"type":"string"},"etag":{"type":"string"},"inviter":{"type":"string"},"name":{"type":"string"},"role":{"enum":["ORGANISATION_ROLE_UNSPECIFIED","ORGANISATION_ROLE_OWNER","ORGANISATION_ROLE_ADMIN","ORGANISATION_ROLE_MEMBER","ORGANISATION_ROLE_VIEWER"],"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_INVITED","STATE_ACTIVE","STATE_SUSPENDED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"user":{"type":"string"}},"required":["email","role"],"type":"object"},"update_mask":{"type":"string"}},"required":["member"],"type":"object"}`
+var OrganisationService_UpdateOrganisationSchemaJSON = `{"description":"Update an organization's display name, slug, billing email, or settings.","properties":{"organisation":{"properties":{"billing_email":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"etag":{"type":"string"},"member_count":{"type":"string"},"name":{"type":"string"},"settings":{"additionalProperties":true,"type":"object"},"slug":{"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_ACTIVE","STATE_SUSPENDED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["display_name"],"type":"object"},"update_mask":{"type":"string"}},"required":["organisation"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.
 var (
-	OrgService_CreateOrgTool    = runtime.MustCreateTool("org_service-create_org_v1", `Create an organization; the caller becomes its first owner.`, OrgService_CreateOrgSchemaJSON)
-	OrgService_DeleteMemberTool = runtime.MustCreateTool("org_service-delete_member_v1", `Remove a member from an organisation by member resource name.`, OrgService_DeleteMemberSchemaJSON)
-	OrgService_DeleteOrgTool    = runtime.MustCreateTool("org_service-delete_org_v1", `Delete an organization by resource name.`, OrgService_DeleteOrgSchemaJSON)
-	OrgService_GetMemberTool    = runtime.MustCreateTool("org_service-get_member_v1", `Get a single organisation member by resource name.`, OrgService_GetMemberSchemaJSON)
-	OrgService_GetOrgTool       = runtime.MustCreateTool("org_service-get_org_v1", `Get a single organization by resource name.`, OrgService_GetOrgSchemaJSON)
-	OrgService_InviteMemberTool = runtime.MustCreateTool("org_service-invite_member_v1", `Invite an email address to an organisation with a role (owner, admin, member, or viewer).`, OrgService_InviteMemberSchemaJSON)
-	OrgService_ListMembersTool  = runtime.MustCreateTool("org_service-list_members_v1", `List the members of an organisation. Filter by role or state.`, OrgService_ListMembersSchemaJSON)
-	OrgService_ListOrgsTool     = runtime.MustCreateTool("org_service-list_orgs_v1", `List the organizations the caller belongs to.`, OrgService_ListOrgsSchemaJSON)
-	OrgService_UpdateMemberTool = runtime.MustCreateTool("org_service-update_member_v1", `Change an organisation member's role.`, OrgService_UpdateMemberSchemaJSON)
-	OrgService_UpdateOrgTool    = runtime.MustCreateTool("org_service-update_org_v1", `Update an organization's display name, slug, billing email, or settings.`, OrgService_UpdateOrgSchemaJSON)
+	OrganisationService_CreateOrganisationTool = runtime.MustCreateTool("organisation_service-create_organisation_v1", `Create an organization; the caller becomes its first owner.`, OrganisationService_CreateOrganisationSchemaJSON)
+	OrganisationService_DeleteMemberTool       = runtime.MustCreateTool("organisation_service-delete_member_v1", `Remove a member from an organisation by member resource name.`, OrganisationService_DeleteMemberSchemaJSON)
+	OrganisationService_DeleteOrganisationTool = runtime.MustCreateTool("organisation_service-delete_organisation_v1", `Delete an organization by resource name.`, OrganisationService_DeleteOrganisationSchemaJSON)
+	OrganisationService_GetMemberTool          = runtime.MustCreateTool("organisation_service-get_member_v1", `Get a single organisation member by resource name.`, OrganisationService_GetMemberSchemaJSON)
+	OrganisationService_GetOrganisationTool    = runtime.MustCreateTool("organisation_service-get_organisation_v1", `Get a single organization by resource name.`, OrganisationService_GetOrganisationSchemaJSON)
+	OrganisationService_InviteMemberTool       = runtime.MustCreateTool("organisation_service-invite_member_v1", `Invite an email address to an organisation with a role (owner, admin, member, or viewer).`, OrganisationService_InviteMemberSchemaJSON)
+	OrganisationService_ListMembersTool        = runtime.MustCreateTool("organisation_service-list_members_v1", `List the members of an organisation. Filter by role or state.`, OrganisationService_ListMembersSchemaJSON)
+	OrganisationService_ListOrganisationsTool  = runtime.MustCreateTool("organisation_service-list_organisations_v1", `List the organizations the caller belongs to.`, OrganisationService_ListOrganisationsSchemaJSON)
+	OrganisationService_UpdateMemberTool       = runtime.MustCreateTool("organisation_service-update_member_v1", `Change an organisation member's role.`, OrganisationService_UpdateMemberSchemaJSON)
+	OrganisationService_UpdateOrganisationTool = runtime.MustCreateTool("organisation_service-update_organisation_v1", `Update an organization's display name, slug, billing email, or settings.`, OrganisationService_UpdateOrganisationSchemaJSON)
 )
 
-// OrgServiceMCPServer is the interface that users implement to handle MCP
-// tool calls backed by OrgService RPCs. Unary RPCs take (ctx, req) and
+// OrganisationServiceMCPServer is the interface that users implement to handle MCP
+// tool calls backed by OrganisationService RPCs. Unary RPCs take (ctx, req) and
 // return (resp, error). Server-streaming RPCs (with MCPProgress) take (req,
 // stream) matching the gRPC server interface — any type implementing
-// OrgServiceServer automatically satisfies this interface.
-type OrgServiceMCPServer interface {
-	CreateOrg(ctx context.Context, req *CreateOrgRequest) (*Org, error)
+// OrganisationServiceServer automatically satisfies this interface.
+type OrganisationServiceMCPServer interface {
+	CreateOrganisation(ctx context.Context, req *CreateOrganisationRequest) (*Organisation, error)
 	DeleteMember(ctx context.Context, req *DeleteMemberRequest) (*emptypb.Empty, error)
-	DeleteOrg(ctx context.Context, req *DeleteOrgRequest) (*emptypb.Empty, error)
+	DeleteOrganisation(ctx context.Context, req *DeleteOrganisationRequest) (*emptypb.Empty, error)
 	GetMember(ctx context.Context, req *GetMemberRequest) (*Member, error)
-	GetOrg(ctx context.Context, req *GetOrgRequest) (*Org, error)
+	GetOrganisation(ctx context.Context, req *GetOrganisationRequest) (*Organisation, error)
 	InviteMember(ctx context.Context, req *InviteMemberRequest) (*InviteMemberResponse, error)
 	ListMembers(ctx context.Context, req *ListMembersRequest) (*ListMembersResponse, error)
-	ListOrgs(ctx context.Context, req *ListOrgsRequest) (*ListOrgsResponse, error)
+	ListOrganisations(ctx context.Context, req *ListOrganisationsRequest) (*ListOrganisationsResponse, error)
 	UpdateMember(ctx context.Context, req *UpdateMemberRequest) (*Member, error)
-	UpdateOrg(ctx context.Context, req *UpdateOrgRequest) (*Org, error)
+	UpdateOrganisation(ctx context.Context, req *UpdateOrganisationRequest) (*Organisation, error)
 }
 
-// OrgServiceMCPClient is the gRPC client interface used when forwarding MCP
+// OrganisationServiceMCPClient is the gRPC client interface used when forwarding MCP
 // tool calls to a remote gRPC server. It matches the generated gRPC client stub.
-type OrgServiceMCPClient interface {
-	CreateOrg(ctx context.Context, req *CreateOrgRequest, opts ...grpc.CallOption) (*Org, error)
+type OrganisationServiceMCPClient interface {
+	CreateOrganisation(ctx context.Context, req *CreateOrganisationRequest, opts ...grpc.CallOption) (*Organisation, error)
 	DeleteMember(ctx context.Context, req *DeleteMemberRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	DeleteOrg(ctx context.Context, req *DeleteOrgRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteOrganisation(ctx context.Context, req *DeleteOrganisationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetMember(ctx context.Context, req *GetMemberRequest, opts ...grpc.CallOption) (*Member, error)
-	GetOrg(ctx context.Context, req *GetOrgRequest, opts ...grpc.CallOption) (*Org, error)
+	GetOrganisation(ctx context.Context, req *GetOrganisationRequest, opts ...grpc.CallOption) (*Organisation, error)
 	InviteMember(ctx context.Context, req *InviteMemberRequest, opts ...grpc.CallOption) (*InviteMemberResponse, error)
 	ListMembers(ctx context.Context, req *ListMembersRequest, opts ...grpc.CallOption) (*ListMembersResponse, error)
-	ListOrgs(ctx context.Context, req *ListOrgsRequest, opts ...grpc.CallOption) (*ListOrgsResponse, error)
+	ListOrganisations(ctx context.Context, req *ListOrganisationsRequest, opts ...grpc.CallOption) (*ListOrganisationsResponse, error)
 	UpdateMember(ctx context.Context, req *UpdateMemberRequest, opts ...grpc.CallOption) (*Member, error)
-	UpdateOrg(ctx context.Context, req *UpdateOrgRequest, opts ...grpc.CallOption) (*Org, error)
+	UpdateOrganisation(ctx context.Context, req *UpdateOrganisationRequest, opts ...grpc.CallOption) (*Organisation, error)
 }
 
-// RegisterOrgServiceMCPHandler registers all OrgService RPC methods as MCP
+// RegisterOrganisationServiceMCPHandler registers all OrganisationService RPC methods as MCP
 // tools, prompts, resources, and apps on the given server based on proto options.
-func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts ...runtime.Option) {
+func RegisterOrganisationServiceMCPHandler(s *mcp.Server, srv OrganisationServiceMCPServer, opts ...runtime.Option) {
 	cfg := runtime.ApplyOptions(opts...)
 	_ = cfg
-	appResourceURI := runtime.AppResourceURI("OrgService")
+	appResourceURI := runtime.AppResourceURI("OrganisationService")
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_CreateOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_CreateOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq CreateOrgRequest
+			var pbReq CreateOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
-			resp, err := srv.CreateOrg(ctx, &pbReq)
+			resp, err := srv.CreateOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -103,7 +103,7 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_DeleteMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_DeleteMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq DeleteMemberRequest
@@ -123,15 +123,15 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_DeleteOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_DeleteOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq DeleteOrgRequest
+			var pbReq DeleteOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
-			resp, err := srv.DeleteOrg(ctx, &pbReq)
+			resp, err := srv.DeleteOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -143,7 +143,7 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_GetMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_GetMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq GetMemberRequest
@@ -163,15 +163,15 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_GetOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_GetOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq GetOrgRequest
+			var pbReq GetOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
-			resp, err := srv.GetOrg(ctx, &pbReq)
+			resp, err := srv.GetOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -183,7 +183,7 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_InviteMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_InviteMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq InviteMemberRequest
@@ -203,7 +203,7 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_ListMembersTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_ListMembersTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq ListMembersRequest
@@ -223,15 +223,15 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_ListOrgsTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_ListOrganisationsTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq ListOrgsRequest
+			var pbReq ListOrganisationsRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
-			resp, err := srv.ListOrgs(ctx, &pbReq)
+			resp, err := srv.ListOrganisations(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -243,7 +243,7 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_UpdateMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_UpdateMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq UpdateMemberRequest
@@ -263,15 +263,15 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_UpdateOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_UpdateOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq UpdateOrgRequest
+			var pbReq UpdateOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
-			resp, err := srv.UpdateOrg(ctx, &pbReq)
+			resp, err := srv.UpdateOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -283,22 +283,22 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 		})
 	}
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "org://orgs/{org}",
-		Name:        "Org",
-		Description: "Org resource (orgs/{org})",
+		URITemplate: "organisation://organisations/{organisation}",
+		Name:        "Organisation",
+		Description: "Organisation resource (organisations/{organisation})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "member://orgs/{org}/members/{member}",
+		URITemplate: "member://organisations/{organisation}/members/{member}",
 		Name:        "Member",
-		Description: "Member resource (orgs/{org}/members/{member})",
+		Description: "Member resource (organisations/{organisation}/members/{member})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 	s.AddPrompt(&mcp.Prompt{
 		Name:        "invite_member",
 		Description: "Invite someone to an organization",
 		Arguments: []*mcp.PromptArgument{
-			{Name: "organisation", Description: "Org to invite into, as a resource name (\"orgs/7\") or a display name.", Required: true},
+			{Name: "organisation", Description: "Organisation to invite into, as a resource name (\"organisations/7\") or a display name.", Required: true},
 			{Name: "email", Description: "Email address to invite.", Required: true},
 			{Name: "role", Description: "Role to grant, e.g. \"owner\", \"admin\", \"member\", or \"viewer\".", Required: true},
 		},
@@ -311,26 +311,26 @@ func RegisterOrgServiceMCPHandler(s *mcp.Server, srv OrgServiceMCPServer, opts .
 	}, runtime.DefaultAppResourceHandler("Organizations", "1.0.0", "Manage organizations (tenants), members, and roles."))
 }
 
-// OrgServiceMCPDefaultBasePath is the default HTTP path prefix for
-// OrgService MCP endpoints, derived from the protobuf package and service name.
-const OrgServiceMCPDefaultBasePath = "/freebusy/organisation/v1/orgservice/mcp"
+// OrganisationServiceMCPDefaultBasePath is the default HTTP path prefix for
+// OrganisationService MCP endpoints, derived from the protobuf package and service name.
+const OrganisationServiceMCPDefaultBasePath = "/freebusy/organisation/v1/organisationservice/mcp"
 
-// OrgServiceCompletionMap returns a map of "promptName:argName" → allowed
+// OrganisationServiceCompletionMap returns a map of "promptName:argName" → allowed
 // values, built from enum_values declared in the proto MCP options.
-func OrgServiceCompletionMap() map[string][]string {
+func OrganisationServiceCompletionMap() map[string][]string {
 	m := map[string][]string{}
 	return m
 }
 
-// ServeOrgServiceMCP creates an MCP server, registers the service tools, and
+// ServeOrganisationServiceMCP creates an MCP server, registers the service tools, and
 // starts serving using the configured transport (streamable-http, sse, or stdio).
 // Uses the proto-derived BasePath. This is a blocking call.
-func ServeOrgServiceMCP(ctx context.Context, srv OrgServiceMCPServer, cfg *runtime.MCPServerConfig, opts ...runtime.Option) error {
+func ServeOrganisationServiceMCP(ctx context.Context, srv OrganisationServiceMCPServer, cfg *runtime.MCPServerConfig, opts ...runtime.Option) error {
 	// Set the proto-derived path as the generated default
-	cfg.GeneratedBasePath = OrgServiceMCPDefaultBasePath
+	cfg.GeneratedBasePath = OrganisationServiceMCPDefaultBasePath
 
 	// Wire completion handler for prompt arguments with enum_values.
-	completionMap := OrgServiceCompletionMap()
+	completionMap := OrganisationServiceCompletionMap()
 	if len(completionMap) > 0 {
 		if cfg.ServerOptions == nil {
 			cfg.ServerOptions = &mcp.ServerOptions{}
@@ -339,28 +339,28 @@ func ServeOrgServiceMCP(ctx context.Context, srv OrgServiceMCPServer, cfg *runti
 	}
 
 	return runtime.StartServer(ctx, cfg, func(s *mcp.Server) {
-		RegisterOrgServiceMCPHandler(s, srv, opts...)
+		RegisterOrganisationServiceMCPHandler(s, srv, opts...)
 	})
 }
 
-// ForwardToOrgServiceMCPClient registers all OrgService tools, prompts,
+// ForwardToOrganisationServiceMCPClient registers all OrganisationService tools, prompts,
 // resources, and apps on the MCP server, forwarding every tool call to a
 // remote gRPC server via the provided client stub.
-func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opts ...runtime.Option) {
+func ForwardToOrganisationServiceMCPClient(s *mcp.Server, client OrganisationServiceMCPClient, opts ...runtime.Option) {
 	cfg := runtime.ApplyOptions(opts...)
 	_ = cfg
-	appResourceURI := runtime.AppResourceURI("OrgService")
+	appResourceURI := runtime.AppResourceURI("OrganisationService")
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_CreateOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_CreateOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq CreateOrgRequest
+			var pbReq CreateOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
 			ctx = runtime.ForwardMetadata(ctx)
-			resp, err := client.CreateOrg(ctx, &pbReq)
+			resp, err := client.CreateOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -372,7 +372,7 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_DeleteMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_DeleteMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq DeleteMemberRequest
@@ -393,16 +393,16 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_DeleteOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_DeleteOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq DeleteOrgRequest
+			var pbReq DeleteOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
 			ctx = runtime.ForwardMetadata(ctx)
-			resp, err := client.DeleteOrg(ctx, &pbReq)
+			resp, err := client.DeleteOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -414,7 +414,7 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_GetMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_GetMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq GetMemberRequest
@@ -435,16 +435,16 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_GetOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_GetOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq GetOrgRequest
+			var pbReq GetOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
 			ctx = runtime.ForwardMetadata(ctx)
-			resp, err := client.GetOrg(ctx, &pbReq)
+			resp, err := client.GetOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -456,7 +456,7 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_InviteMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_InviteMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq InviteMemberRequest
@@ -477,7 +477,7 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_ListMembersTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_ListMembersTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq ListMembersRequest
@@ -498,16 +498,16 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_ListOrgsTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_ListOrganisationsTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq ListOrgsRequest
+			var pbReq ListOrganisationsRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
 			ctx = runtime.ForwardMetadata(ctx)
-			resp, err := client.ListOrgs(ctx, &pbReq)
+			resp, err := client.ListOrganisations(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -519,7 +519,7 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_UpdateMemberTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_UpdateMemberTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			var pbReq UpdateMemberRequest
@@ -540,16 +540,16 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	{
-		tool := runtime.PrepareToolWithExtras(OrgService_UpdateOrgTool, cfg.ExtraProperties)
+		tool := runtime.PrepareToolWithExtras(OrganisationService_UpdateOrganisationTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			var pbReq UpdateOrgRequest
+			var pbReq UpdateOrganisationRequest
 			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
 			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
 				return nil, err
 			}
 			ctx = runtime.ForwardMetadata(ctx)
-			resp, err := client.UpdateOrg(ctx, &pbReq)
+			resp, err := client.UpdateOrganisation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -561,22 +561,22 @@ func ForwardToOrgServiceMCPClient(s *mcp.Server, client OrgServiceMCPClient, opt
 		})
 	}
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "org://orgs/{org}",
-		Name:        "Org",
-		Description: "Org resource (orgs/{org})",
+		URITemplate: "organisation://organisations/{organisation}",
+		Name:        "Organisation",
+		Description: "Organisation resource (organisations/{organisation})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "member://orgs/{org}/members/{member}",
+		URITemplate: "member://organisations/{organisation}/members/{member}",
 		Name:        "Member",
-		Description: "Member resource (orgs/{org}/members/{member})",
+		Description: "Member resource (organisations/{organisation}/members/{member})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 	s.AddPrompt(&mcp.Prompt{
 		Name:        "invite_member",
 		Description: "Invite someone to an organization",
 		Arguments: []*mcp.PromptArgument{
-			{Name: "organisation", Description: "Org to invite into, as a resource name (\"orgs/7\") or a display name.", Required: true},
+			{Name: "organisation", Description: "Organisation to invite into, as a resource name (\"organisations/7\") or a display name.", Required: true},
 			{Name: "email", Description: "Email address to invite.", Required: true},
 			{Name: "role", Description: "Role to grant, e.g. \"owner\", \"admin\", \"member\", or \"viewer\".", Required: true},
 		},

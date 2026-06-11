@@ -27,12 +27,14 @@ const (
 type InviteMemberRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organisation to invite the member to.
-	// Format: orgs/{org}
+	// Format: organisations/{organisation}
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
 	// Email address to invite.
 	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	// Role to grant on acceptance.
-	Role          OrganisationRole `protobuf:"varint,3,opt,name=role,proto3,enum=freebusy.organisation.v1.OrganisationRole" json:"role,omitempty"`
+	Role OrganisationRole `protobuf:"varint,3,opt,name=role,proto3,enum=freebusy.organisation.v1.OrganisationRole" json:"role,omitempty"`
+	// Caller-supplied idempotency key; identical retries return the first result.
+	RequestId     string `protobuf:"bytes,4,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -86,6 +88,13 @@ func (x *InviteMemberRequest) GetRole() OrganisationRole {
 		return x.Role
 	}
 	return OrganisationRole_ORGANISATION_ROLE_UNSPECIFIED
+}
+
+func (x *InviteMemberRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
 }
 
 // Response message for InviteMember.
@@ -194,7 +203,7 @@ func (x *UpdateMemberRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 type DeleteMemberRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The member to remove.
-	// Format: orgs/{org}/members/{member}
+	// Format: organisations/{organisation}/members/{member}
 	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -241,12 +250,14 @@ var File_freebusy_organisation_v1_org_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_org_actions_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/organisation/v1/org_actions.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xb3\x01\n" +
-	"\x13InviteMemberRequest\x12<\n" +
-	"\x06parent\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cfreebusy.ohtarnished.dev/OrgR\x06parent\x12\x19\n" +
+	"*freebusy/organisation/v1/org_actions.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xe8\x01\n" +
+	"\x13InviteMemberRequest\x12E\n" +
+	"\x06parent\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
+	"%freebusy.ohtarnished.dev/OrganisationR\x06parent\x12\x19\n" +
 	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x02R\x05email\x12C\n" +
-	"\x04role\x18\x03 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\"P\n" +
+	"\x04role\x18\x03 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\x12*\n" +
+	"\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"P\n" +
 	"\x14InviteMemberResponse\x128\n" +
 	"\x06member\x18\x01 \x01(\v2 .freebusy.organisation.v1.MemberR\x06member\"\x96\x01\n" +
 	"\x13UpdateMemberRequest\x12=\n" +

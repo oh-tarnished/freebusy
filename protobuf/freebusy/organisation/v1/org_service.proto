@@ -15,10 +15,10 @@ option java_multiple_files = true;
 option java_outer_classname = "OrgServiceProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
-// OrgService manages tenants and their members. Day-to-day tenancy is enforced
-// by the shell via row-level security from the caller's organisation; this service is
-// where orgs and members are created and administered.
-service OrgService {
+// OrganisationService manages tenants and their members. Day-to-day tenancy is
+// enforced by the shell via row-level security from the caller's organisation; this
+// service is where organisations and members are created and administered.
+service OrganisationService {
   option (google.api.default_host) = "freebusy.ohtarnished.dev";
   option (mcp.protobuf.service) = {
     app: {
@@ -28,42 +28,42 @@ service OrgService {
     }
   };
 
-  // Lists the orgs the caller belongs to.
-  rpc ListOrgs(ListOrgsRequest) returns (ListOrgsResponse) {
-    option (google.api.http) = {get: "/v1/orgs"};
+  // Lists the organisations the caller belongs to.
+  rpc ListOrganisations(ListOrganisationsRequest) returns (ListOrganisationsResponse) {
+    option (google.api.http) = {get: "/v1/organisations"};
     option (mcp.protobuf.tool) = {description: "List the organizations the caller belongs to."};
   }
 
   // Gets a single organisation.
-  rpc GetOrg(GetOrgRequest) returns (Org) {
-    option (google.api.http) = {get: "/v1/{name=orgs/*}"};
+  rpc GetOrganisation(GetOrganisationRequest) returns (Organisation) {
+    option (google.api.http) = {get: "/v1/{name=organisations/*}"};
     option (google.api.method_signature) = "name";
     option (mcp.protobuf.tool) = {description: "Get a single organization by resource name."};
   }
 
   // Creates an organisation. The caller becomes its first owner.
-  rpc CreateOrg(CreateOrgRequest) returns (Org) {
+  rpc CreateOrganisation(CreateOrganisationRequest) returns (Organisation) {
     option (google.api.http) = {
-      post: "/v1/orgs"
-      body: "org"
+      post: "/v1/organisations"
+      body: "organisation"
     };
-    option (google.api.method_signature) = "org,org_id";
+    option (google.api.method_signature) = "organisation,organisation_id";
     option (mcp.protobuf.tool) = {description: "Create an organization; the caller becomes its first owner."};
   }
 
   // Updates an organisation.
-  rpc UpdateOrg(UpdateOrgRequest) returns (Org) {
+  rpc UpdateOrganisation(UpdateOrganisationRequest) returns (Organisation) {
     option (google.api.http) = {
-      patch: "/v1/{org.name=orgs/*}"
-      body: "org"
+      patch: "/v1/{organisation.name=organisations/*}"
+      body: "organisation"
     };
-    option (google.api.method_signature) = "org,update_mask";
+    option (google.api.method_signature) = "organisation,update_mask";
     option (mcp.protobuf.tool) = {description: "Update an organization's display name, slug, billing email, or settings."};
   }
 
   // Deletes an organisation.
-  rpc DeleteOrg(DeleteOrgRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {delete: "/v1/{name=orgs/*}"};
+  rpc DeleteOrganisation(DeleteOrganisationRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/v1/{name=organisations/*}"};
     option (google.api.method_signature) = "name";
     option (mcp.protobuf.tool) = {description: "Delete an organization by resource name."};
   }
@@ -71,7 +71,7 @@ service OrgService {
   // Invites a member to an organisation.
   rpc InviteMember(InviteMemberRequest) returns (InviteMemberResponse) {
     option (google.api.http) = {
-      post: "/v1/{parent=orgs/*}/members:invite"
+      post: "/v1/{parent=organisations/*}/members:invite"
       body: "*"
     };
     option (google.api.method_signature) = "parent,email,role";
@@ -85,14 +85,14 @@ service OrgService {
 
   // Lists the members of an organisation.
   rpc ListMembers(ListMembersRequest) returns (ListMembersResponse) {
-    option (google.api.http) = {get: "/v1/{parent=orgs/*}/members"};
+    option (google.api.http) = {get: "/v1/{parent=organisations/*}/members"};
     option (google.api.method_signature) = "parent";
     option (mcp.protobuf.tool) = {description: "List the members of an organisation. Filter by role or state."};
   }
 
   // Gets a single member.
   rpc GetMember(GetMemberRequest) returns (Member) {
-    option (google.api.http) = {get: "/v1/{name=orgs/*/members/*}"};
+    option (google.api.http) = {get: "/v1/{name=organisations/*/members/*}"};
     option (google.api.method_signature) = "name";
     option (mcp.protobuf.tool) = {description: "Get a single organisation member by resource name."};
   }
@@ -100,7 +100,7 @@ service OrgService {
   // Updates a member; the role is the only mutable field.
   rpc UpdateMember(UpdateMemberRequest) returns (Member) {
     option (google.api.http) = {
-      patch: "/v1/{member.name=orgs/*/members/*}"
+      patch: "/v1/{member.name=organisations/*/members/*}"
       body: "member"
     };
     option (google.api.method_signature) = "member,update_mask";
@@ -109,7 +109,7 @@ service OrgService {
 
   // Removes a member from an organisation.
   rpc DeleteMember(DeleteMemberRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {delete: "/v1/{name=orgs/*/members/*}"};
+    option (google.api.http) = {delete: "/v1/{name=organisations/*/members/*}"};
     option (google.api.method_signature) = "name";
     option (mcp.protobuf.tool) = {description: "Remove a member from an organisation by member resource name."};
   }

@@ -4,6 +4,7 @@ package freebusy.schedule.v1;
 
 import "freebusy/schedule/v1/schedule.proto";
 import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 
@@ -46,6 +47,12 @@ message ListAvailabilityExceptionsRequest {
 
   // Token for the page of results to return. Empty for the first page.
   string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression (AIP-160), e.g. `kind = EXCEPTION_KIND_CLOSURE`.
+  string filter = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order, e.g. "window.start_time" or "create_time desc".
+  string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for ListAvailabilityExceptions.
@@ -81,6 +88,12 @@ message CreateAvailabilityExceptionRequest {
 
   // Optional caller-chosen ID for the exception; the server generates one if unset.
   string availability_exception_id = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 4 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
 }
 
 // Request message for DeleteAvailabilityException.

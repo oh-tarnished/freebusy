@@ -25,7 +25,7 @@ const (
 // Arguments for the "invite_member" prompt.
 type InviteMemberArgs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Org to invite into, as a resource name ("orgs/7") or a display name.
+	// Organisation to invite into, as a resource name ("organisations/7") or a display name.
 	Organisation string `protobuf:"bytes,1,opt,name=organisation,proto3" json:"organisation,omitempty"`
 	// Email address to invite.
 	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`

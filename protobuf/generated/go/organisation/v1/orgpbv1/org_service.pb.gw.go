@@ -35,11 +35,11 @@ var (
 	_ = metadata.Join
 )
 
-var filter_OrgService_ListOrgs_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+var filter_OrganisationService_ListOrganisations_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
-func request_OrgService_ListOrgs_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_ListOrganisations_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq ListOrgsRequest
+		protoReq ListOrganisationsRequest
 		metadata runtime.ServerMetadata
 	)
 	if req.Body != nil {
@@ -48,31 +48,31 @@ func request_OrgService_ListOrgs_0(ctx context.Context, marshaler runtime.Marsha
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_ListOrgs_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_ListOrganisations_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := client.ListOrgs(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.ListOrganisations(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_ListOrgs_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_ListOrganisations_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq ListOrgsRequest
+		protoReq ListOrganisationsRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_ListOrgs_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_ListOrganisations_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := server.ListOrgs(ctx, &protoReq)
+	msg, err := server.ListOrganisations(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_OrgService_GetOrg_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_GetOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetOrgRequest
+		protoReq GetOrganisationRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -87,13 +87,13 @@ func request_OrgService_GetOrg_0(ctx context.Context, marshaler runtime.Marshale
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
-	msg, err := client.GetOrg(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetOrganisation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_GetOrg_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_GetOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq GetOrgRequest
+		protoReq GetOrganisationRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -105,18 +105,18 @@ func local_request_OrgService_GetOrg_0(ctx context.Context, marshaler runtime.Ma
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
-	msg, err := server.GetOrg(ctx, &protoReq)
+	msg, err := server.GetOrganisation(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-var filter_OrgService_CreateOrg_0 = &utilities.DoubleArray{Encoding: map[string]int{"org": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var filter_OrganisationService_CreateOrganisation_0 = &utilities.DoubleArray{Encoding: map[string]int{"organisation": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
-func request_OrgService_CreateOrg_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_CreateOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CreateOrgRequest
+		protoReq CreateOrganisationRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Org); err != nil && !errors.Is(err, io.EOF) {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Organisation); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -125,36 +125,36 @@ func request_OrgService_CreateOrg_0(ctx context.Context, marshaler runtime.Marsh
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_CreateOrg_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_CreateOrganisation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := client.CreateOrg(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CreateOrganisation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_CreateOrg_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_CreateOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq CreateOrgRequest
+		protoReq CreateOrganisationRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Org); err != nil && !errors.Is(err, io.EOF) {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Organisation); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_CreateOrg_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_CreateOrganisation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := server.CreateOrg(ctx, &protoReq)
+	msg, err := server.CreateOrganisation(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-var filter_OrgService_UpdateOrg_0 = &utilities.DoubleArray{Encoding: map[string]int{"org": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+var filter_OrganisationService_UpdateOrganisation_0 = &utilities.DoubleArray{Encoding: map[string]int{"organisation": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
 
-func request_OrgService_UpdateOrg_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_UpdateOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateOrgRequest
+		protoReq UpdateOrganisationRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -162,40 +162,40 @@ func request_OrgService_UpdateOrg_0(ctx context.Context, marshaler runtime.Marsh
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Org); err != nil && !errors.Is(err, io.EOF) {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Organisation); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
-		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Org); err != nil {
+		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Organisation); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
 	}
-	val, ok := pathParams["org.name"]
+	val, ok := pathParams["organisation.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "org.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "organisation.name")
 	}
-	err = runtime.PopulateFieldFromPath(&protoReq, "org.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "organisation.name", val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "org.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "organisation.name", err)
 	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_UpdateOrg_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_UpdateOrganisation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := client.UpdateOrg(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateOrganisation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_UpdateOrg_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_UpdateOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq UpdateOrgRequest
+		protoReq UpdateOrganisationRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -203,39 +203,39 @@ func local_request_OrgService_UpdateOrg_0(ctx context.Context, marshaler runtime
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Org); err != nil && !errors.Is(err, io.EOF) {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Organisation); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
-		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Org); err != nil {
+		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Organisation); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
 	}
-	val, ok := pathParams["org.name"]
+	val, ok := pathParams["organisation.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "org.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "organisation.name")
 	}
-	err = runtime.PopulateFieldFromPath(&protoReq, "org.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "organisation.name", val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "org.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "organisation.name", err)
 	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_UpdateOrg_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_UpdateOrganisation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := server.UpdateOrg(ctx, &protoReq)
+	msg, err := server.UpdateOrganisation(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-var filter_OrgService_DeleteOrg_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var filter_OrganisationService_DeleteOrganisation_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
-func request_OrgService_DeleteOrg_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_DeleteOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq DeleteOrgRequest
+		protoReq DeleteOrganisationRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -253,16 +253,16 @@ func request_OrgService_DeleteOrg_0(ctx context.Context, marshaler runtime.Marsh
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_DeleteOrg_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_DeleteOrganisation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := client.DeleteOrg(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteOrganisation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_DeleteOrg_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_DeleteOrganisation_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq DeleteOrgRequest
+		protoReq DeleteOrganisationRequest
 		metadata runtime.ServerMetadata
 		err      error
 	)
@@ -277,14 +277,14 @@ func local_request_OrgService_DeleteOrg_0(ctx context.Context, marshaler runtime
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_DeleteOrg_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_DeleteOrganisation_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := server.DeleteOrg(ctx, &protoReq)
+	msg, err := server.DeleteOrganisation(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_OrgService_InviteMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_InviteMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq InviteMemberRequest
 		metadata runtime.ServerMetadata
@@ -308,7 +308,7 @@ func request_OrgService_InviteMember_0(ctx context.Context, marshaler runtime.Ma
 	return msg, metadata, err
 }
 
-func local_request_OrgService_InviteMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_InviteMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq InviteMemberRequest
 		metadata runtime.ServerMetadata
@@ -329,9 +329,9 @@ func local_request_OrgService_InviteMember_0(ctx context.Context, marshaler runt
 	return msg, metadata, err
 }
 
-var filter_OrgService_ListMembers_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+var filter_OrganisationService_ListMembers_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
-func request_OrgService_ListMembers_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_ListMembers_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq ListMembersRequest
 		metadata runtime.ServerMetadata
@@ -351,14 +351,14 @@ func request_OrgService_ListMembers_0(ctx context.Context, marshaler runtime.Mar
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_ListMembers_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_ListMembers_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.ListMembers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_ListMembers_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_ListMembers_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq ListMembersRequest
 		metadata runtime.ServerMetadata
@@ -375,14 +375,14 @@ func local_request_OrgService_ListMembers_0(ctx context.Context, marshaler runti
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_ListMembers_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_ListMembers_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ListMembers(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_OrgService_GetMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_GetMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq GetMemberRequest
 		metadata runtime.ServerMetadata
@@ -403,7 +403,7 @@ func request_OrgService_GetMember_0(ctx context.Context, marshaler runtime.Marsh
 	return msg, metadata, err
 }
 
-func local_request_OrgService_GetMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_GetMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq GetMemberRequest
 		metadata runtime.ServerMetadata
@@ -421,9 +421,9 @@ func local_request_OrgService_GetMember_0(ctx context.Context, marshaler runtime
 	return msg, metadata, err
 }
 
-var filter_OrgService_UpdateMember_0 = &utilities.DoubleArray{Encoding: map[string]int{"member": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+var filter_OrganisationService_UpdateMember_0 = &utilities.DoubleArray{Encoding: map[string]int{"member": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
 
-func request_OrgService_UpdateMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_UpdateMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq UpdateMemberRequest
 		metadata runtime.ServerMetadata
@@ -457,14 +457,14 @@ func request_OrgService_UpdateMember_0(ctx context.Context, marshaler runtime.Ma
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_UpdateMember_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_UpdateMember_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.UpdateMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_OrgService_UpdateMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_UpdateMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq UpdateMemberRequest
 		metadata runtime.ServerMetadata
@@ -495,14 +495,14 @@ func local_request_OrgService_UpdateMember_0(ctx context.Context, marshaler runt
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrgService_UpdateMember_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrganisationService_UpdateMember_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.UpdateMember(ctx, &protoReq)
 	return msg, metadata, err
 }
 
-func request_OrgService_DeleteMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrgServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_OrganisationService_DeleteMember_0(ctx context.Context, marshaler runtime.Marshaler, client OrganisationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq DeleteMemberRequest
 		metadata runtime.ServerMetadata
@@ -523,7 +523,7 @@ func request_OrgService_DeleteMember_0(ctx context.Context, marshaler runtime.Ma
 	return msg, metadata, err
 }
 
-func local_request_OrgService_DeleteMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrgServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_OrganisationService_DeleteMember_0(ctx context.Context, marshaler runtime.Marshaler, server OrganisationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq DeleteMemberRequest
 		metadata runtime.ServerMetadata
@@ -541,219 +541,219 @@ func local_request_OrgService_DeleteMember_0(ctx context.Context, marshaler runt
 	return msg, metadata, err
 }
 
-// RegisterOrgServiceHandlerServer registers the http handlers for service OrgService to "mux".
-// UnaryRPC     :call OrgServiceServer directly.
+// RegisterOrganisationServiceHandlerServer registers the http handlers for service OrganisationService to "mux".
+// UnaryRPC     :call OrganisationServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterOrgServiceHandlerFromEndpoint instead.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterOrganisationServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
-func RegisterOrgServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server OrgServiceServer) error {
-	mux.Handle(http.MethodGet, pattern_OrgService_ListOrgs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+func RegisterOrganisationServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server OrganisationServiceServer) error {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_ListOrganisations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/ListOrgs", runtime.WithHTTPPathPattern("/v1/orgs"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/ListOrganisations", runtime.WithHTTPPathPattern("/v1/organisations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_ListOrgs_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_ListOrganisations_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_ListOrgs_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_ListOrganisations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_OrgService_GetOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_GetOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/GetOrg", runtime.WithHTTPPathPattern("/v1/{name=orgs/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/GetOrganisation", runtime.WithHTTPPathPattern("/v1/{name=organisations/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_GetOrg_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_GetOrganisation_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_GetOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_GetOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_OrgService_CreateOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_OrganisationService_CreateOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/CreateOrg", runtime.WithHTTPPathPattern("/v1/orgs"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/CreateOrganisation", runtime.WithHTTPPathPattern("/v1/organisations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_CreateOrg_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_CreateOrganisation_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_CreateOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_CreateOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPatch, pattern_OrgService_UpdateOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_OrganisationService_UpdateOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/UpdateOrg", runtime.WithHTTPPathPattern("/v1/{org.name=orgs/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/UpdateOrganisation", runtime.WithHTTPPathPattern("/v1/{organisation.name=organisations/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_UpdateOrg_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_UpdateOrganisation_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_UpdateOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_UpdateOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_OrgService_DeleteOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_OrganisationService_DeleteOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/DeleteOrg", runtime.WithHTTPPathPattern("/v1/{name=orgs/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/DeleteOrganisation", runtime.WithHTTPPathPattern("/v1/{name=organisations/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_DeleteOrg_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_DeleteOrganisation_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_DeleteOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_DeleteOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_OrgService_InviteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_OrganisationService_InviteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/InviteMember", runtime.WithHTTPPathPattern("/v1/{parent=orgs/*}/members:invite"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/InviteMember", runtime.WithHTTPPathPattern("/v1/{parent=organisations/*}/members:invite"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_InviteMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_InviteMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_InviteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_InviteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_OrgService_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/ListMembers", runtime.WithHTTPPathPattern("/v1/{parent=orgs/*}/members"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/ListMembers", runtime.WithHTTPPathPattern("/v1/{parent=organisations/*}/members"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_ListMembers_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_ListMembers_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_ListMembers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_ListMembers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_OrgService_GetMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_GetMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/GetMember", runtime.WithHTTPPathPattern("/v1/{name=orgs/*/members/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/GetMember", runtime.WithHTTPPathPattern("/v1/{name=organisations/*/members/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_GetMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_GetMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_GetMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_GetMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPatch, pattern_OrgService_UpdateMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_OrganisationService_UpdateMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/UpdateMember", runtime.WithHTTPPathPattern("/v1/{member.name=orgs/*/members/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/UpdateMember", runtime.WithHTTPPathPattern("/v1/{member.name=organisations/*/members/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_UpdateMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_UpdateMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_UpdateMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_UpdateMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_OrgService_DeleteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_OrganisationService_DeleteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/DeleteMember", runtime.WithHTTPPathPattern("/v1/{name=orgs/*/members/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/DeleteMember", runtime.WithHTTPPathPattern("/v1/{name=organisations/*/members/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_OrgService_DeleteMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_OrganisationService_DeleteMember_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_DeleteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_DeleteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
 }
 
-// RegisterOrgServiceHandlerFromEndpoint is same as RegisterOrgServiceHandler but
+// RegisterOrganisationServiceHandlerFromEndpoint is same as RegisterOrganisationServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterOrgServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterOrganisationServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
@@ -772,216 +772,216 @@ func RegisterOrgServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Ser
 			}
 		}()
 	}()
-	return RegisterOrgServiceHandler(ctx, mux, conn)
+	return RegisterOrganisationServiceHandler(ctx, mux, conn)
 }
 
-// RegisterOrgServiceHandler registers the http handlers for service OrgService to "mux".
+// RegisterOrganisationServiceHandler registers the http handlers for service OrganisationService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterOrgServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterOrgServiceHandlerClient(ctx, mux, NewOrgServiceClient(conn))
+func RegisterOrganisationServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterOrganisationServiceHandlerClient(ctx, mux, NewOrganisationServiceClient(conn))
 }
 
-// RegisterOrgServiceHandlerClient registers the http handlers for service OrgService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "OrgServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "OrgServiceClient"
+// RegisterOrganisationServiceHandlerClient registers the http handlers for service OrganisationService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "OrganisationServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "OrganisationServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "OrgServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
-func RegisterOrgServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client OrgServiceClient) error {
-	mux.Handle(http.MethodGet, pattern_OrgService_ListOrgs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+// "OrganisationServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
+func RegisterOrganisationServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client OrganisationServiceClient) error {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_ListOrganisations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/ListOrgs", runtime.WithHTTPPathPattern("/v1/orgs"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/ListOrganisations", runtime.WithHTTPPathPattern("/v1/organisations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_ListOrgs_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_ListOrganisations_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_ListOrgs_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_ListOrganisations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_OrgService_GetOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_GetOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/GetOrg", runtime.WithHTTPPathPattern("/v1/{name=orgs/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/GetOrganisation", runtime.WithHTTPPathPattern("/v1/{name=organisations/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_GetOrg_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_GetOrganisation_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_GetOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_GetOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_OrgService_CreateOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_OrganisationService_CreateOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/CreateOrg", runtime.WithHTTPPathPattern("/v1/orgs"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/CreateOrganisation", runtime.WithHTTPPathPattern("/v1/organisations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_CreateOrg_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_CreateOrganisation_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_CreateOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_CreateOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPatch, pattern_OrgService_UpdateOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_OrganisationService_UpdateOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/UpdateOrg", runtime.WithHTTPPathPattern("/v1/{org.name=orgs/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/UpdateOrganisation", runtime.WithHTTPPathPattern("/v1/{organisation.name=organisations/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_UpdateOrg_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_UpdateOrganisation_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_UpdateOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_UpdateOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_OrgService_DeleteOrg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_OrganisationService_DeleteOrganisation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/DeleteOrg", runtime.WithHTTPPathPattern("/v1/{name=orgs/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/DeleteOrganisation", runtime.WithHTTPPathPattern("/v1/{name=organisations/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_DeleteOrg_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_DeleteOrganisation_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_DeleteOrg_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_DeleteOrganisation_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPost, pattern_OrgService_InviteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_OrganisationService_InviteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/InviteMember", runtime.WithHTTPPathPattern("/v1/{parent=orgs/*}/members:invite"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/InviteMember", runtime.WithHTTPPathPattern("/v1/{parent=organisations/*}/members:invite"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_InviteMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_InviteMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_InviteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_InviteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_OrgService_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_ListMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/ListMembers", runtime.WithHTTPPathPattern("/v1/{parent=orgs/*}/members"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/ListMembers", runtime.WithHTTPPathPattern("/v1/{parent=organisations/*}/members"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_ListMembers_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_ListMembers_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_ListMembers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_ListMembers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_OrgService_GetMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_OrganisationService_GetMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/GetMember", runtime.WithHTTPPathPattern("/v1/{name=orgs/*/members/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/GetMember", runtime.WithHTTPPathPattern("/v1/{name=organisations/*/members/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_GetMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_GetMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_GetMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_GetMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodPatch, pattern_OrgService_UpdateMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_OrganisationService_UpdateMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/UpdateMember", runtime.WithHTTPPathPattern("/v1/{member.name=orgs/*/members/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/UpdateMember", runtime.WithHTTPPathPattern("/v1/{member.name=organisations/*/members/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_UpdateMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_UpdateMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_UpdateMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_UpdateMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodDelete, pattern_OrgService_DeleteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_OrganisationService_DeleteMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrgService/DeleteMember", runtime.WithHTTPPathPattern("/v1/{name=orgs/*/members/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.organisation.v1.OrganisationService/DeleteMember", runtime.WithHTTPPathPattern("/v1/{name=organisations/*/members/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_OrgService_DeleteMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_OrganisationService_DeleteMember_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_OrgService_DeleteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_OrganisationService_DeleteMember_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	return nil
 }
 
 var (
-	pattern_OrgService_ListOrgs_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "orgs"}, ""))
-	pattern_OrgService_GetOrg_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "orgs", "name"}, ""))
-	pattern_OrgService_CreateOrg_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "orgs"}, ""))
-	pattern_OrgService_UpdateOrg_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "orgs", "org.name"}, ""))
-	pattern_OrgService_DeleteOrg_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "orgs", "name"}, ""))
-	pattern_OrgService_InviteMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "orgs", "parent", "members"}, "invite"))
-	pattern_OrgService_ListMembers_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "orgs", "parent", "members"}, ""))
-	pattern_OrgService_GetMember_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "orgs", "members", "name"}, ""))
-	pattern_OrgService_UpdateMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "orgs", "members", "member.name"}, ""))
-	pattern_OrgService_DeleteMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "orgs", "members", "name"}, ""))
+	pattern_OrganisationService_ListOrganisations_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organisations"}, ""))
+	pattern_OrganisationService_GetOrganisation_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "organisations", "name"}, ""))
+	pattern_OrganisationService_CreateOrganisation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organisations"}, ""))
+	pattern_OrganisationService_UpdateOrganisation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "organisations", "organisation.name"}, ""))
+	pattern_OrganisationService_DeleteOrganisation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "organisations", "name"}, ""))
+	pattern_OrganisationService_InviteMember_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "organisations", "parent", "members"}, "invite"))
+	pattern_OrganisationService_ListMembers_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3}, []string{"v1", "organisations", "parent", "members"}, ""))
+	pattern_OrganisationService_GetMember_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "organisations", "members", "name"}, ""))
+	pattern_OrganisationService_UpdateMember_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "organisations", "members", "member.name"}, ""))
+	pattern_OrganisationService_DeleteMember_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "organisations", "members", "name"}, ""))
 )
 
 var (
-	forward_OrgService_ListOrgs_0     = runtime.ForwardResponseMessage
-	forward_OrgService_GetOrg_0       = runtime.ForwardResponseMessage
-	forward_OrgService_CreateOrg_0    = runtime.ForwardResponseMessage
-	forward_OrgService_UpdateOrg_0    = runtime.ForwardResponseMessage
-	forward_OrgService_DeleteOrg_0    = runtime.ForwardResponseMessage
-	forward_OrgService_InviteMember_0 = runtime.ForwardResponseMessage
-	forward_OrgService_ListMembers_0  = runtime.ForwardResponseMessage
-	forward_OrgService_GetMember_0    = runtime.ForwardResponseMessage
-	forward_OrgService_UpdateMember_0 = runtime.ForwardResponseMessage
-	forward_OrgService_DeleteMember_0 = runtime.ForwardResponseMessage
+	forward_OrganisationService_ListOrganisations_0  = runtime.ForwardResponseMessage
+	forward_OrganisationService_GetOrganisation_0    = runtime.ForwardResponseMessage
+	forward_OrganisationService_CreateOrganisation_0 = runtime.ForwardResponseMessage
+	forward_OrganisationService_UpdateOrganisation_0 = runtime.ForwardResponseMessage
+	forward_OrganisationService_DeleteOrganisation_0 = runtime.ForwardResponseMessage
+	forward_OrganisationService_InviteMember_0       = runtime.ForwardResponseMessage
+	forward_OrganisationService_ListMembers_0        = runtime.ForwardResponseMessage
+	forward_OrganisationService_GetMember_0          = runtime.ForwardResponseMessage
+	forward_OrganisationService_UpdateMember_0       = runtime.ForwardResponseMessage
+	forward_OrganisationService_DeleteMember_0       = runtime.ForwardResponseMessage
 )

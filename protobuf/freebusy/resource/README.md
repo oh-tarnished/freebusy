@@ -45,6 +45,7 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ### Offering
 
@@ -61,6 +62,7 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ### AddResourceArgs
 
@@ -110,6 +112,7 @@ Request message for CreateResource.
 | --- | --- | --- | --- |
 | `resource` | `Resource` | `REQUIRED` | The resource to create. The name, state, and offerings fields are ignored. |
 | `resource_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the resource; the server generates one if unset. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 
 ### UpdateResourceRequest
 
@@ -146,6 +149,7 @@ Request message for ListOfferings.
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of offerings to return. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListOfferings call's next_page_token. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. a match on display_name. |
 
 ### ListOfferingsResponse
 
@@ -173,6 +177,7 @@ Request message for CreateOffering.
 | `parent` | `string` | `REQUIRED` | The resource to attach the offering to. Format: resources/{resource} |
 | `offering` | `Offering` | `REQUIRED` | The offering to create. Its name field is ignored. |
 | `offering_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the offering; the server generates one if unset. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 
 ### UpdateOfferingRequest
 
