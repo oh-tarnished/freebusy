@@ -25,6 +25,27 @@ A half-open range of calendar dates [start_date, end_date), evaluated in the res
 | `start_date` | `Date` | `REQUIRED` | Inclusive first date of the range. |
 | `end_date` | `Date` | `REQUIRED` | Exclusive end date of the range. |
 
+### Contact
+
+Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `display_name` | `string` | `OPTIONAL` | Full name of the guest. |
+| `email` | `string` | `OPTIONAL` | Email address for the confirmation and any follow-ups. |
+| `phone_number` | `string` | `OPTIONAL` | Phone number in E.164 form (e.g. "+14155552671"). |
+
+### PriceComponent
+
+One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `type` | `Type` | - | Which kind of line this is. |
+| `code` | `string` | - | Stable machine code for the line, e.g. "base", "cleaning_fee", "occupancy_tax", or a promo code. Clients key display and logic off this. |
+| `display_name` | `string` | - | Human-readable label suitable for display on an itemized receipt. |
+| `amount` | `Money` | - | Signed amount: positive for charges (base, fees, taxes), negative for discounts. Summing every component yields the booking total. |
+
 ## Enums
 
 ### OrderDirection

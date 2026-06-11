@@ -75,7 +75,17 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Cancel a booking, optionally with a reason and note. Frees the held units."};
+    option (mcp.protobuf.tool) = {description: "Cancel a booking, optionally with a reason and note. Frees the held units and computes the refund from the cancellation policy."};
+  }
+
+  // Previews the refund a cancellation would yield now, without cancelling.
+  rpc PreviewCancellation(PreviewCancellationRequest) returns (PreviewCancellationResponse) {
+    option (google.api.http) = {
+      post: "/v1/{name=bookings/*}:previewCancellation"
+      body: "*"
+    };
+    option (google.api.method_signature) = "name";
+    option (mcp.protobuf.tool) = {description: "Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling."};
   }
 
   // Reschedules a booking to a new span.

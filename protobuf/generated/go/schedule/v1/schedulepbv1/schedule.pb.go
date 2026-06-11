@@ -462,6 +462,9 @@ type Schedule struct {
 	// AvailabilityException standard methods.
 	// Format: resources/{resource}/availabilityExceptions/{availability_exception}
 	Exceptions []string `protobuf:"bytes,5,rep,name=exceptions,proto3" json:"exceptions,omitempty"`
+	// Refund rules applied when a booking on this resource is cancelled. Unset
+	// means cancellations are non-refundable by default.
+	CancellationPolicy *CancellationPolicy `protobuf:"bytes,7,opt,name=cancellation_policy,json=cancellationPolicy,proto3" json:"cancellation_policy,omitempty"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update.
 	Etag          string `protobuf:"bytes,6,opt,name=etag,proto3" json:"etag,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -533,11 +536,123 @@ func (x *Schedule) GetExceptions() []string {
 	return nil
 }
 
+func (x *Schedule) GetCancellationPolicy() *CancellationPolicy {
+	if x != nil {
+		return x.CancellationPolicy
+	}
+	return nil
+}
+
 func (x *Schedule) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
 	return ""
+}
+
+// Refund rules graded by how far ahead of a booking's start it is cancelled.
+type CancellationPolicy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Ordered refund tiers. For a given cancellation the tier with the largest
+	// `cutoff` that is still satisfied (cancelled at least `cutoff` before the
+	// booking start) determines the refund. If no tier is satisfied, the booking
+	// is non-refundable.
+	Tiers         []*RefundTier `protobuf:"bytes,1,rep,name=tiers,proto3" json:"tiers,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CancellationPolicy) Reset() {
+	*x = CancellationPolicy{}
+	mi := &file_freebusy_schedule_v1_schedule_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CancellationPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancellationPolicy) ProtoMessage() {}
+
+func (x *CancellationPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_schedule_v1_schedule_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancellationPolicy.ProtoReflect.Descriptor instead.
+func (*CancellationPolicy) Descriptor() ([]byte, []int) {
+	return file_freebusy_schedule_v1_schedule_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CancellationPolicy) GetTiers() []*RefundTier {
+	if x != nil {
+		return x.Tiers
+	}
+	return nil
+}
+
+// One tier of a CancellationPolicy: cancel at least `cutoff` before the booking
+// start to receive `refund_percent` of the total back.
+type RefundTier struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Minimum lead time before the booking start for this tier to apply (e.g. 48h).
+	Cutoff *durationpb.Duration `protobuf:"bytes,1,opt,name=cutoff,proto3" json:"cutoff,omitempty"`
+	// Percentage of the booking total refunded at this tier (0-100).
+	RefundPercent int32 `protobuf:"varint,2,opt,name=refund_percent,json=refundPercent,proto3" json:"refund_percent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RefundTier) Reset() {
+	*x = RefundTier{}
+	mi := &file_freebusy_schedule_v1_schedule_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RefundTier) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefundTier) ProtoMessage() {}
+
+func (x *RefundTier) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_schedule_v1_schedule_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefundTier.ProtoReflect.Descriptor instead.
+func (*RefundTier) Descriptor() ([]byte, []int) {
+	return file_freebusy_schedule_v1_schedule_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *RefundTier) GetCutoff() *durationpb.Duration {
+	if x != nil {
+		return x.Cutoff
+	}
+	return nil
+}
+
+func (x *RefundTier) GetRefundPercent() int32 {
+	if x != nil {
+		return x.RefundPercent
+	}
+	return 0
 }
 
 var File_freebusy_schedule_v1_schedule_proto protoreflect.FileDescriptor
@@ -577,7 +692,7 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\vcreate_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime:\xa9\x01\xeaA\xa5\x01\n" +
 	".freebusy.ohtarnished.dev/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
-	"\x04spanJ\x04\b\x02\x10\x03\"\xda\x03\n" +
+	"\x04spanJ\x04\b\x02\x10\x03\"\xba\x04\n" +
 	"\bSchedule\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\x0frecurring_rules\x18\x02 \x03(\v2#.freebusy.schedule.v1.RecurringRuleB\x03\xe0A\x01R\x0erecurringRules\x12C\n" +
@@ -586,9 +701,16 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\n" +
 	"exceptions\x18\x05 \x03(\tB6\xe0A\x03\xfaA0\n" +
 	".freebusy.ohtarnished.dev/AvailabilityExceptionR\n" +
-	"exceptions\x12\x12\n" +
+	"exceptions\x12^\n" +
+	"\x13cancellation_policy\x18\a \x01(\v2(.freebusy.schedule.v1.CancellationPolicyB\x03\xe0A\x01R\x12cancellationPolicy\x12\x12\n" +
 	"\x04etag\x18\x06 \x01(\tR\x04etag:Z\xeaAW\n" +
-	"!freebusy.ohtarnished.dev/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule*k\n" +
+	"!freebusy.ohtarnished.dev/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule\"Q\n" +
+	"\x12CancellationPolicy\x12;\n" +
+	"\x05tiers\x18\x01 \x03(\v2 .freebusy.schedule.v1.RefundTierB\x03\xe0A\x01R\x05tiers\"p\n" +
+	"\n" +
+	"RefundTier\x126\n" +
+	"\x06cutoff\x18\x01 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x02R\x06cutoff\x12*\n" +
+	"\x0erefund_percent\x18\x02 \x01(\x05B\x03\xe0A\x02R\rrefundPercent*k\n" +
 	"\rExceptionKind\x12\x1e\n" +
 	"\x1aEXCEPTION_KIND_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EXCEPTION_KIND_CLOSURE\x10\x01\x12\x1e\n" +
@@ -608,7 +730,7 @@ func file_freebusy_schedule_v1_schedule_proto_rawDescGZIP() []byte {
 }
 
 var file_freebusy_schedule_v1_schedule_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_freebusy_schedule_v1_schedule_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_freebusy_schedule_v1_schedule_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_freebusy_schedule_v1_schedule_proto_goTypes = []any{
 	(ExceptionKind)(0),            // 0: freebusy.schedule.v1.ExceptionKind
 	(*RecurringRule)(nil),         // 1: freebusy.schedule.v1.RecurringRule
@@ -616,32 +738,37 @@ var file_freebusy_schedule_v1_schedule_proto_goTypes = []any{
 	(*StayConstraints)(nil),       // 3: freebusy.schedule.v1.StayConstraints
 	(*AvailabilityException)(nil), // 4: freebusy.schedule.v1.AvailabilityException
 	(*Schedule)(nil),              // 5: freebusy.schedule.v1.Schedule
-	(*durationpb.Duration)(nil),   // 6: google.protobuf.Duration
-	(sharedpbv1.Weekday)(0),       // 7: freebusy.shared.v1.Weekday
-	(*sharedpbv1.TimeWindow)(nil), // 8: freebusy.shared.v1.TimeWindow
-	(*sharedpbv1.DateRange)(nil),  // 9: freebusy.shared.v1.DateRange
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*CancellationPolicy)(nil),    // 6: freebusy.schedule.v1.CancellationPolicy
+	(*RefundTier)(nil),            // 7: freebusy.schedule.v1.RefundTier
+	(*durationpb.Duration)(nil),   // 8: google.protobuf.Duration
+	(sharedpbv1.Weekday)(0),       // 9: freebusy.shared.v1.Weekday
+	(*sharedpbv1.TimeWindow)(nil), // 10: freebusy.shared.v1.TimeWindow
+	(*sharedpbv1.DateRange)(nil),  // 11: freebusy.shared.v1.DateRange
+	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
 }
 var file_freebusy_schedule_v1_schedule_proto_depIdxs = []int32{
-	6,  // 0: freebusy.schedule.v1.BufferSettings.start_delta:type_name -> google.protobuf.Duration
-	6,  // 1: freebusy.schedule.v1.BufferSettings.end_delta:type_name -> google.protobuf.Duration
-	6,  // 2: freebusy.schedule.v1.BufferSettings.min_notice:type_name -> google.protobuf.Duration
-	6,  // 3: freebusy.schedule.v1.BufferSettings.max_advance:type_name -> google.protobuf.Duration
-	6,  // 4: freebusy.schedule.v1.BufferSettings.gap:type_name -> google.protobuf.Duration
-	7,  // 5: freebusy.schedule.v1.StayConstraints.checkin_weekdays:type_name -> freebusy.shared.v1.Weekday
-	7,  // 6: freebusy.schedule.v1.StayConstraints.checkout_weekdays:type_name -> freebusy.shared.v1.Weekday
+	8,  // 0: freebusy.schedule.v1.BufferSettings.start_delta:type_name -> google.protobuf.Duration
+	8,  // 1: freebusy.schedule.v1.BufferSettings.end_delta:type_name -> google.protobuf.Duration
+	8,  // 2: freebusy.schedule.v1.BufferSettings.min_notice:type_name -> google.protobuf.Duration
+	8,  // 3: freebusy.schedule.v1.BufferSettings.max_advance:type_name -> google.protobuf.Duration
+	8,  // 4: freebusy.schedule.v1.BufferSettings.gap:type_name -> google.protobuf.Duration
+	9,  // 5: freebusy.schedule.v1.StayConstraints.checkin_weekdays:type_name -> freebusy.shared.v1.Weekday
+	9,  // 6: freebusy.schedule.v1.StayConstraints.checkout_weekdays:type_name -> freebusy.shared.v1.Weekday
 	0,  // 7: freebusy.schedule.v1.AvailabilityException.kind:type_name -> freebusy.schedule.v1.ExceptionKind
-	8,  // 8: freebusy.schedule.v1.AvailabilityException.window:type_name -> freebusy.shared.v1.TimeWindow
-	9,  // 9: freebusy.schedule.v1.AvailabilityException.date_range:type_name -> freebusy.shared.v1.DateRange
-	10, // 10: freebusy.schedule.v1.AvailabilityException.create_time:type_name -> google.protobuf.Timestamp
+	10, // 8: freebusy.schedule.v1.AvailabilityException.window:type_name -> freebusy.shared.v1.TimeWindow
+	11, // 9: freebusy.schedule.v1.AvailabilityException.date_range:type_name -> freebusy.shared.v1.DateRange
+	12, // 10: freebusy.schedule.v1.AvailabilityException.create_time:type_name -> google.protobuf.Timestamp
 	1,  // 11: freebusy.schedule.v1.Schedule.recurring_rules:type_name -> freebusy.schedule.v1.RecurringRule
 	2,  // 12: freebusy.schedule.v1.Schedule.buffers:type_name -> freebusy.schedule.v1.BufferSettings
 	3,  // 13: freebusy.schedule.v1.Schedule.stay_constraints:type_name -> freebusy.schedule.v1.StayConstraints
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	6,  // 14: freebusy.schedule.v1.Schedule.cancellation_policy:type_name -> freebusy.schedule.v1.CancellationPolicy
+	7,  // 15: freebusy.schedule.v1.CancellationPolicy.tiers:type_name -> freebusy.schedule.v1.RefundTier
+	8,  // 16: freebusy.schedule.v1.RefundTier.cutoff:type_name -> google.protobuf.Duration
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_schedule_v1_schedule_proto_init() }
@@ -659,7 +786,7 @@ func file_freebusy_schedule_v1_schedule_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_schedule_v1_schedule_proto_rawDesc), len(file_freebusy_schedule_v1_schedule_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

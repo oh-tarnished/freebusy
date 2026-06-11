@@ -179,6 +179,10 @@ type Booking struct {
 	// The user the booking is for.
 	// Format: users/{user}
 	Customer string `protobuf:"bytes,5,opt,name=customer,proto3" json:"customer,omitempty"`
+	// Contact details for the booker. Required when `customer` is unset (a guest /
+	// walk-in booking); when `customer` is set these supplement or override the
+	// user's profile contact for this booking.
+	Contact *sharedpbv1.Contact `protobuf:"bytes,24,opt,name=contact,proto3" json:"contact,omitempty"`
 	// Number of units / party size reserved. Defaults to 1.
 	Units int32 `protobuf:"varint,6,opt,name=units,proto3" json:"units,omitempty"`
 	// The reserved span. For NIGHTLY resources this spans check-in to check-out.
@@ -198,6 +202,11 @@ type Booking struct {
 	Discount *money.Money `protobuf:"bytes,13,opt,name=discount,proto3" json:"discount,omitempty"`
 	// Final total after discounts.
 	Total *money.Money `protobuf:"bytes,14,opt,name=total,proto3" json:"total,omitempty"`
+	// Itemized breakdown behind the total: the base charge, each fee and tax, and
+	// each discount, as signed lines. `price` is the TYPE_BASE subtotal and
+	// `total` is the sum of every component; these lines expose the fees and taxes
+	// in between. Empty for simple bookings with no fees or taxes configured.
+	PriceComponents []*sharedpbv1.PriceComponent `protobuf:"bytes,25,rep,name=price_components,json=priceComponents,proto3" json:"price_components,omitempty"`
 	// Free-form notes on the booking.
 	Notes string `protobuf:"bytes,15,opt,name=notes,proto3" json:"notes,omitempty"`
 	// Arbitrary attributes.
@@ -212,6 +221,13 @@ type Booking struct {
 	ConfirmTime *timestamppb.Timestamp `protobuf:"bytes,20,opt,name=confirm_time,json=confirmTime,proto3" json:"confirm_time,omitempty"`
 	// When the booking was cancelled, if at all.
 	CancelTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=cancel_time,json=cancelTime,proto3" json:"cancel_time,omitempty"`
+	// Amount refunded on cancellation, computed from the resource's cancellation
+	// policy and how far ahead of the booking start it was cancelled. Set only
+	// once the booking is CANCELLED. Use PreviewCancellation to see this before
+	// committing.
+	RefundAmount *money.Money `protobuf:"bytes,26,opt,name=refund_amount,json=refundAmount,proto3" json:"refund_amount,omitempty"`
+	// Percentage of the total that `refund_amount` represents (0-100).
+	RefundPercent int32 `protobuf:"varint,27,opt,name=refund_percent,json=refundPercent,proto3" json:"refund_percent,omitempty"`
 	// Requested time-to-live of the hold, set at creation. The server caps this
 	// and reflects the effective expiry in hold_expire_time.
 	HoldTtl *durationpb.Duration `protobuf:"bytes,22,opt,name=hold_ttl,json=holdTtl,proto3" json:"hold_ttl,omitempty"`
@@ -279,6 +295,13 @@ func (x *Booking) GetCustomer() string {
 	return ""
 }
 
+func (x *Booking) GetContact() *sharedpbv1.Contact {
+	if x != nil {
+		return x.Contact
+	}
+	return nil
+}
+
 func (x *Booking) GetUnits() int32 {
 	if x != nil {
 		return x.Units
@@ -342,6 +365,13 @@ func (x *Booking) GetTotal() *money.Money {
 	return nil
 }
 
+func (x *Booking) GetPriceComponents() []*sharedpbv1.PriceComponent {
+	if x != nil {
+		return x.PriceComponents
+	}
+	return nil
+}
+
 func (x *Booking) GetNotes() string {
 	if x != nil {
 		return x.Notes
@@ -391,6 +421,20 @@ func (x *Booking) GetCancelTime() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Booking) GetRefundAmount() *money.Money {
+	if x != nil {
+		return x.RefundAmount
+	}
+	return nil
+}
+
+func (x *Booking) GetRefundPercent() int32 {
+	if x != nil {
+		return x.RefundPercent
+	}
+	return 0
+}
+
 func (x *Booking) GetHoldTtl() *durationpb.Duration {
 	if x != nil {
 		return x.HoldTtl
@@ -409,7 +453,7 @@ var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xce\v\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xc8\r\n" +
 	"\aBooking\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12E\n" +
 	"\bresource\x18\x03 \x01(\tB)\xe0A\x02\xfaA#\n" +
@@ -417,7 +461,8 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
 	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12A\n" +
 	"\bcustomer\x18\x05 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.ohtarnished.dev/UserR\bcustomer\x12\x19\n" +
+	"\x1dfreebusy.ohtarnished.dev/UserR\bcustomer\x12:\n" +
+	"\acontact\x18\x18 \x01(\v2\x1b.freebusy.shared.v1.ContactB\x03\xe0A\x01R\acontact\x12\x19\n" +
 	"\x05units\x18\x06 \x01(\x05B\x03\xe0A\x01R\x05units\x12;\n" +
 	"\x06window\x18\a \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12(\n" +
 	"\rassigned_unit\x18\b \x01(\tB\x03\xe0A\x03R\fassignedUnit\x12=\n" +
@@ -429,7 +474,8 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"promo_code\x18\f \x01(\tB*\xe0A\x05\xfaA$\n" +
 	"\"freebusy.ohtarnished.dev/PromoCodeR\tpromoCode\x123\n" +
 	"\bdiscount\x18\r \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\bdiscount\x12-\n" +
-	"\x05total\x18\x0e \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05total\x12\x19\n" +
+	"\x05total\x18\x0e \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05total\x12R\n" +
+	"\x10price_components\x18\x19 \x03(\v2\".freebusy.shared.v1.PriceComponentB\x03\xe0A\x03R\x0fpriceComponents\x12\x19\n" +
 	"\x05notes\x18\x0f \x01(\tB\x03\xe0A\x01R\x05notes\x12<\n" +
 	"\n" +
 	"attributes\x18\x10 \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\n" +
@@ -441,7 +487,9 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"updateTime\x12B\n" +
 	"\fconfirm_time\x18\x14 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\vconfirmTime\x12@\n" +
 	"\vcancel_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"cancelTime\x129\n" +
+	"cancelTime\x12<\n" +
+	"\rrefund_amount\x18\x1a \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\frefundAmount\x12*\n" +
+	"\x0erefund_percent\x18\x1b \x01(\x05B\x03\xe0A\x03R\rrefundPercent\x129\n" +
 	"\bhold_ttl\x18\x16 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x05R\aholdTtl\x12\x12\n" +
 	"\x04etag\x18\x17 \x01(\tR\x04etag\"\x9b\x01\n" +
 	"\x05State\x12\x15\n" +
@@ -477,34 +525,39 @@ func file_freebusy_booking_v1_booking_proto_rawDescGZIP() []byte {
 var file_freebusy_booking_v1_booking_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_freebusy_booking_v1_booking_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_freebusy_booking_v1_booking_proto_goTypes = []any{
-	(CancelReason)(0),             // 0: freebusy.booking.v1.CancelReason
-	(Booking_State)(0),            // 1: freebusy.booking.v1.Booking.State
-	(*Booking)(nil),               // 2: freebusy.booking.v1.Booking
-	(*sharedpbv1.TimeWindow)(nil), // 3: freebusy.shared.v1.TimeWindow
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
-	(*money.Money)(nil),           // 5: google.type.Money
-	(*structpb.Struct)(nil),       // 6: google.protobuf.Struct
-	(*durationpb.Duration)(nil),   // 7: google.protobuf.Duration
+	(CancelReason)(0),                 // 0: freebusy.booking.v1.CancelReason
+	(Booking_State)(0),                // 1: freebusy.booking.v1.Booking.State
+	(*Booking)(nil),                   // 2: freebusy.booking.v1.Booking
+	(*sharedpbv1.Contact)(nil),        // 3: freebusy.shared.v1.Contact
+	(*sharedpbv1.TimeWindow)(nil),     // 4: freebusy.shared.v1.TimeWindow
+	(*timestamppb.Timestamp)(nil),     // 5: google.protobuf.Timestamp
+	(*money.Money)(nil),               // 6: google.type.Money
+	(*sharedpbv1.PriceComponent)(nil), // 7: freebusy.shared.v1.PriceComponent
+	(*structpb.Struct)(nil),           // 8: google.protobuf.Struct
+	(*durationpb.Duration)(nil),       // 9: google.protobuf.Duration
 }
 var file_freebusy_booking_v1_booking_proto_depIdxs = []int32{
-	3,  // 0: freebusy.booking.v1.Booking.window:type_name -> freebusy.shared.v1.TimeWindow
-	1,  // 1: freebusy.booking.v1.Booking.state:type_name -> freebusy.booking.v1.Booking.State
-	4,  // 2: freebusy.booking.v1.Booking.hold_expire_time:type_name -> google.protobuf.Timestamp
-	5,  // 3: freebusy.booking.v1.Booking.price:type_name -> google.type.Money
-	5,  // 4: freebusy.booking.v1.Booking.discount:type_name -> google.type.Money
-	5,  // 5: freebusy.booking.v1.Booking.total:type_name -> google.type.Money
-	6,  // 6: freebusy.booking.v1.Booking.attributes:type_name -> google.protobuf.Struct
-	0,  // 7: freebusy.booking.v1.Booking.cancel_reason:type_name -> freebusy.booking.v1.CancelReason
-	4,  // 8: freebusy.booking.v1.Booking.create_time:type_name -> google.protobuf.Timestamp
-	4,  // 9: freebusy.booking.v1.Booking.update_time:type_name -> google.protobuf.Timestamp
-	4,  // 10: freebusy.booking.v1.Booking.confirm_time:type_name -> google.protobuf.Timestamp
-	4,  // 11: freebusy.booking.v1.Booking.cancel_time:type_name -> google.protobuf.Timestamp
-	7,  // 12: freebusy.booking.v1.Booking.hold_ttl:type_name -> google.protobuf.Duration
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	3,  // 0: freebusy.booking.v1.Booking.contact:type_name -> freebusy.shared.v1.Contact
+	4,  // 1: freebusy.booking.v1.Booking.window:type_name -> freebusy.shared.v1.TimeWindow
+	1,  // 2: freebusy.booking.v1.Booking.state:type_name -> freebusy.booking.v1.Booking.State
+	5,  // 3: freebusy.booking.v1.Booking.hold_expire_time:type_name -> google.protobuf.Timestamp
+	6,  // 4: freebusy.booking.v1.Booking.price:type_name -> google.type.Money
+	6,  // 5: freebusy.booking.v1.Booking.discount:type_name -> google.type.Money
+	6,  // 6: freebusy.booking.v1.Booking.total:type_name -> google.type.Money
+	7,  // 7: freebusy.booking.v1.Booking.price_components:type_name -> freebusy.shared.v1.PriceComponent
+	8,  // 8: freebusy.booking.v1.Booking.attributes:type_name -> google.protobuf.Struct
+	0,  // 9: freebusy.booking.v1.Booking.cancel_reason:type_name -> freebusy.booking.v1.CancelReason
+	5,  // 10: freebusy.booking.v1.Booking.create_time:type_name -> google.protobuf.Timestamp
+	5,  // 11: freebusy.booking.v1.Booking.update_time:type_name -> google.protobuf.Timestamp
+	5,  // 12: freebusy.booking.v1.Booking.confirm_time:type_name -> google.protobuf.Timestamp
+	5,  // 13: freebusy.booking.v1.Booking.cancel_time:type_name -> google.protobuf.Timestamp
+	6,  // 14: freebusy.booking.v1.Booking.refund_amount:type_name -> google.type.Money
+	9,  // 15: freebusy.booking.v1.Booking.hold_ttl:type_name -> google.protobuf.Duration
+	16, // [16:16] is the sub-list for method output_type
+	16, // [16:16] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_booking_v1_booking_proto_init() }

@@ -16,22 +16,24 @@ import (
 )
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.
-var BookingService_CancelBookingSchemaJSON = `{"description":"Cancel a booking, optionally with a reason and note. Frees the held units.","properties":{"name":{"type":"string"},"note":{"type":"string"},"reason":{"enum":["CANCEL_REASON_UNSPECIFIED","CANCEL_REASON_REQUESTED_BY_CUSTOMER","CANCEL_REASON_REQUESTED_BY_OPERATOR","CANCEL_REASON_PAYMENT_FAILED","CANCEL_REASON_NO_SHOW","CANCEL_REASON_OTHER"],"type":"string"},"request_id":{"type":"string"}},"required":["name"],"type":"object"}`
+var BookingService_CancelBookingSchemaJSON = `{"description":"Cancel a booking, optionally with a reason and note. Frees the held units and computes the refund from the cancellation policy.","properties":{"name":{"type":"string"},"note":{"type":"string"},"reason":{"enum":["CANCEL_REASON_UNSPECIFIED","CANCEL_REASON_REQUESTED_BY_CUSTOMER","CANCEL_REASON_REQUESTED_BY_OPERATOR","CANCEL_REASON_PAYMENT_FAILED","CANCEL_REASON_NO_SHOW","CANCEL_REASON_OTHER"],"type":"string"},"request_id":{"type":"string"}},"required":["name"],"type":"object"}`
 var BookingService_ConfirmBookingSchemaJSON = `{"description":"Confirm a held booking (PENDING_HOLD -\u003e CONFIRMED), optionally recording a payment reference.","properties":{"name":{"type":"string"},"payment_ref":{"type":"string"},"request_id":{"type":"string"}},"required":["name"],"type":"object"}`
-var BookingService_CreateBookingSchemaJSON = `{"description":"Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code.","properties":{"booking":{"properties":{"assigned_unit":{"type":"string"},"attributes":{"additionalProperties":true,"type":"object"},"cancel_reason":{"enum":["CANCEL_REASON_UNSPECIFIED","CANCEL_REASON_REQUESTED_BY_CUSTOMER","CANCEL_REASON_REQUESTED_BY_OPERATOR","CANCEL_REASON_PAYMENT_FAILED","CANCEL_REASON_NO_SHOW","CANCEL_REASON_OTHER"],"type":"string"},"cancel_time":{"format":"date-time","type":["string","null"]},"confirm_time":{"format":"date-time","type":["string","null"]},"create_time":{"format":"date-time","type":["string","null"]},"customer":{"type":"string"},"discount":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"etag":{"type":"string"},"hold_expire_time":{"format":"date-time","type":["string","null"]},"hold_ttl":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"name":{"type":"string"},"notes":{"type":"string"},"offering":{"type":"string"},"price":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"promo_code":{"type":"string"},"resource":{"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_PENDING_HOLD","STATE_CONFIRMED","STATE_CANCELLED","STATE_EXPIRED","STATE_COMPLETED","STATE_NO_SHOW"],"type":"string"},"total":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"units":{"type":"integer"},"update_time":{"format":"date-time","type":["string","null"]},"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["resource","window"],"type":"object"},"booking_id":{"type":"string"},"request_id":{"type":"string"},"validate_only":{"type":"boolean"}},"required":["booking"],"type":"object"}`
+var BookingService_CreateBookingSchemaJSON = `{"description":"Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code.","properties":{"booking":{"properties":{"assigned_unit":{"type":"string"},"attributes":{"additionalProperties":true,"type":"object"},"cancel_reason":{"enum":["CANCEL_REASON_UNSPECIFIED","CANCEL_REASON_REQUESTED_BY_CUSTOMER","CANCEL_REASON_REQUESTED_BY_OPERATOR","CANCEL_REASON_PAYMENT_FAILED","CANCEL_REASON_NO_SHOW","CANCEL_REASON_OTHER"],"type":"string"},"cancel_time":{"format":"date-time","type":["string","null"]},"confirm_time":{"format":"date-time","type":["string","null"]},"contact":{"properties":{"display_name":{"type":"string"},"email":{"type":"string"},"phone_number":{"type":"string"}},"required":[],"type":"object"},"create_time":{"format":"date-time","type":["string","null"]},"customer":{"type":"string"},"discount":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"etag":{"type":"string"},"hold_expire_time":{"format":"date-time","type":["string","null"]},"hold_ttl":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"name":{"type":"string"},"notes":{"type":"string"},"offering":{"type":"string"},"price":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"price_components":{"items":{"properties":{"amount":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"code":{"type":"string"},"display_name":{"type":"string"},"type":{"enum":["TYPE_UNSPECIFIED","TYPE_BASE","TYPE_FEE","TYPE_TAX","TYPE_DISCOUNT"],"type":"string"}},"required":[],"type":"object"},"type":"array"},"promo_code":{"type":"string"},"refund_amount":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"refund_percent":{"type":"integer"},"resource":{"type":"string"},"state":{"enum":["STATE_UNSPECIFIED","STATE_PENDING_HOLD","STATE_CONFIRMED","STATE_CANCELLED","STATE_EXPIRED","STATE_COMPLETED","STATE_NO_SHOW"],"type":"string"},"total":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"units":{"type":"integer"},"update_time":{"format":"date-time","type":["string","null"]},"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["resource","window"],"type":"object"},"booking_id":{"type":"string"},"request_id":{"type":"string"},"validate_only":{"type":"boolean"}},"required":["booking"],"type":"object"}`
 var BookingService_GetBookingSchemaJSON = `{"description":"Get a single booking by resource name, including status, assigned unit, and totals.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var BookingService_ListBookingsSchemaJSON = `{"description":"List bookings. Filter by resource, customer, status, or overlapping time window, and paginate.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
+var BookingService_PreviewCancellationSchemaJSON = `{"description":"Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var BookingService_RescheduleBookingSchemaJSON = `{"description":"Move a booking to a new span (and optionally offering), re-checking availability on the new window.","properties":{"name":{"type":"string"},"offering":{"type":"string"},"request_id":{"type":"string"},"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["name","window"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.
 var (
-	BookingService_CancelBookingTool     = runtime.MustCreateTool("booking_service-cancel_booking_v1", `Cancel a booking, optionally with a reason and note. Frees the held units.`, BookingService_CancelBookingSchemaJSON)
-	BookingService_ConfirmBookingTool    = runtime.MustCreateTool("booking_service-confirm_booking_v1", `Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference.`, BookingService_ConfirmBookingSchemaJSON)
-	BookingService_CreateBookingTool     = runtime.MustCreateTool("booking_service-create_booking_v1", `Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code.`, BookingService_CreateBookingSchemaJSON)
-	BookingService_GetBookingTool        = runtime.MustCreateTool("booking_service-get_booking_v1", `Get a single booking by resource name, including status, assigned unit, and totals.`, BookingService_GetBookingSchemaJSON)
-	BookingService_ListBookingsTool      = runtime.MustCreateTool("booking_service-list_bookings_v1", `List bookings. Filter by resource, customer, status, or overlapping time window, and paginate.`, BookingService_ListBookingsSchemaJSON)
-	BookingService_RescheduleBookingTool = runtime.MustCreateTool("booking_service-reschedule_booking_v1", `Move a booking to a new span (and optionally offering), re-checking availability on the new window.`, BookingService_RescheduleBookingSchemaJSON)
+	BookingService_CancelBookingTool       = runtime.MustCreateTool("booking_service-cancel_booking_v1", `Cancel a booking, optionally with a reason and note. Frees the held units and computes the refund from the cancellation policy.`, BookingService_CancelBookingSchemaJSON)
+	BookingService_ConfirmBookingTool      = runtime.MustCreateTool("booking_service-confirm_booking_v1", `Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference.`, BookingService_ConfirmBookingSchemaJSON)
+	BookingService_CreateBookingTool       = runtime.MustCreateTool("booking_service-create_booking_v1", `Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code.`, BookingService_CreateBookingSchemaJSON)
+	BookingService_GetBookingTool          = runtime.MustCreateTool("booking_service-get_booking_v1", `Get a single booking by resource name, including status, assigned unit, and totals.`, BookingService_GetBookingSchemaJSON)
+	BookingService_ListBookingsTool        = runtime.MustCreateTool("booking_service-list_bookings_v1", `List bookings. Filter by resource, customer, status, or overlapping time window, and paginate.`, BookingService_ListBookingsSchemaJSON)
+	BookingService_PreviewCancellationTool = runtime.MustCreateTool("booking_service-preview_cancellation_v1", `Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling.`, BookingService_PreviewCancellationSchemaJSON)
+	BookingService_RescheduleBookingTool   = runtime.MustCreateTool("booking_service-reschedule_booking_v1", `Move a booking to a new span (and optionally offering), re-checking availability on the new window.`, BookingService_RescheduleBookingSchemaJSON)
 )
 
 // BookingServiceMCPServer is the interface that users implement to handle MCP
@@ -45,6 +47,7 @@ type BookingServiceMCPServer interface {
 	CreateBooking(ctx context.Context, req *CreateBookingRequest) (*Booking, error)
 	GetBooking(ctx context.Context, req *GetBookingRequest) (*Booking, error)
 	ListBookings(ctx context.Context, req *ListBookingsRequest) (*ListBookingsResponse, error)
+	PreviewCancellation(ctx context.Context, req *PreviewCancellationRequest) (*PreviewCancellationResponse, error)
 	RescheduleBooking(ctx context.Context, req *RescheduleBookingRequest) (*Booking, error)
 }
 
@@ -56,6 +59,7 @@ type BookingServiceMCPClient interface {
 	CreateBooking(ctx context.Context, req *CreateBookingRequest, opts ...grpc.CallOption) (*Booking, error)
 	GetBooking(ctx context.Context, req *GetBookingRequest, opts ...grpc.CallOption) (*Booking, error)
 	ListBookings(ctx context.Context, req *ListBookingsRequest, opts ...grpc.CallOption) (*ListBookingsResponse, error)
+	PreviewCancellation(ctx context.Context, req *PreviewCancellationRequest, opts ...grpc.CallOption) (*PreviewCancellationResponse, error)
 	RescheduleBooking(ctx context.Context, req *RescheduleBookingRequest, opts ...grpc.CallOption) (*Booking, error)
 }
 
@@ -155,6 +159,26 @@ func RegisterBookingServiceMCPHandler(s *mcp.Server, srv BookingServiceMCPServer
 				return nil, err
 			}
 			resp, err := srv.ListBookings(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(BookingService_PreviewCancellationTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq PreviewCancellationRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			resp, err := srv.PreviewCancellation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -344,6 +368,27 @@ func ForwardToBookingServiceMCPClient(s *mcp.Server, client BookingServiceMCPCli
 			}
 			ctx = runtime.ForwardMetadata(ctx)
 			resp, err := client.ListBookings(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(BookingService_PreviewCancellationTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq PreviewCancellationRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			ctx = runtime.ForwardMetadata(ctx)
+			resp, err := client.PreviewCancellation(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}

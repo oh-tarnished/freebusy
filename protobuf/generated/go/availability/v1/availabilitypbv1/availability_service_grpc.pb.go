@@ -23,6 +23,7 @@ const (
 	AvailabilityService_CheckAvailability_FullMethodName        = "/freebusy.availability.v1.AvailabilityService/CheckAvailability"
 	AvailabilityService_ComputeBookableRanges_FullMethodName    = "/freebusy.availability.v1.AvailabilityService/ComputeBookableRanges"
 	AvailabilityService_BatchComputeAvailability_FullMethodName = "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability"
+	AvailabilityService_SearchAvailability_FullMethodName       = "/freebusy.availability.v1.AvailabilityService/SearchAvailability"
 )
 
 // AvailabilityServiceClient is the client API for AvailabilityService service.
@@ -45,6 +46,8 @@ type AvailabilityServiceClient interface {
 	ComputeBookableRanges(ctx context.Context, in *ComputeBookableRangesRequest, opts ...grpc.CallOption) (*ComputeBookableRangesResponse, error)
 	// Computes availability for several resources at once.
 	BatchComputeAvailability(ctx context.Context, in *BatchComputeAvailabilityRequest, opts ...grpc.CallOption) (*BatchComputeAvailabilityResponse, error)
+	// Searches the catalog for resources bookable over a period.
+	SearchAvailability(ctx context.Context, in *SearchAvailabilityRequest, opts ...grpc.CallOption) (*SearchAvailabilityResponse, error)
 }
 
 type availabilityServiceClient struct {
@@ -95,6 +98,16 @@ func (c *availabilityServiceClient) BatchComputeAvailability(ctx context.Context
 	return out, nil
 }
 
+func (c *availabilityServiceClient) SearchAvailability(ctx context.Context, in *SearchAvailabilityRequest, opts ...grpc.CallOption) (*SearchAvailabilityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchAvailabilityResponse)
+	err := c.cc.Invoke(ctx, AvailabilityService_SearchAvailability_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AvailabilityServiceServer is the server API for AvailabilityService service.
 // All implementations must embed UnimplementedAvailabilityServiceServer
 // for forward compatibility.
@@ -115,6 +128,8 @@ type AvailabilityServiceServer interface {
 	ComputeBookableRanges(context.Context, *ComputeBookableRangesRequest) (*ComputeBookableRangesResponse, error)
 	// Computes availability for several resources at once.
 	BatchComputeAvailability(context.Context, *BatchComputeAvailabilityRequest) (*BatchComputeAvailabilityResponse, error)
+	// Searches the catalog for resources bookable over a period.
+	SearchAvailability(context.Context, *SearchAvailabilityRequest) (*SearchAvailabilityResponse, error)
 	mustEmbedUnimplementedAvailabilityServiceServer()
 }
 
@@ -136,6 +151,9 @@ func (UnimplementedAvailabilityServiceServer) ComputeBookableRanges(context.Cont
 }
 func (UnimplementedAvailabilityServiceServer) BatchComputeAvailability(context.Context, *BatchComputeAvailabilityRequest) (*BatchComputeAvailabilityResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method BatchComputeAvailability not implemented")
+}
+func (UnimplementedAvailabilityServiceServer) SearchAvailability(context.Context, *SearchAvailabilityRequest) (*SearchAvailabilityResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchAvailability not implemented")
 }
 func (UnimplementedAvailabilityServiceServer) mustEmbedUnimplementedAvailabilityServiceServer() {}
 func (UnimplementedAvailabilityServiceServer) testEmbeddedByValue()                             {}
@@ -230,6 +248,24 @@ func _AvailabilityService_BatchComputeAvailability_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AvailabilityService_SearchAvailability_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchAvailabilityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AvailabilityServiceServer).SearchAvailability(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AvailabilityService_SearchAvailability_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AvailabilityServiceServer).SearchAvailability(ctx, req.(*SearchAvailabilityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AvailabilityService_ServiceDesc is the grpc.ServiceDesc for AvailabilityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,6 +288,10 @@ var AvailabilityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BatchComputeAvailability",
 			Handler:    _AvailabilityService_BatchComputeAvailability_Handler,
+		},
+		{
+			MethodName: "SearchAvailability",
+			Handler:    _AvailabilityService_SearchAvailability_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

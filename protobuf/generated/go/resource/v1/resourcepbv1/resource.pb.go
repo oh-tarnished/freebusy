@@ -445,6 +445,20 @@ type Offering struct {
 	Price *money.Money `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
 	// What the price is charged per.
 	PricingUnit PricingUnit `protobuf:"varint,7,opt,name=pricing_unit,json=pricingUnit,proto3,enum=freebusy.resource.v1.PricingUnit" json:"pricing_unit,omitempty"`
+	// Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY
+	// resources this is the seasonal/weekend rate calendar; for TIME_SLOT it
+	// varies slot price by date or day. `price` is the default when no override
+	// matches. Later-listed overrides win where they overlap.
+	RateOverrides []*RateOverride `protobuf:"bytes,12,rep,name=rate_overrides,json=rateOverrides,proto3" json:"rate_overrides,omitempty"`
+	// Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at
+	// least `min_nights` long. The most generous matching discount applies.
+	LosDiscounts []*LosDiscount `protobuf:"bytes,13,rep,name=los_discounts,json=losDiscounts,proto3" json:"los_discounts,omitempty"`
+	// Fees added on top of the base subtotal (e.g. cleaning, service). Each
+	// surfaces as a TYPE_FEE line in a booking's price_components.
+	Fees []*Fee `protobuf:"bytes,14,rep,name=fees,proto3" json:"fees,omitempty"`
+	// Taxes applied to the taxable base (subtotal plus taxable fees). Each
+	// surfaces as a TYPE_TAX line in a booking's price_components.
+	Taxes []*Tax `protobuf:"bytes,15,rep,name=taxes,proto3" json:"taxes,omitempty"`
 	// Lifecycle state.
 	State Offering_State `protobuf:"varint,8,opt,name=state,proto3,enum=freebusy.resource.v1.Offering_State" json:"state,omitempty"`
 	// Creation timestamp.
@@ -529,6 +543,34 @@ func (x *Offering) GetPricingUnit() PricingUnit {
 	return PricingUnit_PRICING_UNIT_UNSPECIFIED
 }
 
+func (x *Offering) GetRateOverrides() []*RateOverride {
+	if x != nil {
+		return x.RateOverrides
+	}
+	return nil
+}
+
+func (x *Offering) GetLosDiscounts() []*LosDiscount {
+	if x != nil {
+		return x.LosDiscounts
+	}
+	return nil
+}
+
+func (x *Offering) GetFees() []*Fee {
+	if x != nil {
+		return x.Fees
+	}
+	return nil
+}
+
+func (x *Offering) GetTaxes() []*Tax {
+	if x != nil {
+		return x.Taxes
+	}
+	return nil
+}
+
 func (x *Offering) GetState() Offering_State {
 	if x != nil {
 		return x.State
@@ -557,11 +599,301 @@ func (x *Offering) GetEtag() string {
 	return ""
 }
 
+// A price override for a span of dates and/or specific weekdays, layered over an
+// offering's base `price`. The price is still interpreted per the offering's
+// pricing_unit (per night, per booking, per person).
+type RateOverride struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Dates the override applies to, in the resource's timezone. Unset means it
+	// applies on every date (a pure weekday rule).
+	DateRange *sharedpbv1.DateRange `protobuf:"bytes,1,opt,name=date_range,json=dateRange,proto3" json:"date_range,omitempty"`
+	// Weekdays the override applies to. Empty means every day within date_range.
+	Weekdays []sharedpbv1.Weekday `protobuf:"varint,2,rep,packed,name=weekdays,proto3,enum=freebusy.shared.v1.Weekday" json:"weekdays,omitempty"`
+	// The price in effect while this override matches.
+	Price         *money.Money `protobuf:"bytes,3,opt,name=price,proto3" json:"price,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RateOverride) Reset() {
+	*x = RateOverride{}
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RateOverride) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RateOverride) ProtoMessage() {}
+
+func (x *RateOverride) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RateOverride.ProtoReflect.Descriptor instead.
+func (*RateOverride) Descriptor() ([]byte, []int) {
+	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RateOverride) GetDateRange() *sharedpbv1.DateRange {
+	if x != nil {
+		return x.DateRange
+	}
+	return nil
+}
+
+func (x *RateOverride) GetWeekdays() []sharedpbv1.Weekday {
+	if x != nil {
+		return x.Weekdays
+	}
+	return nil
+}
+
+func (x *RateOverride) GetPrice() *money.Money {
+	if x != nil {
+		return x.Price
+	}
+	return nil
+}
+
+// A discount applied to a NIGHTLY subtotal once the stay reaches a minimum
+// length. Exactly one of percent_off or amount_off is set.
+type LosDiscount struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Minimum nights for the discount to apply.
+	MinNights int32 `protobuf:"varint,1,opt,name=min_nights,json=minNights,proto3" json:"min_nights,omitempty"`
+	// Percent off the subtotal (1-100), when discounting by percentage.
+	PercentOff int32 `protobuf:"varint,2,opt,name=percent_off,json=percentOff,proto3" json:"percent_off,omitempty"`
+	// Fixed amount off the subtotal, when discounting by a flat amount.
+	AmountOff     *money.Money `protobuf:"bytes,3,opt,name=amount_off,json=amountOff,proto3" json:"amount_off,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LosDiscount) Reset() {
+	*x = LosDiscount{}
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LosDiscount) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LosDiscount) ProtoMessage() {}
+
+func (x *LosDiscount) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LosDiscount.ProtoReflect.Descriptor instead.
+func (*LosDiscount) Descriptor() ([]byte, []int) {
+	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *LosDiscount) GetMinNights() int32 {
+	if x != nil {
+		return x.MinNights
+	}
+	return 0
+}
+
+func (x *LosDiscount) GetPercentOff() int32 {
+	if x != nil {
+		return x.PercentOff
+	}
+	return 0
+}
+
+func (x *LosDiscount) GetAmountOff() *money.Money {
+	if x != nil {
+		return x.AmountOff
+	}
+	return nil
+}
+
+// A fee added on top of an offering's base subtotal. Exactly one of `amount` or
+// `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
+type Fee struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Stable machine code, e.g. "cleaning_fee".
+	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Human-readable label for receipts.
+	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	// Fixed fee amount, when charging a flat fee.
+	Amount *money.Money `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	// Percent of the base subtotal (1-100), when charging a proportional fee.
+	Percent int32 `protobuf:"varint,4,opt,name=percent,proto3" json:"percent,omitempty"`
+	// What the fee is charged per (per booking, per night, per person). Defaults
+	// to per booking.
+	PricingUnit PricingUnit `protobuf:"varint,5,opt,name=pricing_unit,json=pricingUnit,proto3,enum=freebusy.resource.v1.PricingUnit" json:"pricing_unit,omitempty"`
+	// Whether this fee is included in the taxable base.
+	Taxable       bool `protobuf:"varint,6,opt,name=taxable,proto3" json:"taxable,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Fee) Reset() {
+	*x = Fee{}
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Fee) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Fee) ProtoMessage() {}
+
+func (x *Fee) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Fee.ProtoReflect.Descriptor instead.
+func (*Fee) Descriptor() ([]byte, []int) {
+	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Fee) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *Fee) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *Fee) GetAmount() *money.Money {
+	if x != nil {
+		return x.Amount
+	}
+	return nil
+}
+
+func (x *Fee) GetPercent() int32 {
+	if x != nil {
+		return x.Percent
+	}
+	return 0
+}
+
+func (x *Fee) GetPricingUnit() PricingUnit {
+	if x != nil {
+		return x.PricingUnit
+	}
+	return PricingUnit_PRICING_UNIT_UNSPECIFIED
+}
+
+func (x *Fee) GetTaxable() bool {
+	if x != nil {
+		return x.Taxable
+	}
+	return false
+}
+
+// A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces
+// as a TYPE_TAX line in a booking's price_components.
+type Tax struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Stable machine code, e.g. "occupancy_tax" or "vat".
+	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	// Human-readable label for receipts.
+	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	// Tax rate as a percentage, e.g. 8.5 for 8.5%.
+	Percent       float64 `protobuf:"fixed64,3,opt,name=percent,proto3" json:"percent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Tax) Reset() {
+	*x = Tax{}
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Tax) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Tax) ProtoMessage() {}
+
+func (x *Tax) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_resource_v1_resource_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Tax.ProtoReflect.Descriptor instead.
+func (*Tax) Descriptor() ([]byte, []int) {
+	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Tax) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *Tax) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *Tax) GetPercent() float64 {
+	if x != nil {
+		return x.Percent
+	}
+	return 0
+}
+
 var File_freebusy_resource_v1_resource_proto protoreflect.FileDescriptor
 
 const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xd6\x06\n" +
+	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xd6\x06\n" +
 	"\bResource\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
@@ -587,14 +919,18 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
 	"\x0eSTATE_ARCHIVED\x10\x02:Q\xeaAN\n" +
-	"!freebusy.ohtarnished.dev/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xb5\x05\n" +
+	"!freebusy.ohtarnished.dev/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xbc\a\n" +
 	"\bOffering\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x12:\n" +
 	"\bduration\x18\x05 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12-\n" +
 	"\x05price\x18\x06 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\x05price\x12I\n" +
-	"\fpricing_unit\x18\a \x01(\x0e2!.freebusy.resource.v1.PricingUnitB\x03\xe0A\x01R\vpricingUnit\x12?\n" +
+	"\fpricing_unit\x18\a \x01(\x0e2!.freebusy.resource.v1.PricingUnitB\x03\xe0A\x01R\vpricingUnit\x12N\n" +
+	"\x0erate_overrides\x18\f \x03(\v2\".freebusy.resource.v1.RateOverrideB\x03\xe0A\x01R\rrateOverrides\x12K\n" +
+	"\rlos_discounts\x18\r \x03(\v2!.freebusy.resource.v1.LosDiscountB\x03\xe0A\x01R\flosDiscounts\x122\n" +
+	"\x04fees\x18\x0e \x03(\v2\x19.freebusy.resource.v1.FeeB\x03\xe0A\x01R\x04fees\x124\n" +
+	"\x05taxes\x18\x0f \x03(\v2\x19.freebusy.resource.v1.TaxB\x03\xe0A\x01R\x05taxes\x12?\n" +
 	"\x05state\x18\b \x01(\x0e2$.freebusy.resource.v1.Offering.StateB\x03\xe0A\x03R\x05state\x12@\n" +
 	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
@@ -606,7 +942,30 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
 	"\x0eSTATE_INACTIVE\x10\x02:f\xeaAc\n" +
-	"!freebusy.ohtarnished.dev/Offering\x12)resources/{resource}/offerings/{offering}*\tofferings2\bofferingJ\x04\b\x02\x10\x03*\xb4\x01\n" +
+	"!freebusy.ohtarnished.dev/Offering\x12)resources/{resource}/offerings/{offering}*\tofferings2\bofferingJ\x04\b\x02\x10\x03\"\xbe\x01\n" +
+	"\fRateOverride\x12A\n" +
+	"\n" +
+	"date_range\x18\x01 \x01(\v2\x1d.freebusy.shared.v1.DateRangeB\x03\xe0A\x01R\tdateRange\x12<\n" +
+	"\bweekdays\x18\x02 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\bweekdays\x12-\n" +
+	"\x05price\x18\x03 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\x05price\"\x8f\x01\n" +
+	"\vLosDiscount\x12\"\n" +
+	"\n" +
+	"min_nights\x18\x01 \x01(\x05B\x03\xe0A\x02R\tminNights\x12$\n" +
+	"\vpercent_off\x18\x02 \x01(\x05B\x03\xe0A\x01R\n" +
+	"percentOff\x126\n" +
+	"\n" +
+	"amount_off\x18\x03 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\tamountOff\"\x80\x02\n" +
+	"\x03Fee\x12\x17\n" +
+	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
+	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12/\n" +
+	"\x06amount\x18\x03 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\x06amount\x12\x1d\n" +
+	"\apercent\x18\x04 \x01(\x05B\x03\xe0A\x01R\apercent\x12I\n" +
+	"\fpricing_unit\x18\x05 \x01(\x0e2!.freebusy.resource.v1.PricingUnitB\x03\xe0A\x01R\vpricingUnit\x12\x1d\n" +
+	"\ataxable\x18\x06 \x01(\bB\x03\xe0A\x01R\ataxable\"e\n" +
+	"\x03Tax\x12\x17\n" +
+	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
+	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x1d\n" +
+	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent*\xb4\x01\n" +
 	"\fResourceType\x12\x1d\n" +
 	"\x19RESOURCE_TYPE_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16RESOURCE_TYPE_PROVIDER\x10\x01\x12\x16\n" +
@@ -634,7 +993,7 @@ func file_freebusy_resource_v1_resource_proto_rawDescGZIP() []byte {
 }
 
 var file_freebusy_resource_v1_resource_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_freebusy_resource_v1_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_freebusy_resource_v1_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_freebusy_resource_v1_resource_proto_goTypes = []any{
 	(ResourceType)(0),             // 0: freebusy.resource.v1.ResourceType
 	(PricingUnit)(0),              // 1: freebusy.resource.v1.PricingUnit
@@ -642,30 +1001,46 @@ var file_freebusy_resource_v1_resource_proto_goTypes = []any{
 	(Offering_State)(0),           // 3: freebusy.resource.v1.Offering.State
 	(*Resource)(nil),              // 4: freebusy.resource.v1.Resource
 	(*Offering)(nil),              // 5: freebusy.resource.v1.Offering
-	(sharedpbv1.BookingMode)(0),   // 6: freebusy.shared.v1.BookingMode
-	(*structpb.Struct)(nil),       // 7: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 9: google.protobuf.Duration
-	(*money.Money)(nil),           // 10: google.type.Money
+	(*RateOverride)(nil),          // 6: freebusy.resource.v1.RateOverride
+	(*LosDiscount)(nil),           // 7: freebusy.resource.v1.LosDiscount
+	(*Fee)(nil),                   // 8: freebusy.resource.v1.Fee
+	(*Tax)(nil),                   // 9: freebusy.resource.v1.Tax
+	(sharedpbv1.BookingMode)(0),   // 10: freebusy.shared.v1.BookingMode
+	(*structpb.Struct)(nil),       // 11: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),   // 13: google.protobuf.Duration
+	(*money.Money)(nil),           // 14: google.type.Money
+	(*sharedpbv1.DateRange)(nil),  // 15: freebusy.shared.v1.DateRange
+	(sharedpbv1.Weekday)(0),       // 16: freebusy.shared.v1.Weekday
 }
 var file_freebusy_resource_v1_resource_proto_depIdxs = []int32{
 	0,  // 0: freebusy.resource.v1.Resource.type:type_name -> freebusy.resource.v1.ResourceType
-	6,  // 1: freebusy.resource.v1.Resource.booking_mode:type_name -> freebusy.shared.v1.BookingMode
-	7,  // 2: freebusy.resource.v1.Resource.attributes:type_name -> google.protobuf.Struct
+	10, // 1: freebusy.resource.v1.Resource.booking_mode:type_name -> freebusy.shared.v1.BookingMode
+	11, // 2: freebusy.resource.v1.Resource.attributes:type_name -> google.protobuf.Struct
 	2,  // 3: freebusy.resource.v1.Resource.state:type_name -> freebusy.resource.v1.Resource.State
-	8,  // 4: freebusy.resource.v1.Resource.create_time:type_name -> google.protobuf.Timestamp
-	8,  // 5: freebusy.resource.v1.Resource.update_time:type_name -> google.protobuf.Timestamp
-	9,  // 6: freebusy.resource.v1.Offering.duration:type_name -> google.protobuf.Duration
-	10, // 7: freebusy.resource.v1.Offering.price:type_name -> google.type.Money
+	12, // 4: freebusy.resource.v1.Resource.create_time:type_name -> google.protobuf.Timestamp
+	12, // 5: freebusy.resource.v1.Resource.update_time:type_name -> google.protobuf.Timestamp
+	13, // 6: freebusy.resource.v1.Offering.duration:type_name -> google.protobuf.Duration
+	14, // 7: freebusy.resource.v1.Offering.price:type_name -> google.type.Money
 	1,  // 8: freebusy.resource.v1.Offering.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
-	3,  // 9: freebusy.resource.v1.Offering.state:type_name -> freebusy.resource.v1.Offering.State
-	8,  // 10: freebusy.resource.v1.Offering.create_time:type_name -> google.protobuf.Timestamp
-	8,  // 11: freebusy.resource.v1.Offering.update_time:type_name -> google.protobuf.Timestamp
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	6,  // 9: freebusy.resource.v1.Offering.rate_overrides:type_name -> freebusy.resource.v1.RateOverride
+	7,  // 10: freebusy.resource.v1.Offering.los_discounts:type_name -> freebusy.resource.v1.LosDiscount
+	8,  // 11: freebusy.resource.v1.Offering.fees:type_name -> freebusy.resource.v1.Fee
+	9,  // 12: freebusy.resource.v1.Offering.taxes:type_name -> freebusy.resource.v1.Tax
+	3,  // 13: freebusy.resource.v1.Offering.state:type_name -> freebusy.resource.v1.Offering.State
+	12, // 14: freebusy.resource.v1.Offering.create_time:type_name -> google.protobuf.Timestamp
+	12, // 15: freebusy.resource.v1.Offering.update_time:type_name -> google.protobuf.Timestamp
+	15, // 16: freebusy.resource.v1.RateOverride.date_range:type_name -> freebusy.shared.v1.DateRange
+	16, // 17: freebusy.resource.v1.RateOverride.weekdays:type_name -> freebusy.shared.v1.Weekday
+	14, // 18: freebusy.resource.v1.RateOverride.price:type_name -> google.type.Money
+	14, // 19: freebusy.resource.v1.LosDiscount.amount_off:type_name -> google.type.Money
+	14, // 20: freebusy.resource.v1.Fee.amount:type_name -> google.type.Money
+	1,  // 21: freebusy.resource.v1.Fee.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_resource_v1_resource_proto_init() }
@@ -679,7 +1054,7 @@ func file_freebusy_resource_v1_resource_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_resource_v1_resource_proto_rawDesc), len(file_freebusy_resource_v1_resource_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

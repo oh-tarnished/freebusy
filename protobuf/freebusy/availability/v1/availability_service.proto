@@ -67,4 +67,13 @@ service AvailabilityService {
     };
     option (mcp.protobuf.tool) = {description: "Compute availability for several resources in one call; each entry carries its own resource, period, offering, and units."};
   }
+
+  // Searches the catalog for resources bookable over a period.
+  rpc SearchAvailability(SearchAvailabilityRequest) returns (SearchAvailabilityResponse) {
+    option (google.api.http) = {
+      post: "/v1/resources:searchAvailability"
+      body: "*"
+    };
+    option (mcp.protobuf.tool) = {description: "Search the catalog for resources bookable over a period for a party size, filtered by type/tags/name and sorted by price."};
+  }
 }

@@ -14,7 +14,7 @@ ScheduleService is the write side of availability configuration: a resource's re
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
 | `GetSchedule` | `GetScheduleRequest` | `Schedule` | Reads the full availability configuration for a resource. |
-| `UpdateSchedule` | `UpdateScheduleRequest` | `Schedule` | Updates a resource's availability configuration. Set update_mask to the section(s) to replace: recurring_rules, buffers, and/or stay_constraints. |
+| `UpdateSchedule` | `UpdateScheduleRequest` | `Schedule` | Updates a resource's availability configuration. Set update_mask to the section(s) to replace: recurring_rules, buffers, stay_constraints, and/or cancellation_policy. |
 | `ListAvailabilityExceptions` | `ListAvailabilityExceptionsRequest` | `ListAvailabilityExceptionsResponse` | Lists the exceptions configured for a resource. |
 | `GetAvailabilityException` | `GetAvailabilityExceptionRequest` | `AvailabilityException` | Gets a single availability exception. |
 | `CreateAvailabilityException` | `CreateAvailabilityExceptionRequest` | `AvailabilityException` | Adds an availability exception to a resource. |
@@ -80,7 +80,25 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | `buffers` | `BufferSettings` | `OPTIONAL` | Buffer and notice settings. |
 | `stay_constraints` | `StayConstraints` | `OPTIONAL` | Stay rules (NIGHTLY resources). |
 | `exceptions` | `string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+| `cancellation_policy` | `CancellationPolicy` | `OPTIONAL` | Refund rules applied when a booking on this resource is cancelled. Unset means cancellations are non-refundable by default. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update. |
+
+### CancellationPolicy
+
+Refund rules graded by how far ahead of a booking's start it is cancelled.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `tiers` | `RefundTier` | `OPTIONAL` | Ordered refund tiers. For a given cancellation the tier with the largest `cutoff` that is still satisfied (cancelled at least `cutoff` before the booking start) determines the refund. If no tier is satisfied, the booking is non-refundable. |
+
+### RefundTier
+
+One tier of a CancellationPolicy: cancel at least `cutoff` before the booking start to receive `refund_percent` of the total back.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `cutoff` | `Duration` | `REQUIRED` | Minimum lead time before the booking start for this tier to apply (e.g. 48h). |
+| `refund_percent` | `int32` | `REQUIRED` | Percentage of the booking total refunded at this tier (0-100). |
 
 ### GetScheduleRequest
 
@@ -92,7 +110,7 @@ Request message for GetSchedule.
 
 ### UpdateScheduleRequest
 
-Request message for UpdateSchedule. Set update_mask to the section(s) to replace: "recurring_rules", "buffers", and/or "stay_constraints".
+Request message for UpdateSchedule. Set update_mask to the section(s) to replace: "recurring_rules", "buffers", "stay_constraints", and/or "cancellation_policy".
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |

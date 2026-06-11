@@ -59,10 +59,57 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `duration` | `Duration` | `OPTIONAL` | Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY. |
 | `price` | `Money` | `OPTIONAL` | Price charged for the offering, interpreted per pricing_unit. |
 | `pricing_unit` | `PricingUnit` | `OPTIONAL` | What the price is charged per. |
+| `rate_overrides` | `RateOverride` | `OPTIONAL` | Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY resources this is the seasonal/weekend rate calendar; for TIME_SLOT it varies slot price by date or day. `price` is the default when no override matches. Later-listed overrides win where they overlap. |
+| `los_discounts` | `LosDiscount` | `OPTIONAL` | Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at least `min_nights` long. The most generous matching discount applies. |
+| `fees` | `Fee` | `OPTIONAL` | Fees added on top of the base subtotal (e.g. cleaning, service). Each surfaces as a TYPE_FEE line in a booking's price_components. |
+| `taxes` | `Tax` | `OPTIONAL` | Taxes applied to the taxable base (subtotal plus taxable fees). Each surfaces as a TYPE_TAX line in a booking's price_components. |
 | `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
+
+### RateOverride
+
+A price override for a span of dates and/or specific weekdays, layered over an offering's base `price`. The price is still interpreted per the offering's pricing_unit (per night, per booking, per person).
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `date_range` | `DateRange` | `OPTIONAL` | Dates the override applies to, in the resource's timezone. Unset means it applies on every date (a pure weekday rule). |
+| `weekdays` | `Weekday` | `OPTIONAL` | Weekdays the override applies to. Empty means every day within date_range. |
+| `price` | `Money` | `REQUIRED` | The price in effect while this override matches. |
+
+### LosDiscount
+
+A discount applied to a NIGHTLY subtotal once the stay reaches a minimum length. Exactly one of percent_off or amount_off is set.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `min_nights` | `int32` | `REQUIRED` | Minimum nights for the discount to apply. |
+| `percent_off` | `int32` | `OPTIONAL` | Percent off the subtotal (1-100), when discounting by percentage. |
+| `amount_off` | `Money` | `OPTIONAL` | Fixed amount off the subtotal, when discounting by a flat amount. |
+
+### Fee
+
+A fee added on top of an offering's base subtotal. Exactly one of `amount` or `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `code` | `string` | `REQUIRED` | Stable machine code, e.g. "cleaning_fee". |
+| `display_name` | `string` | `OPTIONAL` | Human-readable label for receipts. |
+| `amount` | `Money` | `OPTIONAL` | Fixed fee amount, when charging a flat fee. |
+| `percent` | `int32` | `OPTIONAL` | Percent of the base subtotal (1-100), when charging a proportional fee. |
+| `pricing_unit` | `PricingUnit` | `OPTIONAL` | What the fee is charged per (per booking, per night, per person). Defaults to per booking. |
+| `taxable` | `bool` | `OPTIONAL` | Whether this fee is included in the taxable base. |
+
+### Tax
+
+A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as a TYPE_TAX line in a booking's price_components.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `code` | `string` | `REQUIRED` | Stable machine code, e.g. "occupancy_tax" or "vat". |
+| `display_name` | `string` | `OPTIONAL` | Human-readable label for receipts. |
+| `percent` | `double` | `REQUIRED` | Tax rate as a percentage, e.g. 8.5 for 8.5%. |
 
 ### AddResourceArgs
 

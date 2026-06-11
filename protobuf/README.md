@@ -9,15 +9,15 @@ Every protobuf module under `protobuf/`. Each row links to that module's generat
 
 | Module | Package | Services | Messages | Enums | Reference |
 | --- | --- | --- | --- | --- | --- |
-| Availability | `freebusy.availability.v1` | 1 | 13 | 0 | [README](freebusy/availability/README.md) |
-| Booking | `freebusy.booking.v1` | 1 | 9 | 1 | [README](freebusy/booking/README.md) |
+| Availability | `freebusy.availability.v1` | 1 | 16 | 0 | [README](freebusy/availability/README.md) |
+| Booking | `freebusy.booking.v1` | 1 | 11 | 1 | [README](freebusy/booking/README.md) |
 | Identity | `freebusy.identity.v1` | 1 | 6 | 0 | [README](freebusy/identity/README.md) |
 | Organisation | `freebusy.organisation.v1` | 1 | 16 | 1 | [README](freebusy/organisation/README.md) |
 | Promocode | `freebusy.promocode.v1` | 1 | 9 | 1 | [README](freebusy/promocode/README.md) |
-| Resource | `freebusy.resource.v1` | 1 | 16 | 2 | [README](freebusy/resource/README.md) |
-| Schedule | `freebusy.schedule.v1` | 1 | 12 | 1 | [README](freebusy/schedule/README.md) |
-| Shared | `freebusy.shared.v1` | 0 | 2 | 3 | [README](freebusy/shared/README.md) |
-| **Total** | _8 modules_ | 7 | 83 | 9 | |
+| Resource | `freebusy.resource.v1` | 1 | 20 | 2 | [README](freebusy/resource/README.md) |
+| Schedule | `freebusy.schedule.v1` | 1 | 14 | 1 | [README](freebusy/schedule/README.md) |
+| Shared | `freebusy.shared.v1` | 0 | 4 | 3 | [README](freebusy/shared/README.md) |
+| **Total** | _8 modules_ | 7 | 96 | 9 | |
 
 ## Dependency graph
 

@@ -18,6 +18,7 @@ BookingService is the transactional heart. CreateBooking carries the idempotency
 | `ListBookings` | `ListBookingsRequest` | `ListBookingsResponse` | Lists bookings. |
 | `ConfirmBooking` | `ConfirmBookingRequest` | `Booking` | Confirms a held booking. |
 | `CancelBooking` | `CancelBookingRequest` | `Booking` | Cancels a booking. |
+| `PreviewCancellation` | `PreviewCancellationRequest` | `PreviewCancellationResponse` | Previews the refund a cancellation would yield now, without cancelling. |
 | `RescheduleBooking` | `RescheduleBookingRequest` | `Booking` | Reschedules a booking to a new span. |
 
 ## Messages
@@ -32,6 +33,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `resource` | `string` | `REQUIRED` | The resource being booked. Format: resources/{resource} |
 | `offering` | `string` | `OPTIONAL` | The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering} |
 | `customer` | `string` | `OPTIONAL` | The user the booking is for. Format: users/{user} |
+| `contact` | `Contact` | `OPTIONAL` | Contact details for the booker. Required when `customer` is unset (a guest / walk-in booking); when `customer` is set these supplement or override the user's profile contact for this booking. |
 | `units` | `int32` | `OPTIONAL` | Number of units / party size reserved. Defaults to 1. |
 | `window` | `TimeWindow` | `REQUIRED` | The reserved span. For NIGHTLY resources this spans check-in to check-out. |
 | `assigned_unit` | `string` | `OUTPUT_ONLY` | Which specific unit of the pool was assigned (the shell's atomic pick). |
@@ -41,6 +43,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code} |
 | `discount` | `Money` | `OUTPUT_ONLY` | Discount applied from the promo code. |
 | `total` | `Money` | `OUTPUT_ONLY` | Final total after discounts. |
+| `price_components` | `PriceComponent` | `OUTPUT_ONLY` | Itemized breakdown behind the total: the base charge, each fee and tax, and each discount, as signed lines. `price` is the TYPE_BASE subtotal and `total` is the sum of every component; these lines expose the fees and taxes in between. Empty for simple bookings with no fees or taxes configured. |
 | `notes` | `string` | `OPTIONAL` | Free-form notes on the booking. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes. |
 | `cancel_reason` | `CancelReason` | `OUTPUT_ONLY` | Why the booking was cancelled, when state is CANCELLED. |
@@ -48,6 +51,8 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `confirm_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was confirmed, if at all. |
 | `cancel_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was cancelled, if at all. |
+| `refund_amount` | `Money` | `OUTPUT_ONLY` | Amount refunded on cancellation, computed from the resource's cancellation policy and how far ahead of the booking start it was cancelled. Set only once the booking is CANCELLED. Use PreviewCancellation to see this before committing. |
+| `refund_percent` | `int32` | `OUTPUT_ONLY` | Percentage of the total that `refund_amount` represents (0-100). |
 | `hold_ttl` | `Duration` | `IMMUTABLE` | Requested time-to-live of the hold, set at creation. The server caps this and reflects the effective expiry in hold_expire_time. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
@@ -83,6 +88,26 @@ Request message for RescheduleBooking. Atomically moves a booking to a new span 
 | `offering` | `string` | `OPTIONAL` | The new offering, when changing it as part of the reschedule. Format: resources/{resource}/offerings/{offering} |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this reschedule. |
 
+### PreviewCancellationRequest
+
+Request message for PreviewCancellation. Computes the refund a cancellation would yield right now, under the resource's cancellation policy, without cancelling the booking.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The booking to preview a cancellation for. Format: bookings/{booking} |
+
+### PreviewCancellationResponse
+
+Response message for PreviewCancellation.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `refundable` | `bool` | - | Whether cancelling now would refund anything. |
+| `refund_percent` | `int32` | - | Percentage of the total that would be refunded (0-100). |
+| `refund_amount` | `Money` | - | Amount that would be refunded now. |
+| `non_refundable_amount` | `Money` | - | Amount that would be retained (total minus refund_amount). |
+| `policy_summary` | `string` | - | Human-readable summary of the policy tier that applied, for display. |
+
 ### BookSlotArgs
 
 Arguments for the "book_slot" prompt.
@@ -101,7 +126,7 @@ Request message for CreateBooking. This places a hold transactionally; the reque
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `booking` | `Booking` | `REQUIRED` | The booking to create. Supply resource, window, and optionally offering, units, customer, notes, attributes, promo_code, and hold_ttl. Output-only fields are ignored. |
+| `booking` | `Booking` | `REQUIRED` | The booking to create. Supply resource, window, and optionally offering, units, customer, contact, notes, attributes, promo_code, and hold_ttl. Provide contact when there is no customer (a guest booking). Output-only fields are ignored. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this create. Reusing an id returns the booking created by the first call. |
 | `booking_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the booking; the server generates one if unset. |
 | `validate_only` | `bool` | `OPTIONAL` | If true, validate the request (availability + policy) and report what would happen, but place no hold. |

@@ -1094,6 +1094,295 @@ func (x *BatchComputeAvailabilityResponse) GetResources() []*ResourceAvailabilit
 	return nil
 }
 
+// Request message for SearchAvailability. Sweeps the catalog for resources that
+// are bookable over a period for a given party size, narrowed by a resource
+// filter and sorted for presentation. This is the storefront query: one call
+// returns the matching resources with a lead price, rather than the caller
+// listing resources and computing availability for each.
+type SearchAvailabilityRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The period to search over. Exactly one must be set.
+	//
+	// Types that are valid to be assigned to Period:
+	//
+	//	*SearchAvailabilityRequest_Window
+	//	*SearchAvailabilityRequest_DateRange
+	Period isSearchAvailabilityRequest_Period `protobuf_oneof:"period"`
+	// Number of units / party size required free. Defaults to 1.
+	Units int32 `protobuf:"varint,3,opt,name=units,proto3" json:"units,omitempty"`
+	// Filter (AIP-160) over resource fields to narrow the catalog, e.g.
+	// `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
+	Filter string `protobuf:"bytes,4,opt,name=filter,proto3" json:"filter,omitempty"`
+	// Sort order for matches, e.g. "price" or "price desc". Defaults to price
+	// ascending.
+	OrderBy string `protobuf:"bytes,5,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	// Maximum number of matches to return. The server may cap this.
+	PageSize int32 `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// Page token from a previous SearchAvailability call's next_page_token.
+	PageToken string `protobuf:"bytes,7,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	// If true, include resources that matched the filter but are not bookable for
+	// the period (with bookable=false), instead of dropping them.
+	IncludeUnavailable bool `protobuf:"varint,8,opt,name=include_unavailable,json=includeUnavailable,proto3" json:"include_unavailable,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *SearchAvailabilityRequest) Reset() {
+	*x = SearchAvailabilityRequest{}
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchAvailabilityRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchAvailabilityRequest) ProtoMessage() {}
+
+func (x *SearchAvailabilityRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchAvailabilityRequest.ProtoReflect.Descriptor instead.
+func (*SearchAvailabilityRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *SearchAvailabilityRequest) GetPeriod() isSearchAvailabilityRequest_Period {
+	if x != nil {
+		return x.Period
+	}
+	return nil
+}
+
+func (x *SearchAvailabilityRequest) GetWindow() *sharedpbv1.TimeWindow {
+	if x != nil {
+		if x, ok := x.Period.(*SearchAvailabilityRequest_Window); ok {
+			return x.Window
+		}
+	}
+	return nil
+}
+
+func (x *SearchAvailabilityRequest) GetDateRange() *sharedpbv1.DateRange {
+	if x != nil {
+		if x, ok := x.Period.(*SearchAvailabilityRequest_DateRange); ok {
+			return x.DateRange
+		}
+	}
+	return nil
+}
+
+func (x *SearchAvailabilityRequest) GetUnits() int32 {
+	if x != nil {
+		return x.Units
+	}
+	return 0
+}
+
+func (x *SearchAvailabilityRequest) GetFilter() string {
+	if x != nil {
+		return x.Filter
+	}
+	return ""
+}
+
+func (x *SearchAvailabilityRequest) GetOrderBy() string {
+	if x != nil {
+		return x.OrderBy
+	}
+	return ""
+}
+
+func (x *SearchAvailabilityRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *SearchAvailabilityRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+func (x *SearchAvailabilityRequest) GetIncludeUnavailable() bool {
+	if x != nil {
+		return x.IncludeUnavailable
+	}
+	return false
+}
+
+type isSearchAvailabilityRequest_Period interface {
+	isSearchAvailabilityRequest_Period()
+}
+
+type SearchAvailabilityRequest_Window struct {
+	// An exact time window, the natural form for TIME_SLOT resources.
+	Window *sharedpbv1.TimeWindow `protobuf:"bytes,1,opt,name=window,proto3,oneof"`
+}
+
+type SearchAvailabilityRequest_DateRange struct {
+	// A calendar-date range in each resource's timezone, the natural form for
+	// NIGHTLY resources; end_date is the check-out date.
+	DateRange *sharedpbv1.DateRange `protobuf:"bytes,2,opt,name=date_range,json=dateRange,proto3,oneof"`
+}
+
+func (*SearchAvailabilityRequest_Window) isSearchAvailabilityRequest_Period() {}
+
+func (*SearchAvailabilityRequest_DateRange) isSearchAvailabilityRequest_Period() {}
+
+// One resource matched by SearchAvailability, with a lead price for the period.
+// Detailed slots/nights are fetched per resource via ComputeAvailability.
+type AvailabilityMatch struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The matching resource.
+	// Format: resources/{resource}
+	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
+	// Cached display name of the resource, for convenience.
+	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	// The resource's booking mode.
+	Mode sharedpbv1.BookingMode `protobuf:"varint,3,opt,name=mode,proto3,enum=freebusy.shared.v1.BookingMode" json:"mode,omitempty"`
+	// Whether the resource is bookable for the requested period and units.
+	Bookable bool `protobuf:"varint,4,opt,name=bookable,proto3" json:"bookable,omitempty"`
+	// Lead price for the requested period: the stay total for NIGHTLY, or the slot
+	// price for TIME_SLOT. Used for sorting and display.
+	Price         *money.Money `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AvailabilityMatch) Reset() {
+	*x = AvailabilityMatch{}
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AvailabilityMatch) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvailabilityMatch) ProtoMessage() {}
+
+func (x *AvailabilityMatch) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvailabilityMatch.ProtoReflect.Descriptor instead.
+func (*AvailabilityMatch) Descriptor() ([]byte, []int) {
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *AvailabilityMatch) GetResource() string {
+	if x != nil {
+		return x.Resource
+	}
+	return ""
+}
+
+func (x *AvailabilityMatch) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *AvailabilityMatch) GetMode() sharedpbv1.BookingMode {
+	if x != nil {
+		return x.Mode
+	}
+	return sharedpbv1.BookingMode(0)
+}
+
+func (x *AvailabilityMatch) GetBookable() bool {
+	if x != nil {
+		return x.Bookable
+	}
+	return false
+}
+
+func (x *AvailabilityMatch) GetPrice() *money.Money {
+	if x != nil {
+		return x.Price
+	}
+	return nil
+}
+
+// Response message for SearchAvailability.
+type SearchAvailabilityResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The matching resources, ordered per order_by.
+	Matches []*AvailabilityMatch `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"`
+	// Token to pass as page_token to retrieve the next page; empty when no more.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchAvailabilityResponse) Reset() {
+	*x = SearchAvailabilityResponse{}
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchAvailabilityResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchAvailabilityResponse) ProtoMessage() {}
+
+func (x *SearchAvailabilityResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_availability_v1_availability_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchAvailabilityResponse.ProtoReflect.Descriptor instead.
+func (*SearchAvailabilityResponse) Descriptor() ([]byte, []int) {
+	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SearchAvailabilityResponse) GetMatches() []*AvailabilityMatch {
+	if x != nil {
+		return x.Matches
+	}
+	return nil
+}
+
+func (x *SearchAvailabilityResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 var File_freebusy_availability_v1_availability_proto protoreflect.FileDescriptor
 
 const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
@@ -1185,7 +1474,29 @@ const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\x1fBatchComputeAvailabilityRequest\x12U\n" +
 	"\brequests\x18\x01 \x03(\v24.freebusy.availability.v1.ComputeAvailabilityRequestB\x03\xe0A\x02R\brequestsJ\x04\b\x02\x10\x05\"p\n" +
 	" BatchComputeAvailabilityResponse\x12L\n" +
-	"\tresources\x18\x01 \x03(\v2..freebusy.availability.v1.ResourceAvailabilityR\tresourcesB\x9d\x02\n" +
+	"\tresources\x18\x01 \x03(\v2..freebusy.availability.v1.ResourceAvailabilityR\tresources\"\xf3\x02\n" +
+	"\x19SearchAvailabilityRequest\x128\n" +
+	"\x06window\x18\x01 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
+	"\n" +
+	"date_range\x18\x02 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x19\n" +
+	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05units\x12\x1b\n" +
+	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
+	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\x12 \n" +
+	"\tpage_size\x18\x06 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"\n" +
+	"page_token\x18\a \x01(\tB\x03\xe0A\x01R\tpageToken\x124\n" +
+	"\x13include_unavailable\x18\b \x01(\bB\x03\xe0A\x01R\x12includeUnavailableB\b\n" +
+	"\x06period\"\xf5\x01\n" +
+	"\x11AvailabilityMatch\x12B\n" +
+	"\bresource\x18\x01 \x01(\tB&\xfaA#\n" +
+	"!freebusy.ohtarnished.dev/ResourceR\bresource\x12!\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x123\n" +
+	"\x04mode\x18\x03 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x12\x1a\n" +
+	"\bbookable\x18\x04 \x01(\bR\bbookable\x12(\n" +
+	"\x05price\x18\x05 \x01(\v2\x12.google.type.MoneyR\x05price\"\x8b\x01\n" +
+	"\x1aSearchAvailabilityResponse\x12E\n" +
+	"\amatches\x18\x01 \x03(\v2+.freebusy.availability.v1.AvailabilityMatchR\amatches\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageTokenB\x9d\x02\n" +
 	"\x1ccom.freebusy.availability.v1B\x11AvailabilityProtoP\x01Zhgithub.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1;availabilitypbv1\xa2\x02\x03FAX\xaa\x02\x18Freebusy.Availability.V1\xca\x02\x18Freebusy\\Availability\\V1\xe2\x02$Freebusy\\Availability\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Availability::V1b\x06proto3"
 
 var (
@@ -1201,7 +1512,7 @@ func file_freebusy_availability_v1_availability_proto_rawDescGZIP() []byte {
 }
 
 var file_freebusy_availability_v1_availability_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_freebusy_availability_v1_availability_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_freebusy_availability_v1_availability_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_freebusy_availability_v1_availability_proto_goTypes = []any{
 	(UnbookableReason_Code)(0),               // 0: freebusy.availability.v1.UnbookableReason.Code
 	(*Slot)(nil),                             // 1: freebusy.availability.v1.Slot
@@ -1217,45 +1528,53 @@ var file_freebusy_availability_v1_availability_proto_goTypes = []any{
 	(*ComputeBookableRangesResponse)(nil),    // 11: freebusy.availability.v1.ComputeBookableRangesResponse
 	(*BatchComputeAvailabilityRequest)(nil),  // 12: freebusy.availability.v1.BatchComputeAvailabilityRequest
 	(*BatchComputeAvailabilityResponse)(nil), // 13: freebusy.availability.v1.BatchComputeAvailabilityResponse
-	(*timestamppb.Timestamp)(nil),            // 14: google.protobuf.Timestamp
-	(*money.Money)(nil),                      // 15: google.type.Money
-	(*date.Date)(nil),                        // 16: google.type.Date
-	(*sharedpbv1.TimeWindow)(nil),            // 17: freebusy.shared.v1.TimeWindow
-	(sharedpbv1.BookingMode)(0),              // 18: freebusy.shared.v1.BookingMode
-	(*sharedpbv1.DateRange)(nil),             // 19: freebusy.shared.v1.DateRange
-	(*durationpb.Duration)(nil),              // 20: google.protobuf.Duration
+	(*SearchAvailabilityRequest)(nil),        // 14: freebusy.availability.v1.SearchAvailabilityRequest
+	(*AvailabilityMatch)(nil),                // 15: freebusy.availability.v1.AvailabilityMatch
+	(*SearchAvailabilityResponse)(nil),       // 16: freebusy.availability.v1.SearchAvailabilityResponse
+	(*timestamppb.Timestamp)(nil),            // 17: google.protobuf.Timestamp
+	(*money.Money)(nil),                      // 18: google.type.Money
+	(*date.Date)(nil),                        // 19: google.type.Date
+	(*sharedpbv1.TimeWindow)(nil),            // 20: freebusy.shared.v1.TimeWindow
+	(sharedpbv1.BookingMode)(0),              // 21: freebusy.shared.v1.BookingMode
+	(*sharedpbv1.DateRange)(nil),             // 22: freebusy.shared.v1.DateRange
+	(*durationpb.Duration)(nil),              // 23: google.protobuf.Duration
 }
 var file_freebusy_availability_v1_availability_proto_depIdxs = []int32{
-	14, // 0: freebusy.availability.v1.Slot.start_time:type_name -> google.protobuf.Timestamp
-	14, // 1: freebusy.availability.v1.Slot.end_time:type_name -> google.protobuf.Timestamp
-	15, // 2: freebusy.availability.v1.Slot.price:type_name -> google.type.Money
-	16, // 3: freebusy.availability.v1.NightAvailability.night:type_name -> google.type.Date
-	15, // 4: freebusy.availability.v1.NightAvailability.price:type_name -> google.type.Money
-	17, // 5: freebusy.availability.v1.BookableRange.window:type_name -> freebusy.shared.v1.TimeWindow
-	18, // 6: freebusy.availability.v1.ResourceAvailability.mode:type_name -> freebusy.shared.v1.BookingMode
+	17, // 0: freebusy.availability.v1.Slot.start_time:type_name -> google.protobuf.Timestamp
+	17, // 1: freebusy.availability.v1.Slot.end_time:type_name -> google.protobuf.Timestamp
+	18, // 2: freebusy.availability.v1.Slot.price:type_name -> google.type.Money
+	19, // 3: freebusy.availability.v1.NightAvailability.night:type_name -> google.type.Date
+	18, // 4: freebusy.availability.v1.NightAvailability.price:type_name -> google.type.Money
+	20, // 5: freebusy.availability.v1.BookableRange.window:type_name -> freebusy.shared.v1.TimeWindow
+	21, // 6: freebusy.availability.v1.ResourceAvailability.mode:type_name -> freebusy.shared.v1.BookingMode
 	1,  // 7: freebusy.availability.v1.ResourceAvailability.slots:type_name -> freebusy.availability.v1.Slot
 	2,  // 8: freebusy.availability.v1.ResourceAvailability.nights:type_name -> freebusy.availability.v1.NightAvailability
-	17, // 9: freebusy.availability.v1.ComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	19, // 10: freebusy.availability.v1.ComputeAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
-	20, // 11: freebusy.availability.v1.ComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
-	18, // 12: freebusy.availability.v1.ComputeAvailabilityResponse.mode:type_name -> freebusy.shared.v1.BookingMode
+	20, // 9: freebusy.availability.v1.ComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	22, // 10: freebusy.availability.v1.ComputeAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	23, // 11: freebusy.availability.v1.ComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
+	21, // 12: freebusy.availability.v1.ComputeAvailabilityResponse.mode:type_name -> freebusy.shared.v1.BookingMode
 	1,  // 13: freebusy.availability.v1.ComputeAvailabilityResponse.slots:type_name -> freebusy.availability.v1.Slot
 	2,  // 14: freebusy.availability.v1.ComputeAvailabilityResponse.nights:type_name -> freebusy.availability.v1.NightAvailability
-	17, // 15: freebusy.availability.v1.CheckAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	19, // 16: freebusy.availability.v1.CheckAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	20, // 15: freebusy.availability.v1.CheckAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	22, // 16: freebusy.availability.v1.CheckAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
 	0,  // 17: freebusy.availability.v1.UnbookableReason.code:type_name -> freebusy.availability.v1.UnbookableReason.Code
 	8,  // 18: freebusy.availability.v1.CheckAvailabilityResponse.reasons:type_name -> freebusy.availability.v1.UnbookableReason
-	17, // 19: freebusy.availability.v1.ComputeBookableRangesRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	19, // 20: freebusy.availability.v1.ComputeBookableRangesRequest.date_range:type_name -> freebusy.shared.v1.DateRange
-	20, // 21: freebusy.availability.v1.ComputeBookableRangesRequest.duration:type_name -> google.protobuf.Duration
+	20, // 19: freebusy.availability.v1.ComputeBookableRangesRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	22, // 20: freebusy.availability.v1.ComputeBookableRangesRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	23, // 21: freebusy.availability.v1.ComputeBookableRangesRequest.duration:type_name -> google.protobuf.Duration
 	3,  // 22: freebusy.availability.v1.ComputeBookableRangesResponse.ranges:type_name -> freebusy.availability.v1.BookableRange
 	5,  // 23: freebusy.availability.v1.BatchComputeAvailabilityRequest.requests:type_name -> freebusy.availability.v1.ComputeAvailabilityRequest
 	4,  // 24: freebusy.availability.v1.BatchComputeAvailabilityResponse.resources:type_name -> freebusy.availability.v1.ResourceAvailability
-	25, // [25:25] is the sub-list for method output_type
-	25, // [25:25] is the sub-list for method input_type
-	25, // [25:25] is the sub-list for extension type_name
-	25, // [25:25] is the sub-list for extension extendee
-	0,  // [0:25] is the sub-list for field type_name
+	20, // 25: freebusy.availability.v1.SearchAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	22, // 26: freebusy.availability.v1.SearchAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	21, // 27: freebusy.availability.v1.AvailabilityMatch.mode:type_name -> freebusy.shared.v1.BookingMode
+	18, // 28: freebusy.availability.v1.AvailabilityMatch.price:type_name -> google.type.Money
+	15, // 29: freebusy.availability.v1.SearchAvailabilityResponse.matches:type_name -> freebusy.availability.v1.AvailabilityMatch
+	30, // [30:30] is the sub-list for method output_type
+	30, // [30:30] is the sub-list for method input_type
+	30, // [30:30] is the sub-list for extension type_name
+	30, // [30:30] is the sub-list for extension extendee
+	0,  // [0:30] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_availability_v1_availability_proto_init() }
@@ -1275,13 +1594,17 @@ func file_freebusy_availability_v1_availability_proto_init() {
 		(*ComputeBookableRangesRequest_Window)(nil),
 		(*ComputeBookableRangesRequest_DateRange)(nil),
 	}
+	file_freebusy_availability_v1_availability_proto_msgTypes[13].OneofWrappers = []any{
+		(*SearchAvailabilityRequest_Window)(nil),
+		(*SearchAvailabilityRequest_DateRange)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_availability_v1_availability_proto_rawDesc), len(file_freebusy_availability_v1_availability_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   13,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -20,6 +20,7 @@ var AvailabilityService_BatchComputeAvailabilitySchemaJSON = `{"description":"Co
 var AvailabilityService_CheckAvailabilitySchemaJSON = `{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["window"]},{"properties":{"date_range":{"properties":{"end_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"start_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"}},"required":["start_date","end_date"],"type":"object"}},"required":["date_range"]}]}],"description":"Check whether one exact span is bookable for a resource, with reasons when it is not.","properties":{"offering":{"type":"string"},"resource":{"type":"string"},"units":{"type":"integer"}},"required":["resource"],"type":"object"}`
 var AvailabilityService_ComputeAvailabilitySchemaJSON = `{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["window"]},{"properties":{"date_range":{"properties":{"end_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"start_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"}},"required":["start_date","end_date"],"type":"object"}},"required":["date_range"]}]}],"description":"Compute availability for a resource over a time window. Returns time slots (TIME_SLOT) or per-night counts (NIGHTLY).","properties":{"duration":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"offering":{"type":"string"},"resource":{"type":"string"},"units":{"type":"integer"}},"required":["resource"],"type":"object"}`
 var AvailabilityService_ComputeBookableRangesSchemaJSON = `{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["window"]},{"properties":{"date_range":{"properties":{"end_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"start_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"}},"required":["start_date","end_date"],"type":"object"}},"required":["date_range"]}]}],"description":"List the contiguous bookable ranges for a resource within a window.","properties":{"duration":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"offering":{"type":"string"},"resource":{"type":"string"},"units":{"type":"integer"}},"required":["resource"],"type":"object"}`
+var AvailabilityService_SearchAvailabilitySchemaJSON = `{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["window"]},{"properties":{"date_range":{"properties":{"end_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"start_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"}},"required":["start_date","end_date"],"type":"object"}},"required":["date_range"]}]}],"description":"Search the catalog for resources bookable over a period for a party size, filtered by type/tags/name and sorted by price.","properties":{"filter":{"type":"string"},"include_unavailable":{"type":"boolean"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"units":{"type":"integer"}},"required":[],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.
@@ -28,6 +29,7 @@ var (
 	AvailabilityService_CheckAvailabilityTool        = runtime.MustCreateTool("availability_service-check_availability_v1", `Check whether one exact span is bookable for a resource, with reasons when it is not.`, AvailabilityService_CheckAvailabilitySchemaJSON)
 	AvailabilityService_ComputeAvailabilityTool      = runtime.MustCreateTool("availability_service-compute_availability_v1", `Compute availability for a resource over a time window. Returns time slots (TIME_SLOT) or per-night counts (NIGHTLY).`, AvailabilityService_ComputeAvailabilitySchemaJSON)
 	AvailabilityService_ComputeBookableRangesTool    = runtime.MustCreateTool("availability_service-compute_bookable_ranges_v1", `List the contiguous bookable ranges for a resource within a window.`, AvailabilityService_ComputeBookableRangesSchemaJSON)
+	AvailabilityService_SearchAvailabilityTool       = runtime.MustCreateTool("availability_service-search_availability_v1", `Search the catalog for resources bookable over a period for a party size, filtered by type/tags/name and sorted by price.`, AvailabilityService_SearchAvailabilitySchemaJSON)
 )
 
 // AvailabilityServiceMCPServer is the interface that users implement to handle MCP
@@ -40,6 +42,7 @@ type AvailabilityServiceMCPServer interface {
 	CheckAvailability(ctx context.Context, req *CheckAvailabilityRequest) (*CheckAvailabilityResponse, error)
 	ComputeAvailability(ctx context.Context, req *ComputeAvailabilityRequest) (*ComputeAvailabilityResponse, error)
 	ComputeBookableRanges(ctx context.Context, req *ComputeBookableRangesRequest) (*ComputeBookableRangesResponse, error)
+	SearchAvailability(ctx context.Context, req *SearchAvailabilityRequest) (*SearchAvailabilityResponse, error)
 }
 
 // AvailabilityServiceMCPClient is the gRPC client interface used when forwarding MCP
@@ -49,6 +52,7 @@ type AvailabilityServiceMCPClient interface {
 	CheckAvailability(ctx context.Context, req *CheckAvailabilityRequest, opts ...grpc.CallOption) (*CheckAvailabilityResponse, error)
 	ComputeAvailability(ctx context.Context, req *ComputeAvailabilityRequest, opts ...grpc.CallOption) (*ComputeAvailabilityResponse, error)
 	ComputeBookableRanges(ctx context.Context, req *ComputeBookableRangesRequest, opts ...grpc.CallOption) (*ComputeBookableRangesResponse, error)
+	SearchAvailability(ctx context.Context, req *SearchAvailabilityRequest, opts ...grpc.CallOption) (*SearchAvailabilityResponse, error)
 }
 
 // RegisterAvailabilityServiceMCPHandler registers all AvailabilityService RPC methods as MCP
@@ -127,6 +131,26 @@ func RegisterAvailabilityServiceMCPHandler(s *mcp.Server, srv AvailabilityServic
 				return nil, err
 			}
 			resp, err := srv.ComputeBookableRanges(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(AvailabilityService_SearchAvailabilityTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq SearchAvailabilityRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			resp, err := srv.SearchAvailability(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -258,6 +282,27 @@ func ForwardToAvailabilityServiceMCPClient(s *mcp.Server, client AvailabilitySer
 			}
 			ctx = runtime.ForwardMetadata(ctx)
 			resp, err := client.ComputeBookableRanges(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(AvailabilityService_SearchAvailabilityTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq SearchAvailabilityRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			ctx = runtime.ForwardMetadata(ctx)
+			resp, err := client.SearchAvailability(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}

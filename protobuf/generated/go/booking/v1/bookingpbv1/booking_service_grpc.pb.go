@@ -19,12 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BookingService_CreateBooking_FullMethodName     = "/freebusy.booking.v1.BookingService/CreateBooking"
-	BookingService_GetBooking_FullMethodName        = "/freebusy.booking.v1.BookingService/GetBooking"
-	BookingService_ListBookings_FullMethodName      = "/freebusy.booking.v1.BookingService/ListBookings"
-	BookingService_ConfirmBooking_FullMethodName    = "/freebusy.booking.v1.BookingService/ConfirmBooking"
-	BookingService_CancelBooking_FullMethodName     = "/freebusy.booking.v1.BookingService/CancelBooking"
-	BookingService_RescheduleBooking_FullMethodName = "/freebusy.booking.v1.BookingService/RescheduleBooking"
+	BookingService_CreateBooking_FullMethodName       = "/freebusy.booking.v1.BookingService/CreateBooking"
+	BookingService_GetBooking_FullMethodName          = "/freebusy.booking.v1.BookingService/GetBooking"
+	BookingService_ListBookings_FullMethodName        = "/freebusy.booking.v1.BookingService/ListBookings"
+	BookingService_ConfirmBooking_FullMethodName      = "/freebusy.booking.v1.BookingService/ConfirmBooking"
+	BookingService_CancelBooking_FullMethodName       = "/freebusy.booking.v1.BookingService/CancelBooking"
+	BookingService_PreviewCancellation_FullMethodName = "/freebusy.booking.v1.BookingService/PreviewCancellation"
+	BookingService_RescheduleBooking_FullMethodName   = "/freebusy.booking.v1.BookingService/RescheduleBooking"
 )
 
 // BookingServiceClient is the client API for BookingService service.
@@ -48,6 +49,8 @@ type BookingServiceClient interface {
 	ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, opts ...grpc.CallOption) (*Booking, error)
 	// Cancels a booking.
 	CancelBooking(ctx context.Context, in *CancelBookingRequest, opts ...grpc.CallOption) (*Booking, error)
+	// Previews the refund a cancellation would yield now, without cancelling.
+	PreviewCancellation(ctx context.Context, in *PreviewCancellationRequest, opts ...grpc.CallOption) (*PreviewCancellationResponse, error)
 	// Reschedules a booking to a new span.
 	RescheduleBooking(ctx context.Context, in *RescheduleBookingRequest, opts ...grpc.CallOption) (*Booking, error)
 }
@@ -110,6 +113,16 @@ func (c *bookingServiceClient) CancelBooking(ctx context.Context, in *CancelBook
 	return out, nil
 }
 
+func (c *bookingServiceClient) PreviewCancellation(ctx context.Context, in *PreviewCancellationRequest, opts ...grpc.CallOption) (*PreviewCancellationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PreviewCancellationResponse)
+	err := c.cc.Invoke(ctx, BookingService_PreviewCancellation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *bookingServiceClient) RescheduleBooking(ctx context.Context, in *RescheduleBookingRequest, opts ...grpc.CallOption) (*Booking, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Booking)
@@ -141,6 +154,8 @@ type BookingServiceServer interface {
 	ConfirmBooking(context.Context, *ConfirmBookingRequest) (*Booking, error)
 	// Cancels a booking.
 	CancelBooking(context.Context, *CancelBookingRequest) (*Booking, error)
+	// Previews the refund a cancellation would yield now, without cancelling.
+	PreviewCancellation(context.Context, *PreviewCancellationRequest) (*PreviewCancellationResponse, error)
 	// Reschedules a booking to a new span.
 	RescheduleBooking(context.Context, *RescheduleBookingRequest) (*Booking, error)
 	mustEmbedUnimplementedBookingServiceServer()
@@ -167,6 +182,9 @@ func (UnimplementedBookingServiceServer) ConfirmBooking(context.Context, *Confir
 }
 func (UnimplementedBookingServiceServer) CancelBooking(context.Context, *CancelBookingRequest) (*Booking, error) {
 	return nil, status.Error(codes.Unimplemented, "method CancelBooking not implemented")
+}
+func (UnimplementedBookingServiceServer) PreviewCancellation(context.Context, *PreviewCancellationRequest) (*PreviewCancellationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PreviewCancellation not implemented")
 }
 func (UnimplementedBookingServiceServer) RescheduleBooking(context.Context, *RescheduleBookingRequest) (*Booking, error) {
 	return nil, status.Error(codes.Unimplemented, "method RescheduleBooking not implemented")
@@ -282,6 +300,24 @@ func _BookingService_CancelBooking_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_PreviewCancellation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreviewCancellationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).PreviewCancellation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookingService_PreviewCancellation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).PreviewCancellation(ctx, req.(*PreviewCancellationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BookingService_RescheduleBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RescheduleBookingRequest)
 	if err := dec(in); err != nil {
@@ -326,6 +362,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelBooking",
 			Handler:    _BookingService_CancelBooking_Handler,
+		},
+		{
+			MethodName: "PreviewCancellation",
+			Handler:    _BookingService_PreviewCancellation_Handler,
 		},
 		{
 			MethodName: "RescheduleBooking",

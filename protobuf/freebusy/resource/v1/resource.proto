@@ -2,7 +2,12 @@ syntax = "proto3";
 
 package freebusy.resource.v1;
 
+// (-- api-linter: core::0215::foreign-type-reference=disabled
+//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
+//     shared-types package; reusing it beats inlining per-package copies. --)
+
 import "freebusy/shared/v1/enums.proto";
+import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/duration.proto";
@@ -128,6 +133,24 @@ message Offering {
 
   // What the price is charged per.
   PricingUnit pricing_unit = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY
+  // resources this is the seasonal/weekend rate calendar; for TIME_SLOT it
+  // varies slot price by date or day. `price` is the default when no override
+  // matches. Later-listed overrides win where they overlap.
+  repeated RateOverride rate_overrides = 12 [(google.api.field_behavior) = OPTIONAL];
+
+  // Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at
+  // least `min_nights` long. The most generous matching discount applies.
+  repeated LosDiscount los_discounts = 13 [(google.api.field_behavior) = OPTIONAL];
+
+  // Fees added on top of the base subtotal (e.g. cleaning, service). Each
+  // surfaces as a TYPE_FEE line in a booking's price_components.
+  repeated Fee fees = 14 [(google.api.field_behavior) = OPTIONAL];
+
+  // Taxes applied to the taxable base (subtotal plus taxable fees). Each
+  // surfaces as a TYPE_TAX line in a booking's price_components.
+  repeated Tax taxes = 15 [(google.api.field_behavior) = OPTIONAL];
   // Lifecycle STATE of an offering.
   enum State {
     // Unset; treated as active.
@@ -150,6 +173,70 @@ message Offering {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   string etag = 11;
+}
+
+// A price override for a span of dates and/or specific weekdays, layered over an
+// offering's base `price`. The price is still interpreted per the offering's
+// pricing_unit (per night, per booking, per person).
+message RateOverride {
+  // Dates the override applies to, in the resource's timezone. Unset means it
+  // applies on every date (a pure weekday rule).
+  freebusy.shared.v1.DateRange date_range = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Weekdays the override applies to. Empty means every day within date_range.
+  repeated freebusy.shared.v1.Weekday weekdays = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // The price in effect while this override matches.
+  google.type.Money price = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+// A discount applied to a NIGHTLY subtotal once the stay reaches a minimum
+// length. Exactly one of percent_off or amount_off is set.
+message LosDiscount {
+  // Minimum nights for the discount to apply.
+  int32 min_nights = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Percent off the subtotal (1-100), when discounting by percentage.
+  int32 percent_off = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Fixed amount off the subtotal, when discounting by a flat amount.
+  google.type.Money amount_off = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// A fee added on top of an offering's base subtotal. Exactly one of `amount` or
+// `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
+message Fee {
+  // Stable machine code, e.g. "cleaning_fee".
+  string code = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Human-readable label for receipts.
+  string display_name = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Fixed fee amount, when charging a flat fee.
+  google.type.Money amount = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Percent of the base subtotal (1-100), when charging a proportional fee.
+  int32 percent = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // What the fee is charged per (per booking, per night, per person). Defaults
+  // to per booking.
+  PricingUnit pricing_unit = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Whether this fee is included in the taxable base.
+  bool taxable = 6 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces
+// as a TYPE_TAX line in a booking's price_components.
+message Tax {
+  // Stable machine code, e.g. "occupancy_tax" or "vat".
+  string code = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Human-readable label for receipts.
+  string display_name = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Tax rate as a percentage, e.g. 8.5 for 8.5%.
+  double percent = 3 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Kind of bookable resource.

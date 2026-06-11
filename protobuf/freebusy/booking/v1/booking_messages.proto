@@ -18,7 +18,8 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 // Booking resource itself.
 message CreateBookingRequest {
   // The booking to create. Supply resource, window, and optionally offering,
-  // units, customer, notes, attributes, promo_code, and hold_ttl. Output-only
+  // units, customer, contact, notes, attributes, promo_code, and hold_ttl.
+  // Provide contact when there is no customer (a guest booking). Output-only
   // fields are ignored.
   Booking booking = 1 [(google.api.field_behavior) = REQUIRED];
 

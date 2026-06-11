@@ -17,6 +17,7 @@ AvailabilityService is the read-only, cacheable surface over the pure freebusy e
 | `CheckAvailability` | `CheckAvailabilityRequest` | `CheckAvailabilityResponse` | Tests whether one exact span is bookable. |
 | `ComputeBookableRanges` | `ComputeBookableRangesRequest` | `ComputeBookableRangesResponse` | Computes contiguous bookable ranges within a window. |
 | `BatchComputeAvailability` | `BatchComputeAvailabilityRequest` | `BatchComputeAvailabilityResponse` | Computes availability for several resources at once. |
+| `SearchAvailability` | `SearchAvailabilityRequest` | `SearchAvailabilityResponse` | Searches the catalog for resources bookable over a period. |
 
 ## Messages
 
@@ -153,6 +154,42 @@ Response message for BatchComputeAvailability.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `resources` | `ResourceAvailability` | - | Availability per request, in request order. |
+
+### SearchAvailabilityRequest
+
+Request message for SearchAvailability. Sweeps the catalog for resources that are bookable over a period for a given party size, narrowed by a resource filter and sorted for presentation. This is the storefront query: one call returns the matching resources with a lead price, rather than the caller listing resources and computing availability for each.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
+| `date_range` | `DateRange` | - | A calendar-date range in each resource's timezone, the natural form for NIGHTLY resources; end_date is the check-out date. |
+| `units` | `int32` | `OPTIONAL` | Number of units / party size required free. Defaults to 1. |
+| `filter` | `string` | `OPTIONAL` | Filter (AIP-160) over resource fields to narrow the catalog, e.g. `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match. |
+| `order_by` | `string` | `OPTIONAL` | Sort order for matches, e.g. "price" or "price desc". Defaults to price ascending. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of matches to return. The server may cap this. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous SearchAvailability call's next_page_token. |
+| `include_unavailable` | `bool` | `OPTIONAL` | If true, include resources that matched the filter but are not bookable for the period (with bookable=false), instead of dropping them. |
+
+### AvailabilityMatch
+
+One resource matched by SearchAvailability, with a lead price for the period. Detailed slots/nights are fetched per resource via ComputeAvailability.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `resource` | `string` | - | The matching resource. Format: resources/{resource} |
+| `display_name` | `string` | - | Cached display name of the resource, for convenience. |
+| `mode` | `BookingMode` | - | The resource's booking mode. |
+| `bookable` | `bool` | - | Whether the resource is bookable for the requested period and units. |
+| `price` | `Money` | - | Lead price for the requested period: the stay total for NIGHTLY, or the slot price for TIME_SLOT. Used for sorting and display. |
+
+### SearchAvailabilityResponse
+
+Response message for SearchAvailability.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `matches` | `AvailabilityMatch` | - | The matching resources, ordered per order_by. |
+| `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ---
 

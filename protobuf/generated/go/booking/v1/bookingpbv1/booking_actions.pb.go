@@ -9,6 +9,7 @@ package bookingpbv1
 import (
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -241,11 +242,142 @@ func (x *RescheduleBookingRequest) GetRequestId() string {
 	return ""
 }
 
+// Request message for PreviewCancellation. Computes the refund a cancellation
+// would yield right now, under the resource's cancellation policy, without
+// cancelling the booking.
+type PreviewCancellationRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The booking to preview a cancellation for.
+	// Format: bookings/{booking}
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PreviewCancellationRequest) Reset() {
+	*x = PreviewCancellationRequest{}
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PreviewCancellationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviewCancellationRequest) ProtoMessage() {}
+
+func (x *PreviewCancellationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviewCancellationRequest.ProtoReflect.Descriptor instead.
+func (*PreviewCancellationRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PreviewCancellationRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+// Response message for PreviewCancellation.
+type PreviewCancellationResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Whether cancelling now would refund anything.
+	Refundable bool `protobuf:"varint,1,opt,name=refundable,proto3" json:"refundable,omitempty"`
+	// Percentage of the total that would be refunded (0-100).
+	RefundPercent int32 `protobuf:"varint,2,opt,name=refund_percent,json=refundPercent,proto3" json:"refund_percent,omitempty"`
+	// Amount that would be refunded now.
+	RefundAmount *money.Money `protobuf:"bytes,3,opt,name=refund_amount,json=refundAmount,proto3" json:"refund_amount,omitempty"`
+	// Amount that would be retained (total minus refund_amount).
+	NonRefundableAmount *money.Money `protobuf:"bytes,4,opt,name=non_refundable_amount,json=nonRefundableAmount,proto3" json:"non_refundable_amount,omitempty"`
+	// Human-readable summary of the policy tier that applied, for display.
+	PolicySummary string `protobuf:"bytes,5,opt,name=policy_summary,json=policySummary,proto3" json:"policy_summary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PreviewCancellationResponse) Reset() {
+	*x = PreviewCancellationResponse{}
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PreviewCancellationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviewCancellationResponse) ProtoMessage() {}
+
+func (x *PreviewCancellationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviewCancellationResponse.ProtoReflect.Descriptor instead.
+func (*PreviewCancellationResponse) Descriptor() ([]byte, []int) {
+	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PreviewCancellationResponse) GetRefundable() bool {
+	if x != nil {
+		return x.Refundable
+	}
+	return false
+}
+
+func (x *PreviewCancellationResponse) GetRefundPercent() int32 {
+	if x != nil {
+		return x.RefundPercent
+	}
+	return 0
+}
+
+func (x *PreviewCancellationResponse) GetRefundAmount() *money.Money {
+	if x != nil {
+		return x.RefundAmount
+	}
+	return nil
+}
+
+func (x *PreviewCancellationResponse) GetNonRefundableAmount() *money.Money {
+	if x != nil {
+		return x.NonRefundableAmount
+	}
+	return nil
+}
+
+func (x *PreviewCancellationResponse) GetPolicySummary() string {
+	if x != nil {
+		return x.PolicySummary
+	}
+	return ""
+}
+
 var File_freebusy_booking_v1_booking_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"\xa7\x01\n" +
+	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a\x17google/type/money.proto\"\xa7\x01\n" +
 	"\x15ConfirmBookingRequest\x12<\n" +
 	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
 	" freebusy.ohtarnished.dev/BookingR\x04name\x12$\n" +
@@ -267,7 +399,18 @@ const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\boffering\x18\x03 \x01(\tB)\xe0A\x01\xfaA#\n" +
 	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestIdB\xf7\x01\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"Z\n" +
+	"\x1aPreviewCancellationRequest\x12<\n" +
+	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
+	" freebusy.ohtarnished.dev/BookingR\x04name\"\x8c\x02\n" +
+	"\x1bPreviewCancellationResponse\x12\x1e\n" +
+	"\n" +
+	"refundable\x18\x01 \x01(\bR\n" +
+	"refundable\x12%\n" +
+	"\x0erefund_percent\x18\x02 \x01(\x05R\rrefundPercent\x127\n" +
+	"\rrefund_amount\x18\x03 \x01(\v2\x12.google.type.MoneyR\frefundAmount\x12F\n" +
+	"\x15non_refundable_amount\x18\x04 \x01(\v2\x12.google.type.MoneyR\x13nonRefundableAmount\x12%\n" +
+	"\x0epolicy_summary\x18\x05 \x01(\tR\rpolicySummaryB\xf7\x01\n" +
 	"\x17com.freebusy.booking.v1B\x13BookingActionsProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"
 
 var (
@@ -282,22 +425,27 @@ func file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP() []byte {
 	return file_freebusy_booking_v1_booking_actions_proto_rawDescData
 }
 
-var file_freebusy_booking_v1_booking_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_freebusy_booking_v1_booking_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_freebusy_booking_v1_booking_actions_proto_goTypes = []any{
-	(*ConfirmBookingRequest)(nil),    // 0: freebusy.booking.v1.ConfirmBookingRequest
-	(*CancelBookingRequest)(nil),     // 1: freebusy.booking.v1.CancelBookingRequest
-	(*RescheduleBookingRequest)(nil), // 2: freebusy.booking.v1.RescheduleBookingRequest
-	(CancelReason)(0),                // 3: freebusy.booking.v1.CancelReason
-	(*sharedpbv1.TimeWindow)(nil),    // 4: freebusy.shared.v1.TimeWindow
+	(*ConfirmBookingRequest)(nil),       // 0: freebusy.booking.v1.ConfirmBookingRequest
+	(*CancelBookingRequest)(nil),        // 1: freebusy.booking.v1.CancelBookingRequest
+	(*RescheduleBookingRequest)(nil),    // 2: freebusy.booking.v1.RescheduleBookingRequest
+	(*PreviewCancellationRequest)(nil),  // 3: freebusy.booking.v1.PreviewCancellationRequest
+	(*PreviewCancellationResponse)(nil), // 4: freebusy.booking.v1.PreviewCancellationResponse
+	(CancelReason)(0),                   // 5: freebusy.booking.v1.CancelReason
+	(*sharedpbv1.TimeWindow)(nil),       // 6: freebusy.shared.v1.TimeWindow
+	(*money.Money)(nil),                 // 7: google.type.Money
 }
 var file_freebusy_booking_v1_booking_actions_proto_depIdxs = []int32{
-	3, // 0: freebusy.booking.v1.CancelBookingRequest.reason:type_name -> freebusy.booking.v1.CancelReason
-	4, // 1: freebusy.booking.v1.RescheduleBookingRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 0: freebusy.booking.v1.CancelBookingRequest.reason:type_name -> freebusy.booking.v1.CancelReason
+	6, // 1: freebusy.booking.v1.RescheduleBookingRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	7, // 2: freebusy.booking.v1.PreviewCancellationResponse.refund_amount:type_name -> google.type.Money
+	7, // 3: freebusy.booking.v1.PreviewCancellationResponse.non_refundable_amount:type_name -> google.type.Money
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_booking_v1_booking_actions_proto_init() }
@@ -312,7 +460,7 @@ func file_freebusy_booking_v1_booking_actions_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_booking_v1_booking_actions_proto_rawDesc), len(file_freebusy_booking_v1_booking_actions_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

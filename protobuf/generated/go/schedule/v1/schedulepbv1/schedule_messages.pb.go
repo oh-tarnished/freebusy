@@ -71,7 +71,8 @@ func (x *GetScheduleRequest) GetName() string {
 }
 
 // Request message for UpdateSchedule. Set update_mask to the section(s) to
-// replace: "recurring_rules", "buffers", and/or "stay_constraints".
+// replace: "recurring_rules", "buffers", "stay_constraints", and/or
+// "cancellation_policy".
 type UpdateScheduleRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The schedule to update; its name identifies the target.

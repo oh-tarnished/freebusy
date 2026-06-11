@@ -270,3 +270,71 @@ message BatchComputeAvailabilityResponse {
   // Availability per request, in request order.
   repeated ResourceAvailability resources = 1;
 }
+
+// Request message for SearchAvailability. Sweeps the catalog for resources that
+// are bookable over a period for a given party size, narrowed by a resource
+// filter and sorted for presentation. This is the storefront query: one call
+// returns the matching resources with a lead price, rather than the caller
+// listing resources and computing availability for each.
+message SearchAvailabilityRequest {
+  // The period to search over. Exactly one must be set.
+  oneof period {
+    // An exact time window, the natural form for TIME_SLOT resources.
+    freebusy.shared.v1.TimeWindow window = 1;
+
+    // A calendar-date range in each resource's timezone, the natural form for
+    // NIGHTLY resources; end_date is the check-out date.
+    freebusy.shared.v1.DateRange date_range = 2;
+  }
+
+  // Number of units / party size required free. Defaults to 1.
+  int32 units = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter (AIP-160) over resource fields to narrow the catalog, e.g.
+  // `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
+  string filter = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order for matches, e.g. "price" or "price desc". Defaults to price
+  // ascending.
+  string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Maximum number of matches to return. The server may cap this.
+  int32 page_size = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // Page token from a previous SearchAvailability call's next_page_token.
+  string page_token = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // If true, include resources that matched the filter but are not bookable for
+  // the period (with bookable=false), instead of dropping them.
+  bool include_unavailable = 8 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// One resource matched by SearchAvailability, with a lead price for the period.
+// Detailed slots/nights are fetched per resource via ComputeAvailability.
+message AvailabilityMatch {
+  // The matching resource.
+  // Format: resources/{resource}
+  string resource = 1 [(google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}];
+
+  // Cached display name of the resource, for convenience.
+  string display_name = 2;
+
+  // The resource's booking mode.
+  freebusy.shared.v1.BookingMode mode = 3;
+
+  // Whether the resource is bookable for the requested period and units.
+  bool bookable = 4;
+
+  // Lead price for the requested period: the stay total for NIGHTLY, or the slot
+  // price for TIME_SLOT. Used for sorting and display.
+  google.type.Money price = 5;
+}
+
+// Response message for SearchAvailability.
+message SearchAvailabilityResponse {
+  // The matching resources, ordered per order_by.
+  repeated AvailabilityMatch matches = 1;
+
+  // Token to pass as page_token to retrieve the next page; empty when no more.
+  string next_page_token = 2;
+}

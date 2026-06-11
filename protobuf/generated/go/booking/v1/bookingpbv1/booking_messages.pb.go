@@ -29,7 +29,8 @@ const (
 type CreateBookingRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The booking to create. Supply resource, window, and optionally offering,
-	// units, customer, notes, attributes, promo_code, and hold_ttl. Output-only
+	// units, customer, contact, notes, attributes, promo_code, and hold_ttl.
+	// Provide contact when there is no customer (a guest booking). Output-only
 	// fields are ignored.
 	Booking *Booking `protobuf:"bytes,1,opt,name=booking,proto3" json:"booking,omitempty"`
 	// Caller-supplied idempotency key that dedupes retries of this create. Reusing

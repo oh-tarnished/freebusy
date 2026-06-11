@@ -5,6 +5,7 @@ package freebusy.shared.v1;
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 import "google/type/date.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1";
 option java_multiple_files = true;
@@ -30,4 +31,58 @@ message DateRange {
 
   // Exclusive end date of the range.
   google.type.Date end_date = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Contact details for the person a booking is for. When a booking carries a
+// `customer` (a users/{user} reference) these typically mirror the user's
+// profile; for walk-in or email-only bookings made by someone who is not a
+// registered user, this is the only contact information captured. The server
+// requires at least one reachable channel (email or phone) when no customer is
+// set.
+message Contact {
+  // Full name of the guest.
+  string display_name = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Email address for the confirmation and any follow-ups.
+  string email = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Phone number in E.164 form (e.g. "+14155552671").
+  string phone_number = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// One line in a price breakdown: a base charge, a fee, a tax, or a discount.
+// Clients branch on `type` and `code`; the signed `amount` rolls up to the
+// booking total (charges positive, discounts negative).
+message PriceComponent {
+  // What a price line represents.
+  enum Type {
+    // Unset.
+    TYPE_UNSPECIFIED = 0;
+
+    // The base charge: nightly/slot subtotal before fees, taxes, and discounts.
+    TYPE_BASE = 1;
+
+    // A fee added on top of the base (e.g. cleaning, service, resort).
+    TYPE_FEE = 2;
+
+    // A tax on the taxable base (e.g. VAT, occupancy/lodging tax).
+    TYPE_TAX = 3;
+
+    // A discount (promo code, length-of-stay); `amount` is negative.
+    TYPE_DISCOUNT = 4;
+  }
+
+  // Which kind of line this is.
+  Type type = 1;
+
+  // Stable machine code for the line, e.g. "base", "cleaning_fee",
+  // "occupancy_tax", or a promo code. Clients key display and logic off this.
+  string code = 2;
+
+  // Human-readable label suitable for display on an itemized receipt.
+  string display_name = 3;
+
+  // Signed amount: positive for charges (base, fees, taxes), negative for
+  // discounts. Summing every component yields the booking total.
+  google.type.Money amount = 4;
 }

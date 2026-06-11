@@ -141,8 +141,31 @@ message Schedule {
     (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/AvailabilityException"}
   ];
 
+  // Refund rules applied when a booking on this resource is cancelled. Unset
+  // means cancellations are non-refundable by default.
+  CancellationPolicy cancellation_policy = 7 [(google.api.field_behavior) = OPTIONAL];
+
   // Opaque version for optimistic concurrency (AIP-154); echo on update.
   string etag = 6;
+}
+
+// Refund rules graded by how far ahead of a booking's start it is cancelled.
+message CancellationPolicy {
+  // Ordered refund tiers. For a given cancellation the tier with the largest
+  // `cutoff` that is still satisfied (cancelled at least `cutoff` before the
+  // booking start) determines the refund. If no tier is satisfied, the booking
+  // is non-refundable.
+  repeated RefundTier tiers = 1 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// One tier of a CancellationPolicy: cancel at least `cutoff` before the booking
+// start to receive `refund_percent` of the total back.
+message RefundTier {
+  // Minimum lead time before the booking start for this tier to apply (e.g. 48h).
+  google.protobuf.Duration cutoff = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Percentage of the booking total refunded at this tier (0-100).
+  int32 refund_percent = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Whether an exception removes or adds availability.

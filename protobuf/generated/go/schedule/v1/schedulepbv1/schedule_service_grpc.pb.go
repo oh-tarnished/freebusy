@@ -39,7 +39,8 @@ type ScheduleServiceClient interface {
 	// Reads the full availability configuration for a resource.
 	GetSchedule(ctx context.Context, in *GetScheduleRequest, opts ...grpc.CallOption) (*Schedule, error)
 	// Updates a resource's availability configuration. Set update_mask to the
-	// section(s) to replace: recurring_rules, buffers, and/or stay_constraints.
+	// section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
+	// cancellation_policy.
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleRequest, opts ...grpc.CallOption) (*Schedule, error)
 	// Lists the exceptions configured for a resource.
 	ListAvailabilityExceptions(ctx context.Context, in *ListAvailabilityExceptionsRequest, opts ...grpc.CallOption) (*ListAvailabilityExceptionsResponse, error)
@@ -130,7 +131,8 @@ type ScheduleServiceServer interface {
 	// Reads the full availability configuration for a resource.
 	GetSchedule(context.Context, *GetScheduleRequest) (*Schedule, error)
 	// Updates a resource's availability configuration. Set update_mask to the
-	// section(s) to replace: recurring_rules, buffers, and/or stay_constraints.
+	// section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
+	// cancellation_policy.
 	UpdateSchedule(context.Context, *UpdateScheduleRequest) (*Schedule, error)
 	// Lists the exceptions configured for a resource.
 	ListAvailabilityExceptions(context.Context, *ListAvailabilityExceptionsRequest) (*ListAvailabilityExceptionsResponse, error)

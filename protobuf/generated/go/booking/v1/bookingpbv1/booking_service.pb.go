@@ -26,29 +26,32 @@ var File_freebusy_booking_v1_booking_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_service_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_service.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a)freebusy/booking/v1/booking_actions.proto\x1a*freebusy/booking/v1/booking_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xe5\f\n" +
+	")freebusy/booking/v1/booking_service.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a)freebusy/booking/v1/booking_actions.proto\x1a*freebusy/booking/v1/booking_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xe5\x0f\n" +
 	"\x0eBookingService\x12\xdc\x02\n" +
 	"\rCreateBooking\x12).freebusy.booking.v1.CreateBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\x81\x02\xdaA\x12booking,booking_id\xca\xf3\x18y\x12wCreate a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code.\xd2\xf3\x18N\n" +
 	"\tbook_slot\x12\x1fBook a resource at a given time\x1a freebusy.booking.v1.BookSlotArgs\x82\xd3\xe4\x93\x02\x17:\abooking\"\f/v1/bookings\x12\xd1\x01\n" +
 	"\n" +
 	"GetBooking\x12&.freebusy.booking.v1.GetBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"}\xdaA\x04name\xca\xf3\x18U\x12SGet a single booking by resource name, including status, assigned unit, and totals.\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/{name=bookings/*}\x12\xdd\x01\n" +
 	"\fListBookings\x12(.freebusy.booking.v1.ListBookingsRequest\x1a).freebusy.booking.v1.ListBookingsResponse\"x\xca\xf3\x18`\x12^List bookings. Filter by resource, customer, status, or overlapping time window, and paginate.\x82\xd3\xe4\x93\x02\x0e\x12\f/v1/bookings\x12\xef\x01\n" +
-	"\x0eConfirmBooking\x12*.freebusy.booking.v1.ConfirmBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\x92\x01\xdaA\x04name\xca\xf3\x18_\x12]Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference.\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/{name=bookings/*}:confirm\x12\xd8\x01\n" +
-	"\rCancelBooking\x12).freebusy.booking.v1.CancelBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"~\xdaA\x04name\xca\xf3\x18L\x12JCancel a booking, optionally with a reason and note. Frees the held units.\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/{name=bookings/*}:cancel\x12\x85\x02\n" +
+	"\x0eConfirmBooking\x12*.freebusy.booking.v1.ConfirmBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\x92\x01\xdaA\x04name\xca\xf3\x18_\x12]Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference.\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/{name=bookings/*}:confirm\x12\x8f\x02\n" +
+	"\rCancelBooking\x12).freebusy.booking.v1.CancelBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\xb4\x01\xdaA\x04name\xca\xf3\x18\x81\x01\x12\x7fCancel a booking, optionally with a reason and note. Frees the held units and computes the refund from the cancellation policy.\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/{name=bookings/*}:cancel\x12\xc6\x02\n" +
+	"\x13PreviewCancellation\x12/.freebusy.booking.v1.PreviewCancellationRequest\x1a0.freebusy.booking.v1.PreviewCancellationResponse\"\xcb\x01\xdaA\x04name\xca\xf3\x18\x8b\x01\x12\x88\x01Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling.\x82\xd3\xe4\x93\x02.:\x01*\")/v1/{name=bookings/*}:previewCancellation\x12\x85\x02\n" +
 	"\x11RescheduleBooking\x12-.freebusy.booking.v1.RescheduleBookingRequest\x1a\x1c.freebusy.booking.v1.Booking\"\xa2\x01\xdaA\vname,window\xca\xf3\x18e\x12cMove a booking to a new span (and optionally offering), re-checking availability on the new window.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/{name=bookings/*}:reschedule\x1ak\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18L\n" +
 	"J\n" +
 	"\bBookings\x12\x051.0.0\x1a7Create, confirm, cancel, reschedule, and list bookings.B\xf7\x01\n" +
 	"\x17com.freebusy.booking.v1B\x13BookingServiceProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"
 
 var file_freebusy_booking_v1_booking_service_proto_goTypes = []any{
-	(*CreateBookingRequest)(nil),     // 0: freebusy.booking.v1.CreateBookingRequest
-	(*GetBookingRequest)(nil),        // 1: freebusy.booking.v1.GetBookingRequest
-	(*ListBookingsRequest)(nil),      // 2: freebusy.booking.v1.ListBookingsRequest
-	(*ConfirmBookingRequest)(nil),    // 3: freebusy.booking.v1.ConfirmBookingRequest
-	(*CancelBookingRequest)(nil),     // 4: freebusy.booking.v1.CancelBookingRequest
-	(*RescheduleBookingRequest)(nil), // 5: freebusy.booking.v1.RescheduleBookingRequest
-	(*Booking)(nil),                  // 6: freebusy.booking.v1.Booking
-	(*ListBookingsResponse)(nil),     // 7: freebusy.booking.v1.ListBookingsResponse
+	(*CreateBookingRequest)(nil),        // 0: freebusy.booking.v1.CreateBookingRequest
+	(*GetBookingRequest)(nil),           // 1: freebusy.booking.v1.GetBookingRequest
+	(*ListBookingsRequest)(nil),         // 2: freebusy.booking.v1.ListBookingsRequest
+	(*ConfirmBookingRequest)(nil),       // 3: freebusy.booking.v1.ConfirmBookingRequest
+	(*CancelBookingRequest)(nil),        // 4: freebusy.booking.v1.CancelBookingRequest
+	(*PreviewCancellationRequest)(nil),  // 5: freebusy.booking.v1.PreviewCancellationRequest
+	(*RescheduleBookingRequest)(nil),    // 6: freebusy.booking.v1.RescheduleBookingRequest
+	(*Booking)(nil),                     // 7: freebusy.booking.v1.Booking
+	(*ListBookingsResponse)(nil),        // 8: freebusy.booking.v1.ListBookingsResponse
+	(*PreviewCancellationResponse)(nil), // 9: freebusy.booking.v1.PreviewCancellationResponse
 }
 var file_freebusy_booking_v1_booking_service_proto_depIdxs = []int32{
 	0, // 0: freebusy.booking.v1.BookingService.CreateBooking:input_type -> freebusy.booking.v1.CreateBookingRequest
@@ -56,15 +59,17 @@ var file_freebusy_booking_v1_booking_service_proto_depIdxs = []int32{
 	2, // 2: freebusy.booking.v1.BookingService.ListBookings:input_type -> freebusy.booking.v1.ListBookingsRequest
 	3, // 3: freebusy.booking.v1.BookingService.ConfirmBooking:input_type -> freebusy.booking.v1.ConfirmBookingRequest
 	4, // 4: freebusy.booking.v1.BookingService.CancelBooking:input_type -> freebusy.booking.v1.CancelBookingRequest
-	5, // 5: freebusy.booking.v1.BookingService.RescheduleBooking:input_type -> freebusy.booking.v1.RescheduleBookingRequest
-	6, // 6: freebusy.booking.v1.BookingService.CreateBooking:output_type -> freebusy.booking.v1.Booking
-	6, // 7: freebusy.booking.v1.BookingService.GetBooking:output_type -> freebusy.booking.v1.Booking
-	7, // 8: freebusy.booking.v1.BookingService.ListBookings:output_type -> freebusy.booking.v1.ListBookingsResponse
-	6, // 9: freebusy.booking.v1.BookingService.ConfirmBooking:output_type -> freebusy.booking.v1.Booking
-	6, // 10: freebusy.booking.v1.BookingService.CancelBooking:output_type -> freebusy.booking.v1.Booking
-	6, // 11: freebusy.booking.v1.BookingService.RescheduleBooking:output_type -> freebusy.booking.v1.Booking
-	6, // [6:12] is the sub-list for method output_type
-	0, // [0:6] is the sub-list for method input_type
+	5, // 5: freebusy.booking.v1.BookingService.PreviewCancellation:input_type -> freebusy.booking.v1.PreviewCancellationRequest
+	6, // 6: freebusy.booking.v1.BookingService.RescheduleBooking:input_type -> freebusy.booking.v1.RescheduleBookingRequest
+	7, // 7: freebusy.booking.v1.BookingService.CreateBooking:output_type -> freebusy.booking.v1.Booking
+	7, // 8: freebusy.booking.v1.BookingService.GetBooking:output_type -> freebusy.booking.v1.Booking
+	8, // 9: freebusy.booking.v1.BookingService.ListBookings:output_type -> freebusy.booking.v1.ListBookingsResponse
+	7, // 10: freebusy.booking.v1.BookingService.ConfirmBooking:output_type -> freebusy.booking.v1.Booking
+	7, // 11: freebusy.booking.v1.BookingService.CancelBooking:output_type -> freebusy.booking.v1.Booking
+	9, // 12: freebusy.booking.v1.BookingService.PreviewCancellation:output_type -> freebusy.booking.v1.PreviewCancellationResponse
+	7, // 13: freebusy.booking.v1.BookingService.RescheduleBooking:output_type -> freebusy.booking.v1.Booking
+	7, // [7:14] is the sub-list for method output_type
+	0, // [0:7] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

@@ -11,6 +11,7 @@ import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/field_info.proto";
 import "google/api/resource.proto";
+import "google/type/money.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
@@ -86,4 +87,34 @@ message RescheduleBookingRequest {
     (google.api.field_info).format = UUID4,
     (google.api.field_behavior) = OPTIONAL
   ];
+}
+
+// Request message for PreviewCancellation. Computes the refund a cancellation
+// would yield right now, under the resource's cancellation policy, without
+// cancelling the booking.
+message PreviewCancellationRequest {
+  // The booking to preview a cancellation for.
+  // Format: bookings/{booking}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Booking"}
+  ];
+}
+
+// Response message for PreviewCancellation.
+message PreviewCancellationResponse {
+  // Whether cancelling now would refund anything.
+  bool refundable = 1;
+
+  // Percentage of the total that would be refunded (0-100).
+  int32 refund_percent = 2;
+
+  // Amount that would be refunded now.
+  google.type.Money refund_amount = 3;
+
+  // Amount that would be retained (total minus refund_amount).
+  google.type.Money non_refundable_amount = 4;
+
+  // Human-readable summary of the policy tier that applied, for display.
+  string policy_summary = 5;
 }

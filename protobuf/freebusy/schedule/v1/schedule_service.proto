@@ -35,7 +35,8 @@ service ScheduleService {
   }
 
   // Updates a resource's availability configuration. Set update_mask to the
-  // section(s) to replace: recurring_rules, buffers, and/or stay_constraints.
+  // section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
+  // cancellation_policy.
   rpc UpdateSchedule(UpdateScheduleRequest) returns (Schedule) {
     option (google.api.http) = {
       patch: "/v1/{schedule.name=resources/*/schedule}"

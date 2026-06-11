@@ -7,14 +7,14 @@ import (
 )
 
 var (
-	Pulse *pulse.Pulse
-	once  sync.Once
+	Pulse *pulse.Pulse // once ensures that the pulse client is only initialized once
+	once  sync.Once    // sync.Once is used to ensure that the pulse client is only initialized once
 )
 
 func init() {
 	once.Do(func() {
 		// Automatically loads pulse.toml
-		p, err := pulse.New().Build()
+		p, err := pulse.New().WithConfig("./pulse.toml").Build()
 		if err != nil {
 			panic(err)
 		}

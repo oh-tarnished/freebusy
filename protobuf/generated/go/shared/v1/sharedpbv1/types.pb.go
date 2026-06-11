@@ -9,6 +9,7 @@ package sharedpbv1
 import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	date "google.golang.org/genproto/googleapis/type/date"
+	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -23,6 +24,67 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+// What a price line represents.
+type PriceComponent_Type int32
+
+const (
+	// Unset.
+	PriceComponent_TYPE_UNSPECIFIED PriceComponent_Type = 0
+	// The base charge: nightly/slot subtotal before fees, taxes, and discounts.
+	PriceComponent_TYPE_BASE PriceComponent_Type = 1
+	// A fee added on top of the base (e.g. cleaning, service, resort).
+	PriceComponent_TYPE_FEE PriceComponent_Type = 2
+	// A tax on the taxable base (e.g. VAT, occupancy/lodging tax).
+	PriceComponent_TYPE_TAX PriceComponent_Type = 3
+	// A discount (promo code, length-of-stay); `amount` is negative.
+	PriceComponent_TYPE_DISCOUNT PriceComponent_Type = 4
+)
+
+// Enum value maps for PriceComponent_Type.
+var (
+	PriceComponent_Type_name = map[int32]string{
+		0: "TYPE_UNSPECIFIED",
+		1: "TYPE_BASE",
+		2: "TYPE_FEE",
+		3: "TYPE_TAX",
+		4: "TYPE_DISCOUNT",
+	}
+	PriceComponent_Type_value = map[string]int32{
+		"TYPE_UNSPECIFIED": 0,
+		"TYPE_BASE":        1,
+		"TYPE_FEE":         2,
+		"TYPE_TAX":         3,
+		"TYPE_DISCOUNT":    4,
+	}
+)
+
+func (x PriceComponent_Type) Enum() *PriceComponent_Type {
+	p := new(PriceComponent_Type)
+	*p = x
+	return p
+}
+
+func (x PriceComponent_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PriceComponent_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_freebusy_shared_v1_types_proto_enumTypes[0].Descriptor()
+}
+
+func (PriceComponent_Type) Type() protoreflect.EnumType {
+	return &file_freebusy_shared_v1_types_proto_enumTypes[0]
+}
+
+func (x PriceComponent_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PriceComponent_Type.Descriptor instead.
+func (PriceComponent_Type) EnumDescriptor() ([]byte, []int) {
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{3, 0}
+}
 
 // A half-open time interval [start_time, end_time). Used for query windows and
 // for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
@@ -137,11 +199,157 @@ func (x *DateRange) GetEndDate() *date.Date {
 	return nil
 }
 
+// Contact details for the person a booking is for. When a booking carries a
+// `customer` (a users/{user} reference) these typically mirror the user's
+// profile; for walk-in or email-only bookings made by someone who is not a
+// registered user, this is the only contact information captured. The server
+// requires at least one reachable channel (email or phone) when no customer is
+// set.
+type Contact struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Full name of the guest.
+	DisplayName string `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	// Email address for the confirmation and any follow-ups.
+	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	// Phone number in E.164 form (e.g. "+14155552671").
+	PhoneNumber   string `protobuf:"bytes,3,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Contact) Reset() {
+	*x = Contact{}
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Contact) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Contact) ProtoMessage() {}
+
+func (x *Contact) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Contact.ProtoReflect.Descriptor instead.
+func (*Contact) Descriptor() ([]byte, []int) {
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Contact) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *Contact) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *Contact) GetPhoneNumber() string {
+	if x != nil {
+		return x.PhoneNumber
+	}
+	return ""
+}
+
+// One line in a price breakdown: a base charge, a fee, a tax, or a discount.
+// Clients branch on `type` and `code`; the signed `amount` rolls up to the
+// booking total (charges positive, discounts negative).
+type PriceComponent struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Which kind of line this is.
+	Type PriceComponent_Type `protobuf:"varint,1,opt,name=type,proto3,enum=freebusy.shared.v1.PriceComponent_Type" json:"type,omitempty"`
+	// Stable machine code for the line, e.g. "base", "cleaning_fee",
+	// "occupancy_tax", or a promo code. Clients key display and logic off this.
+	Code string `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`
+	// Human-readable label suitable for display on an itemized receipt.
+	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	// Signed amount: positive for charges (base, fees, taxes), negative for
+	// discounts. Summing every component yields the booking total.
+	Amount        *money.Money `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PriceComponent) Reset() {
+	*x = PriceComponent{}
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PriceComponent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PriceComponent) ProtoMessage() {}
+
+func (x *PriceComponent) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PriceComponent.ProtoReflect.Descriptor instead.
+func (*PriceComponent) Descriptor() ([]byte, []int) {
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PriceComponent) GetType() PriceComponent_Type {
+	if x != nil {
+		return x.Type
+	}
+	return PriceComponent_TYPE_UNSPECIFIED
+}
+
+func (x *PriceComponent) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *PriceComponent) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *PriceComponent) GetAmount() *money.Money {
+	if x != nil {
+		return x.Amount
+	}
+	return nil
+}
+
 var File_freebusy_shared_v1_types_proto protoreflect.FileDescriptor
 
 const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\"\x88\x01\n" +
+	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\x88\x01\n" +
 	"\n" +
 	"TimeWindow\x12>\n" +
 	"\n" +
@@ -150,7 +358,22 @@ const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\tDateRange\x125\n" +
 	"\n" +
 	"start_date\x18\x01 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\tstartDate\x121\n" +
-	"\bend_date\x18\x02 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\aendDateB\xe6\x01\n" +
+	"\bend_date\x18\x02 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\aendDate\"t\n" +
+	"\aContact\x12&\n" +
+	"\fdisplay_name\x18\x01 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x19\n" +
+	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x01R\x05email\x12&\n" +
+	"\fphone_number\x18\x03 \x01(\tB\x03\xe0A\x01R\vphoneNumber\"\x8c\x02\n" +
+	"\x0ePriceComponent\x12;\n" +
+	"\x04type\x18\x01 \x01(\x0e2'.freebusy.shared.v1.PriceComponent.TypeR\x04type\x12\x12\n" +
+	"\x04code\x18\x02 \x01(\tR\x04code\x12!\n" +
+	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x12*\n" +
+	"\x06amount\x18\x04 \x01(\v2\x12.google.type.MoneyR\x06amount\"Z\n" +
+	"\x04Type\x12\x14\n" +
+	"\x10TYPE_UNSPECIFIED\x10\x00\x12\r\n" +
+	"\tTYPE_BASE\x10\x01\x12\f\n" +
+	"\bTYPE_FEE\x10\x02\x12\f\n" +
+	"\bTYPE_TAX\x10\x03\x12\x11\n" +
+	"\rTYPE_DISCOUNT\x10\x04B\xe6\x01\n" +
 	"\x16com.freebusy.shared.v1B\n" +
 	"TypesProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1\xa2\x02\x03FSX\xaa\x02\x12Freebusy.Shared.V1\xca\x02\x12Freebusy\\Shared\\V1\xe2\x02\x1eFreebusy\\Shared\\V1\\GPBMetadata\xea\x02\x14Freebusy::Shared::V1b\x06proto3"
 
@@ -166,23 +389,30 @@ func file_freebusy_shared_v1_types_proto_rawDescGZIP() []byte {
 	return file_freebusy_shared_v1_types_proto_rawDescData
 }
 
-var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_freebusy_shared_v1_types_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_freebusy_shared_v1_types_proto_goTypes = []any{
-	(*TimeWindow)(nil),            // 0: freebusy.shared.v1.TimeWindow
-	(*DateRange)(nil),             // 1: freebusy.shared.v1.DateRange
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
-	(*date.Date)(nil),             // 3: google.type.Date
+	(PriceComponent_Type)(0),      // 0: freebusy.shared.v1.PriceComponent.Type
+	(*TimeWindow)(nil),            // 1: freebusy.shared.v1.TimeWindow
+	(*DateRange)(nil),             // 2: freebusy.shared.v1.DateRange
+	(*Contact)(nil),               // 3: freebusy.shared.v1.Contact
+	(*PriceComponent)(nil),        // 4: freebusy.shared.v1.PriceComponent
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*date.Date)(nil),             // 6: google.type.Date
+	(*money.Money)(nil),           // 7: google.type.Money
 }
 var file_freebusy_shared_v1_types_proto_depIdxs = []int32{
-	2, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
-	2, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
-	3, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
-	3, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	5, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
+	5, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
+	6, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
+	6, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
+	0, // 4: freebusy.shared.v1.PriceComponent.type:type_name -> freebusy.shared.v1.PriceComponent.Type
+	7, // 5: freebusy.shared.v1.PriceComponent.amount:type_name -> google.type.Money
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_shared_v1_types_proto_init() }
@@ -195,13 +425,14 @@ func file_freebusy_shared_v1_types_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_shared_v1_types_proto_rawDesc), len(file_freebusy_shared_v1_types_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_freebusy_shared_v1_types_proto_goTypes,
 		DependencyIndexes: file_freebusy_shared_v1_types_proto_depIdxs,
+		EnumInfos:         file_freebusy_shared_v1_types_proto_enumTypes,
 		MessageInfos:      file_freebusy_shared_v1_types_proto_msgTypes,
 	}.Build()
 	File_freebusy_shared_v1_types_proto = out.File
