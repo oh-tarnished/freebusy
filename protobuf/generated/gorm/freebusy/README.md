@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 23 | 13 |
+| 27 | 13 |
 
 ## Entity relationships
 
@@ -75,6 +75,16 @@ erDiagram
     PromoCode {
         string id PK
     }
+    PromoCodeApplicableOfferings {
+        string id PK
+        string promo_code_id FK
+        string offering_id FK
+    }
+    PromoCodeApplicableResources {
+        string id PK
+        string promo_code_id FK
+        string resource_id FK
+    }
     RateOverride {
         string id PK
         string offering_id FK
@@ -91,11 +101,21 @@ erDiagram
     Resource {
         string id PK
     }
+    ResourceOfferings {
+        string id PK
+        string resource_id FK
+        string offering_id FK
+    }
     Schedule {
         string id PK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
+    }
+    ScheduleExceptions {
+        string id PK
+        string schedule_id FK
+        string availability_exception_id FK
     }
     StayConstraints {
         string id PK
@@ -128,13 +148,21 @@ erDiagram
     MembershipSummary }o--|| User : "user_id"
     Offering }o--|| Resource : "resource_id"
     PriceComponent }o--|| Booking : "booking_id"
+    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
+    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableResources }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
+    ResourceOfferings }o--|| Resource : "resource_id"
+    ResourceOfferings }o--|| Offering : "offering_id"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
+    ScheduleExceptions }o--|| Schedule : "schedule_id"
+    ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
     Tax }o--|| Offering : "offering_id"
 ```
 
@@ -315,14 +343,32 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `max_redemptions` | `BIGINT` | nullable |
 | `per_customer_limit` | `INTEGER` | nullable |
 | `min_subtotal` | `JSONB` | nullable |
-| `applicable_resources` | `VARCHAR(255)[]` | nullable |
-| `applicable_offerings` | `VARCHAR(255)[]` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `State` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+
+### `PromoCodeApplicableResources` → `promo_code_applicable_resources`
+
+Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `promo_code_id` | `CHAR(26)` | not null |
+| `resource_id` | `CHAR(26)` | not null |
+
+### `PromoCodeApplicableOfferings` → `promo_code_applicable_offerings`
+
+Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `promo_code_id` | `CHAR(26)` | not null |
+| `offering_id` | `CHAR(26)` | not null |
 
 ### Enums
 
@@ -347,7 +393,6 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `time_zone` | `VARCHAR(255)` | not null |
 | `tags` | `VARCHAR(255)[]` | nullable |
 | `attributes` | `JSONB` | nullable |
-| `offerings` | `VARCHAR(255)[]` | nullable |
 | `state` | `State` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -423,6 +468,16 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `percent` | `DOUBLE PRECISION` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 
+### `ResourceOfferings` → `resource_offerings`
+
+Join table for the many-to-many relation Resource.offerings ↔ Offering.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `resource_id` | `CHAR(26)` | not null |
+| `offering_id` | `CHAR(26)` | not null |
+
 ### Enums
 
 - `ResourceType`: PROVIDER, ROOM, EQUIPMENT, UNIT_TYPE, SPACE
@@ -456,7 +511,6 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
-| `exceptions` | `VARCHAR(255)[]` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `buffers_id` | `CHAR(26)` | nullable |
 | `stay_constraints_id` | `CHAR(26)` | nullable |
@@ -529,6 +583,16 @@ One tier of a CancellationPolicy: cancel at least `cutoff` before the booking st
 | `cutoff` | `INTERVAL` | not null |
 | `refund_percent` | `INTEGER` | not null |
 | `cancellation_policy_id` | `CHAR(26)` | not null |
+
+### `ScheduleExceptions` → `schedule_exceptions`
+
+Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityException.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `schedule_id` | `CHAR(26)` | not null |
+| `availability_exception_id` | `CHAR(26)` | not null |
 
 ### Enums
 

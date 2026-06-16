@@ -90,8 +90,6 @@ type Resource struct {
 	Tags []string `gorm:"column:tags" json:"tags,omitempty"`
 	// Arbitrary attributes used for templating, policy, and segmentation.
 	Attributes json.RawMessage `gorm:"column:attributes" json:"attributes,omitempty"`
-	// Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering}
-	Offerings []string `gorm:"column:offerings" json:"offerings,omitempty"`
 	// Lifecycle state.
 	State *State `gorm:"column:state" json:"state,omitempty"`
 	// Creation timestamp.
@@ -101,7 +99,9 @@ type Resource struct {
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Back-relation: Offering records that reference this via resource_id.
-	Offerings2 []Offering `gorm:"foreignKey:ResourceID" json:"offerings2,omitempty"`
+	Offerings []Offering `gorm:"foreignKey:ResourceID" json:"offerings,omitempty"`
+	// Back-relation: ResourceOfferings records that reference this via resource_id.
+	ResourceOfferings []ResourceOfferings `gorm:"foreignKey:ResourceID" json:"resourceofferings,omitempty"`
 }
 
 func (*Resource) TableName() string { return "resource.resources" }
@@ -141,6 +141,8 @@ type Offering struct {
 	Fees []Fee `gorm:"foreignKey:OfferingID" json:"fees,omitempty"`
 	// Back-relation: Tax records that reference this via offering_id.
 	Taxes []Tax `gorm:"foreignKey:OfferingID" json:"taxes,omitempty"`
+	// Back-relation: ResourceOfferings records that reference this via offering_id.
+	ResourceOfferings []ResourceOfferings `gorm:"foreignKey:OfferingID" json:"resourceofferings,omitempty"`
 }
 
 func (*Offering) TableName() string { return "resource.offerings" }
@@ -218,3 +220,17 @@ type Tax struct {
 }
 
 func (*Tax) TableName() string { return "resource.taxes" }
+
+// Join table for the many-to-many relation Resource.offerings ↔ Offering.
+type ResourceOfferings struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Foreign key to Resource.
+	ResourceID string    `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
+	Resource   *Resource `gorm:"foreignKey:ResourceID;constraint:OnDelete:CASCADE" json:"resource,omitempty"`
+	// Foreign key to Offering.
+	OfferingID string    `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
+}
+
+func (*ResourceOfferings) TableName() string { return "resource.resource_offerings" }

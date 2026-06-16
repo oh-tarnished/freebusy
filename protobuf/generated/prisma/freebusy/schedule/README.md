@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 7 | 2 |
+| 8 | 2 |
 
 ## Entity relationships
 
@@ -39,6 +39,11 @@ erDiagram
         string stay_constraints_id FK
         string cancellation_policy_id FK
     }
+    ScheduleExceptions {
+        string id PK
+        string schedule_id FK
+        string availability_exception_id FK
+    }
     StayConstraints {
         string id PK
     }
@@ -59,6 +64,8 @@ erDiagram
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
+    ScheduleExceptions }o--|| Schedule : "schedule_id"
+    ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
 ```
 
 ## Subfolders

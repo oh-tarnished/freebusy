@@ -58,6 +58,8 @@ type AvailabilityException struct {
 	// Foreign key to DateRange.
 	DateRangeID *string    `gorm:"column:date_range_id" json:"date_range_id,omitempty"`
 	DateRange   *DateRange `gorm:"foreignKey:DateRangeID;constraint:OnDelete:SET NULL" json:"daterange,omitempty"`
+	// Back-relation: ScheduleExceptions records that reference this via availability_exception_id.
+	ScheduleExceptions []ScheduleExceptions `gorm:"foreignKey:AvailabilityExceptionID" json:"scheduleexceptions,omitempty"`
 }
 
 func (*AvailabilityException) TableName() string { return "schedule.availability_exceptions" }
@@ -68,8 +70,6 @@ type Schedule struct {
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// The schedule name. Format: resources/{resource}/schedule
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
-	// Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception}
-	Exceptions []string `gorm:"column:exceptions" json:"exceptions,omitempty"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Foreign key to BufferSettings.
@@ -83,6 +83,8 @@ type Schedule struct {
 	CancellationPolicy   *CancellationPolicy `gorm:"foreignKey:CancellationPolicyID;constraint:OnDelete:SET NULL" json:"cancellationpolicy,omitempty"`
 	// Back-relation: RecurringRule records that reference this via schedule_id.
 	RecurringRules []RecurringRule `gorm:"foreignKey:ScheduleID" json:"recurringrules,omitempty"`
+	// Back-relation: ScheduleExceptions records that reference this via schedule_id.
+	ScheduleExceptions []ScheduleExceptions `gorm:"foreignKey:ScheduleID" json:"scheduleexceptions,omitempty"`
 }
 
 func (*Schedule) TableName() string { return "schedule.schedules" }
@@ -186,3 +188,17 @@ type RefundTier struct {
 }
 
 func (*RefundTier) TableName() string { return "schedule.refund_tiers" }
+
+// Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityException.
+type ScheduleExceptions struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Foreign key to Schedule.
+	ScheduleID string    `gorm:"column:schedule_id;not null" json:"schedule_id" validate:"required"`
+	Schedule   *Schedule `gorm:"foreignKey:ScheduleID;constraint:OnDelete:CASCADE" json:"schedule,omitempty"`
+	// Foreign key to AvailabilityException.
+	AvailabilityExceptionID string                 `gorm:"column:availability_exception_id;not null" json:"availability_exception_id" validate:"required"`
+	AvailabilityException   *AvailabilityException `gorm:"foreignKey:AvailabilityExceptionID;constraint:OnDelete:CASCADE" json:"availabilityexception,omitempty"`
+}
+
+func (*ScheduleExceptions) TableName() string { return "schedule.schedule_exceptions" }

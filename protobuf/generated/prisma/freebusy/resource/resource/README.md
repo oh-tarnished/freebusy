@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 6 | 3 |
+| 7 | 3 |
 
 ## Entity relationships
 
@@ -33,6 +33,11 @@ erDiagram
     Resource {
         string id PK
     }
+    ResourceOfferings {
+        string id PK
+        string resource_id FK
+        string offering_id FK
+    }
     Tax {
         string id PK
         string offering_id FK
@@ -45,6 +50,8 @@ erDiagram
     Offering }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
+    ResourceOfferings }o--|| Resource : "resource_id"
+    ResourceOfferings }o--|| Offering : "offering_id"
     Tax }o--|| Offering : "offering_id"
 ```
 
@@ -66,7 +73,6 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `time_zone` | `VARCHAR(255)` | not null |
 | `tags` | `VARCHAR(255)[]` | nullable |
 | `attributes` | `JSONB` | nullable |
-| `offerings` | `VARCHAR(255)[]` | nullable |
 | `state` | `ResourceState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -140,6 +146,16 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
 | `percent` | `DOUBLE PRECISION` | not null |
+| `offering_id` | `CHAR(26)` | not null |
+
+### `ResourceOfferings` → `resource_offerings`
+
+Join table for the many-to-many relation Resource.offerings ↔ Offering.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `resource_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 
 ### Enums

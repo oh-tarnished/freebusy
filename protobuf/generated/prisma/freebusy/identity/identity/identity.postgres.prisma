@@ -65,10 +65,10 @@ model MembershipSummary {
   id String @id @default(ulid()) @map("id")
 
   /// The organisation. Format: organisations/{organisation}
-  organisation String? @map("organisation")
+  organisationID String? @map("organisation")
 
   /// Relation to Organisation via organisation.
-  organisation2 Organisation? @relation(fields: [organisation], references: [id])
+  organisation Organisation? @relation(fields: [organisationID], references: [id])
 
   /// Cached display name of the organisation.
   orgDisplayName String? @map("org_display_name")

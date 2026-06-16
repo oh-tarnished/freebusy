@@ -48,7 +48,7 @@ type MembershipSummary struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// The organisation. Format: organisations/{organisation}
-	Organisation *string `gorm:"column:organisation" json:"organisation,omitempty"`
+	OrganisationID *string `gorm:"column:organisation" json:"organisation,omitempty"`
 	// Cached display name of the organisation.
 	OrgDisplayName *string `gorm:"column:org_display_name" json:"org_display_name,omitempty"`
 	// The user's role in the organisation (an OrganisationRole value name).

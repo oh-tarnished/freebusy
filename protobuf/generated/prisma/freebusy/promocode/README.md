@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 1 | 2 |
+| 3 | 2 |
 
 ## Entity relationships
 
@@ -16,6 +16,26 @@ erDiagram
     PromoCode {
         string id PK
     }
+    PromoCodeApplicableOfferings {
+        string id PK
+        string promo_code_id FK
+        string offering_id FK
+    }
+    PromoCodeApplicableResources {
+        string id PK
+        string promo_code_id FK
+        string resource_id FK
+    }
+    Offering {
+        string externalStub PK
+    }
+    Resource {
+        string externalStub PK
+    }
+    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
+    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableResources }o--|| Resource : "resource_id"
 ```
 
 ## Subfolders

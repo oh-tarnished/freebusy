@@ -99,10 +99,10 @@ model Member {
   name String @unique @map("name")
 
   /// The user, once the invite is accepted. Format: users/{user}
-  user String? @map("user")
+  userID String? @map("user")
 
   /// Relation to User via user.
-  user2 User? @relation("MemberUser", fields: [user], references: [id])
+  user User? @relation("MemberUser", fields: [userID], references: [id])
 
   /// The invited email address.
   email String @map("email")
@@ -117,10 +117,10 @@ model Member {
   state OrganisationState? @map("state")
 
   /// The user who issued the invite. Format: users/{user}
-  inviter String? @map("inviter")
+  inviterID String? @map("inviter")
 
   /// Relation to User via inviter.
-  inviter2 User? @relation("MemberInviter", fields: [inviter], references: [id])
+  inviter User? @relation("MemberInviter", fields: [inviterID], references: [id])
 
   /// Creation timestamp (when the invite was created).
   createTime DateTime @default(now()) @map("create_time")

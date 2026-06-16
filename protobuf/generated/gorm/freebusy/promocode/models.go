@@ -68,10 +68,6 @@ type PromoCode struct {
 	PerCustomerLimit *int32 `gorm:"column:per_customer_limit" json:"per_customer_limit,omitempty"`
 	// Minimum subtotal required for the code to apply.
 	MinSubtotal json.RawMessage `gorm:"column:min_subtotal" json:"min_subtotal,omitempty"`
-	// Resources the code applies to. Empty means all resources. Format: resources/{resource}
-	ApplicableResources []string `gorm:"column:applicable_resources" json:"applicable_resources,omitempty"`
-	// Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering}
-	ApplicableOfferings []string `gorm:"column:applicable_offerings" json:"applicable_offerings,omitempty"`
 	// How many times the code has been redeemed.
 	RedemptionCount *int64 `gorm:"column:redemption_count" json:"redemption_count,omitempty"`
 	// Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions).
@@ -84,6 +80,40 @@ type PromoCode struct {
 	UpdateTime time.Time `gorm:"column:update_time;not null;autoUpdateTime" json:"update_time"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
+	// Back-relation: PromoCodeApplicableResources records that reference this via promo_code_id.
+	PromoCodeApplicableResources []PromoCodeApplicableResources `gorm:"foreignKey:PromoCodeID" json:"promocodeapplicableresources,omitempty"`
+	// Back-relation: PromoCodeApplicableOfferings records that reference this via promo_code_id.
+	PromoCodeApplicableOfferings []PromoCodeApplicableOfferings `gorm:"foreignKey:PromoCodeID" json:"promocodeapplicableofferings,omitempty"`
 }
 
 func (*PromoCode) TableName() string { return "promocode.promo_codes" }
+
+// Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
+type PromoCodeApplicableResources struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Foreign key to PromoCode.
+	PromoCodeID string     `gorm:"column:promo_code_id;not null" json:"promo_code_id" validate:"required"`
+	PromoCode   *PromoCode `gorm:"foreignKey:PromoCodeID;constraint:OnDelete:CASCADE" json:"promocode,omitempty"`
+	// Foreign key to Resource.
+	ResourceID string `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
+}
+
+func (*PromoCodeApplicableResources) TableName() string {
+	return "promocode.promo_code_applicable_resources"
+}
+
+// Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
+type PromoCodeApplicableOfferings struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Foreign key to PromoCode.
+	PromoCodeID string     `gorm:"column:promo_code_id;not null" json:"promo_code_id" validate:"required"`
+	PromoCode   *PromoCode `gorm:"foreignKey:PromoCodeID;constraint:OnDelete:CASCADE" json:"promocode,omitempty"`
+	// Foreign key to Offering.
+	OfferingID string `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+}
+
+func (*PromoCodeApplicableOfferings) TableName() string {
+	return "promocode.promo_code_applicable_offerings"
+}

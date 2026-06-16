@@ -67,22 +67,22 @@ model Booking {
   name String @unique @map("name")
 
   /// The resource being booked. Format: resources/{resource}
-  resource String @map("resource")
+  resourceID String @map("resource")
 
   /// Relation to Resource via resource.
-  resource2 Resource @relation(fields: [resource], references: [id])
+  resource Resource @relation(fields: [resourceID], references: [id])
 
   /// The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}
-  offering String? @map("offering")
+  offeringID String? @map("offering")
 
   /// Relation to Offering via offering.
-  offering2 Offering? @relation(fields: [offering], references: [id])
+  offering Offering? @relation(fields: [offeringID], references: [id])
 
   /// The user the booking is for. Format: users/{user}
-  customer String? @map("customer")
+  customerID String? @map("customer")
 
   /// Relation to User via customer.
-  customer2 User? @relation(fields: [customer], references: [id])
+  customer User? @relation(fields: [customerID], references: [id])
 
   /// Number of units / party size reserved. Defaults to 1.
   units Int? @map("units")
@@ -100,10 +100,10 @@ model Booking {
   price Json? @map("price")
 
   /// The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code}
-  promoCode String? @map("promo_code")
+  promoCodeID String? @map("promo_code")
 
   /// Relation to PromoCode via promo_code.
-  promoCode2 PromoCode? @relation(fields: [promoCode], references: [id])
+  promoCode PromoCode? @relation(fields: [promoCodeID], references: [id])
 
   /// Discount applied from the promo code.
   discount Json? @map("discount")

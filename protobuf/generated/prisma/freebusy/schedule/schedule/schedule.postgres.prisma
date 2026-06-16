@@ -75,6 +75,9 @@ model AvailabilityException {
   /// Relation to DateRange via date_range_id.
   dateRange DateRange? @relation(fields: [dateRangeID], references: [id], onDelete: SetNull)
 
+  /// Back-relation: ScheduleExceptions records that reference this model via availability_exception_id.
+  scheduleExceptions ScheduleExceptions[]
+
   /// Composite index on [resource_id].
   @@index([resourceID])
   /// Composite index on [window_id].
@@ -94,9 +97,6 @@ model Schedule {
 
   /// The schedule name. Format: resources/{resource}/schedule
   name String @unique @map("name")
-
-  /// Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception}
-  exceptions String[] @map("exceptions")
 
   /// Opaque version for optimistic concurrency (AIP-154); echo on update.
   etag String? @map("etag")
@@ -121,6 +121,9 @@ model Schedule {
 
   /// Back-relation: RecurringRule records that reference this model via schedule_id.
   recurringRules RecurringRule[]
+
+  /// Back-relation: ScheduleExceptions records that reference this model via schedule_id.
+  scheduleExceptions ScheduleExceptions[]
 
   /// Composite index on [buffers_id].
   @@index([buffersID])
@@ -261,6 +264,35 @@ model RefundTier {
   @@index([cancellationPolicyID])
   /// Maps the model to the "refund_tiers" table in the database.
   @@map("refund_tiers")
+  /// Maps the model to the "schedule" schema in the database.
+  @@schema("schedule")
+}
+
+/// Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityException.
+model ScheduleExceptions {
+  /// Unique identifier for the record.
+  id String @id @default(ulid()) @map("id")
+
+  /// Foreign key to Schedule.
+  scheduleID String @map("schedule_id")
+
+  /// Relation to Schedule via schedule_id.
+  schedule Schedule @relation(fields: [scheduleID], references: [id], onDelete: Cascade)
+
+  /// Foreign key to AvailabilityException.
+  availabilityExceptionID String @map("availability_exception_id")
+
+  /// Relation to AvailabilityException via availability_exception_id.
+  availabilityException AvailabilityException @relation(fields: [availabilityExceptionID], references: [id], onDelete: Cascade)
+
+  /// Unique constraint on [schedule_id, availability_exception_id].
+  @@unique([scheduleID, availabilityExceptionID])
+  /// Composite index on [schedule_id].
+  @@index([scheduleID])
+  /// Composite index on [availability_exception_id].
+  @@index([availabilityExceptionID])
+  /// Maps the model to the "schedule_exceptions" table in the database.
+  @@map("schedule_exceptions")
   /// Maps the model to the "schedule" schema in the database.
   @@schema("schedule")
 }

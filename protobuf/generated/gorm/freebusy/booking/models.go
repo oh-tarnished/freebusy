@@ -74,11 +74,11 @@ type Booking struct {
 	// The booking name. Format: bookings/{booking}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
 	// The resource being booked. Format: resources/{resource}
-	Resource string `gorm:"column:resource;not null" json:"resource" validate:"required"`
+	ResourceID string `gorm:"column:resource;not null" json:"resource" validate:"required"`
 	// The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}
-	Offering *string `gorm:"column:offering" json:"offering,omitempty"`
+	OfferingID *string `gorm:"column:offering" json:"offering,omitempty"`
 	// The user the booking is for. Format: users/{user}
-	Customer *string `gorm:"column:customer" json:"customer,omitempty"`
+	CustomerID *string `gorm:"column:customer" json:"customer,omitempty"`
 	// Number of units / party size reserved. Defaults to 1.
 	Units *int32 `gorm:"column:units" json:"units,omitempty"`
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
@@ -90,7 +90,7 @@ type Booking struct {
 	// Computed subtotal before discounts.
 	Price json.RawMessage `gorm:"column:price" json:"price,omitempty"`
 	// The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code}
-	PromoCode *string `gorm:"column:promo_code" json:"promo_code,omitempty"`
+	PromoCodeID *string `gorm:"column:promo_code" json:"promo_code,omitempty"`
 	// Discount applied from the promo code.
 	Discount json.RawMessage `gorm:"column:discount" json:"discount,omitempty"`
 	// Final total after discounts.

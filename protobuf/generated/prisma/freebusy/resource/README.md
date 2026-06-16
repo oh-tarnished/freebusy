@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 6 | 3 |
+| 7 | 3 |
 
 ## Entity relationships
 
@@ -33,6 +33,11 @@ erDiagram
     Resource {
         string id PK
     }
+    ResourceOfferings {
+        string id PK
+        string resource_id FK
+        string offering_id FK
+    }
     Tax {
         string id PK
         string offering_id FK
@@ -45,6 +50,8 @@ erDiagram
     Offering }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
+    ResourceOfferings }o--|| Resource : "resource_id"
+    ResourceOfferings }o--|| Offering : "offering_id"
     Tax }o--|| Offering : "offering_id"
 ```
 

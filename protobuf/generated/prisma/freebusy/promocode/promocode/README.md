@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 1 | 2 |
+| 3 | 2 |
 
 ## Entity relationships
 
@@ -16,6 +16,26 @@ erDiagram
     PromoCode {
         string id PK
     }
+    PromoCodeApplicableOfferings {
+        string id PK
+        string promo_code_id FK
+        string offering_id FK
+    }
+    PromoCodeApplicableResources {
+        string id PK
+        string promo_code_id FK
+        string resource_id FK
+    }
+    Offering {
+        string externalStub PK
+    }
+    Resource {
+        string externalStub PK
+    }
+    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
+    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableResources }o--|| Resource : "resource_id"
 ```
 
 Schema file: [`promocode.postgres.prisma`](./promocode.postgres.prisma)
@@ -39,14 +59,32 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `max_redemptions` | `BIGINT` | nullable |
 | `per_customer_limit` | `INTEGER` | nullable |
 | `min_subtotal` | `JSONB` | nullable |
-| `applicable_resources` | `VARCHAR(255)[]` | nullable |
-| `applicable_offerings` | `VARCHAR(255)[]` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `PromocodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+
+### `PromoCodeApplicableResources` → `promo_code_applicable_resources`
+
+Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `promo_code_id` | `CHAR(26)` | not null |
+| `resource_id` | `CHAR(26)` | not null |
+
+### `PromoCodeApplicableOfferings` → `promo_code_applicable_offerings`
+
+Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `promo_code_id` | `CHAR(26)` | not null |
+| `offering_id` | `CHAR(26)` | not null |
 
 ### Enums
 

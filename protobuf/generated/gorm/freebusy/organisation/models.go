@@ -79,7 +79,7 @@ type Member struct {
 	// The member name. Format: organisations/{organisation}/members/{member}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
 	// The user, once the invite is accepted. Format: users/{user}
-	User *string `gorm:"column:user" json:"user,omitempty"`
+	UserID *string `gorm:"column:user" json:"user,omitempty"`
 	// The invited email address.
 	Email string `gorm:"column:email;not null" json:"email" validate:"required"`
 	// Cached display name of the member.
@@ -89,7 +89,7 @@ type Member struct {
 	// Confirmation state of the membership.
 	State *State `gorm:"column:state" json:"state,omitempty"`
 	// The user who issued the invite. Format: users/{user}
-	Inviter *string `gorm:"column:inviter" json:"inviter,omitempty"`
+	InviterID *string `gorm:"column:inviter" json:"inviter,omitempty"`
 	// Creation timestamp (when the invite was created).
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.

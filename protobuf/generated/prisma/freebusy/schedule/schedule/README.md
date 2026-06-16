@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 7 | 2 |
+| 8 | 2 |
 
 ## Entity relationships
 
@@ -39,6 +39,11 @@ erDiagram
         string stay_constraints_id FK
         string cancellation_policy_id FK
     }
+    ScheduleExceptions {
+        string id PK
+        string schedule_id FK
+        string availability_exception_id FK
+    }
     StayConstraints {
         string id PK
     }
@@ -59,6 +64,8 @@ erDiagram
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
+    ScheduleExceptions }o--|| Schedule : "schedule_id"
+    ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
 ```
 
 Schema file: [`schedule.postgres.prisma`](./schedule.postgres.prisma)
@@ -87,7 +94,6 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
-| `exceptions` | `VARCHAR(255)[]` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `buffers_id` | `CHAR(26)` | nullable |
 | `stay_constraints_id` | `CHAR(26)` | nullable |
@@ -150,6 +156,16 @@ One tier of a CancellationPolicy: cancel at least `cutoff` before the booking st
 | `cutoff` | `INTERVAL` | not null |
 | `refund_percent` | `INTEGER` | not null |
 | `cancellation_policy_id` | `CHAR(26)` | not null |
+
+### `ScheduleExceptions` → `schedule_exceptions`
+
+Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityException.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `schedule_id` | `CHAR(26)` | not null |
+| `availability_exception_id` | `CHAR(26)` | not null |
 
 ### Enums
 

@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 23 | 13 |
+| 27 | 13 |
 
 ## Entity relationships
 
@@ -73,6 +73,16 @@ erDiagram
     PromoCode {
         string id PK
     }
+    PromoCodeApplicableOfferings {
+        string id PK
+        string promo_code_id FK
+        string offering_id FK
+    }
+    PromoCodeApplicableResources {
+        string id PK
+        string promo_code_id FK
+        string resource_id FK
+    }
     RateOverride {
         string id PK
         string offering_id FK
@@ -89,11 +99,21 @@ erDiagram
     Resource {
         string id PK
     }
+    ResourceOfferings {
+        string id PK
+        string resource_id FK
+        string offering_id FK
+    }
     Schedule {
         string id PK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
+    }
+    ScheduleExceptions {
+        string id PK
+        string schedule_id FK
+        string availability_exception_id FK
     }
     StayConstraints {
         string id PK
@@ -126,13 +146,21 @@ erDiagram
     MembershipSummary }o--|| User : "user_id"
     Offering }o--|| Resource : "resource_id"
     PriceComponent }o--|| Booking : "booking_id"
+    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
+    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
+    PromoCodeApplicableResources }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
+    ResourceOfferings }o--|| Resource : "resource_id"
+    ResourceOfferings }o--|| Offering : "offering_id"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
+    ScheduleExceptions }o--|| Schedule : "schedule_id"
+    ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
     Tax }o--|| Offering : "offering_id"
 ```
 

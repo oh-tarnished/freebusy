@@ -95,9 +95,6 @@ model Resource {
   /// Arbitrary attributes used for templating, policy, and segmentation.
   attributes Json? @map("attributes")
 
-  /// Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering}
-  offerings String[] @map("offerings")
-
   /// Lifecycle state.
   state ResourceState? @map("state")
 
@@ -113,8 +110,14 @@ model Resource {
   /// Back-relation: Booking records that reference this model via resource.
   bookings Booking[]
 
+  /// Back-relation: PromoCodeApplicableResources records that reference this model via resource_id.
+  promoCodeApplicableResources PromoCodeApplicableResources[]
+
   /// Back-relation: Offering records that reference this model via resource_id.
-  offerings2 Offering[]
+  offerings Offering[]
+
+  /// Back-relation: ResourceOfferings records that reference this model via resource_id.
+  resourceOfferings ResourceOfferings[]
 
   /// Back-relation: AvailabilityException records that reference this model via resource_id.
   availabilityExceptions AvailabilityException[]
@@ -169,6 +172,9 @@ model Offering {
   /// Back-relation: Booking records that reference this model via offering.
   bookings Booking[]
 
+  /// Back-relation: PromoCodeApplicableOfferings records that reference this model via offering_id.
+  promoCodeApplicableOfferings PromoCodeApplicableOfferings[]
+
   /// Back-relation: RateOverride records that reference this model via offering_id.
   rateOverrides RateOverride[]
 
@@ -180,6 +186,9 @@ model Offering {
 
   /// Back-relation: Tax records that reference this model via offering_id.
   taxes Tax[]
+
+  /// Back-relation: ResourceOfferings records that reference this model via offering_id.
+  resourceOfferings ResourceOfferings[]
 
   /// Composite index on [resource_id].
   @@index([resourceID])
@@ -311,6 +320,35 @@ model Tax {
   @@index([offeringID])
   /// Maps the model to the "taxes" table in the database.
   @@map("taxes")
+  /// Maps the model to the "resource" schema in the database.
+  @@schema("resource")
+}
+
+/// Join table for the many-to-many relation Resource.offerings ↔ Offering.
+model ResourceOfferings {
+  /// Unique identifier for the record.
+  id String @id @default(ulid()) @map("id")
+
+  /// Foreign key to Resource.
+  resourceID String @map("resource_id")
+
+  /// Relation to Resource via resource_id.
+  resource Resource @relation(fields: [resourceID], references: [id], onDelete: Cascade)
+
+  /// Foreign key to Offering.
+  offeringID String @map("offering_id")
+
+  /// Relation to Offering via offering_id.
+  offering Offering @relation(fields: [offeringID], references: [id], onDelete: Cascade)
+
+  /// Unique constraint on [resource_id, offering_id].
+  @@unique([resourceID, offeringID])
+  /// Composite index on [resource_id].
+  @@index([resourceID])
+  /// Composite index on [offering_id].
+  @@index([offeringID])
+  /// Maps the model to the "resource_offerings" table in the database.
+  @@map("resource_offerings")
   /// Maps the model to the "resource" schema in the database.
   @@schema("resource")
 }
