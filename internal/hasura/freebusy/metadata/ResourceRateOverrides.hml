@@ -1,0 +1,203 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ResourceRateOverrides
+  fields:
+    - name: dateRangeId
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: offeringId
+      type: String_1!
+    - name: price
+      type: Json!
+    - name: weekdays
+      type: "[String_1]"
+  graphql:
+    typeName: ResourceRateOverrides
+    inputTypeName: ResourceRateOverridesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: resource_rate_overrides
+      fieldMapping:
+        dateRangeId:
+          column:
+            name: date_range_id
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        price:
+          column:
+            name: price
+        weekdays:
+          column:
+            name: weekdays
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ResourceRateOverrides
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - dateRangeId
+          - id
+          - offeringId
+          - price
+          - weekdays
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ResourceRateOverridesBoolExp
+  operand:
+    object:
+      type: ResourceRateOverrides
+      comparableFields:
+        - fieldName: dateRangeId
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: offeringId
+          booleanExpressionType: TextBoolExp
+        - fieldName: price
+          booleanExpressionType: JsonbBoolExp
+      comparableRelationships:
+        - relationshipName: scheduleDateRange
+        - relationshipName: resourceOffering
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ResourceRateOverridesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ResourceRateOverridesAggExp
+  operand:
+    object:
+      aggregatedType: ResourceRateOverrides
+      aggregatableFields:
+        - fieldName: dateRangeId
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: offeringId
+          aggregateExpression: TextAggExp
+        - fieldName: price
+          aggregateExpression: JsonbAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: ResourceRateOverridesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ResourceRateOverridesOrderByExp
+  operand:
+    object:
+      orderedType: ResourceRateOverrides
+      orderableFields:
+        - fieldName: dateRangeId
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: offeringId
+          orderByExpression: String1OrderByExp
+        - fieldName: price
+          orderByExpression: JsonOrderByExp
+      orderableRelationships:
+        - relationshipName: scheduleDateRange
+        - relationshipName: resourceOffering
+  graphql:
+    expressionTypeName: ResourceRateOverridesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ResourceRateOverrides
+  objectType: ResourceRateOverrides
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: resource_rate_overrides
+  filterExpressionType: ResourceRateOverridesBoolExp
+  aggregateExpression: ResourceRateOverridesAggExp
+  orderByExpression: ResourceRateOverridesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: resourceRateOverrides
+      subscription:
+        rootField: resourceRateOverrides
+    selectUniques:
+      - queryRootField: resourceRateOverridesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: resourceRateOverridesById
+    filterInputTypeName: ResourceRateOverridesFilterInput
+    aggregate:
+      queryRootField: resourceRateOverridesAggregate
+      subscription:
+        rootField: resourceRateOverridesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ResourceRateOverrides
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleDateRange
+  sourceType: ResourceRateOverrides
+  target:
+    model:
+      name: ScheduleDateRanges
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: dateRangeId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceOffering
+  sourceType: ResourceRateOverrides
+  target:
+    model:
+      name: ResourceOfferings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: offeringId
+      target:
+        modelField:
+          - fieldName: id
+

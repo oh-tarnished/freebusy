@@ -1,0 +1,305 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceLosDiscountsAmountOff
+  description: Update the 'amount_off' column in the 'resource_los_discounts' collection
+  fields:
+    - name: set
+      type: Json
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceLosDiscountsAmountOff
+    inputTypeName: UpdateColumnResourceLosDiscountsAmountOffInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_los_discounts_amount_off
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceLosDiscountsAmountOff
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceLosDiscountsId
+  description: Update the 'id' column in the 'resource_los_discounts' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceLosDiscountsId
+    inputTypeName: UpdateColumnResourceLosDiscountsIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_los_discounts_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceLosDiscountsId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceLosDiscountsMinNights
+  description: Update the 'min_nights' column in the 'resource_los_discounts' collection
+  fields:
+    - name: set
+      type: Int32!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceLosDiscountsMinNights
+    inputTypeName: UpdateColumnResourceLosDiscountsMinNightsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_los_discounts_min_nights
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceLosDiscountsMinNights
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceLosDiscountsOfferingId
+  description: Update the 'offering_id' column in the 'resource_los_discounts' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceLosDiscountsOfferingId
+    inputTypeName: UpdateColumnResourceLosDiscountsOfferingIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_los_discounts_offering_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceLosDiscountsOfferingId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceLosDiscountsPercentOff
+  description: Update the 'percent_off' column in the 'resource_los_discounts' collection
+  fields:
+    - name: set
+      type: Int32
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceLosDiscountsPercentOff
+    inputTypeName: UpdateColumnResourceLosDiscountsPercentOffInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_los_discounts_percent_off
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceLosDiscountsPercentOff
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateResourceLosDiscountsByIdUpdateColumns
+  description: Update the columns of the 'resource_los_discounts' collection
+  fields:
+    - name: amountOff
+      type: UpdateColumnResourceLosDiscountsAmountOff
+      description: Update the 'amount_off' column in the 'resource_los_discounts'
+        collection.
+    - name: id
+      type: UpdateColumnResourceLosDiscountsId
+      description: Update the 'id' column in the 'resource_los_discounts' collection.
+    - name: minNights
+      type: UpdateColumnResourceLosDiscountsMinNights
+      description: Update the 'min_nights' column in the 'resource_los_discounts'
+        collection.
+    - name: offeringId
+      type: UpdateColumnResourceLosDiscountsOfferingId
+      description: Update the 'offering_id' column in the 'resource_los_discounts'
+        collection.
+    - name: percentOff
+      type: UpdateColumnResourceLosDiscountsPercentOff
+      description: Update the 'percent_off' column in the 'resource_los_discounts'
+        collection.
+  graphql:
+    typeName: UpdateResourceLosDiscountsByIdUpdateColumns
+    inputTypeName: UpdateResourceLosDiscountsByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_resource_los_discounts_by_id_update_columns
+      fieldMapping:
+        amountOff:
+          column:
+            name: amount_off
+        id:
+          column:
+            name: id
+        minNights:
+          column:
+            name: min_nights
+        offeringId:
+          column:
+            name: offering_id
+        percentOff:
+          column:
+            name: percent_off
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateResourceLosDiscountsByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amountOff
+          - id
+          - minNights
+          - offeringId
+          - percentOff
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateResourceLosDiscountsByIdResponse
+  description: Responses from the 'update_resource_los_discounts_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[ResourceLosDiscounts!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdateResourceLosDiscountsByIdResponse
+    inputTypeName: UpdateResourceLosDiscountsByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_resource_los_discounts_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateResourceLosDiscountsByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateResourceLosDiscountsById
+  outputType: UpdateResourceLosDiscountsByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: ResourceLosDiscountsBoolExp
+      description: Update permission post-condition predicate over the
+        'resource_los_discounts' collection
+    - name: preCheck
+      type: ResourceLosDiscountsBoolExp
+      description: Update permission pre-condition predicate over the
+        'resource_los_discounts' collection
+    - name: updateColumns
+      type: UpdateResourceLosDiscountsByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_resource_los_discounts_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updateResourceLosDiscountsById
+    rootFieldKind: Mutation
+  description: Update any row on the 'resource_los_discounts' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateResourceLosDiscountsById
+  permissions:
+    - role: admin
+      allowExecution: true
+

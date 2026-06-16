@@ -1,0 +1,114 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertBookingTimeWindowsObject
+  fields:
+    - name: endTime
+      type: Timestamp!
+    - name: id
+      type: String_1!
+    - name: startTime
+      type: Timestamp!
+  graphql:
+    typeName: InsertBookingTimeWindowsObject
+    inputTypeName: InsertBookingTimeWindowsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_booking_time_windows_object
+      fieldMapping:
+        endTime:
+          column:
+            name: end_time
+        id:
+          column:
+            name: id
+        startTime:
+          column:
+            name: start_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertBookingTimeWindowsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - endTime
+          - id
+          - startTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertBookingTimeWindowsResponse
+  description: Responses from the 'insert_booking_time_windows' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[BookingTimeWindows!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertBookingTimeWindowsResponse
+    inputTypeName: InsertBookingTimeWindowsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_booking_time_windows_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertBookingTimeWindowsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertBookingTimeWindows
+  outputType: InsertBookingTimeWindowsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertBookingTimeWindowsObject!]!"
+    - name: postCheck
+      type: BookingTimeWindowsBoolExp
+      description: Insert permission predicate over the 'booking_time_windows' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_booking_time_windows
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertBookingTimeWindows
+    rootFieldKind: Mutation
+  description: Insert into the booking_time_windows table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertBookingTimeWindows
+  permissions:
+    - role: admin
+      allowExecution: true
+

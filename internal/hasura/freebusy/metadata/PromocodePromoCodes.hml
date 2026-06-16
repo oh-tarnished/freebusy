@@ -1,0 +1,372 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PromocodePromoCodes
+  fields:
+    - name: amountOff
+      type: Json
+    - name: applicableOfferings
+      type: "[String_1]"
+    - name: applicableResources
+      type: "[String_1]"
+    - name: code
+      type: String_1!
+    - name: createTime
+      type: Timestamp!
+    - name: description
+      type: String_1
+    - name: disabled
+      type: Boolean_1
+    - name: discountType
+      type: Enum!
+    - name: displayName
+      type: String_1
+    - name: etag
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: maxRedemptions
+      type: Int64
+    - name: minSubtotal
+      type: Json
+    - name: name
+      type: String_1!
+    - name: perCustomerLimit
+      type: Int32
+    - name: percentOff
+      type: Int32
+    - name: redeemEndTime
+      type: Timestamp
+    - name: redeemStartTime
+      type: Timestamp
+    - name: redemptionCount
+      type: Int64
+    - name: state
+      type: Enum
+    - name: updateTime
+      type: Timestamp!
+  graphql:
+    typeName: PromocodePromoCodes
+    inputTypeName: PromocodePromoCodesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: promocode_promo_codes
+      fieldMapping:
+        amountOff:
+          column:
+            name: amount_off
+        applicableOfferings:
+          column:
+            name: applicable_offerings
+        applicableResources:
+          column:
+            name: applicable_resources
+        code:
+          column:
+            name: code
+        createTime:
+          column:
+            name: create_time
+        description:
+          column:
+            name: description
+        disabled:
+          column:
+            name: disabled
+        discountType:
+          column:
+            name: discount_type
+        displayName:
+          column:
+            name: display_name
+        etag:
+          column:
+            name: etag
+        id:
+          column:
+            name: id
+        maxRedemptions:
+          column:
+            name: max_redemptions
+        minSubtotal:
+          column:
+            name: min_subtotal
+        name:
+          column:
+            name: name
+        perCustomerLimit:
+          column:
+            name: per_customer_limit
+        percentOff:
+          column:
+            name: percent_off
+        redeemEndTime:
+          column:
+            name: redeem_end_time
+        redeemStartTime:
+          column:
+            name: redeem_start_time
+        redemptionCount:
+          column:
+            name: redemption_count
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PromocodePromoCodes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amountOff
+          - applicableOfferings
+          - applicableResources
+          - code
+          - createTime
+          - description
+          - disabled
+          - discountType
+          - displayName
+          - etag
+          - id
+          - maxRedemptions
+          - minSubtotal
+          - name
+          - perCustomerLimit
+          - percentOff
+          - redeemEndTime
+          - redeemStartTime
+          - redemptionCount
+          - state
+          - updateTime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PromocodePromoCodesBoolExp
+  operand:
+    object:
+      type: PromocodePromoCodes
+      comparableFields:
+        - fieldName: amountOff
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: code
+          booleanExpressionType: TextBoolExp
+        - fieldName: createTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: disabled
+          booleanExpressionType: BoolBoolExp
+        - fieldName: discountType
+          booleanExpressionType: PromocodeDiscountTypeBoolExp
+        - fieldName: displayName
+          booleanExpressionType: TextBoolExp
+        - fieldName: etag
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: maxRedemptions
+          booleanExpressionType: Int8BoolExp
+        - fieldName: minSubtotal
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: perCustomerLimit
+          booleanExpressionType: Int4BoolExp
+        - fieldName: percentOff
+          booleanExpressionType: Int4BoolExp
+        - fieldName: redeemEndTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: redeemStartTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: redemptionCount
+          booleanExpressionType: Int8BoolExp
+        - fieldName: state
+          booleanExpressionType: PromocodePromocodeStateBoolExp
+        - fieldName: updateTime
+          booleanExpressionType: TimestampBoolExp
+      comparableRelationships:
+        - relationshipName: bookingBookings
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PromocodePromoCodesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PromocodePromoCodesAggExp
+  operand:
+    object:
+      aggregatedType: PromocodePromoCodes
+      aggregatableFields:
+        - fieldName: amountOff
+          aggregateExpression: JsonbAggExp
+        - fieldName: code
+          aggregateExpression: TextAggExp
+        - fieldName: createTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: disabled
+          aggregateExpression: BoolAggExp
+        - fieldName: discountType
+          aggregateExpression: PromocodeDiscountTypeAggExp
+        - fieldName: displayName
+          aggregateExpression: TextAggExp
+        - fieldName: etag
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: maxRedemptions
+          aggregateExpression: Int8AggExp
+        - fieldName: minSubtotal
+          aggregateExpression: JsonbAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: perCustomerLimit
+          aggregateExpression: Int4AggExp
+        - fieldName: percentOff
+          aggregateExpression: Int4AggExp
+        - fieldName: redeemEndTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: redeemStartTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: redemptionCount
+          aggregateExpression: Int8AggExp
+        - fieldName: state
+          aggregateExpression: PromocodePromocodeStateAggExp
+        - fieldName: updateTime
+          aggregateExpression: TimestampAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: PromocodePromoCodesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PromocodePromoCodesOrderByExp
+  operand:
+    object:
+      orderedType: PromocodePromoCodes
+      orderableFields:
+        - fieldName: amountOff
+          orderByExpression: JsonOrderByExp
+        - fieldName: code
+          orderByExpression: String1OrderByExp
+        - fieldName: createTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: disabled
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: discountType
+          orderByExpression: EnumOrderByExp
+        - fieldName: displayName
+          orderByExpression: String1OrderByExp
+        - fieldName: etag
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: maxRedemptions
+          orderByExpression: Int64OrderByExp
+        - fieldName: minSubtotal
+          orderByExpression: JsonOrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: perCustomerLimit
+          orderByExpression: Int32OrderByExp
+        - fieldName: percentOff
+          orderByExpression: Int32OrderByExp
+        - fieldName: redeemEndTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: redeemStartTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: redemptionCount
+          orderByExpression: Int64OrderByExp
+        - fieldName: state
+          orderByExpression: EnumOrderByExp
+        - fieldName: updateTime
+          orderByExpression: TimestampOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PromocodePromoCodesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PromocodePromoCodes
+  objectType: PromocodePromoCodes
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: promocode_promo_codes
+  filterExpressionType: PromocodePromoCodesBoolExp
+  aggregateExpression: PromocodePromoCodesAggExp
+  orderByExpression: PromocodePromoCodesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: promocodePromoCodes
+      subscription:
+        rootField: promocodePromoCodes
+    selectUniques:
+      - queryRootField: promocodePromoCodesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: promocodePromoCodesById
+    filterInputTypeName: PromocodePromoCodesFilterInput
+    aggregate:
+      queryRootField: promocodePromoCodesAggregate
+      subscription:
+        rootField: promocodePromoCodesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PromocodePromoCodes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingBookings
+  sourceType: PromocodePromoCodes
+  target:
+    model:
+      name: BookingBookings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BookingBookingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: promoCode
+  graphql:
+    aggregateFieldName: bookingBookingsAggregate
+

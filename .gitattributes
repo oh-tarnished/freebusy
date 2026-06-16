@@ -1,7 +1,9 @@
 # Map custom extension to Protocol Buffer
 *.protobuf linguist-language=Protocol Buffer
 *.prisma linguist-language=Prisma Schema
+*.hml linguist-language=Hasura Metadata Language
 
 # In case you also have .proto, make sure they’re counted
 *.proto linguist-detectable=true
 *.prisma linguist-detectable=true
+*.hml linguist-detectable=true

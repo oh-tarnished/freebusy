@@ -1,0 +1,168 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertResourceOfferingsObject
+  fields:
+    - name: createTime
+      type: Timestamp
+    - name: description
+      type: String_1
+    - name: displayName
+      type: String_1!
+    - name: duration
+      type: String_1
+    - name: etag
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: price
+      type: Json
+    - name: pricingUnit
+      type: Enum
+    - name: resourceId
+      type: String_1!
+    - name: state
+      type: Enum
+    - name: updateTime
+      type: Timestamp!
+  graphql:
+    typeName: InsertResourceOfferingsObject
+    inputTypeName: InsertResourceOfferingsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_resource_offerings_object
+      fieldMapping:
+        createTime:
+          column:
+            name: create_time
+        description:
+          column:
+            name: description
+        displayName:
+          column:
+            name: display_name
+        duration:
+          column:
+            name: duration
+        etag:
+          column:
+            name: etag
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        price:
+          column:
+            name: price
+        pricingUnit:
+          column:
+            name: pricing_unit
+        resourceId:
+          column:
+            name: resource_id
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertResourceOfferingsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createTime
+          - description
+          - displayName
+          - duration
+          - etag
+          - id
+          - name
+          - price
+          - pricingUnit
+          - resourceId
+          - state
+          - updateTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertResourceOfferingsResponse
+  description: Responses from the 'insert_resource_offerings' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[ResourceOfferings!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertResourceOfferingsResponse
+    inputTypeName: InsertResourceOfferingsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_resource_offerings_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertResourceOfferingsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertResourceOfferings
+  outputType: InsertResourceOfferingsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertResourceOfferingsObject!]!"
+    - name: postCheck
+      type: ResourceOfferingsBoolExp
+      description: Insert permission predicate over the 'resource_offerings' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_resource_offerings
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertResourceOfferings
+    rootFieldKind: Mutation
+  description: Insert into the resource_offerings table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertResourceOfferings
+  permissions:
+    - role: admin
+      allowExecution: true
+

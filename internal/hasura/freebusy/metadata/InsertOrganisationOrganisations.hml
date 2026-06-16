@@ -1,0 +1,163 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertOrganisationOrganisationsObject
+  fields:
+    - name: billingEmail
+      type: String_1
+    - name: createTime
+      type: Timestamp
+    - name: displayName
+      type: String_1!
+    - name: etag
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: memberCount
+      type: Int64
+    - name: name
+      type: String_1!
+    - name: settings
+      type: Json
+    - name: slug
+      type: String_1
+    - name: state
+      type: Enum
+    - name: updateTime
+      type: Timestamp!
+  graphql:
+    typeName: InsertOrganisationOrganisationsObject
+    inputTypeName: InsertOrganisationOrganisationsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_organisation_organisations_object
+      fieldMapping:
+        billingEmail:
+          column:
+            name: billing_email
+        createTime:
+          column:
+            name: create_time
+        displayName:
+          column:
+            name: display_name
+        etag:
+          column:
+            name: etag
+        id:
+          column:
+            name: id
+        memberCount:
+          column:
+            name: member_count
+        name:
+          column:
+            name: name
+        settings:
+          column:
+            name: settings
+        slug:
+          column:
+            name: slug
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertOrganisationOrganisationsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - billingEmail
+          - createTime
+          - displayName
+          - etag
+          - id
+          - memberCount
+          - name
+          - settings
+          - slug
+          - state
+          - updateTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertOrganisationOrganisationsResponse
+  description: Responses from the 'insert_organisation_organisations' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[OrganisationOrganisations!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertOrganisationOrganisationsResponse
+    inputTypeName: InsertOrganisationOrganisationsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_organisation_organisations_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertOrganisationOrganisationsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertOrganisationOrganisations
+  outputType: InsertOrganisationOrganisationsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertOrganisationOrganisationsObject!]!"
+    - name: postCheck
+      type: OrganisationOrganisationsBoolExp
+      description: Insert permission predicate over the 'organisation_organisations'
+        collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_organisation_organisations
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertOrganisationOrganisations
+    rootFieldKind: Mutation
+  description: Insert into the organisation_organisations table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertOrganisationOrganisations
+  permissions:
+    - role: admin
+      allowExecution: true
+

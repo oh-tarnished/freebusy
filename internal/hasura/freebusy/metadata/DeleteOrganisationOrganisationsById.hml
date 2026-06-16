@@ -1,0 +1,74 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteOrganisationOrganisationsByIdResponse
+  description: Responses from the 'delete_organisation_organisations_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[OrganisationOrganisations!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: DeleteOrganisationOrganisationsByIdResponse
+    inputTypeName: DeleteOrganisationOrganisationsByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: delete_organisation_organisations_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteOrganisationOrganisationsByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteOrganisationOrganisationsById
+  outputType: DeleteOrganisationOrganisationsByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: preCheck
+      type: OrganisationOrganisationsBoolExp
+      description: Delete permission predicate over the 'organisation_organisations'
+        collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: delete_organisation_organisations_by_id
+    argumentMapping:
+      keyId: key_id
+      preCheck: pre_check
+  graphql:
+    rootFieldName: deleteOrganisationOrganisationsById
+    rootFieldKind: Mutation
+  description: Delete any row on the 'organisation_organisations' collection using
+    the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteOrganisationOrganisationsById
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,14 @@
+services:
+  freebusy_freebusy_pgsql:
+    build:
+      context: .
+      dockerfile: .hasura-connector/Dockerfile.freebusy_pgsql
+    environment:
+      CONNECTION_URI: $FREEBUSY_FREEBUSY_PGSQL_CONNECTION_URI
+      HASURA_SERVICE_TOKEN_SECRET: $FREEBUSY_FREEBUSY_PGSQL_HASURA_SERVICE_TOKEN_SECRET
+      OTEL_EXPORTER_OTLP_ENDPOINT: $FREEBUSY_FREEBUSY_PGSQL_OTEL_EXPORTER_OTLP_ENDPOINT
+      OTEL_SERVICE_NAME: $FREEBUSY_FREEBUSY_PGSQL_OTEL_SERVICE_NAME
+    extra_hosts:
+      - local.hasura.dev:host-gateway
+    ports:
+      - 9514:8080

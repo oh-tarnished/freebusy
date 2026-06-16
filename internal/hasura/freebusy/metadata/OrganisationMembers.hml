@@ -1,0 +1,313 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OrganisationMembers
+  fields:
+    - name: createTime
+      type: Timestamp!
+    - name: displayName
+      type: String_1
+    - name: email
+      type: String_1!
+    - name: etag
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: inviter
+      type: String_1
+    - name: name
+      type: String_1!
+    - name: organisationId
+      type: String_1!
+    - name: role
+      type: Enum!
+    - name: state
+      type: Enum
+    - name: updateTime
+      type: Timestamp!
+    - name: user
+      type: String_1
+  graphql:
+    typeName: OrganisationMembers
+    inputTypeName: OrganisationMembersInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: organisation_members
+      fieldMapping:
+        createTime:
+          column:
+            name: create_time
+        displayName:
+          column:
+            name: display_name
+        email:
+          column:
+            name: email
+        etag:
+          column:
+            name: etag
+        id:
+          column:
+            name: id
+        inviter:
+          column:
+            name: inviter
+        name:
+          column:
+            name: name
+        organisationId:
+          column:
+            name: organisation_id
+        role:
+          column:
+            name: role
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+        user:
+          column:
+            name: user
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OrganisationMembers
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createTime
+          - displayName
+          - email
+          - etag
+          - id
+          - inviter
+          - name
+          - organisationId
+          - role
+          - state
+          - updateTime
+          - user
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: OrganisationMembersBoolExp
+  operand:
+    object:
+      type: OrganisationMembers
+      comparableFields:
+        - fieldName: createTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: displayName
+          booleanExpressionType: TextBoolExp
+        - fieldName: email
+          booleanExpressionType: TextBoolExp
+        - fieldName: etag
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: inviter
+          booleanExpressionType: TextBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: organisationId
+          booleanExpressionType: TextBoolExp
+        - fieldName: role
+          booleanExpressionType: OrganisationOrganisationRoleBoolExp
+        - fieldName: state
+          booleanExpressionType: OrganisationOrganisationStateBoolExp
+        - fieldName: updateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: user
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: identityUser
+        - relationshipName: organisationOrganisation
+        - relationshipName: identityUserByUser
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: OrganisationMembersBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: OrganisationMembersAggExp
+  operand:
+    object:
+      aggregatedType: OrganisationMembers
+      aggregatableFields:
+        - fieldName: createTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: displayName
+          aggregateExpression: TextAggExp
+        - fieldName: email
+          aggregateExpression: TextAggExp
+        - fieldName: etag
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: inviter
+          aggregateExpression: TextAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: organisationId
+          aggregateExpression: TextAggExp
+        - fieldName: role
+          aggregateExpression: OrganisationOrganisationRoleAggExp
+        - fieldName: state
+          aggregateExpression: OrganisationOrganisationStateAggExp
+        - fieldName: updateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: user
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: OrganisationMembersAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: OrganisationMembersOrderByExp
+  operand:
+    object:
+      orderedType: OrganisationMembers
+      orderableFields:
+        - fieldName: createTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: displayName
+          orderByExpression: String1OrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: etag
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: inviter
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: organisationId
+          orderByExpression: String1OrderByExp
+        - fieldName: role
+          orderByExpression: EnumOrderByExp
+        - fieldName: state
+          orderByExpression: EnumOrderByExp
+        - fieldName: updateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: user
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: identityUser
+        - relationshipName: organisationOrganisation
+        - relationshipName: identityUserByUser
+  graphql:
+    expressionTypeName: OrganisationMembersOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: OrganisationMembers
+  objectType: OrganisationMembers
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: organisation_members
+  filterExpressionType: OrganisationMembersBoolExp
+  aggregateExpression: OrganisationMembersAggExp
+  orderByExpression: OrganisationMembersOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: organisationMembers
+      subscription:
+        rootField: organisationMembers
+    selectUniques:
+      - queryRootField: organisationMembersById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: organisationMembersById
+    filterInputTypeName: OrganisationMembersFilterInput
+    aggregate:
+      queryRootField: organisationMembersAggregate
+      subscription:
+        rootField: organisationMembersAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: OrganisationMembers
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: identityUser
+  sourceType: OrganisationMembers
+  target:
+    model:
+      name: IdentityUsers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: inviter
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: organisationOrganisation
+  sourceType: OrganisationMembers
+  target:
+    model:
+      name: OrganisationOrganisations
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: organisationId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: identityUserByUser
+  sourceType: OrganisationMembers
+  target:
+    model:
+      name: IdentityUsers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user
+      target:
+        modelField:
+          - fieldName: id
+

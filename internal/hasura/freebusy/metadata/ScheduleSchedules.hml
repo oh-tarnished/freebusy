@@ -1,0 +1,270 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ScheduleSchedules
+  fields:
+    - name: buffersId
+      type: String_1
+    - name: cancellationPolicyId
+      type: String_1
+    - name: etag
+      type: String_1
+    - name: exceptions
+      type: "[String_1]"
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: stayConstraintsId
+      type: String_1
+  graphql:
+    typeName: ScheduleSchedules
+    inputTypeName: ScheduleSchedulesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: schedule_schedules
+      fieldMapping:
+        buffersId:
+          column:
+            name: buffers_id
+        cancellationPolicyId:
+          column:
+            name: cancellation_policy_id
+        etag:
+          column:
+            name: etag
+        exceptions:
+          column:
+            name: exceptions
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        stayConstraintsId:
+          column:
+            name: stay_constraints_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ScheduleSchedules
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - buffersId
+          - cancellationPolicyId
+          - etag
+          - exceptions
+          - id
+          - name
+          - stayConstraintsId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ScheduleSchedulesBoolExp
+  operand:
+    object:
+      type: ScheduleSchedules
+      comparableFields:
+        - fieldName: buffersId
+          booleanExpressionType: TextBoolExp
+        - fieldName: cancellationPolicyId
+          booleanExpressionType: TextBoolExp
+        - fieldName: etag
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: stayConstraintsId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: scheduleRecurringRules
+        - relationshipName: scheduleBufferSetting
+        - relationshipName: scheduleCancellationPolicy
+        - relationshipName: scheduleStayConstraint
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ScheduleSchedulesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ScheduleSchedulesAggExp
+  operand:
+    object:
+      aggregatedType: ScheduleSchedules
+      aggregatableFields:
+        - fieldName: buffersId
+          aggregateExpression: TextAggExp
+        - fieldName: cancellationPolicyId
+          aggregateExpression: TextAggExp
+        - fieldName: etag
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: stayConstraintsId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: ScheduleSchedulesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ScheduleSchedulesOrderByExp
+  operand:
+    object:
+      orderedType: ScheduleSchedules
+      orderableFields:
+        - fieldName: buffersId
+          orderByExpression: String1OrderByExp
+        - fieldName: cancellationPolicyId
+          orderByExpression: String1OrderByExp
+        - fieldName: etag
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: stayConstraintsId
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: scheduleBufferSetting
+        - relationshipName: scheduleCancellationPolicy
+        - relationshipName: scheduleStayConstraint
+  graphql:
+    expressionTypeName: ScheduleSchedulesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ScheduleSchedules
+  objectType: ScheduleSchedules
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: schedule_schedules
+  filterExpressionType: ScheduleSchedulesBoolExp
+  aggregateExpression: ScheduleSchedulesAggExp
+  orderByExpression: ScheduleSchedulesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: scheduleSchedules
+      subscription:
+        rootField: scheduleSchedules
+    selectUniques:
+      - queryRootField: scheduleSchedulesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: scheduleSchedulesById
+    filterInputTypeName: ScheduleSchedulesFilterInput
+    aggregate:
+      queryRootField: scheduleSchedulesAggregate
+      subscription:
+        rootField: scheduleSchedulesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ScheduleSchedules
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleRecurringRules
+  sourceType: ScheduleSchedules
+  target:
+    model:
+      name: ScheduleRecurringRules
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleRecurringRulesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: scheduleId
+  graphql:
+    aggregateFieldName: scheduleRecurringRulesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleBufferSetting
+  sourceType: ScheduleSchedules
+  target:
+    model:
+      name: ScheduleBufferSettings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: buffersId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleCancellationPolicy
+  sourceType: ScheduleSchedules
+  target:
+    model:
+      name: ScheduleCancellationPolicies
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: cancellationPolicyId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleStayConstraint
+  sourceType: ScheduleSchedules
+  target:
+    model:
+      name: ScheduleStayConstraints
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: stayConstraintsId
+      target:
+        modelField:
+          - fieldName: id
+

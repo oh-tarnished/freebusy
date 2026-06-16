@@ -1,0 +1,209 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: IdentityMembershipSummaries
+  fields:
+    - name: id
+      type: String_1!
+    - name: orgDisplayName
+      type: String_1
+    - name: organisation
+      type: String_1
+    - name: role
+      type: String_1
+    - name: userId
+      type: String_1!
+  graphql:
+    typeName: IdentityMembershipSummaries
+    inputTypeName: IdentityMembershipSummariesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: identity_membership_summaries
+      fieldMapping:
+        id:
+          column:
+            name: id
+        orgDisplayName:
+          column:
+            name: org_display_name
+        organisation:
+          column:
+            name: organisation
+        role:
+          column:
+            name: role
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: IdentityMembershipSummaries
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - orgDisplayName
+          - organisation
+          - role
+          - userId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IdentityMembershipSummariesBoolExp
+  operand:
+    object:
+      type: IdentityMembershipSummaries
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: orgDisplayName
+          booleanExpressionType: TextBoolExp
+        - fieldName: organisation
+          booleanExpressionType: TextBoolExp
+        - fieldName: role
+          booleanExpressionType: TextBoolExp
+        - fieldName: userId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: organisationOrganisation
+        - relationshipName: identityUser
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: IdentityMembershipSummariesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IdentityMembershipSummariesAggExp
+  operand:
+    object:
+      aggregatedType: IdentityMembershipSummaries
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: orgDisplayName
+          aggregateExpression: TextAggExp
+        - fieldName: organisation
+          aggregateExpression: TextAggExp
+        - fieldName: role
+          aggregateExpression: TextAggExp
+        - fieldName: userId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: IdentityMembershipSummariesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IdentityMembershipSummariesOrderByExp
+  operand:
+    object:
+      orderedType: IdentityMembershipSummaries
+      orderableFields:
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: orgDisplayName
+          orderByExpression: String1OrderByExp
+        - fieldName: organisation
+          orderByExpression: String1OrderByExp
+        - fieldName: role
+          orderByExpression: String1OrderByExp
+        - fieldName: userId
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: organisationOrganisation
+        - relationshipName: identityUser
+  graphql:
+    expressionTypeName: IdentityMembershipSummariesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: IdentityMembershipSummaries
+  objectType: IdentityMembershipSummaries
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: identity_membership_summaries
+  filterExpressionType: IdentityMembershipSummariesBoolExp
+  aggregateExpression: IdentityMembershipSummariesAggExp
+  orderByExpression: IdentityMembershipSummariesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: identityMembershipSummaries
+      subscription:
+        rootField: identityMembershipSummaries
+    selectUniques:
+      - queryRootField: identityMembershipSummariesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: identityMembershipSummariesById
+    filterInputTypeName: IdentityMembershipSummariesFilterInput
+    aggregate:
+      queryRootField: identityMembershipSummariesAggregate
+      subscription:
+        rootField: identityMembershipSummariesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: IdentityMembershipSummaries
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: organisationOrganisation
+  sourceType: IdentityMembershipSummaries
+  target:
+    model:
+      name: OrganisationOrganisations
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: organisation
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: identityUser
+  sourceType: IdentityMembershipSummaries
+  target:
+    model:
+      name: IdentityUsers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: userId
+      target:
+        modelField:
+          - fieldName: id
+

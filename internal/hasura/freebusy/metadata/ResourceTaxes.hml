@@ -1,0 +1,189 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ResourceTaxes
+  fields:
+    - name: code
+      type: String_1!
+    - name: displayName
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: offeringId
+      type: String_1!
+    - name: percent
+      type: Float64!
+  graphql:
+    typeName: ResourceTaxes
+    inputTypeName: ResourceTaxesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: resource_taxes
+      fieldMapping:
+        code:
+          column:
+            name: code
+        displayName:
+          column:
+            name: display_name
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        percent:
+          column:
+            name: percent
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ResourceTaxes
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - code
+          - displayName
+          - id
+          - offeringId
+          - percent
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ResourceTaxesBoolExp
+  operand:
+    object:
+      type: ResourceTaxes
+      comparableFields:
+        - fieldName: code
+          booleanExpressionType: TextBoolExp
+        - fieldName: displayName
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: offeringId
+          booleanExpressionType: TextBoolExp
+        - fieldName: percent
+          booleanExpressionType: Float8BoolExp
+      comparableRelationships:
+        - relationshipName: resourceOffering
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ResourceTaxesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ResourceTaxesAggExp
+  operand:
+    object:
+      aggregatedType: ResourceTaxes
+      aggregatableFields:
+        - fieldName: code
+          aggregateExpression: TextAggExp
+        - fieldName: displayName
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: offeringId
+          aggregateExpression: TextAggExp
+        - fieldName: percent
+          aggregateExpression: Float8AggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: ResourceTaxesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ResourceTaxesOrderByExp
+  operand:
+    object:
+      orderedType: ResourceTaxes
+      orderableFields:
+        - fieldName: code
+          orderByExpression: String1OrderByExp
+        - fieldName: displayName
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: offeringId
+          orderByExpression: String1OrderByExp
+        - fieldName: percent
+          orderByExpression: Float64OrderByExp
+      orderableRelationships:
+        - relationshipName: resourceOffering
+  graphql:
+    expressionTypeName: ResourceTaxesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ResourceTaxes
+  objectType: ResourceTaxes
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: resource_taxes
+  filterExpressionType: ResourceTaxesBoolExp
+  aggregateExpression: ResourceTaxesAggExp
+  orderByExpression: ResourceTaxesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: resourceTaxes
+      subscription:
+        rootField: resourceTaxes
+    selectUniques:
+      - queryRootField: resourceTaxesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: resourceTaxesById
+    filterInputTypeName: ResourceTaxesFilterInput
+    aggregate:
+      queryRootField: resourceTaxesAggregate
+      subscription:
+        rootField: resourceTaxesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ResourceTaxes
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceOffering
+  sourceType: ResourceTaxes
+  target:
+    model:
+      name: ResourceOfferings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: offeringId
+      target:
+        modelField:
+          - fieldName: id
+

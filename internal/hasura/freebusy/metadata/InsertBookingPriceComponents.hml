@@ -1,0 +1,133 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertBookingPriceComponentsObject
+  fields:
+    - name: amount
+      type: Json
+    - name: bookingId
+      type: String_1!
+    - name: code
+      type: String_1
+    - name: displayName
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: type
+      type: Enum
+  graphql:
+    typeName: InsertBookingPriceComponentsObject
+    inputTypeName: InsertBookingPriceComponentsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_booking_price_components_object
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        bookingId:
+          column:
+            name: booking_id
+        code:
+          column:
+            name: code
+        displayName:
+          column:
+            name: display_name
+        id:
+          column:
+            name: id
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertBookingPriceComponentsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - bookingId
+          - code
+          - displayName
+          - id
+          - type
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertBookingPriceComponentsResponse
+  description: Responses from the 'insert_booking_price_components' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[BookingPriceComponents!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertBookingPriceComponentsResponse
+    inputTypeName: InsertBookingPriceComponentsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_booking_price_components_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertBookingPriceComponentsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertBookingPriceComponents
+  outputType: InsertBookingPriceComponentsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertBookingPriceComponentsObject!]!"
+    - name: postCheck
+      type: BookingPriceComponentsBoolExp
+      description: Insert permission predicate over the 'booking_price_components'
+        collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_booking_price_components
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertBookingPriceComponents
+    rootFieldKind: Mutation
+  description: Insert into the booking_price_components table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertBookingPriceComponents
+  permissions:
+    - role: admin
+      allowExecution: true
+

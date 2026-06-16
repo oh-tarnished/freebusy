@@ -1,0 +1,222 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertPromocodePromoCodesObject
+  fields:
+    - name: amountOff
+      type: Json
+    - name: applicableOfferings
+      type: "[String_1]"
+    - name: applicableResources
+      type: "[String_1]"
+    - name: code
+      type: String_1!
+    - name: createTime
+      type: Timestamp
+    - name: description
+      type: String_1
+    - name: disabled
+      type: Boolean_1
+    - name: discountType
+      type: Enum
+    - name: displayName
+      type: String_1
+    - name: etag
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: maxRedemptions
+      type: Int64
+    - name: minSubtotal
+      type: Json
+    - name: name
+      type: String_1!
+    - name: perCustomerLimit
+      type: Int32
+    - name: percentOff
+      type: Int32
+    - name: redeemEndTime
+      type: Timestamp
+    - name: redeemStartTime
+      type: Timestamp
+    - name: redemptionCount
+      type: Int64
+    - name: state
+      type: Enum
+    - name: updateTime
+      type: Timestamp!
+  graphql:
+    typeName: InsertPromocodePromoCodesObject
+    inputTypeName: InsertPromocodePromoCodesObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_promocode_promo_codes_object
+      fieldMapping:
+        amountOff:
+          column:
+            name: amount_off
+        applicableOfferings:
+          column:
+            name: applicable_offerings
+        applicableResources:
+          column:
+            name: applicable_resources
+        code:
+          column:
+            name: code
+        createTime:
+          column:
+            name: create_time
+        description:
+          column:
+            name: description
+        disabled:
+          column:
+            name: disabled
+        discountType:
+          column:
+            name: discount_type
+        displayName:
+          column:
+            name: display_name
+        etag:
+          column:
+            name: etag
+        id:
+          column:
+            name: id
+        maxRedemptions:
+          column:
+            name: max_redemptions
+        minSubtotal:
+          column:
+            name: min_subtotal
+        name:
+          column:
+            name: name
+        perCustomerLimit:
+          column:
+            name: per_customer_limit
+        percentOff:
+          column:
+            name: percent_off
+        redeemEndTime:
+          column:
+            name: redeem_end_time
+        redeemStartTime:
+          column:
+            name: redeem_start_time
+        redemptionCount:
+          column:
+            name: redemption_count
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertPromocodePromoCodesObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amountOff
+          - applicableOfferings
+          - applicableResources
+          - code
+          - createTime
+          - description
+          - disabled
+          - discountType
+          - displayName
+          - etag
+          - id
+          - maxRedemptions
+          - minSubtotal
+          - name
+          - perCustomerLimit
+          - percentOff
+          - redeemEndTime
+          - redeemStartTime
+          - redemptionCount
+          - state
+          - updateTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertPromocodePromoCodesResponse
+  description: Responses from the 'insert_promocode_promo_codes' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[PromocodePromoCodes!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertPromocodePromoCodesResponse
+    inputTypeName: InsertPromocodePromoCodesResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_promocode_promo_codes_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertPromocodePromoCodesResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertPromocodePromoCodes
+  outputType: InsertPromocodePromoCodesResponse!
+  arguments:
+    - name: objects
+      type: "[InsertPromocodePromoCodesObject!]!"
+    - name: postCheck
+      type: PromocodePromoCodesBoolExp
+      description: Insert permission predicate over the 'promocode_promo_codes' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_promocode_promo_codes
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertPromocodePromoCodes
+    rootFieldKind: Mutation
+  description: Insert into the promocode_promo_codes table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertPromocodePromoCodes
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,564 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: BookingBookings
+  fields:
+    - name: assignedUnit
+      type: String_1
+    - name: attributes
+      type: Json
+    - name: cancelReason
+      type: Enum
+    - name: cancelTime
+      type: Timestamp
+    - name: confirmTime
+      type: Timestamp
+    - name: contactId
+      type: String_1
+    - name: createTime
+      type: Timestamp!
+    - name: customer
+      type: String_1
+    - name: discount
+      type: Json
+    - name: etag
+      type: String_1
+    - name: holdExpireTime
+      type: Timestamp
+    - name: holdTtl
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: notes
+      type: String_1
+    - name: offering
+      type: String_1
+    - name: price
+      type: Json
+    - name: promoCode
+      type: String_1
+    - name: refundAmount
+      type: Json
+    - name: refundPercent
+      type: Int32
+    - name: resource
+      type: String_1!
+    - name: state
+      type: Enum
+    - name: total
+      type: Json
+    - name: units
+      type: Int32
+    - name: updateTime
+      type: Timestamp!
+    - name: windowId
+      type: String_1!
+  graphql:
+    typeName: BookingBookings
+    inputTypeName: BookingBookingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: booking_bookings
+      fieldMapping:
+        assignedUnit:
+          column:
+            name: assigned_unit
+        attributes:
+          column:
+            name: attributes
+        cancelReason:
+          column:
+            name: cancel_reason
+        cancelTime:
+          column:
+            name: cancel_time
+        confirmTime:
+          column:
+            name: confirm_time
+        contactId:
+          column:
+            name: contact_id
+        createTime:
+          column:
+            name: create_time
+        customer:
+          column:
+            name: customer
+        discount:
+          column:
+            name: discount
+        etag:
+          column:
+            name: etag
+        holdExpireTime:
+          column:
+            name: hold_expire_time
+        holdTtl:
+          column:
+            name: hold_ttl
+        id:
+          column:
+            name: id
+        name:
+          column:
+            name: name
+        notes:
+          column:
+            name: notes
+        offering:
+          column:
+            name: offering
+        price:
+          column:
+            name: price
+        promoCode:
+          column:
+            name: promo_code
+        refundAmount:
+          column:
+            name: refund_amount
+        refundPercent:
+          column:
+            name: refund_percent
+        resource:
+          column:
+            name: resource
+        state:
+          column:
+            name: state
+        total:
+          column:
+            name: total
+        units:
+          column:
+            name: units
+        updateTime:
+          column:
+            name: update_time
+        windowId:
+          column:
+            name: window_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: BookingBookings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - assignedUnit
+          - attributes
+          - cancelReason
+          - cancelTime
+          - confirmTime
+          - contactId
+          - createTime
+          - customer
+          - discount
+          - etag
+          - holdExpireTime
+          - holdTtl
+          - id
+          - name
+          - notes
+          - offering
+          - price
+          - promoCode
+          - refundAmount
+          - refundPercent
+          - resource
+          - state
+          - total
+          - units
+          - updateTime
+          - windowId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BookingBookingsBoolExp
+  operand:
+    object:
+      type: BookingBookings
+      comparableFields:
+        - fieldName: assignedUnit
+          booleanExpressionType: TextBoolExp
+        - fieldName: attributes
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: cancelReason
+          booleanExpressionType: BookingCancelReasonBoolExp
+        - fieldName: cancelTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: confirmTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: contactId
+          booleanExpressionType: TextBoolExp
+        - fieldName: createTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: customer
+          booleanExpressionType: TextBoolExp
+        - fieldName: discount
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: etag
+          booleanExpressionType: TextBoolExp
+        - fieldName: holdExpireTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: holdTtl
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: offering
+          booleanExpressionType: TextBoolExp
+        - fieldName: price
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: promoCode
+          booleanExpressionType: TextBoolExp
+        - fieldName: refundAmount
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: refundPercent
+          booleanExpressionType: Int4BoolExp
+        - fieldName: resource
+          booleanExpressionType: TextBoolExp
+        - fieldName: state
+          booleanExpressionType: BookingBookingStateBoolExp
+        - fieldName: total
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: units
+          booleanExpressionType: Int4BoolExp
+        - fieldName: updateTime
+          booleanExpressionType: TimestampBoolExp
+        - fieldName: windowId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: bookingContact
+        - relationshipName: identityUser
+        - relationshipName: resourceOffering
+        - relationshipName: promocodePromoCode
+        - relationshipName: resourceResource
+        - relationshipName: bookingTimeWindow
+        - relationshipName: bookingPriceComponents
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: BookingBookingsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BookingBookingsAggExp
+  operand:
+    object:
+      aggregatedType: BookingBookings
+      aggregatableFields:
+        - fieldName: assignedUnit
+          aggregateExpression: TextAggExp
+        - fieldName: attributes
+          aggregateExpression: JsonbAggExp
+        - fieldName: cancelReason
+          aggregateExpression: BookingCancelReasonAggExp
+        - fieldName: cancelTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: confirmTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: contactId
+          aggregateExpression: TextAggExp
+        - fieldName: createTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: customer
+          aggregateExpression: TextAggExp
+        - fieldName: discount
+          aggregateExpression: JsonbAggExp
+        - fieldName: etag
+          aggregateExpression: TextAggExp
+        - fieldName: holdExpireTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: holdTtl
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: offering
+          aggregateExpression: TextAggExp
+        - fieldName: price
+          aggregateExpression: JsonbAggExp
+        - fieldName: promoCode
+          aggregateExpression: TextAggExp
+        - fieldName: refundAmount
+          aggregateExpression: JsonbAggExp
+        - fieldName: refundPercent
+          aggregateExpression: Int4AggExp
+        - fieldName: resource
+          aggregateExpression: TextAggExp
+        - fieldName: state
+          aggregateExpression: BookingBookingStateAggExp
+        - fieldName: total
+          aggregateExpression: JsonbAggExp
+        - fieldName: units
+          aggregateExpression: Int4AggExp
+        - fieldName: updateTime
+          aggregateExpression: TimestampAggExp
+        - fieldName: windowId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: BookingBookingsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: BookingBookingsOrderByExp
+  operand:
+    object:
+      orderedType: BookingBookings
+      orderableFields:
+        - fieldName: assignedUnit
+          orderByExpression: String1OrderByExp
+        - fieldName: attributes
+          orderByExpression: JsonOrderByExp
+        - fieldName: cancelReason
+          orderByExpression: EnumOrderByExp
+        - fieldName: cancelTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: confirmTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: contactId
+          orderByExpression: String1OrderByExp
+        - fieldName: createTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: customer
+          orderByExpression: String1OrderByExp
+        - fieldName: discount
+          orderByExpression: JsonOrderByExp
+        - fieldName: etag
+          orderByExpression: String1OrderByExp
+        - fieldName: holdExpireTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: holdTtl
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: offering
+          orderByExpression: String1OrderByExp
+        - fieldName: price
+          orderByExpression: JsonOrderByExp
+        - fieldName: promoCode
+          orderByExpression: String1OrderByExp
+        - fieldName: refundAmount
+          orderByExpression: JsonOrderByExp
+        - fieldName: refundPercent
+          orderByExpression: Int32OrderByExp
+        - fieldName: resource
+          orderByExpression: String1OrderByExp
+        - fieldName: state
+          orderByExpression: EnumOrderByExp
+        - fieldName: total
+          orderByExpression: JsonOrderByExp
+        - fieldName: units
+          orderByExpression: Int32OrderByExp
+        - fieldName: updateTime
+          orderByExpression: TimestampOrderByExp
+        - fieldName: windowId
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: bookingContact
+        - relationshipName: identityUser
+        - relationshipName: resourceOffering
+        - relationshipName: promocodePromoCode
+        - relationshipName: resourceResource
+        - relationshipName: bookingTimeWindow
+  graphql:
+    expressionTypeName: BookingBookingsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: BookingBookings
+  objectType: BookingBookings
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: booking_bookings
+  filterExpressionType: BookingBookingsBoolExp
+  aggregateExpression: BookingBookingsAggExp
+  orderByExpression: BookingBookingsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: bookingBookings
+      subscription:
+        rootField: bookingBookings
+    selectUniques:
+      - queryRootField: bookingBookingsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: bookingBookingsById
+    filterInputTypeName: BookingBookingsFilterInput
+    aggregate:
+      queryRootField: bookingBookingsAggregate
+      subscription:
+        rootField: bookingBookingsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: BookingBookings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingContact
+  sourceType: BookingBookings
+  target:
+    model:
+      name: BookingContacts
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: contactId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: identityUser
+  sourceType: BookingBookings
+  target:
+    model:
+      name: IdentityUsers
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: customer
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceOffering
+  sourceType: BookingBookings
+  target:
+    model:
+      name: ResourceOfferings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: offering
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodePromoCode
+  sourceType: BookingBookings
+  target:
+    model:
+      name: PromocodePromoCodes
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: promoCode
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceResource
+  sourceType: BookingBookings
+  target:
+    model:
+      name: ResourceResources
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: resource
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingTimeWindow
+  sourceType: BookingBookings
+  target:
+    model:
+      name: BookingTimeWindows
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: windowId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingPriceComponents
+  sourceType: BookingBookings
+  target:
+    model:
+      name: BookingPriceComponents
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BookingPriceComponentsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: bookingId
+  graphql:
+    aggregateFieldName: bookingPriceComponentsAggregate
+

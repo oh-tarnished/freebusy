@@ -1,0 +1,201 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: BookingPriceComponents
+  fields:
+    - name: amount
+      type: Json
+    - name: bookingId
+      type: String_1!
+    - name: code
+      type: String_1
+    - name: displayName
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: type
+      type: Enum
+  graphql:
+    typeName: BookingPriceComponents
+    inputTypeName: BookingPriceComponentsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: booking_price_components
+      fieldMapping:
+        amount:
+          column:
+            name: amount
+        bookingId:
+          column:
+            name: booking_id
+        code:
+          column:
+            name: code
+        displayName:
+          column:
+            name: display_name
+        id:
+          column:
+            name: id
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: BookingPriceComponents
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amount
+          - bookingId
+          - code
+          - displayName
+          - id
+          - type
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: BookingPriceComponentsBoolExp
+  operand:
+    object:
+      type: BookingPriceComponents
+      comparableFields:
+        - fieldName: amount
+          booleanExpressionType: JsonbBoolExp
+        - fieldName: bookingId
+          booleanExpressionType: TextBoolExp
+        - fieldName: code
+          booleanExpressionType: TextBoolExp
+        - fieldName: displayName
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: type
+          booleanExpressionType: BookingTypeBoolExp
+      comparableRelationships:
+        - relationshipName: bookingBooking
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: BookingPriceComponentsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: BookingPriceComponentsAggExp
+  operand:
+    object:
+      aggregatedType: BookingPriceComponents
+      aggregatableFields:
+        - fieldName: amount
+          aggregateExpression: JsonbAggExp
+        - fieldName: bookingId
+          aggregateExpression: TextAggExp
+        - fieldName: code
+          aggregateExpression: TextAggExp
+        - fieldName: displayName
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: type
+          aggregateExpression: BookingTypeAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: BookingPriceComponentsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: BookingPriceComponentsOrderByExp
+  operand:
+    object:
+      orderedType: BookingPriceComponents
+      orderableFields:
+        - fieldName: amount
+          orderByExpression: JsonOrderByExp
+        - fieldName: bookingId
+          orderByExpression: String1OrderByExp
+        - fieldName: code
+          orderByExpression: String1OrderByExp
+        - fieldName: displayName
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: type
+          orderByExpression: EnumOrderByExp
+      orderableRelationships:
+        - relationshipName: bookingBooking
+  graphql:
+    expressionTypeName: BookingPriceComponentsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: BookingPriceComponents
+  objectType: BookingPriceComponents
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: booking_price_components
+  filterExpressionType: BookingPriceComponentsBoolExp
+  aggregateExpression: BookingPriceComponentsAggExp
+  orderByExpression: BookingPriceComponentsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: bookingPriceComponents
+      subscription:
+        rootField: bookingPriceComponents
+    selectUniques:
+      - queryRootField: bookingPriceComponentsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: bookingPriceComponentsById
+    filterInputTypeName: BookingPriceComponentsFilterInput
+    aggregate:
+      queryRootField: bookingPriceComponentsAggregate
+      subscription:
+        rootField: bookingPriceComponentsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: BookingPriceComponents
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingBooking
+  sourceType: BookingPriceComponents
+  target:
+    model:
+      name: BookingBookings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: bookingId
+      target:
+        modelField:
+          - fieldName: id
+

@@ -1,0 +1,126 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertResourceRateOverridesObject
+  fields:
+    - name: dateRangeId
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: offeringId
+      type: String_1!
+    - name: price
+      type: Json!
+    - name: weekdays
+      type: "[String_1]"
+  graphql:
+    typeName: InsertResourceRateOverridesObject
+    inputTypeName: InsertResourceRateOverridesObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_resource_rate_overrides_object
+      fieldMapping:
+        dateRangeId:
+          column:
+            name: date_range_id
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        price:
+          column:
+            name: price
+        weekdays:
+          column:
+            name: weekdays
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertResourceRateOverridesObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - dateRangeId
+          - id
+          - offeringId
+          - price
+          - weekdays
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertResourceRateOverridesResponse
+  description: Responses from the 'insert_resource_rate_overrides' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[ResourceRateOverrides!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertResourceRateOverridesResponse
+    inputTypeName: InsertResourceRateOverridesResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_resource_rate_overrides_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertResourceRateOverridesResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertResourceRateOverrides
+  outputType: InsertResourceRateOverridesResponse!
+  arguments:
+    - name: objects
+      type: "[InsertResourceRateOverridesObject!]!"
+    - name: postCheck
+      type: ResourceRateOverridesBoolExp
+      description: Insert permission predicate over the 'resource_rate_overrides' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_resource_rate_overrides
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertResourceRateOverrides
+    rootFieldKind: Mutation
+  description: Insert into the resource_rate_overrides table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertResourceRateOverrides
+  permissions:
+    - role: admin
+      allowExecution: true
+
