@@ -43,7 +43,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code} |
 | `discount` | `Money` | `OUTPUT_ONLY` | Discount applied from the promo code. |
 | `total` | `Money` | `OUTPUT_ONLY` | Final total after discounts. |
-| `price_components` | `PriceComponent` | `OUTPUT_ONLY` | Itemized breakdown behind the total: the base charge, each fee and tax, and each discount, as signed lines. `price` is the TYPE_BASE subtotal and `total` is the sum of every component; these lines expose the fees and taxes in between. Empty for simple bookings with no fees or taxes configured. |
+| `price_components` | `repeated PriceComponent` | `OUTPUT_ONLY` | Itemized breakdown behind the total: the base charge, each fee and tax, and each discount, as signed lines. `price` is the TYPE_BASE subtotal and `total` is the sum of every component; these lines expose the fees and taxes in between. Empty for simple bookings with no fees or taxes configured. |
 | `notes` | `string` | `OPTIONAL` | Free-form notes on the booking. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes. |
 | `cancel_reason` | `CancelReason` | `OUTPUT_ONLY` | Why the booking was cancelled, when state is CANCELLED. |
@@ -156,7 +156,7 @@ Response message for ListBookings.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `bookings` | `Booking` | - | The page of bookings. |
+| `bookings` | `repeated Booking` | - | The page of bookings. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ## Enums

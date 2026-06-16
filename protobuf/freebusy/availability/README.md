@@ -61,8 +61,8 @@ Availability for one resource, used in batch responses.
 | --- | --- | --- | --- |
 | `resource` | `string` | - | The resource these results are for. Format: resources/{resource} |
 | `mode` | `BookingMode` | - | Which shape is populated, matching the resource's booking_mode. |
-| `slots` | `Slot` | - | Slots, when mode is TIME_SLOT. |
-| `nights` | `NightAvailability` | - | Per-night availability, when mode is NIGHTLY. |
+| `slots` | `repeated Slot` | - | Slots, when mode is TIME_SLOT. |
+| `nights` | `repeated NightAvailability` | - | Per-night availability, when mode is NIGHTLY. |
 
 ### ComputeAvailabilityRequest
 
@@ -84,8 +84,8 @@ Response message for ComputeAvailability.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `mode` | `BookingMode` | - | Which shape is populated, matching the resource's booking_mode. |
-| `slots` | `Slot` | - | Slots, when mode is TIME_SLOT. |
-| `nights` | `NightAvailability` | - | Per-night availability, when mode is NIGHTLY. |
+| `slots` | `repeated Slot` | - | Slots, when mode is TIME_SLOT. |
+| `nights` | `repeated NightAvailability` | - | Per-night availability, when mode is NIGHTLY. |
 
 ### CheckAvailabilityRequest
 
@@ -116,7 +116,7 @@ Response message for CheckAvailability.
 | --- | --- | --- | --- |
 | `bookable` | `bool` | - | Whether the span is bookable. |
 | `free_count` | `int32` | - | Free units across the span (the minimum over the span). |
-| `reasons` | `UnbookableReason` | - | Why the span is not bookable, when bookable is false. |
+| `reasons` | `repeated UnbookableReason` | - | Why the span is not bookable, when bookable is false. |
 
 ### ComputeBookableRangesRequest
 
@@ -137,7 +137,7 @@ Response message for ComputeBookableRanges.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `ranges` | `BookableRange` | - | The bookable ranges within the window. |
+| `ranges` | `repeated BookableRange` | - | The bookable ranges within the window. |
 
 ### BatchComputeAvailabilityRequest
 
@@ -145,7 +145,7 @@ Request message for BatchComputeAvailability. Each entry is a full ComputeAvaila
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `requests` | `ComputeAvailabilityRequest` | `REQUIRED` | The individual compute requests. Results are returned in the same order. |
+| `requests` | `repeated ComputeAvailabilityRequest` | `REQUIRED` | The individual compute requests. Results are returned in the same order. |
 
 ### BatchComputeAvailabilityResponse
 
@@ -153,7 +153,7 @@ Response message for BatchComputeAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resources` | `ResourceAvailability` | - | Availability per request, in request order. |
+| `resources` | `repeated ResourceAvailability` | - | Availability per request, in request order. |
 
 ### SearchAvailabilityRequest
 
@@ -188,7 +188,7 @@ Response message for SearchAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `matches` | `AvailabilityMatch` | - | The matching resources, ordered per order_by. |
+| `matches` | `repeated AvailabilityMatch` | - | The matching resources, ordered per order_by. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ---

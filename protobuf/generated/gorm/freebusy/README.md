@@ -74,8 +74,6 @@ erDiagram
     }
     PromoCode {
         string id PK
-        string applicable_resources FK
-        string applicable_offerings FK
     }
     RateOverride {
         string id PK
@@ -92,11 +90,9 @@ erDiagram
     }
     Resource {
         string id PK
-        string offerings FK
     }
     Schedule {
         string id PK
-        string exceptions FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -132,14 +128,10 @@ erDiagram
     MembershipSummary }o--|| User : "user_id"
     Offering }o--|| Resource : "resource_id"
     PriceComponent }o--|| Booking : "booking_id"
-    PromoCode }o--|| Resource : "applicable_resources"
-    PromoCode }o--|| Offering : "applicable_offerings"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
-    Resource }o--|| Offering : "offerings"
-    Schedule }o--|| AvailabilityException : "exceptions"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
@@ -246,7 +238,7 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 
-### `MembershipSummary` → `membership_summarys`
+### `MembershipSummary` → `membership_summaries`
 
 A compact view of an organisation the user belongs to.
 
@@ -323,8 +315,8 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `max_redemptions` | `BIGINT` | nullable |
 | `per_customer_limit` | `INTEGER` | nullable |
 | `min_subtotal` | `JSONB` | nullable |
-| `applicable_resources` | `CHAR(26)` | nullable |
-| `applicable_offerings` | `CHAR(26)` | nullable |
+| `applicable_resources` | `VARCHAR(255)[]` | nullable |
+| `applicable_offerings` | `VARCHAR(255)[]` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `State` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
@@ -355,7 +347,7 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `time_zone` | `VARCHAR(255)` | not null |
 | `tags` | `VARCHAR(255)[]` | nullable |
 | `attributes` | `JSONB` | nullable |
-| `offerings` | `CHAR(26)` | nullable |
+| `offerings` | `VARCHAR(255)[]` | nullable |
 | `state` | `State` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -419,7 +411,7 @@ A fee added on top of an offering's base subtotal. Exactly one of `amount` or `p
 | `taxable` | `BOOLEAN` | nullable |
 | `offering_id` | `CHAR(26)` | not null |
 
-### `Tax` → `taxs`
+### `Tax` → `taxes`
 
 A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as a TYPE_TAX line in a booking's price_components.
 
@@ -464,7 +456,7 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
-| `exceptions` | `CHAR(26)` | nullable |
+| `exceptions` | `VARCHAR(255)[]` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `buffers_id` | `CHAR(26)` | nullable |
 | `stay_constraints_id` | `CHAR(26)` | nullable |
@@ -492,7 +484,7 @@ A recurring availability window expressed as an RRULE plus a daily open span. Th
 | `closes` | `VARCHAR(255)` | nullable |
 | `schedule_id` | `CHAR(26)` | not null |
 
-### `BufferSettings` → `buffer_settingss`
+### `BufferSettings` → `buffer_settings`
 
 Buffer and notice settings applied around bookings.
 
@@ -505,7 +497,7 @@ Buffer and notice settings applied around bookings.
 | `max_advance` | `INTERVAL` | nullable |
 | `gap` | `INTERVAL` | nullable |
 
-### `StayConstraints` → `stay_constraintss`
+### `StayConstraints` → `stay_constraints`
 
 Stay rules that affect bookability for NIGHTLY resources.
 
@@ -519,7 +511,7 @@ Stay rules that affect bookability for NIGHTLY resources.
 | `advance_min_days` | `INTEGER` | nullable |
 | `advance_max_days` | `INTEGER` | nullable |
 
-### `CancellationPolicy` → `cancellation_policys`
+### `CancellationPolicy` → `cancellation_policies`
 
 Refund rules graded by how far ahead of a booking's start it is cancelled.
 

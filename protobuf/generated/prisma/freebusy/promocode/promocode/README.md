@@ -15,17 +15,7 @@ erDiagram
     direction LR
     PromoCode {
         string id PK
-        string applicable_resources FK
-        string applicable_offerings FK
     }
-    Offering {
-        string externalStub PK
-    }
-    Resource {
-        string externalStub PK
-    }
-    PromoCode }o--|| Resource : "applicable_resources"
-    PromoCode }o--|| Offering : "applicable_offerings"
 ```
 
 Schema file: [`promocode.postgres.prisma`](./promocode.postgres.prisma)
@@ -49,8 +39,8 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `max_redemptions` | `BIGINT` | nullable |
 | `per_customer_limit` | `INTEGER` | nullable |
 | `min_subtotal` | `JSONB` | nullable |
-| `applicable_resources` | `CHAR(26)` | nullable |
-| `applicable_offerings` | `CHAR(26)` | nullable |
+| `applicable_resources` | `VARCHAR(255)[]` | nullable |
+| `applicable_offerings` | `VARCHAR(255)[]` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `PromocodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |

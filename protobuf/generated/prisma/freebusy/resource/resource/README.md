@@ -32,7 +32,6 @@ erDiagram
     }
     Resource {
         string id PK
-        string offerings FK
     }
     Tax {
         string id PK
@@ -46,7 +45,6 @@ erDiagram
     Offering }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
-    Resource }o--|| Offering : "offerings"
     Tax }o--|| Offering : "offering_id"
 ```
 
@@ -68,7 +66,7 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `time_zone` | `VARCHAR(255)` | not null |
 | `tags` | `VARCHAR(255)[]` | nullable |
 | `attributes` | `JSONB` | nullable |
-| `offerings` | `CHAR(26)` | nullable |
+| `offerings` | `VARCHAR(255)[]` | nullable |
 | `state` | `ResourceState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -132,7 +130,7 @@ A fee added on top of an offering's base subtotal. Exactly one of `amount` or `p
 | `taxable` | `BOOLEAN` | nullable |
 | `offering_id` | `CHAR(26)` | not null |
 
-### `Tax` → `taxs`
+### `Tax` → `taxes`
 
 A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as a TYPE_TAX line in a booking's price_components.
 

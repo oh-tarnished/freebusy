@@ -39,9 +39,9 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `booking_mode` | `BookingMode` | `REQUIRED` | How this resource is booked, and therefore the availability shape it yields. Immutable: flipping it after bookings exist would invalidate every existing booking and availability computation. |
 | `capacity` | `int32` | `OPTIONAL` | Number of interchangeable units in the pool. Defaults to 1 when unset. |
 | `time_zone` | `string` | `REQUIRED` | IANA timezone (e.g. "America/New_York") the resource's hours and dates are evaluated in. Required so availability is timezone-correct. |
-| `tags` | `string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
+| `tags` | `repeated string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
-| `offerings` | `string` | `OUTPUT_ONLY` | Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering} |
+| `offerings` | `repeated string` | `OUTPUT_ONLY` | Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering} |
 | `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
@@ -59,10 +59,10 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `duration` | `Duration` | `OPTIONAL` | Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY. |
 | `price` | `Money` | `OPTIONAL` | Price charged for the offering, interpreted per pricing_unit. |
 | `pricing_unit` | `PricingUnit` | `OPTIONAL` | What the price is charged per. |
-| `rate_overrides` | `RateOverride` | `OPTIONAL` | Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY resources this is the seasonal/weekend rate calendar; for TIME_SLOT it varies slot price by date or day. `price` is the default when no override matches. Later-listed overrides win where they overlap. |
-| `los_discounts` | `LosDiscount` | `OPTIONAL` | Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at least `min_nights` long. The most generous matching discount applies. |
-| `fees` | `Fee` | `OPTIONAL` | Fees added on top of the base subtotal (e.g. cleaning, service). Each surfaces as a TYPE_FEE line in a booking's price_components. |
-| `taxes` | `Tax` | `OPTIONAL` | Taxes applied to the taxable base (subtotal plus taxable fees). Each surfaces as a TYPE_TAX line in a booking's price_components. |
+| `rate_overrides` | `repeated RateOverride` | `OPTIONAL` | Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY resources this is the seasonal/weekend rate calendar; for TIME_SLOT it varies slot price by date or day. `price` is the default when no override matches. Later-listed overrides win where they overlap. |
+| `los_discounts` | `repeated LosDiscount` | `OPTIONAL` | Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at least `min_nights` long. The most generous matching discount applies. |
+| `fees` | `repeated Fee` | `OPTIONAL` | Fees added on top of the base subtotal (e.g. cleaning, service). Each surfaces as a TYPE_FEE line in a booking's price_components. |
+| `taxes` | `repeated Tax` | `OPTIONAL` | Taxes applied to the taxable base (subtotal plus taxable fees). Each surfaces as a TYPE_TAX line in a booking's price_components. |
 | `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
@@ -75,7 +75,7 @@ A price override for a span of dates and/or specific weekdays, layered over an o
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `date_range` | `DateRange` | `OPTIONAL` | Dates the override applies to, in the resource's timezone. Unset means it applies on every date (a pure weekday rule). |
-| `weekdays` | `Weekday` | `OPTIONAL` | Weekdays the override applies to. Empty means every day within date_range. |
+| `weekdays` | `repeated Weekday` | `OPTIONAL` | Weekdays the override applies to. Empty means every day within date_range. |
 | `price` | `Money` | `REQUIRED` | The price in effect while this override matches. |
 
 ### LosDiscount
@@ -140,7 +140,7 @@ Response message for ListResources.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resources` | `Resource` | - | The page of resources. |
+| `resources` | `repeated Resource` | - | The page of resources. |
 | `next_page_token` | `string` | - | Next page token, if more results remain. Omitted if this is the last page. |
 
 ### GetResourceRequest
@@ -204,7 +204,7 @@ Response message for ListOfferings.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `offerings` | `Offering` | - | The page of offerings. |
+| `offerings` | `repeated Offering` | - | The page of offerings. |
 | `next_page_token` | `string` | - | next page token. Omitted if this is the last page. |
 
 ### GetOfferingRequest

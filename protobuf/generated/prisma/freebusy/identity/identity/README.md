@@ -47,7 +47,7 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 
-### `MembershipSummary` → `membership_summarys`
+### `MembershipSummary` → `membership_summaries`
 
 A compact view of an organisation the user belongs to.
 

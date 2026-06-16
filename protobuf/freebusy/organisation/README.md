@@ -87,7 +87,7 @@ Response message for ListOrganisations.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `organisations` | `Organisation` | - | The page of organisations (those the caller belongs to). |
+| `organisations` | `repeated Organisation` | - | The page of organisations (those the caller belongs to). |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ### GetOrganisationRequest
@@ -144,7 +144,7 @@ Response message for ListMembers.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `members` | `Member` | - | The page of members. |
+| `members` | `repeated Member` | - | The page of members. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ### GetMemberRequest

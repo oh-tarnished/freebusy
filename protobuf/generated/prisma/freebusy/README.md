@@ -72,8 +72,6 @@ erDiagram
     }
     PromoCode {
         string id PK
-        string applicable_resources FK
-        string applicable_offerings FK
     }
     RateOverride {
         string id PK
@@ -90,11 +88,9 @@ erDiagram
     }
     Resource {
         string id PK
-        string offerings FK
     }
     Schedule {
         string id PK
-        string exceptions FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -130,14 +126,10 @@ erDiagram
     MembershipSummary }o--|| User : "user_id"
     Offering }o--|| Resource : "resource_id"
     PriceComponent }o--|| Booking : "booking_id"
-    PromoCode }o--|| Resource : "applicable_resources"
-    PromoCode }o--|| Offering : "applicable_offerings"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
-    Resource }o--|| Offering : "offerings"
-    Schedule }o--|| AvailabilityException : "exceptions"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"

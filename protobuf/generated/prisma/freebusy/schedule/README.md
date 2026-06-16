@@ -35,7 +35,6 @@ erDiagram
     }
     Schedule {
         string id PK
-        string exceptions FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -57,7 +56,6 @@ erDiagram
     AvailabilityException }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
-    Schedule }o--|| AvailabilityException : "exceptions"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"

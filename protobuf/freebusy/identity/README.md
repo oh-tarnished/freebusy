@@ -31,7 +31,7 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `avatar_url` | `string` | `OPTIONAL` | Avatar image URL. |
 | `locale` | `string` | `OPTIONAL` | BCP 47 locale (e.g. "en-US"). |
 | `time_zone` | `string` | `OPTIONAL` | IANA time zone (e.g. "America/New_York"). |
-| `memberships` | `MembershipSummary` | `OUTPUT_ONLY` | The organisations this user belongs to, with role. |
+| `memberships` | `repeated MembershipSummary` | `OUTPUT_ONLY` | The organisations this user belongs to, with role. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update. |
@@ -80,7 +80,7 @@ Response message for ListUsers.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `users` | `User` | - | The page of users. |
+| `users` | `repeated User` | - | The page of users. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ---

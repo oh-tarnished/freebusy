@@ -51,8 +51,8 @@ Stay rules that affect bookability for NIGHTLY resources.
 | --- | --- | --- | --- |
 | `min_nights` | `int32` | `OPTIONAL` | Minimum number of nights per booking. |
 | `max_nights` | `int32` | `OPTIONAL` | Maximum number of nights per booking. Zero means no maximum. |
-| `checkin_weekdays` | `Weekday` | `OPTIONAL` | Allowed check-in weekdays. Empty means any day. |
-| `checkout_weekdays` | `Weekday` | `OPTIONAL` | Allowed check-out weekdays. Empty means any day. |
+| `checkin_weekdays` | `repeated Weekday` | `OPTIONAL` | Allowed check-in weekdays. Empty means any day. |
+| `checkout_weekdays` | `repeated Weekday` | `OPTIONAL` | Allowed check-out weekdays. Empty means any day. |
 | `advance_min_days` | `int32` | `OPTIONAL` | Earliest a stay may begin, in days from now. |
 | `advance_max_days` | `int32` | `OPTIONAL` | Latest a stay may begin, in days from now. Zero means no limit. |
 
@@ -76,10 +76,10 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The schedule name. Format: resources/{resource}/schedule |
-| `recurring_rules` | `RecurringRule` | `OPTIONAL` | Recurring working hours. |
+| `recurring_rules` | `repeated RecurringRule` | `OPTIONAL` | Recurring working hours. |
 | `buffers` | `BufferSettings` | `OPTIONAL` | Buffer and notice settings. |
 | `stay_constraints` | `StayConstraints` | `OPTIONAL` | Stay rules (NIGHTLY resources). |
-| `exceptions` | `string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+| `exceptions` | `repeated string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
 | `cancellation_policy` | `CancellationPolicy` | `OPTIONAL` | Refund rules applied when a booking on this resource is cancelled. Unset means cancellations are non-refundable by default. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update. |
 
@@ -89,7 +89,7 @@ Refund rules graded by how far ahead of a booking's start it is cancelled.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `tiers` | `RefundTier` | `OPTIONAL` | Ordered refund tiers. For a given cancellation the tier with the largest `cutoff` that is still satisfied (cancelled at least `cutoff` before the booking start) determines the refund. If no tier is satisfied, the booking is non-refundable. |
+| `tiers` | `repeated RefundTier` | `OPTIONAL` | Ordered refund tiers. For a given cancellation the tier with the largest `cutoff` that is still satisfied (cancelled at least `cutoff` before the booking start) determines the refund. If no tier is satisfied, the booking is non-refundable. |
 
 ### RefundTier
 
@@ -135,7 +135,7 @@ Response message for ListAvailabilityExceptions.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `availability_exceptions` | `AvailabilityException` | - | The page of exceptions. |
+| `availability_exceptions` | `repeated AvailabilityException` | - | The page of exceptions. |
 | `next_page_token` | `string` | - | Token for the next page of results. Empty if there are no more pages. |
 
 ### GetAvailabilityExceptionRequest

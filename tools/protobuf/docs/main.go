@@ -65,6 +65,7 @@ type Field struct {
 	Type     string
 	Comment  string
 	Required bool   // true if REQUIRED or IDENTIFIER
+	Repeated bool   // true for `repeated` fields (rendered as a list)
 	Behavior string // e.g. REQUIRED, OPTIONAL, OUTPUT_ONLY, IDENTIFIER
 }
 
@@ -292,6 +293,7 @@ func parseProtoFile(path string, mod *Module) error {
 					Name:     m[2],
 					Comment:  comment,
 					Required: behavior == "REQUIRED" || behavior == "IDENTIFIER",
+					Repeated: strings.HasPrefix(trimmed, "repeated "),
 					Behavior: behavior,
 				}
 				currentMessage.Fields = append(currentMessage.Fields, field)
@@ -398,8 +400,12 @@ func generateReadme(mod Module) (err error) {
 					} else {
 						beh = "-"
 					}
+					typ := field.Type
+					if field.Repeated {
+						typ = "repeated " + typ
+					}
 					fmt.Fprintf(w, "| `%s` | `%s` | %s | %s |\n",
-						field.Name, field.Type, beh, field.Comment)
+						field.Name, typ, beh, field.Comment)
 				}
 				fmt.Fprintf(w, "\n")
 			}

@@ -15,17 +15,7 @@ erDiagram
     direction LR
     PromoCode {
         string id PK
-        string applicable_resources FK
-        string applicable_offerings FK
     }
-    Offering {
-        string externalStub PK
-    }
-    Resource {
-        string externalStub PK
-    }
-    PromoCode }o--|| Resource : "applicable_resources"
-    PromoCode }o--|| Offering : "applicable_offerings"
 ```
 
 ## Subfolders

@@ -35,7 +35,6 @@ erDiagram
     }
     Schedule {
         string id PK
-        string exceptions FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -57,7 +56,6 @@ erDiagram
     AvailabilityException }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
-    Schedule }o--|| AvailabilityException : "exceptions"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
@@ -89,7 +87,7 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
-| `exceptions` | `CHAR(26)` | nullable |
+| `exceptions` | `VARCHAR(255)[]` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `buffers_id` | `CHAR(26)` | nullable |
 | `stay_constraints_id` | `CHAR(26)` | nullable |
@@ -107,7 +105,7 @@ A recurring availability window expressed as an RRULE plus a daily open span. Th
 | `closes` | `VARCHAR(255)` | nullable |
 | `schedule_id` | `CHAR(26)` | not null |
 
-### `BufferSettings` → `buffer_settingss`
+### `BufferSettings` → `buffer_settings`
 
 Buffer and notice settings applied around bookings.
 
@@ -120,7 +118,7 @@ Buffer and notice settings applied around bookings.
 | `max_advance` | `INTERVAL` | nullable |
 | `gap` | `INTERVAL` | nullable |
 
-### `StayConstraints` → `stay_constraintss`
+### `StayConstraints` → `stay_constraints`
 
 Stay rules that affect bookability for NIGHTLY resources.
 
@@ -134,7 +132,7 @@ Stay rules that affect bookability for NIGHTLY resources.
 | `advance_min_days` | `INTEGER` | nullable |
 | `advance_max_days` | `INTEGER` | nullable |
 
-### `CancellationPolicy` → `cancellation_policys`
+### `CancellationPolicy` → `cancellation_policies`
 
 Refund rules graded by how far ahead of a booking's start it is cancelled.
 

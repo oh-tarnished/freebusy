@@ -39,8 +39,8 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `max_redemptions` | `int64` | `OPTIONAL` | Maximum total redemptions across all customers. Zero means unlimited. |
 | `per_customer_limit` | `int32` | `OPTIONAL` | Maximum redemptions per customer. Zero means unlimited. |
 | `min_subtotal` | `Money` | `OPTIONAL` | Minimum subtotal required for the code to apply. |
-| `applicable_resources` | `string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
-| `applicable_offerings` | `string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
+| `applicable_resources` | `repeated string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
+| `applicable_offerings` | `repeated string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
 | `redemption_count` | `int64` | `OUTPUT_ONLY` | How many times the code has been redeemed. |
 | `state` | `State` | `OUTPUT_ONLY` | Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions). |
 | `disabled` | `bool` | `OPTIONAL` | If true, the code is manually disabled regardless of its window and caps. |
@@ -65,7 +65,7 @@ Response message for ListPromoCodes.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `promo_codes` | `PromoCode` | - | The page of promo codes. |
+| `promo_codes` | `repeated PromoCode` | - | The page of promo codes. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ### GetPromoCodeRequest

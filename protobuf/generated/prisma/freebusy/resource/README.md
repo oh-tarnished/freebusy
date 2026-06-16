@@ -32,7 +32,6 @@ erDiagram
     }
     Resource {
         string id PK
-        string offerings FK
     }
     Tax {
         string id PK
@@ -46,7 +45,6 @@ erDiagram
     Offering }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
-    Resource }o--|| Offering : "offerings"
     Tax }o--|| Offering : "offering_id"
 ```
 
