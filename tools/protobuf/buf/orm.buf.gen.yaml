@@ -1,0 +1,12 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+inputs:
+  - directory: protobuf
+
+plugins:
+  - local: protoc-gen-protorm
+    out:  protobuf/generated/prisma
+    opt:
+      - target=prisma
