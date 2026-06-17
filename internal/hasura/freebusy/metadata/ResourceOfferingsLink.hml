@@ -1,0 +1,185 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ResourceOfferingsLink
+  fields:
+    - name: id
+      type: String_1!
+    - name: offeringId
+      type: String_1!
+    - name: resourceId
+      type: String_1!
+  graphql:
+    typeName: ResourceOfferingsLink
+    inputTypeName: ResourceOfferingsLinkInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: resource_offerings_link
+      fieldMapping:
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        resourceId:
+          column:
+            name: resource_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ResourceOfferingsLink
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - offeringId
+          - resourceId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ResourceOfferingsLinkBoolExp
+  operand:
+    object:
+      type: ResourceOfferingsLink
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: offeringId
+          booleanExpressionType: TextBoolExp
+        - fieldName: resourceId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: resourceOffering
+        - relationshipName: resourceEntity
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ResourceOfferingsLinkBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ResourceOfferingsLinkAggExp
+  operand:
+    object:
+      aggregatedType: ResourceOfferingsLink
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: offeringId
+          aggregateExpression: TextAggExp
+        - fieldName: resourceId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: ResourceOfferingsLinkAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ResourceOfferingsLinkOrderByExp
+  operand:
+    object:
+      orderedType: ResourceOfferingsLink
+      orderableFields:
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: offeringId
+          orderByExpression: String1OrderByExp
+        - fieldName: resourceId
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: resourceOffering
+        - relationshipName: resourceEntity
+  graphql:
+    expressionTypeName: ResourceOfferingsLinkOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ResourceOfferingsLink
+  objectType: ResourceOfferingsLink
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: resource_offerings_link
+  filterExpressionType: ResourceOfferingsLinkBoolExp
+  aggregateExpression: ResourceOfferingsLinkAggExp
+  orderByExpression: ResourceOfferingsLinkOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: resourceOfferingsLink
+      subscription:
+        rootField: resourceOfferingsLink
+    selectUniques:
+      - queryRootField: resourceOfferingsLinkById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: resourceOfferingsLinkById
+    filterInputTypeName: ResourceOfferingsLinkFilterInput
+    aggregate:
+      queryRootField: resourceOfferingsLinkAggregate
+      subscription:
+        rootField: resourceOfferingsLinkAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ResourceOfferingsLink
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceOffering
+  sourceType: ResourceOfferingsLink
+  target:
+    model:
+      name: ResourceOfferings
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: offeringId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceEntity
+  sourceType: ResourceOfferingsLink
+  target:
+    model:
+      name: ResourceEntity
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: resourceId
+      target:
+        modelField:
+          - fieldName: id
+

@@ -65,6 +65,7 @@ definition:
           booleanExpressionType: TextBoolExp
       comparableRelationships:
         - relationshipName: bookingBookings
+        - relationshipName: bookingResources
   logicalOperators:
     enable: true
   isNull:
@@ -177,4 +178,26 @@ definition:
           - fieldName: contactId
   graphql:
     aggregateFieldName: bookingBookingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingResources
+  sourceType: BookingContacts
+  target:
+    model:
+      name: BookingResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BookingResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: contactId
+  graphql:
+    aggregateFieldName: bookingResourcesAggregate
 

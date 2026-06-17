@@ -1,0 +1,852 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceAmountOff
+  description: Update the 'amount_off' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Json
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceAmountOff
+    inputTypeName: UpdateColumnPromocodeResourceAmountOffInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_amount_off
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceAmountOff
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceCode
+  description: Update the 'code' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceCode
+    inputTypeName: UpdateColumnPromocodeResourceCodeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_code
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceCode
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceCreateTime
+  description: Update the 'create_time' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Timestamp!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceCreateTime
+    inputTypeName: UpdateColumnPromocodeResourceCreateTimeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_create_time
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceCreateTime
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceDescription
+  description: Update the 'description' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceDescription
+    inputTypeName: UpdateColumnPromocodeResourceDescriptionInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_description
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceDescription
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceDisabled
+  description: Update the 'disabled' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Boolean_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceDisabled
+    inputTypeName: UpdateColumnPromocodeResourceDisabledInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_disabled
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceDisabled
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceDiscountType
+  description: Update the 'discount_type' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Enum!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceDiscountType
+    inputTypeName: UpdateColumnPromocodeResourceDiscountTypeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_discount_type
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceDiscountType
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceDisplayName
+  description: Update the 'display_name' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceDisplayName
+    inputTypeName: UpdateColumnPromocodeResourceDisplayNameInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_display_name
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceDisplayName
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceEtag
+  description: Update the 'etag' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceEtag
+    inputTypeName: UpdateColumnPromocodeResourceEtagInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_etag
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceEtag
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceId
+  description: Update the 'id' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceId
+    inputTypeName: UpdateColumnPromocodeResourceIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceMaxRedemptions
+  description: Update the 'max_redemptions' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Int64
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceMaxRedemptions
+    inputTypeName: UpdateColumnPromocodeResourceMaxRedemptionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_max_redemptions
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceMaxRedemptions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceMinSubtotal
+  description: Update the 'min_subtotal' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Json
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceMinSubtotal
+    inputTypeName: UpdateColumnPromocodeResourceMinSubtotalInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_min_subtotal
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceMinSubtotal
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceName
+  description: Update the 'name' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceName
+    inputTypeName: UpdateColumnPromocodeResourceNameInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_name
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceName
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourcePerCustomerLimit
+  description: Update the 'per_customer_limit' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Int32
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourcePerCustomerLimit
+    inputTypeName: UpdateColumnPromocodeResourcePerCustomerLimitInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_per_customer_limit
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourcePerCustomerLimit
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourcePercentOff
+  description: Update the 'percent_off' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Int32
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourcePercentOff
+    inputTypeName: UpdateColumnPromocodeResourcePercentOffInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_percent_off
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourcePercentOff
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceRedeemEndTime
+  description: Update the 'redeem_end_time' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Timestamp
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceRedeemEndTime
+    inputTypeName: UpdateColumnPromocodeResourceRedeemEndTimeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_redeem_end_time
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceRedeemEndTime
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceRedeemStartTime
+  description: Update the 'redeem_start_time' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Timestamp
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceRedeemStartTime
+    inputTypeName: UpdateColumnPromocodeResourceRedeemStartTimeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_redeem_start_time
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceRedeemStartTime
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceRedemptionCount
+  description: Update the 'redemption_count' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Int64
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceRedemptionCount
+    inputTypeName: UpdateColumnPromocodeResourceRedemptionCountInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_redemption_count
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceRedemptionCount
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceState
+  description: Update the 'state' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Enum
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceState
+    inputTypeName: UpdateColumnPromocodeResourceStateInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_state
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceState
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeResourceUpdateTime
+  description: Update the 'update_time' column in the 'promocode_resource' collection
+  fields:
+    - name: set
+      type: Timestamp!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeResourceUpdateTime
+    inputTypeName: UpdateColumnPromocodeResourceUpdateTimeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_resource_update_time
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeResourceUpdateTime
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdatePromocodeResourceByIdUpdateColumns
+  description: Update the columns of the 'promocode_resource' collection
+  fields:
+    - name: amountOff
+      type: UpdateColumnPromocodeResourceAmountOff
+      description: Update the 'amount_off' column in the 'promocode_resource' collection.
+    - name: code
+      type: UpdateColumnPromocodeResourceCode
+      description: Update the 'code' column in the 'promocode_resource' collection.
+    - name: createTime
+      type: UpdateColumnPromocodeResourceCreateTime
+      description: Update the 'create_time' column in the 'promocode_resource' collection.
+    - name: description
+      type: UpdateColumnPromocodeResourceDescription
+      description: Update the 'description' column in the 'promocode_resource' collection.
+    - name: disabled
+      type: UpdateColumnPromocodeResourceDisabled
+      description: Update the 'disabled' column in the 'promocode_resource' collection.
+    - name: discountType
+      type: UpdateColumnPromocodeResourceDiscountType
+      description: Update the 'discount_type' column in the 'promocode_resource' collection.
+    - name: displayName
+      type: UpdateColumnPromocodeResourceDisplayName
+      description: Update the 'display_name' column in the 'promocode_resource' collection.
+    - name: etag
+      type: UpdateColumnPromocodeResourceEtag
+      description: Update the 'etag' column in the 'promocode_resource' collection.
+    - name: id
+      type: UpdateColumnPromocodeResourceId
+      description: Update the 'id' column in the 'promocode_resource' collection.
+    - name: maxRedemptions
+      type: UpdateColumnPromocodeResourceMaxRedemptions
+      description: Update the 'max_redemptions' column in the 'promocode_resource'
+        collection.
+    - name: minSubtotal
+      type: UpdateColumnPromocodeResourceMinSubtotal
+      description: Update the 'min_subtotal' column in the 'promocode_resource' collection.
+    - name: name
+      type: UpdateColumnPromocodeResourceName
+      description: Update the 'name' column in the 'promocode_resource' collection.
+    - name: perCustomerLimit
+      type: UpdateColumnPromocodeResourcePerCustomerLimit
+      description: Update the 'per_customer_limit' column in the 'promocode_resource'
+        collection.
+    - name: percentOff
+      type: UpdateColumnPromocodeResourcePercentOff
+      description: Update the 'percent_off' column in the 'promocode_resource' collection.
+    - name: redeemEndTime
+      type: UpdateColumnPromocodeResourceRedeemEndTime
+      description: Update the 'redeem_end_time' column in the 'promocode_resource'
+        collection.
+    - name: redeemStartTime
+      type: UpdateColumnPromocodeResourceRedeemStartTime
+      description: Update the 'redeem_start_time' column in the 'promocode_resource'
+        collection.
+    - name: redemptionCount
+      type: UpdateColumnPromocodeResourceRedemptionCount
+      description: Update the 'redemption_count' column in the 'promocode_resource'
+        collection.
+    - name: state
+      type: UpdateColumnPromocodeResourceState
+      description: Update the 'state' column in the 'promocode_resource' collection.
+    - name: updateTime
+      type: UpdateColumnPromocodeResourceUpdateTime
+      description: Update the 'update_time' column in the 'promocode_resource' collection.
+  graphql:
+    typeName: UpdatePromocodeResourceByIdUpdateColumns
+    inputTypeName: UpdatePromocodeResourceByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_promocode_resource_by_id_update_columns
+      fieldMapping:
+        amountOff:
+          column:
+            name: amount_off
+        code:
+          column:
+            name: code
+        createTime:
+          column:
+            name: create_time
+        description:
+          column:
+            name: description
+        disabled:
+          column:
+            name: disabled
+        discountType:
+          column:
+            name: discount_type
+        displayName:
+          column:
+            name: display_name
+        etag:
+          column:
+            name: etag
+        id:
+          column:
+            name: id
+        maxRedemptions:
+          column:
+            name: max_redemptions
+        minSubtotal:
+          column:
+            name: min_subtotal
+        name:
+          column:
+            name: name
+        perCustomerLimit:
+          column:
+            name: per_customer_limit
+        percentOff:
+          column:
+            name: percent_off
+        redeemEndTime:
+          column:
+            name: redeem_end_time
+        redeemStartTime:
+          column:
+            name: redeem_start_time
+        redemptionCount:
+          column:
+            name: redemption_count
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdatePromocodeResourceByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - amountOff
+          - code
+          - createTime
+          - description
+          - disabled
+          - discountType
+          - displayName
+          - etag
+          - id
+          - maxRedemptions
+          - minSubtotal
+          - name
+          - perCustomerLimit
+          - percentOff
+          - redeemEndTime
+          - redeemStartTime
+          - redemptionCount
+          - state
+          - updateTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdatePromocodeResourceByIdResponse
+  description: Responses from the 'update_promocode_resource_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[PromocodeResource!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdatePromocodeResourceByIdResponse
+    inputTypeName: UpdatePromocodeResourceByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_promocode_resource_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdatePromocodeResourceByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdatePromocodeResourceById
+  outputType: UpdatePromocodeResourceByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: PromocodeResourceBoolExp
+      description: Update permission post-condition predicate over the
+        'promocode_resource' collection
+    - name: preCheck
+      type: PromocodeResourceBoolExp
+      description: Update permission pre-condition predicate over the
+        'promocode_resource' collection
+    - name: updateColumns
+      type: UpdatePromocodeResourceByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_promocode_resource_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updatePromocodeResourceById
+    rootFieldKind: Mutation
+  description: Update any row on the 'promocode_resource' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdatePromocodeResourceById
+  permissions:
+    - role: admin
+      allowExecution: true
+

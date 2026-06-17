@@ -62,7 +62,7 @@ model AvailabilityException {
   dateRange DateRange? @relation(fields: [dateRangeID], references: [id], onDelete: SetNull)
 
   /// Back-relation: ScheduleExceptions records that reference this model via availability_exception_id.
-  scheduleExceptions ScheduleExceptions[]
+  exceptions ScheduleExceptions[]
 
   /// Composite index on [resource_id].
   @@index([resourceID])
@@ -109,7 +109,7 @@ model Schedule {
   recurringRules RecurringRule[]
 
   /// Back-relation: ScheduleExceptions records that reference this model via schedule_id.
-  scheduleExceptions ScheduleExceptions[]
+  exceptions ScheduleExceptions[]
 
   /// Composite index on [buffers_id].
   @@index([buffersID])
@@ -117,8 +117,8 @@ model Schedule {
   @@index([stayConstraintsID])
   /// Composite index on [cancellation_policy_id].
   @@index([cancellationPolicyID])
-  /// Maps the model to the "schedules" table in the database.
-  @@map("schedules")
+  /// Maps the model to the "resource" table in the database.
+  @@map("resource")
   /// Maps the model to the "schedule" schema in the database.
   @@schema("schedule")
 }
@@ -172,7 +172,7 @@ model BufferSettings {
   gap String? @map("gap")
 
   /// Back-relation: Schedule records that reference this model via buffers_id.
-  schedules Schedule[]
+  resource Schedule[]
 
   /// Maps the model to the "buffer_settings" table in the database.
   @@map("buffer_settings")
@@ -204,7 +204,7 @@ model StayConstraints {
   advanceMaxDays Int? @map("advance_max_days")
 
   /// Back-relation: Schedule records that reference this model via stay_constraints_id.
-  schedules Schedule[]
+  resource Schedule[]
 
   /// Maps the model to the "stay_constraints" table in the database.
   @@map("stay_constraints")
@@ -218,7 +218,7 @@ model CancellationPolicy {
   id String @id @default(ulid()) @map("id")
 
   /// Back-relation: Schedule records that reference this model via cancellation_policy_id.
-  schedules Schedule[]
+  resource Schedule[]
 
   /// Back-relation: RefundTier records that reference this model via cancellation_policy_id.
   refundTiers RefundTier[]
@@ -277,8 +277,8 @@ model ScheduleExceptions {
   @@index([scheduleID])
   /// Composite index on [availability_exception_id].
   @@index([availabilityExceptionID])
-  /// Maps the model to the "schedule_exceptions" table in the database.
-  @@map("schedule_exceptions")
+  /// Maps the model to the "exceptions" table in the database.
+  @@map("exceptions")
   /// Maps the model to the "schedule" schema in the database.
   @@schema("schedule")
 }

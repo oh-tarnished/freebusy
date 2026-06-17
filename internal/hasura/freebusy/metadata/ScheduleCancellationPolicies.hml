@@ -38,6 +38,7 @@ definition:
       comparableRelationships:
         - relationshipName: scheduleRefundTiers
         - relationshipName: scheduleSchedules
+        - relationshipName: scheduleResources
   logicalOperators:
     enable: true
   isNull:
@@ -160,4 +161,26 @@ definition:
           - fieldName: cancellationPolicyId
   graphql:
     aggregateFieldName: scheduleSchedulesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleResources
+  sourceType: ScheduleCancellationPolicies
+  target:
+    model:
+      name: ScheduleResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: cancellationPolicyId
+  graphql:
+    aggregateFieldName: scheduleResourcesAggregate
 

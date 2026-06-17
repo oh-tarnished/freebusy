@@ -1,0 +1,225 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceOfferingsLinkId
+  description: Update the 'id' column in the 'resource_offerings_link' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceOfferingsLinkId
+    inputTypeName: UpdateColumnResourceOfferingsLinkIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_offerings_link_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceOfferingsLinkId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceOfferingsLinkOfferingId
+  description: Update the 'offering_id' column in the 'resource_offerings_link' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceOfferingsLinkOfferingId
+    inputTypeName: UpdateColumnResourceOfferingsLinkOfferingIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_offerings_link_offering_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceOfferingsLinkOfferingId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnResourceOfferingsLinkResourceId
+  description: Update the 'resource_id' column in the 'resource_offerings_link' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnResourceOfferingsLinkResourceId
+    inputTypeName: UpdateColumnResourceOfferingsLinkResourceIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_resource_offerings_link_resource_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnResourceOfferingsLinkResourceId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateResourceOfferingsLinkByIdUpdateColumns
+  description: Update the columns of the 'resource_offerings_link' collection
+  fields:
+    - name: id
+      type: UpdateColumnResourceOfferingsLinkId
+      description: Update the 'id' column in the 'resource_offerings_link' collection.
+    - name: offeringId
+      type: UpdateColumnResourceOfferingsLinkOfferingId
+      description: Update the 'offering_id' column in the 'resource_offerings_link'
+        collection.
+    - name: resourceId
+      type: UpdateColumnResourceOfferingsLinkResourceId
+      description: Update the 'resource_id' column in the 'resource_offerings_link'
+        collection.
+  graphql:
+    typeName: UpdateResourceOfferingsLinkByIdUpdateColumns
+    inputTypeName: UpdateResourceOfferingsLinkByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_resource_offerings_link_by_id_update_columns
+      fieldMapping:
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        resourceId:
+          column:
+            name: resource_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateResourceOfferingsLinkByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - offeringId
+          - resourceId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateResourceOfferingsLinkByIdResponse
+  description: Responses from the 'update_resource_offerings_link_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[ResourceOfferingsLink!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdateResourceOfferingsLinkByIdResponse
+    inputTypeName: UpdateResourceOfferingsLinkByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_resource_offerings_link_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateResourceOfferingsLinkByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateResourceOfferingsLinkById
+  outputType: UpdateResourceOfferingsLinkByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: ResourceOfferingsLinkBoolExp
+      description: Update permission post-condition predicate over the
+        'resource_offerings_link' collection
+    - name: preCheck
+      type: ResourceOfferingsLinkBoolExp
+      description: Update permission pre-condition predicate over the
+        'resource_offerings_link' collection
+    - name: updateColumns
+      type: UpdateResourceOfferingsLinkByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_resource_offerings_link_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updateResourceOfferingsLinkById
+    rootFieldKind: Mutation
+  description: Update any row on the 'resource_offerings_link' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateResourceOfferingsLinkById
+  permissions:
+    - role: admin
+      allowExecution: true
+

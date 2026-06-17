@@ -127,7 +127,7 @@ type Booking struct {
 	PriceComponents []PriceComponent `gorm:"foreignKey:BookingID" json:"pricecomponents,omitempty"`
 }
 
-func (*Booking) TableName() string { return "booking.bookings" }
+func (*Booking) TableName() string { return "booking.resource" }
 
 // Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
 type Contact struct {
@@ -140,7 +140,7 @@ type Contact struct {
 	// Phone number in E.164 form (e.g. "+14155552671").
 	PhoneNumber *string `gorm:"column:phone_number" json:"phone_number,omitempty"`
 	// Back-relation: Booking records that reference this via contact_id.
-	Bookings []Booking `gorm:"foreignKey:ContactID" json:"bookings,omitempty"`
+	Resource []Booking `gorm:"foreignKey:ContactID" json:"resource,omitempty"`
 }
 
 func (*Contact) TableName() string { return "booking.contacts" }
@@ -154,7 +154,7 @@ type TimeWindow struct {
 	// Exclusive end of the interval.
 	EndTime time.Time `gorm:"column:end_time;not null" json:"end_time" validate:"required"`
 	// Back-relation: Booking records that reference this via window_id.
-	Bookings []Booking `gorm:"foreignKey:WindowID" json:"bookings,omitempty"`
+	Resource []Booking `gorm:"foreignKey:WindowID" json:"resource,omitempty"`
 }
 
 func (*TimeWindow) TableName() string { return "booking.time_windows" }

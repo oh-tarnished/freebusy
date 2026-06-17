@@ -174,7 +174,7 @@ erDiagram
 
 ## Schema `booking`
 
-### `Booking` → `bookings`
+### `Booking` → `resource`
 
 A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 
@@ -280,7 +280,7 @@ A compact view of an organisation the user belongs to.
 
 ## Schema `organisation`
 
-### `Organisation` → `organisations`
+### `Organisation` → `resource`
 
 A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
 
@@ -325,7 +325,7 @@ The membership of a user in an organisation, with their role.
 
 ## Schema `promocode`
 
-### `PromoCode` → `promo_codes`
+### `PromoCode` → `resource`
 
 A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of resources / offerings it applies to.
 
@@ -351,7 +351,7 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 
-### `PromoCodeApplicableResources` → `promo_code_applicable_resources`
+### `PromoCodeApplicableResources` → `applicable_resources`
 
 Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
 
@@ -361,7 +361,7 @@ Join table for the many-to-many relation PromoCode.applicable_resources ↔ Reso
 | `promo_code_id` | `CHAR(26)` | not null |
 | `resource_id` | `CHAR(26)` | not null |
 
-### `PromoCodeApplicableOfferings` → `promo_code_applicable_offerings`
+### `PromoCodeApplicableOfferings` → `applicable_offerings`
 
 Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
 
@@ -378,7 +378,7 @@ Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offe
 
 ## Schema `resource`
 
-### `Resource` → `resources`
+### `Resource` → `entity`
 
 A bookable thing: a provider, room, piece of equipment, or a unit type. A resource is a pool of `capacity` interchangeable units; the freebusy engine computes how many are free for a given window. Its booking_mode decides whether availability is produced as time slots or per-night counts.
 
@@ -469,7 +469,7 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `percent` | `DOUBLE PRECISION` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 
-### `ResourceOfferings` → `resource_offerings`
+### `ResourceOfferings` → `offerings_link`
 
 Join table for the many-to-many relation Resource.offerings ↔ Offering.
 
@@ -505,7 +505,7 @@ An override of a resource's normal hours on a specific span: a blackout / holida
 | `window_id` | `CHAR(26)` | nullable |
 | `date_range_id` | `CHAR(26)` | nullable |
 
-### `Schedule` → `schedules`
+### `Schedule` → `resource`
 
 Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
 
@@ -586,7 +586,7 @@ One tier of a CancellationPolicy: cancel at least `cutoff` before the booking st
 | `refund_percent` | `INTEGER` | not null |
 | `cancellation_policy_id` | `CHAR(26)` | not null |
 
-### `ScheduleExceptions` → `schedule_exceptions`
+### `ScheduleExceptions` → `exceptions`
 
 Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityException.
 

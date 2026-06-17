@@ -122,8 +122,8 @@ model Booking {
   @@index([contactID])
   /// Composite index on [window_id].
   @@index([windowID])
-  /// Maps the model to the "bookings" table in the database.
-  @@map("bookings")
+  /// Maps the model to the "resource" table in the database.
+  @@map("resource")
   /// Maps the model to the "booking" schema in the database.
   @@schema("booking")
 }

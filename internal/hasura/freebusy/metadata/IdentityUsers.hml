@@ -116,6 +116,7 @@ definition:
         - relationshipName: identityMembershipSummaries
         - relationshipName: organisationMembers
         - relationshipName: organisationMembersByUser
+        - relationshipName: bookingResources
   logicalOperators:
     enable: true
   isNull:
@@ -318,4 +319,26 @@ definition:
           - fieldName: user
   graphql:
     aggregateFieldName: organisationMembersByUserAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingResources
+  sourceType: IdentityUsers
+  target:
+    model:
+      name: BookingResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BookingResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: customer
+  graphql:
+    aggregateFieldName: bookingResourcesAggregate
 

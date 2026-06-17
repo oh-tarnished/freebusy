@@ -74,6 +74,7 @@ definition:
       comparableRelationships:
         - relationshipName: organisationOrganisation
         - relationshipName: identityUser
+        - relationshipName: organisationResource
   logicalOperators:
     enable: true
   isNull:
@@ -128,6 +129,7 @@ definition:
       orderableRelationships:
         - relationshipName: organisationOrganisation
         - relationshipName: identityUser
+        - relationshipName: organisationResource
   graphql:
     expressionTypeName: IdentityMembershipSummariesOrderByExp
 
@@ -203,6 +205,24 @@ definition:
     - source:
         fieldPath:
           - fieldName: userId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: organisationResource
+  sourceType: IdentityMembershipSummaries
+  target:
+    model:
+      name: OrganisationResource
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: organisation
       target:
         modelField:
           - fieldName: id

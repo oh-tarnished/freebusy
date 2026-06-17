@@ -180,7 +180,7 @@ definition:
         - fieldName: redemptionCount
           booleanExpressionType: Int8BoolExp
         - fieldName: state
-          booleanExpressionType: PromocodePromocodeStateBoolExp
+          booleanExpressionType: PromocodePromoCodeStateBoolExp
         - fieldName: updateTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
@@ -238,7 +238,7 @@ definition:
         - fieldName: redemptionCount
           aggregateExpression: Int8AggExp
         - fieldName: state
-          aggregateExpression: PromocodePromocodeStateAggExp
+          aggregateExpression: PromocodePromoCodeStateAggExp
         - fieldName: updateTime
           aggregateExpression: TimestampAggExp
   count:

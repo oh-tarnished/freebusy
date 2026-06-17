@@ -124,7 +124,7 @@ definition:
         - fieldName: resourceId
           booleanExpressionType: TextBoolExp
         - fieldName: state
-          booleanExpressionType: ResourceResourceStateBoolExp
+          booleanExpressionType: ResourceOfferingStateBoolExp
         - fieldName: updateTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
@@ -136,6 +136,10 @@ definition:
         - relationshipName: resourceRateOverrides
         - relationshipName: resourceResourceOfferings
         - relationshipName: resourceTaxes
+        - relationshipName: bookingResources
+        - relationshipName: promocodeApplicableOfferings
+        - relationshipName: resourceEntity
+        - relationshipName: resourceOfferingsLinks
   logicalOperators:
     enable: true
   isNull:
@@ -173,7 +177,7 @@ definition:
         - fieldName: resourceId
           aggregateExpression: TextAggExp
         - fieldName: state
-          aggregateExpression: ResourceResourceStateAggExp
+          aggregateExpression: ResourceOfferingStateAggExp
         - fieldName: updateTime
           aggregateExpression: TimestampAggExp
   count:
@@ -217,6 +221,7 @@ definition:
           orderByExpression: TimestampOrderByExp
       orderableRelationships:
         - relationshipName: resourceResource
+        - relationshipName: resourceEntity
   graphql:
     expressionTypeName: ResourceOfferingsOrderByExp
 
@@ -431,4 +436,88 @@ definition:
           - fieldName: offeringId
   graphql:
     aggregateFieldName: resourceTaxesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingResources
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: BookingResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BookingResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offering
+  graphql:
+    aggregateFieldName: bookingResourcesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodeApplicableOfferings
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: PromocodeApplicableOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PromocodeApplicableOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: promocodeApplicableOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceEntity
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceEntity
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: resourceId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceOfferingsLinks
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceOfferingsLink
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceOfferingsLinkAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceOfferingsLinksAggregate
 

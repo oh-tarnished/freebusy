@@ -1,0 +1,185 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PromocodeApplicableResources
+  fields:
+    - name: id
+      type: String_1!
+    - name: promoCodeId
+      type: String_1!
+    - name: resourceId
+      type: String_1!
+  graphql:
+    typeName: PromocodeApplicableResources
+    inputTypeName: PromocodeApplicableResourcesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: promocode_applicable_resources
+      fieldMapping:
+        id:
+          column:
+            name: id
+        promoCodeId:
+          column:
+            name: promo_code_id
+        resourceId:
+          column:
+            name: resource_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PromocodeApplicableResources
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - promoCodeId
+          - resourceId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PromocodeApplicableResourcesBoolExp
+  operand:
+    object:
+      type: PromocodeApplicableResources
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: promoCodeId
+          booleanExpressionType: TextBoolExp
+        - fieldName: resourceId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: promocodeResource
+        - relationshipName: resourceEntity
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PromocodeApplicableResourcesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PromocodeApplicableResourcesAggExp
+  operand:
+    object:
+      aggregatedType: PromocodeApplicableResources
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: promoCodeId
+          aggregateExpression: TextAggExp
+        - fieldName: resourceId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: PromocodeApplicableResourcesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PromocodeApplicableResourcesOrderByExp
+  operand:
+    object:
+      orderedType: PromocodeApplicableResources
+      orderableFields:
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: promoCodeId
+          orderByExpression: String1OrderByExp
+        - fieldName: resourceId
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: promocodeResource
+        - relationshipName: resourceEntity
+  graphql:
+    expressionTypeName: PromocodeApplicableResourcesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PromocodeApplicableResources
+  objectType: PromocodeApplicableResources
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: promocode_applicable_resources
+  filterExpressionType: PromocodeApplicableResourcesBoolExp
+  aggregateExpression: PromocodeApplicableResourcesAggExp
+  orderByExpression: PromocodeApplicableResourcesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: promocodeApplicableResources
+      subscription:
+        rootField: promocodeApplicableResources
+    selectUniques:
+      - queryRootField: promocodeApplicableResourcesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: promocodeApplicableResourcesById
+    filterInputTypeName: PromocodeApplicableResourcesFilterInput
+    aggregate:
+      queryRootField: promocodeApplicableResourcesAggregate
+      subscription:
+        rootField: promocodeApplicableResourcesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PromocodeApplicableResources
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodeResource
+  sourceType: PromocodeApplicableResources
+  target:
+    model:
+      name: PromocodeResource
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: promoCodeId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceEntity
+  sourceType: PromocodeApplicableResources
+  target:
+    model:
+      name: ResourceEntity
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: resourceId
+      target:
+        modelField:
+          - fieldName: id
+

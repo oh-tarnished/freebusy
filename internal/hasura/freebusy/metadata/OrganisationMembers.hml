@@ -122,7 +122,7 @@ definition:
         - fieldName: role
           booleanExpressionType: OrganisationOrganisationRoleBoolExp
         - fieldName: state
-          booleanExpressionType: OrganisationOrganisationStateBoolExp
+          booleanExpressionType: OrganisationMemberStateBoolExp
         - fieldName: updateTime
           booleanExpressionType: TimestampBoolExp
         - fieldName: user
@@ -131,6 +131,7 @@ definition:
         - relationshipName: identityUser
         - relationshipName: organisationOrganisation
         - relationshipName: identityUserByUser
+        - relationshipName: organisationResource
   logicalOperators:
     enable: true
   isNull:
@@ -166,7 +167,7 @@ definition:
         - fieldName: role
           aggregateExpression: OrganisationOrganisationRoleAggExp
         - fieldName: state
-          aggregateExpression: OrganisationOrganisationStateAggExp
+          aggregateExpression: OrganisationMemberStateAggExp
         - fieldName: updateTime
           aggregateExpression: TimestampAggExp
         - fieldName: user
@@ -214,6 +215,7 @@ definition:
         - relationshipName: identityUser
         - relationshipName: organisationOrganisation
         - relationshipName: identityUserByUser
+        - relationshipName: organisationResource
   graphql:
     expressionTypeName: OrganisationMembersOrderByExp
 
@@ -307,6 +309,24 @@ definition:
     - source:
         fieldPath:
           - fieldName: user
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: organisationResource
+  sourceType: OrganisationMembers
+  target:
+    model:
+      name: OrganisationResource
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: organisationId
       target:
         modelField:
           - fieldName: id

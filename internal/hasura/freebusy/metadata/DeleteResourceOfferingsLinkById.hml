@@ -1,0 +1,72 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: DeleteResourceOfferingsLinkByIdResponse
+  description: Responses from the 'delete_resource_offerings_link_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[ResourceOfferingsLink!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: DeleteResourceOfferingsLinkByIdResponse
+    inputTypeName: DeleteResourceOfferingsLinkByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: delete_resource_offerings_link_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: DeleteResourceOfferingsLinkByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteResourceOfferingsLinkById
+  outputType: DeleteResourceOfferingsLinkByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: preCheck
+      type: ResourceOfferingsLinkBoolExp
+      description: Delete permission predicate over the 'resource_offerings_link' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: delete_resource_offerings_link_by_id
+    argumentMapping:
+      keyId: key_id
+      preCheck: pre_check
+  graphql:
+    rootFieldName: deleteResourceOfferingsLinkById
+    rootFieldKind: Mutation
+  description: Delete any row on the 'resource_offerings_link' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteResourceOfferingsLinkById
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -58,6 +58,7 @@ definition:
       comparableRelationships:
         - relationshipName: bookingBookings
         - relationshipName: scheduleAvailabilityExceptions
+        - relationshipName: bookingResources
   logicalOperators:
     enable: true
   isNull:
@@ -188,4 +189,26 @@ definition:
           - fieldName: windowId
   graphql:
     aggregateFieldName: scheduleAvailabilityExceptionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingResources
+  sourceType: BookingTimeWindows
+  target:
+    model:
+      name: BookingResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: BookingResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: windowId
+  graphql:
+    aggregateFieldName: bookingResourcesAggregate
 

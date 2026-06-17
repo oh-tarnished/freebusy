@@ -50,8 +50,8 @@ model Organisation {
   /// Back-relation: Member records that reference this model via organisation_id.
   members Member[]
 
-  /// Maps the model to the "organisations" table in the database.
-  @@map("organisations")
+  /// Maps the model to the "resource" table in the database.
+  @@map("resource")
   /// Maps the model to the "organisation" schema in the database.
   @@schema("organisation")
 }

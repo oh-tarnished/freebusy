@@ -85,6 +85,7 @@ definition:
           booleanExpressionType: Int4BoolExp
       comparableRelationships:
         - relationshipName: scheduleSchedules
+        - relationshipName: scheduleResources
   logicalOperators:
     enable: true
   isNull:
@@ -201,4 +202,26 @@ definition:
           - fieldName: stayConstraintsId
   graphql:
     aggregateFieldName: scheduleSchedulesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleResources
+  sourceType: ScheduleStayConstraints
+  target:
+    model:
+      name: ScheduleResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: stayConstraintsId
+  graphql:
+    aggregateFieldName: scheduleResourcesAggregate
 

@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeApplicableResourcesId
+  description: Update the 'id' column in the 'promocode_applicable_resources' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeApplicableResourcesId
+    inputTypeName: UpdateColumnPromocodeApplicableResourcesIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_applicable_resources_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeApplicableResourcesId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeApplicableResourcesPromoCodeId
+  description: Update the 'promo_code_id' column in the
+    'promocode_applicable_resources' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeApplicableResourcesPromoCodeId
+    inputTypeName: UpdateColumnPromocodeApplicableResourcesPromoCodeIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_applicable_resources_promo_code_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeApplicableResourcesPromoCodeId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeApplicableResourcesResourceId
+  description: Update the 'resource_id' column in the
+    'promocode_applicable_resources' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeApplicableResourcesResourceId
+    inputTypeName: UpdateColumnPromocodeApplicableResourcesResourceIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_applicable_resources_resource_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeApplicableResourcesResourceId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdatePromocodeApplicableResourcesByIdUpdateColumns
+  description: Update the columns of the 'promocode_applicable_resources' collection
+  fields:
+    - name: id
+      type: UpdateColumnPromocodeApplicableResourcesId
+      description: Update the 'id' column in the 'promocode_applicable_resources'
+        collection.
+    - name: promoCodeId
+      type: UpdateColumnPromocodeApplicableResourcesPromoCodeId
+      description: Update the 'promo_code_id' column in the
+        'promocode_applicable_resources' collection.
+    - name: resourceId
+      type: UpdateColumnPromocodeApplicableResourcesResourceId
+      description: Update the 'resource_id' column in the
+        'promocode_applicable_resources' collection.
+  graphql:
+    typeName: UpdatePromocodeApplicableResourcesByIdUpdateColumns
+    inputTypeName: UpdatePromocodeApplicableResourcesByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_promocode_applicable_resources_by_id_update_columns
+      fieldMapping:
+        id:
+          column:
+            name: id
+        promoCodeId:
+          column:
+            name: promo_code_id
+        resourceId:
+          column:
+            name: resource_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdatePromocodeApplicableResourcesByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - promoCodeId
+          - resourceId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdatePromocodeApplicableResourcesByIdResponse
+  description: Responses from the 'update_promocode_applicable_resources_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[PromocodeApplicableResources!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdatePromocodeApplicableResourcesByIdResponse
+    inputTypeName: UpdatePromocodeApplicableResourcesByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_promocode_applicable_resources_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdatePromocodeApplicableResourcesByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdatePromocodeApplicableResourcesById
+  outputType: UpdatePromocodeApplicableResourcesByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: PromocodeApplicableResourcesBoolExp
+      description: Update permission post-condition predicate over the
+        'promocode_applicable_resources' collection
+    - name: preCheck
+      type: PromocodeApplicableResourcesBoolExp
+      description: Update permission pre-condition predicate over the
+        'promocode_applicable_resources' collection
+    - name: updateColumns
+      type: UpdatePromocodeApplicableResourcesByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_promocode_applicable_resources_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updatePromocodeApplicableResourcesById
+    rootFieldKind: Mutation
+  description: Update any row on the 'promocode_applicable_resources' collection
+    using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdatePromocodeApplicableResourcesById
+  permissions:
+    - role: admin
+      allowExecution: true
+

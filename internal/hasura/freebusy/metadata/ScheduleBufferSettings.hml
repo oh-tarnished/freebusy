@@ -81,6 +81,7 @@ definition:
           booleanExpressionType: TextBoolExp
       comparableRelationships:
         - relationshipName: scheduleSchedules
+        - relationshipName: scheduleResources
   logicalOperators:
     enable: true
   isNull:
@@ -201,4 +202,26 @@ definition:
           - fieldName: buffersId
   graphql:
     aggregateFieldName: scheduleSchedulesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleResources
+  sourceType: ScheduleBufferSettings
+  target:
+    model:
+      name: ScheduleResource
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleResourceAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: buffersId
+  graphql:
+    aggregateFieldName: scheduleResourcesAggregate
 

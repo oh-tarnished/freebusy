@@ -59,7 +59,7 @@ type AvailabilityException struct {
 	DateRangeID *string    `gorm:"column:date_range_id" json:"date_range_id,omitempty"`
 	DateRange   *DateRange `gorm:"foreignKey:DateRangeID;constraint:OnDelete:SET NULL" json:"daterange,omitempty"`
 	// Back-relation: ScheduleExceptions records that reference this via availability_exception_id.
-	ScheduleExceptions []ScheduleExceptions `gorm:"foreignKey:AvailabilityExceptionID" json:"scheduleexceptions,omitempty"`
+	Exceptions []ScheduleExceptions `gorm:"foreignKey:AvailabilityExceptionID" json:"exceptions,omitempty"`
 }
 
 func (*AvailabilityException) TableName() string { return "schedule.availability_exceptions" }
@@ -84,10 +84,10 @@ type Schedule struct {
 	// Back-relation: RecurringRule records that reference this via schedule_id.
 	RecurringRules []RecurringRule `gorm:"foreignKey:ScheduleID" json:"recurringrules,omitempty"`
 	// Back-relation: ScheduleExceptions records that reference this via schedule_id.
-	ScheduleExceptions []ScheduleExceptions `gorm:"foreignKey:ScheduleID" json:"scheduleexceptions,omitempty"`
+	Exceptions []ScheduleExceptions `gorm:"foreignKey:ScheduleID" json:"exceptions,omitempty"`
 }
 
-func (*Schedule) TableName() string { return "schedule.schedules" }
+func (*Schedule) TableName() string { return "schedule.resource" }
 
 // A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
 type DateRange struct {
@@ -135,7 +135,7 @@ type BufferSettings struct {
 	// Minimum gap enforced between two adjacent bookings.
 	Gap *string `gorm:"column:gap" json:"gap,omitempty"`
 	// Back-relation: Schedule records that reference this via buffers_id.
-	Schedules []Schedule `gorm:"foreignKey:BuffersID" json:"schedules,omitempty"`
+	Resource []Schedule `gorm:"foreignKey:BuffersID" json:"resource,omitempty"`
 }
 
 func (*BufferSettings) TableName() string { return "schedule.buffer_settings" }
@@ -157,7 +157,7 @@ type StayConstraints struct {
 	// Latest a stay may begin, in days from now. Zero means no limit.
 	AdvanceMaxDays *int32 `gorm:"column:advance_max_days" json:"advance_max_days,omitempty"`
 	// Back-relation: Schedule records that reference this via stay_constraints_id.
-	Schedules []Schedule `gorm:"foreignKey:StayConstraintsID" json:"schedules,omitempty"`
+	Resource []Schedule `gorm:"foreignKey:StayConstraintsID" json:"resource,omitempty"`
 }
 
 func (*StayConstraints) TableName() string { return "schedule.stay_constraints" }
@@ -167,7 +167,7 @@ type CancellationPolicy struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Back-relation: Schedule records that reference this via cancellation_policy_id.
-	Schedules []Schedule `gorm:"foreignKey:CancellationPolicyID" json:"schedules,omitempty"`
+	Resource []Schedule `gorm:"foreignKey:CancellationPolicyID" json:"resource,omitempty"`
 	// Back-relation: RefundTier records that reference this via cancellation_policy_id.
 	RefundTiers []RefundTier `gorm:"foreignKey:CancellationPolicyID" json:"refundtiers,omitempty"`
 }
@@ -201,4 +201,4 @@ type ScheduleExceptions struct {
 	AvailabilityException   *AvailabilityException `gorm:"foreignKey:AvailabilityExceptionID;constraint:OnDelete:CASCADE" json:"availabilityexception,omitempty"`
 }
 
-func (*ScheduleExceptions) TableName() string { return "schedule.schedule_exceptions" }
+func (*ScheduleExceptions) TableName() string { return "schedule.exceptions" }

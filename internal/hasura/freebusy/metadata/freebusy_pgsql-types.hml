@@ -1308,50 +1308,6 @@ definition:
     comparisonExpressionTypeName: EnumComparisonExp_5
 
 ---
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: PromocodePromocodeStateBoolExp
-  operand:
-    scalar:
-      type: Enum
-      comparisonOperators:
-        - name: _eq
-          argumentType: Enum!
-        - name: _gt
-          argumentType: Enum!
-        - name: _gte
-          argumentType: Enum!
-        - name: _in
-          argumentType: "[Enum!]!"
-        - name: _lt
-          argumentType: Enum!
-        - name: _lte
-          argumentType: Enum!
-        - name: _neq
-          argumentType: Enum!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: promocode_promocode_state
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: PromocodePromocodeStateBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: freebusy_pgsql
-  dataConnectorScalarType: promocode_promocode_state
-  representation: Enum
-  graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_6
-
----
 kind: AggregateExpression
 version: v1
 definition:
@@ -1414,36 +1370,6 @@ definition:
     returnType: Int64
   graphql:
     selectTypeName: PromocodeDiscountTypeAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: PromocodePromocodeStateAggExp
-  operand:
-    scalar:
-      aggregatedType: Enum
-      aggregationFunctions:
-        - name: max
-          returnType: Enum
-        - name: min
-          returnType: Enum
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: promocode_promocode_state
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-    returnType: Int64
-  countDistinct:
-    enable: true
-    returnType: Int64
-  graphql:
-    selectTypeName: PromocodePromocodeStateAggExp
 
 ---
 kind: OrderByExpression
@@ -2028,4 +1954,226 @@ definition:
     returnType: Int64
   graphql:
     selectTypeName: ScheduleAvailabilityExceptionSpanCaseAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: OrganisationMemberStateBoolExp
+  operand:
+    scalar:
+      type: Enum
+      comparisonOperators:
+        - name: _eq
+          argumentType: Enum!
+        - name: _gt
+          argumentType: Enum!
+        - name: _gte
+          argumentType: Enum!
+        - name: _in
+          argumentType: "[Enum!]!"
+        - name: _lt
+          argumentType: Enum!
+        - name: _lte
+          argumentType: Enum!
+        - name: _neq
+          argumentType: Enum!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: organisation_member_state
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: OrganisationMemberStateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: freebusy_pgsql
+  dataConnectorScalarType: organisation_member_state
+  representation: Enum
+  graphql:
+    comparisonExpressionTypeName: EnumComparisonExp_13
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: OrganisationMemberStateAggExp
+  operand:
+    scalar:
+      aggregatedType: Enum
+      aggregationFunctions:
+        - name: max
+          returnType: Enum
+        - name: min
+          returnType: Enum
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: organisation_member_state
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+    returnType: Int64
+  countDistinct:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: OrganisationMemberStateAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PromocodePromoCodeStateBoolExp
+  operand:
+    scalar:
+      type: Enum
+      comparisonOperators:
+        - name: _eq
+          argumentType: Enum!
+        - name: _gt
+          argumentType: Enum!
+        - name: _gte
+          argumentType: Enum!
+        - name: _in
+          argumentType: "[Enum!]!"
+        - name: _lt
+          argumentType: Enum!
+        - name: _lte
+          argumentType: Enum!
+        - name: _neq
+          argumentType: Enum!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: promocode_promo_code_state
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PromocodePromoCodeStateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: freebusy_pgsql
+  dataConnectorScalarType: promocode_promo_code_state
+  representation: Enum
+  graphql:
+    comparisonExpressionTypeName: EnumComparisonExp_14
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PromocodePromoCodeStateAggExp
+  operand:
+    scalar:
+      aggregatedType: Enum
+      aggregationFunctions:
+        - name: max
+          returnType: Enum
+        - name: min
+          returnType: Enum
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: promocode_promo_code_state
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+    returnType: Int64
+  countDistinct:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: PromocodePromoCodeStateAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ResourceOfferingStateBoolExp
+  operand:
+    scalar:
+      type: Enum
+      comparisonOperators:
+        - name: _eq
+          argumentType: Enum!
+        - name: _gt
+          argumentType: Enum!
+        - name: _gte
+          argumentType: Enum!
+        - name: _in
+          argumentType: "[Enum!]!"
+        - name: _lt
+          argumentType: Enum!
+        - name: _lte
+          argumentType: Enum!
+        - name: _neq
+          argumentType: Enum!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: resource_offering_state
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ResourceOfferingStateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: freebusy_pgsql
+  dataConnectorScalarType: resource_offering_state
+  representation: Enum
+  graphql:
+    comparisonExpressionTypeName: EnumComparisonExp_15
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ResourceOfferingStateAggExp
+  operand:
+    scalar:
+      aggregatedType: Enum
+      aggregationFunctions:
+        - name: max
+          returnType: Enum
+        - name: min
+          returnType: Enum
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: resource_offering_state
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+    returnType: Int64
+  countDistinct:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: ResourceOfferingStateAggExp
 

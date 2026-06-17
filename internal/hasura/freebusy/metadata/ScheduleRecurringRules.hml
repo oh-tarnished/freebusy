@@ -73,6 +73,7 @@ definition:
           booleanExpressionType: TextBoolExp
       comparableRelationships:
         - relationshipName: scheduleSchedule
+        - relationshipName: scheduleResource
   logicalOperators:
     enable: true
   isNull:
@@ -126,6 +127,7 @@ definition:
           orderByExpression: String1OrderByExp
       orderableRelationships:
         - relationshipName: scheduleSchedule
+        - relationshipName: scheduleResource
   graphql:
     expressionTypeName: ScheduleRecurringRulesOrderByExp
 
@@ -178,6 +180,24 @@ definition:
   target:
     model:
       name: ScheduleSchedules
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: scheduleId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleResource
+  sourceType: ScheduleRecurringRules
+  target:
+    model:
+      name: ScheduleResource
       relationshipType: Object
   mapping:
     - source:

@@ -50,7 +50,7 @@ erDiagram
 
 Schema file: [`booking.postgres.prisma`](./booking.postgres.prisma)
 
-### `Booking` → `bookings`
+### `Booking` → `resource`
 
 A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 

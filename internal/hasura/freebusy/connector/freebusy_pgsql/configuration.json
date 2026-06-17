@@ -95,9 +95,123 @@
         "foreignRelations": {},
         "description": null
       },
-      "booking_bookings": {
+      "booking_contacts": {
         "schemaName": "booking",
-        "tableName": "bookings",
+        "tableName": "contacts",
+        "columns": {
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "email": {
+            "name": "email",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "phone_number": {
+            "name": "phone_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "contacts_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "booking_price_components": {
+        "schemaName": "booking",
+        "tableName": "price_components",
+        "columns": {
+          "amount": {
+            "name": "amount",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "booking_id": {
+            "name": "booking_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "code": {
+            "name": "code",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "booking_type"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "price_components_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "price_components_booking_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "booking_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "booking_resource": {
+        "schemaName": "booking",
+        "tableName": "resource",
         "columns": {
           "assigned_unit": {
             "name": "assigned_unit",
@@ -310,165 +424,51 @@
           }
         },
         "uniquenessConstraints": {
-          "bookings_pkey": [
+          "resource_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "bookings_contact_id_fkey": {
+          "resource_contact_id_fkey": {
             "foreignSchema": "booking",
             "foreignTable": "contacts",
             "columnMapping": {
               "contact_id": "id"
             }
           },
-          "bookings_customer_fkey": {
+          "resource_customer_fkey": {
             "foreignSchema": "identity",
             "foreignTable": "users",
             "columnMapping": {
               "customer": "id"
             }
           },
-          "bookings_offering_fkey": {
+          "resource_offering_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "offerings",
             "columnMapping": {
               "offering": "id"
             }
           },
-          "bookings_promo_code_fkey": {
+          "resource_promo_code_fkey": {
             "foreignSchema": "promocode",
-            "foreignTable": "promo_codes",
+            "foreignTable": "resource",
             "columnMapping": {
               "promo_code": "id"
             }
           },
-          "bookings_resource_fkey": {
+          "resource_resource_fkey": {
             "foreignSchema": "resource",
-            "foreignTable": "resources",
+            "foreignTable": "entity",
             "columnMapping": {
               "resource": "id"
             }
           },
-          "bookings_window_id_fkey": {
+          "resource_window_id_fkey": {
             "foreignSchema": "booking",
             "foreignTable": "time_windows",
             "columnMapping": {
               "window_id": "id"
-            }
-          }
-        },
-        "description": null
-      },
-      "booking_contacts": {
-        "schemaName": "booking",
-        "tableName": "contacts",
-        "columns": {
-          "display_name": {
-            "name": "display_name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "email": {
-            "name": "email",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "phone_number": {
-            "name": "phone_number",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "contacts_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "booking_price_components": {
-        "schemaName": "booking",
-        "tableName": "price_components",
-        "columns": {
-          "amount": {
-            "name": "amount",
-            "type": {
-              "scalarType": "jsonb"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "booking_id": {
-            "name": "booking_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "code": {
-            "name": "code",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "display_name": {
-            "name": "display_name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "booking_type"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "price_components_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "price_components_booking_id_fkey": {
-            "foreignSchema": "booking",
-            "foreignTable": "bookings",
-            "columnMapping": {
-              "booking_id": "id"
             }
           }
         },
@@ -564,7 +564,7 @@
         "foreignRelations": {
           "membership_summaries_organisation_fkey": {
             "foreignSchema": "organisation",
-            "foreignTable": "organisations",
+            "foreignTable": "resource",
             "columnMapping": {
               "organisation": "id"
             }
@@ -754,7 +754,7 @@
           "state": {
             "name": "state",
             "type": {
-              "scalarType": "organisation_organisation_state"
+              "scalarType": "organisation_member_state"
             },
             "nullable": "nullable",
             "description": null
@@ -791,7 +791,7 @@
           },
           "members_organisation_id_fkey": {
             "foreignSchema": "organisation",
-            "foreignTable": "organisations",
+            "foreignTable": "resource",
             "columnMapping": {
               "organisation_id": "id"
             }
@@ -806,9 +806,9 @@
         },
         "description": null
       },
-      "organisation_organisations": {
+      "organisation_resource": {
         "schemaName": "organisation",
-        "tableName": "organisations",
+        "tableName": "resource",
         "columns": {
           "billing_email": {
             "name": "billing_email",
@@ -901,16 +901,16 @@
           }
         },
         "uniquenessConstraints": {
-          "organisations_pkey": [
+          "resource_pkey": [
             "id"
           ]
         },
         "foreignRelations": {},
         "description": null
       },
-      "promocode_promo_code_applicable_offerings": {
+      "promocode_applicable_offerings": {
         "schemaName": "promocode",
-        "tableName": "promo_code_applicable_offerings",
+        "tableName": "applicable_offerings",
         "columns": {
           "id": {
             "name": "id",
@@ -938,21 +938,21 @@
           }
         },
         "uniquenessConstraints": {
-          "promo_code_applicable_offerings_pkey": [
+          "applicable_offerings_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "promo_code_applicable_offerings_offering_id_fkey": {
+          "applicable_offerings_offering_id_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "offerings",
             "columnMapping": {
               "offering_id": "id"
             }
           },
-          "promo_code_applicable_offerings_promo_code_id_fkey": {
+          "applicable_offerings_promo_code_id_fkey": {
             "foreignSchema": "promocode",
-            "foreignTable": "promo_codes",
+            "foreignTable": "resource",
             "columnMapping": {
               "promo_code_id": "id"
             }
@@ -960,9 +960,9 @@
         },
         "description": null
       },
-      "promocode_promo_code_applicable_resources": {
+      "promocode_applicable_resources": {
         "schemaName": "promocode",
-        "tableName": "promo_code_applicable_resources",
+        "tableName": "applicable_resources",
         "columns": {
           "id": {
             "name": "id",
@@ -990,21 +990,21 @@
           }
         },
         "uniquenessConstraints": {
-          "promo_code_applicable_resources_pkey": [
+          "applicable_resources_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "promo_code_applicable_resources_promo_code_id_fkey": {
+          "applicable_resources_promo_code_id_fkey": {
             "foreignSchema": "promocode",
-            "foreignTable": "promo_codes",
+            "foreignTable": "resource",
             "columnMapping": {
               "promo_code_id": "id"
             }
           },
-          "promo_code_applicable_resources_resource_id_fkey": {
+          "applicable_resources_resource_id_fkey": {
             "foreignSchema": "resource",
-            "foreignTable": "resources",
+            "foreignTable": "entity",
             "columnMapping": {
               "resource_id": "id"
             }
@@ -1012,9 +1012,9 @@
         },
         "description": null
       },
-      "promocode_promo_codes": {
+      "promocode_resource": {
         "schemaName": "promocode",
-        "tableName": "promo_codes",
+        "tableName": "resource",
         "columns": {
           "amount_off": {
             "name": "amount_off",
@@ -1157,7 +1157,7 @@
           "state": {
             "name": "state",
             "type": {
-              "scalarType": "promocode_promocode_state"
+              "scalarType": "promocode_promo_code_state"
             },
             "nullable": "nullable",
             "description": null
@@ -1172,7 +1172,137 @@
           }
         },
         "uniquenessConstraints": {
-          "promo_codes_pkey": [
+          "resource_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "resource_entity": {
+        "schemaName": "resource",
+        "tableName": "entity",
+        "columns": {
+          "attributes": {
+            "name": "attributes",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "booking_mode": {
+            "name": "booking_mode",
+            "type": {
+              "scalarType": "resource_booking_mode"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "capacity": {
+            "name": "capacity",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "create_time": {
+            "name": "create_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "etag": {
+            "name": "etag",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "resource_resource_state"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "tags": {
+            "name": "tags",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "time_zone": {
+            "name": "time_zone",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "resource_resource_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "update_time": {
+            "name": "update_time",
+            "type": {
+              "scalarType": "timestamp"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "entity_pkey": [
             "id"
           ]
         },
@@ -1413,7 +1543,7 @@
           "state": {
             "name": "state",
             "type": {
-              "scalarType": "resource_resource_state"
+              "scalarType": "resource_offering_state"
             },
             "nullable": "nullable",
             "description": null
@@ -1435,7 +1565,59 @@
         "foreignRelations": {
           "offerings_resource_id_fkey": {
             "foreignSchema": "resource",
-            "foreignTable": "resources",
+            "foreignTable": "entity",
+            "columnMapping": {
+              "resource_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "resource_offerings_link": {
+        "schemaName": "resource",
+        "tableName": "offerings_link",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "offering_id": {
+            "name": "offering_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "resource_id": {
+            "name": "resource_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "offerings_link_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "offerings_link_offering_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "offerings",
+            "columnMapping": {
+              "offering_id": "id"
+            }
+          },
+          "offerings_link_resource_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "entity",
             "columnMapping": {
               "resource_id": "id"
             }
@@ -1511,188 +1693,6 @@
             }
           }
         },
-        "description": null
-      },
-      "resource_resource_offerings": {
-        "schemaName": "resource",
-        "tableName": "resource_offerings",
-        "columns": {
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "offering_id": {
-            "name": "offering_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "resource_id": {
-            "name": "resource_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "resource_offerings_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "resource_offerings_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
-            "columnMapping": {
-              "offering_id": "id"
-            }
-          },
-          "resource_offerings_resource_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "resources",
-            "columnMapping": {
-              "resource_id": "id"
-            }
-          }
-        },
-        "description": null
-      },
-      "resource_resources": {
-        "schemaName": "resource",
-        "tableName": "resources",
-        "columns": {
-          "attributes": {
-            "name": "attributes",
-            "type": {
-              "scalarType": "jsonb"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "booking_mode": {
-            "name": "booking_mode",
-            "type": {
-              "scalarType": "resource_booking_mode"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "capacity": {
-            "name": "capacity",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "create_time": {
-            "name": "create_time",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "description": {
-            "name": "description",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "display_name": {
-            "name": "display_name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "etag": {
-            "name": "etag",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "name": {
-            "name": "name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "state": {
-            "name": "state",
-            "type": {
-              "scalarType": "resource_resource_state"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "tags": {
-            "name": "tags",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "time_zone": {
-            "name": "time_zone",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "resource_resource_type"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "update_time": {
-            "name": "update_time",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "resources_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {},
         "description": null
       },
       "resource_taxes": {
@@ -1850,7 +1850,7 @@
           },
           "availability_exceptions_resource_id_fkey": {
             "foreignSchema": "resource",
-            "foreignTable": "resources",
+            "foreignTable": "entity",
             "columnMapping": {
               "resource_id": "id"
             }
@@ -1984,6 +1984,58 @@
         "foreignRelations": {},
         "description": null
       },
+      "schedule_exceptions": {
+        "schemaName": "schedule",
+        "tableName": "exceptions",
+        "columns": {
+          "availability_exception_id": {
+            "name": "availability_exception_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "schedule_id": {
+            "name": "schedule_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "exceptions_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "exceptions_availability_exception_id_fkey": {
+            "foreignSchema": "schedule",
+            "foreignTable": "availability_exceptions",
+            "columnMapping": {
+              "availability_exception_id": "id"
+            }
+          },
+          "exceptions_schedule_id_fkey": {
+            "foreignSchema": "schedule",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "schedule_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "schedule_recurring_rules": {
         "schemaName": "schedule",
         "tableName": "recurring_rules",
@@ -2037,7 +2089,7 @@
         "foreignRelations": {
           "recurring_rules_schedule_id_fkey": {
             "foreignSchema": "schedule",
-            "foreignTable": "schedules",
+            "foreignTable": "resource",
             "columnMapping": {
               "schedule_id": "id"
             }
@@ -2098,61 +2150,9 @@
         },
         "description": null
       },
-      "schedule_schedule_exceptions": {
+      "schedule_resource": {
         "schemaName": "schedule",
-        "tableName": "schedule_exceptions",
-        "columns": {
-          "availability_exception_id": {
-            "name": "availability_exception_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "schedule_id": {
-            "name": "schedule_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "schedule_exceptions_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "schedule_exceptions_availability_exception_id_fkey": {
-            "foreignSchema": "schedule",
-            "foreignTable": "availability_exceptions",
-            "columnMapping": {
-              "availability_exception_id": "id"
-            }
-          },
-          "schedule_exceptions_schedule_id_fkey": {
-            "foreignSchema": "schedule",
-            "foreignTable": "schedules",
-            "columnMapping": {
-              "schedule_id": "id"
-            }
-          }
-        },
-        "description": null
-      },
-      "schedule_schedules": {
-        "schemaName": "schedule",
-        "tableName": "schedules",
+        "tableName": "resource",
         "columns": {
           "buffers_id": {
             "name": "buffers_id",
@@ -2204,26 +2204,26 @@
           }
         },
         "uniquenessConstraints": {
-          "schedules_pkey": [
+          "resource_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "schedules_buffers_id_fkey": {
+          "resource_buffers_id_fkey": {
             "foreignSchema": "schedule",
             "foreignTable": "buffer_settings",
             "columnMapping": {
               "buffers_id": "id"
             }
           },
-          "schedules_cancellation_policy_id_fkey": {
+          "resource_cancellation_policy_id_fkey": {
             "foreignSchema": "schedule",
             "foreignTable": "cancellation_policies",
             "columnMapping": {
               "cancellation_policy_id": "id"
             }
           },
-          "schedules_stay_constraints_id_fkey": {
+          "resource_stay_constraints_id_fkey": {
             "foreignSchema": "schedule",
             "foreignTable": "stay_constraints",
             "columnMapping": {
@@ -2983,6 +2983,70 @@
           },
           "typeRepresentation": "bigDecimalAsString"
         },
+        "organisation_member_state": {
+          "typeName": "member_state",
+          "schemaName": "organisation",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "organisation_member_state"
+            },
+            "min": {
+              "returnType": "organisation_member_state"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "organisation_member_state",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "INVITED",
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          }
+        },
         "organisation_organisation_role": {
           "typeName": "organisation_role",
           "schemaName": "organisation",
@@ -3174,59 +3238,59 @@
             ]
           }
         },
-        "promocode_promocode_state": {
-          "typeName": "promocode_state",
+        "promocode_promo_code_state": {
+          "typeName": "promo_code_state",
           "schemaName": "promocode",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "promocode_promocode_state"
+              "returnType": "promocode_promo_code_state"
             },
             "min": {
-              "returnType": "promocode_promocode_state"
+              "returnType": "promocode_promo_code_state"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "greaterThan",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "greaterThanOrEqual",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "lessThan",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "lessThanOrEqual",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             },
             "_neq": {
               "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "promocode_promocode_state",
+              "argumentType": "promocode_promo_code_state",
               "isInfix": true
             }
           },
@@ -3298,6 +3362,69 @@
             "enum": [
               "TIME_SLOT",
               "NIGHTLY"
+            ]
+          }
+        },
+        "resource_offering_state": {
+          "typeName": "offering_state",
+          "schemaName": "resource",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "resource_offering_state"
+            },
+            "min": {
+              "returnType": "resource_offering_state"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "resource_offering_state",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
             ]
           }
         },
