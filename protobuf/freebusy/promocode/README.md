@@ -42,7 +42,7 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `applicable_resources` | `repeated string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
 | `applicable_offerings` | `repeated string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
 | `redemption_count` | `int64` | `OUTPUT_ONLY` | How many times the code has been redeemed. |
-| `state` | `State` | `OUTPUT_ONLY` | Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions). |
+| `state` | `PromoCodeState` | `OUTPUT_ONLY` | Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions). |
 | `disabled` | `bool` | `OPTIONAL` | If true, the code is manually disabled regardless of its window and caps. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
@@ -130,6 +130,17 @@ Response message for ValidatePromoCode.
 | `final_total` | `Money` | - | Subtotal minus the discount. |
 
 ## Enums
+
+### PromoCodeState
+
+Lifecycle state of a promo code.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `PROMO_CODE_STATE_UNSPECIFIED` | 0 | Unset; treated as active. |
+| `PROMO_CODE_STATE_ACTIVE` | 1 | Redeemable (subject to window and caps). |
+| `PROMO_CODE_STATE_DISABLED` | 2 | Manually disabled. |
+| `PROMO_CODE_STATE_EXPIRED` | 3 | Past its redemption window or out of redemptions. |
 
 ### DiscountType
 

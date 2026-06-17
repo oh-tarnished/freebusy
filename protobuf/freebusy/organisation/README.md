@@ -70,6 +70,40 @@ Arguments for the "invite_member" prompt.
 | `email` | `string` | `REQUIRED` | Email address to invite. |
 | `role` | `string` | `REQUIRED` | Role to grant, e.g. "owner", "admin", "member", or "viewer". |
 
+### Organisation
+
+A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The organisation name. Format: organisations/{organisation} |
+| `display_name` | `string` | `REQUIRED` | Human-friendly organisation name (e.g. "Acme Inc."). |
+| `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across organisations. |
+| `billing_email` | `string` | `OPTIONAL` | Billing contact email. |
+| `state` | `OrganisationState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `settings` | `Struct` | `OPTIONAL` | Arbitrary organisation-level settings. |
+| `member_count` | `int64` | `OUTPUT_ONLY` | Number of members across all states. |
+| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
+| `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
+
+### Member
+
+The membership of a user in an organisation, with their role.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The member name. Format: organisations/{organisation}/members/{member} |
+| `user` | `string` | `OUTPUT_ONLY` | The user, once the invite is accepted. Format: users/{user} |
+| `email` | `string` | `REQUIRED` | The invited email address. |
+| `display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the member. |
+| `role` | `OrganisationRole` | `REQUIRED` | The member's role in the organisation. |
+| `state` | `MemberState` | `OUTPUT_ONLY` | Confirmation state of the membership. |
+| `inviter` | `string` | `OUTPUT_ONLY` | The user who issued the invite. Format: users/{user} |
+| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp (when the invite was created). |
+| `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
+
 ### ListOrganisationsRequest
 
 Request message for ListOrganisations.
@@ -155,41 +189,28 @@ Request message for GetMember.
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The member to retrieve. Format: organisations/{organisation}/members/{member} |
 
-### Organisation
-
-A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The organisation name. Format: organisations/{organisation} |
-| `display_name` | `string` | `REQUIRED` | Human-friendly organisation name (e.g. "Acme Inc."). |
-| `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across organisations. |
-| `billing_email` | `string` | `OPTIONAL` | Billing contact email. |
-| `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
-| `settings` | `Struct` | `OPTIONAL` | Arbitrary organisation-level settings. |
-| `member_count` | `int64` | `OUTPUT_ONLY` | Number of members across all states. |
-| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
-| `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
-| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
-
-### Member
-
-The membership of a user in an organisation, with their role.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The member name. Format: organisations/{organisation}/members/{member} |
-| `user` | `string` | `OUTPUT_ONLY` | The user, once the invite is accepted. Format: users/{user} |
-| `email` | `string` | `REQUIRED` | The invited email address. |
-| `display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the member. |
-| `role` | `OrganisationRole` | `REQUIRED` | The member's role in the organisation. |
-| `state` | `State` | `OUTPUT_ONLY` | Confirmation state of the membership. |
-| `inviter` | `string` | `OUTPUT_ONLY` | The user who issued the invite. Format: users/{user} |
-| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp (when the invite was created). |
-| `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
-| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
-
 ## Enums
+
+### MemberState
+
+Confirmation state of a membership.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `MEMBER_STATE_UNSPECIFIED` | 0 | Unset. |
+| `MEMBER_STATE_INVITED` | 1 | Invited, awaiting acceptance. |
+| `MEMBER_STATE_ACTIVE` | 2 | Active member. |
+| `MEMBER_STATE_SUSPENDED` | 3 | Suspended within the organisation. |
+
+### OrganisationState
+
+Lifecycle state of an organisation.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `ORGANISATION_STATE_UNSPECIFIED` | 0 | Unset. |
+| `ORGANISATION_STATE_ACTIVE` | 1 | Active. |
+| `ORGANISATION_STATE_SUSPENDED` | 2 | Suspended; access blocked. |
 
 ### OrganisationRole
 

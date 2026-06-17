@@ -191,6 +191,27 @@ Response message for SearchAvailability.
 | `matches` | `repeated AvailabilityMatch` | - | The matching resources, ordered per order_by. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
+## Enums
+
+### Code
+
+Machine-readable reasons a span is not bookable.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `CODE_UNSPECIFIED` | 0 | Unset. |
+| `CODE_NO_CAPACITY` | 1 | Not enough free units for the requested count. |
+| `CODE_OUTSIDE_HOURS` | 2 | The span falls outside the resource's recurring hours. |
+| `CODE_CLOSED` | 3 | A closure exception (blackout/holiday) covers part of the span. |
+| `CODE_MIN_NIGHTS` | 4 | Shorter than the minimum stay (min_nights). |
+| `CODE_MAX_NIGHTS` | 5 | Longer than the maximum stay (max_nights). |
+| `CODE_CHECKIN_DAY` | 6 | Check-in falls on a disallowed weekday. |
+| `CODE_CHECKOUT_DAY` | 7 | Check-out falls on a disallowed weekday. |
+| `CODE_MIN_NOTICE` | 8 | The span starts sooner than the minimum notice allows. |
+| `CODE_MAX_ADVANCE` | 9 | The span starts further out than the advance window allows. |
+| `CODE_BUFFER_CONFLICT` | 10 | A buffer or gap rule around an adjacent booking conflicts. |
+| `CODE_RESOURCE_ARCHIVED` | 11 | The resource is archived. |
+
 ---
 
 © 2026 oh-tarnished | Apache 2.0 License

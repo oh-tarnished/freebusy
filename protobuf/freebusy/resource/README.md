@@ -42,7 +42,7 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `tags` | `repeated string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
 | `offerings` | `repeated string` | `OUTPUT_ONLY` | Resource names of the offerings attached to this resource (e.g. "30-min consult"); manage them with the Offering standard methods. Format: resources/{resource}/offerings/{offering} |
-| `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `ResourceState` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
@@ -63,7 +63,7 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `los_discounts` | `repeated LosDiscount` | `OPTIONAL` | Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at least `min_nights` long. The most generous matching discount applies. |
 | `fees` | `repeated Fee` | `OPTIONAL` | Fees added on top of the base subtotal (e.g. cleaning, service). Each surfaces as a TYPE_FEE line in a booking's price_components. |
 | `taxes` | `repeated Tax` | `OPTIONAL` | Taxes applied to the taxable base (subtotal plus taxable fees). Each surfaces as a TYPE_TAX line in a booking's price_components. |
-| `state` | `State` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `OfferingState` | `OUTPUT_ONLY` | Lifecycle state. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
@@ -244,6 +244,26 @@ Request message for DeleteOffering.
 | `name` | `string` | `REQUIRED` | The offering to delete. Format: resources/{resource}/offerings/{offering} |
 
 ## Enums
+
+### ResourceState
+
+Lifecycle status of a resource.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `RESOURCE_STATE_UNSPECIFIED` | 0 | Unset. |
+| `RESOURCE_STATE_ACTIVE` | 1 | Bookable. |
+| `RESOURCE_STATE_ARCHIVED` | 2 | Retired; hidden from availability and new bookings. |
+
+### OfferingState
+
+Lifecycle state of an offering.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `OFFERING_STATE_UNSPECIFIED` | 0 | Unset; treated as active. |
+| `OFFERING_STATE_ACTIVE` | 1 | Bookable. |
+| `OFFERING_STATE_INACTIVE` | 2 | Hidden from new bookings. |
 
 ### ResourceType
 

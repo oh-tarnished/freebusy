@@ -37,7 +37,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `units` | `int32` | `OPTIONAL` | Number of units / party size reserved. Defaults to 1. |
 | `window` | `TimeWindow` | `REQUIRED` | The reserved span. For NIGHTLY resources this spans check-in to check-out. |
 | `assigned_unit` | `string` | `OUTPUT_ONLY` | Which specific unit of the pool was assigned (the shell's atomic pick). |
-| `state` | `State` | `OUTPUT_ONLY` | Current lifecycle state. |
+| `state` | `BookingState` | `OUTPUT_ONLY` | Current lifecycle state. |
 | `hold_expire_time` | `Timestamp` | `OUTPUT_ONLY` | When the pending hold lapses, if not confirmed first. |
 | `price` | `Money` | `OUTPUT_ONLY` | Computed subtotal before discounts. |
 | `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code} |
@@ -160,6 +160,20 @@ Response message for ListBookings.
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ## Enums
+
+### BookingState
+
+Lifecycle state of a booking.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `BOOKING_STATE_UNSPECIFIED` | 0 | Unset. |
+| `BOOKING_STATE_PENDING_HOLD` | 1 | Held but not yet confirmed; expires at hold_expire_time. |
+| `BOOKING_STATE_CONFIRMED` | 2 | Confirmed and active. |
+| `BOOKING_STATE_CANCELLED` | 3 | Cancelled by customer or operator. |
+| `BOOKING_STATE_EXPIRED` | 4 | Hold lapsed before confirmation (released by the sweeper). |
+| `BOOKING_STATE_COMPLETED` | 5 | The booked time has passed and the booking was honored. |
+| `BOOKING_STATE_NO_SHOW` | 6 | The customer did not show. |
 
 ### CancelReason
 
