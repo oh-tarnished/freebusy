@@ -107,6 +107,7 @@ definition:
         - relationshipName: scheduleDateRange
         - relationshipName: resourceResource
         - relationshipName: bookingTimeWindow
+        - relationshipName: scheduleScheduleExceptions
   logicalOperators:
     enable: true
   isNull:
@@ -274,4 +275,26 @@ definition:
       target:
         modelField:
           - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleScheduleExceptions
+  sourceType: ScheduleAvailabilityExceptions
+  target:
+    model:
+      name: ScheduleScheduleExceptions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleScheduleExceptionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: availabilityExceptionId
+  graphql:
+    aggregateFieldName: scheduleScheduleExceptionsAggregate
 

@@ -197,6 +197,8 @@ definition:
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: bookingBookings
+        - relationshipName: promocodePromoCodeApplicableOfferings
+        - relationshipName: promocodePromoCodeApplicableResources
   logicalOperators:
     enable: true
   isNull:
@@ -369,4 +371,48 @@ definition:
           - fieldName: promoCode
   graphql:
     aggregateFieldName: bookingBookingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodePromoCodeApplicableOfferings
+  sourceType: PromocodePromoCodes
+  target:
+    model:
+      name: PromocodePromoCodeApplicableOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PromocodePromoCodeApplicableOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: promoCodeId
+  graphql:
+    aggregateFieldName: promocodePromoCodeApplicableOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodePromoCodeApplicableResources
+  sourceType: PromocodePromoCodes
+  target:
+    model:
+      name: PromocodePromoCodeApplicableResources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PromocodePromoCodeApplicableResourcesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: promoCodeId
+  graphql:
+    aggregateFieldName: promocodePromoCodeApplicableResourcesAggregate
 

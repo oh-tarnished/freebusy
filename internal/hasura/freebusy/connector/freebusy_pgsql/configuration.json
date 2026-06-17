@@ -908,6 +908,110 @@
         "foreignRelations": {},
         "description": null
       },
+      "promocode_promo_code_applicable_offerings": {
+        "schemaName": "promocode",
+        "tableName": "promo_code_applicable_offerings",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "offering_id": {
+            "name": "offering_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "promo_code_id": {
+            "name": "promo_code_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "promo_code_applicable_offerings_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "promo_code_applicable_offerings_offering_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "offerings",
+            "columnMapping": {
+              "offering_id": "id"
+            }
+          },
+          "promo_code_applicable_offerings_promo_code_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "promo_codes",
+            "columnMapping": {
+              "promo_code_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "promocode_promo_code_applicable_resources": {
+        "schemaName": "promocode",
+        "tableName": "promo_code_applicable_resources",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "promo_code_id": {
+            "name": "promo_code_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "resource_id": {
+            "name": "resource_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "promo_code_applicable_resources_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "promo_code_applicable_resources_promo_code_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "promo_codes",
+            "columnMapping": {
+              "promo_code_id": "id"
+            }
+          },
+          "promo_code_applicable_resources_resource_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "resources",
+            "columnMapping": {
+              "resource_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "promocode_promo_codes": {
         "schemaName": "promocode",
         "tableName": "promo_codes",
@@ -916,26 +1020,6 @@
             "name": "amount_off",
             "type": {
               "scalarType": "jsonb"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "applicable_offerings": {
-            "name": "applicable_offerings",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "applicable_resources": {
-            "name": "applicable_resources",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
             },
             "nullable": "nullable",
             "description": null
@@ -1429,6 +1513,58 @@
         },
         "description": null
       },
+      "resource_resource_offerings": {
+        "schemaName": "resource",
+        "tableName": "resource_offerings",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "offering_id": {
+            "name": "offering_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "resource_id": {
+            "name": "resource_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "resource_offerings_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "resource_offerings_offering_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "offerings",
+            "columnMapping": {
+              "offering_id": "id"
+            }
+          },
+          "resource_offerings_resource_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "resources",
+            "columnMapping": {
+              "resource_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "resource_resources": {
         "schemaName": "resource",
         "tableName": "resources",
@@ -1505,16 +1641,6 @@
               "scalarType": "text"
             },
             "nullable": "nonNullable",
-            "description": null
-          },
-          "offerings": {
-            "name": "offerings",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
             "description": null
           },
           "state": {
@@ -1972,6 +2098,58 @@
         },
         "description": null
       },
+      "schedule_schedule_exceptions": {
+        "schemaName": "schedule",
+        "tableName": "schedule_exceptions",
+        "columns": {
+          "availability_exception_id": {
+            "name": "availability_exception_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "schedule_id": {
+            "name": "schedule_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "schedule_exceptions_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "schedule_exceptions_availability_exception_id_fkey": {
+            "foreignSchema": "schedule",
+            "foreignTable": "availability_exceptions",
+            "columnMapping": {
+              "availability_exception_id": "id"
+            }
+          },
+          "schedule_exceptions_schedule_id_fkey": {
+            "foreignSchema": "schedule",
+            "foreignTable": "schedules",
+            "columnMapping": {
+              "schedule_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "schedule_schedules": {
         "schemaName": "schedule",
         "tableName": "schedules",
@@ -1996,16 +2174,6 @@
             "name": "etag",
             "type": {
               "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "exceptions": {
-            "name": "exceptions",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
             },
             "nullable": "nullable",
             "description": null

@@ -1,0 +1,115 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertScheduleScheduleExceptionsObject
+  fields:
+    - name: availabilityExceptionId
+      type: String_1!
+    - name: id
+      type: String_1!
+    - name: scheduleId
+      type: String_1!
+  graphql:
+    typeName: InsertScheduleScheduleExceptionsObject
+    inputTypeName: InsertScheduleScheduleExceptionsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_schedule_schedule_exceptions_object
+      fieldMapping:
+        availabilityExceptionId:
+          column:
+            name: availability_exception_id
+        id:
+          column:
+            name: id
+        scheduleId:
+          column:
+            name: schedule_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertScheduleScheduleExceptionsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - availabilityExceptionId
+          - id
+          - scheduleId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertScheduleScheduleExceptionsResponse
+  description: Responses from the 'insert_schedule_schedule_exceptions' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[ScheduleScheduleExceptions!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertScheduleScheduleExceptionsResponse
+    inputTypeName: InsertScheduleScheduleExceptionsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_schedule_schedule_exceptions_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertScheduleScheduleExceptionsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertScheduleScheduleExceptions
+  outputType: InsertScheduleScheduleExceptionsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertScheduleScheduleExceptionsObject!]!"
+    - name: postCheck
+      type: ScheduleScheduleExceptionsBoolExp
+      description: Insert permission predicate over the 'schedule_schedule_exceptions'
+        collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_schedule_schedule_exceptions
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertScheduleScheduleExceptions
+    rootFieldKind: Mutation
+  description: Insert into the schedule_schedule_exceptions table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertScheduleScheduleExceptions
+  permissions:
+    - role: admin
+      allowExecution: true
+

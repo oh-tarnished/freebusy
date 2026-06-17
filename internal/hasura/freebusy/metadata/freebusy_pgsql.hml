@@ -83,6 +83,20 @@ definition:
               unique_columns:
                 - id
         - arguments: {}
+          name: promocode_promo_code_applicable_offerings
+          type: promocode_promo_code_applicable_offerings
+          uniqueness_constraints:
+            promo_code_applicable_offerings_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: promocode_promo_code_applicable_resources
+          type: promocode_promo_code_applicable_resources
+          uniqueness_constraints:
+            promo_code_applicable_resources_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
           name: promocode_promo_codes
           type: promocode_promo_codes
           uniqueness_constraints:
@@ -115,6 +129,13 @@ definition:
           type: resource_rate_overrides
           uniqueness_constraints:
             rate_overrides_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: resource_resource_offerings
+          type: resource_resource_offerings
+          uniqueness_constraints:
+            resource_offerings_pkey:
               unique_columns:
                 - id
         - arguments: {}
@@ -171,6 +192,13 @@ definition:
           type: schedule_refund_tiers
           uniqueness_constraints:
             refund_tiers_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: schedule_schedule_exceptions
+          type: schedule_schedule_exceptions
+          uniqueness_constraints:
+            schedule_exceptions_pkey:
               unique_columns:
                 - id
         - arguments: {}
@@ -631,6 +659,38 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        delete_promocode_promo_code_applicable_offerings_by_id_response:
+          description: Responses from the 'delete_promocode_promo_code_applicable_offerings_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: promocode_promo_code_applicable_offerings
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_promocode_promo_code_applicable_resources_by_id_response:
+          description: Responses from the 'delete_promocode_promo_code_applicable_resources_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: promocode_promo_code_applicable_resources
+                  type: named
+                type: array
+          foreign_keys: {}
         delete_promocode_promo_codes_by_id_response:
           description: Responses from the 'delete_promocode_promo_codes_by_id' procedure
           fields:
@@ -708,6 +768,22 @@ definition:
               type:
                 element_type:
                   name: resource_rate_overrides
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_resource_resource_offerings_by_id_response:
+          description: Responses from the 'delete_resource_resource_offerings_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: resource_resource_offerings
                   type: named
                 type: array
           foreign_keys: {}
@@ -836,6 +912,22 @@ definition:
               type:
                 element_type:
                   name: schedule_refund_tiers
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_schedule_schedule_exceptions_by_id_response:
+          description: Responses from the 'delete_schedule_schedule_exceptions_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: schedule_schedule_exceptions
                   type: named
                 type: array
           foreign_keys: {}
@@ -1590,6 +1682,68 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        insert_promocode_promo_code_applicable_offerings_object:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+            offering_id:
+              type:
+                name: text
+                type: named
+            promo_code_id:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        insert_promocode_promo_code_applicable_offerings_response:
+          description: Responses from the 'insert_promocode_promo_code_applicable_offerings' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: promocode_promo_code_applicable_offerings
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_promocode_promo_code_applicable_resources_object:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+            promo_code_id:
+              type:
+                name: text
+                type: named
+            resource_id:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        insert_promocode_promo_code_applicable_resources_response:
+          description: Responses from the 'insert_promocode_promo_code_applicable_resources' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: promocode_promo_code_applicable_resources
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_promocode_promo_codes_object:
           fields:
             amount_off:
@@ -1598,26 +1752,6 @@ definition:
                 underlying_type:
                   name: jsonb
                   type: named
-            applicable_offerings:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
-            applicable_resources:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
             code:
               type:
                 name: text
@@ -1967,6 +2101,37 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        insert_resource_resource_offerings_object:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+            offering_id:
+              type:
+                name: text
+                type: named
+            resource_id:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        insert_resource_resource_offerings_response:
+          description: Responses from the 'insert_resource_resource_offerings' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: resource_resource_offerings
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_resource_resources_object:
           fields:
             attributes:
@@ -2017,16 +2182,6 @@ definition:
               type:
                 name: text
                 type: named
-            offerings:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
             state:
               type:
                 type: nullable
@@ -2367,6 +2522,37 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        insert_schedule_schedule_exceptions_object:
+          fields:
+            availability_exception_id:
+              type:
+                name: text
+                type: named
+            id:
+              type:
+                name: text
+                type: named
+            schedule_id:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        insert_schedule_schedule_exceptions_response:
+          description: Responses from the 'insert_schedule_schedule_exceptions' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: schedule_schedule_exceptions
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_schedule_schedules_object:
           fields:
             buffers_id:
@@ -2387,16 +2573,6 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            exceptions:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
             id:
               type:
                 name: text
@@ -2630,6 +2806,56 @@ definition:
                 name: timestamp
                 type: named
           foreign_keys: {}
+        promocode_promo_code_applicable_offerings:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+            offering_id:
+              type:
+                name: text
+                type: named
+            promo_code_id:
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            promo_code_applicable_offerings_offering_id_fkey:
+              column_mapping:
+                offering_id:
+                  - id
+              foreign_collection: resource_offerings
+            promo_code_applicable_offerings_promo_code_id_fkey:
+              column_mapping:
+                promo_code_id:
+                  - id
+              foreign_collection: promocode_promo_codes
+        promocode_promo_code_applicable_resources:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+            promo_code_id:
+              type:
+                name: text
+                type: named
+            resource_id:
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            promo_code_applicable_resources_promo_code_id_fkey:
+              column_mapping:
+                promo_code_id:
+                  - id
+              foreign_collection: promocode_promo_codes
+            promo_code_applicable_resources_resource_id_fkey:
+              column_mapping:
+                resource_id:
+                  - id
+              foreign_collection: resource_resources
         promocode_promo_codes:
           fields:
             amount_off:
@@ -2638,26 +2864,6 @@ definition:
                 underlying_type:
                   name: jsonb
                   type: named
-            applicable_offerings:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
-            applicable_resources:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
             code:
               type:
                 name: text
@@ -2946,6 +3152,31 @@ definition:
                 offering_id:
                   - id
               foreign_collection: resource_offerings
+        resource_resource_offerings:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+            offering_id:
+              type:
+                name: text
+                type: named
+            resource_id:
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            resource_offerings_offering_id_fkey:
+              column_mapping:
+                offering_id:
+                  - id
+              foreign_collection: resource_offerings
+            resource_offerings_resource_id_fkey:
+              column_mapping:
+                resource_id:
+                  - id
+              foreign_collection: resource_resources
         resource_resources:
           fields:
             attributes:
@@ -2992,16 +3223,6 @@ definition:
               type:
                 name: text
                 type: named
-            offerings:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
             state:
               type:
                 type: nullable
@@ -3238,6 +3459,31 @@ definition:
                 cancellation_policy_id:
                   - id
               foreign_collection: schedule_cancellation_policies
+        schedule_schedule_exceptions:
+          fields:
+            availability_exception_id:
+              type:
+                name: text
+                type: named
+            id:
+              type:
+                name: text
+                type: named
+            schedule_id:
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            schedule_exceptions_availability_exception_id_fkey:
+              column_mapping:
+                availability_exception_id:
+                  - id
+              foreign_collection: schedule_availability_exceptions
+            schedule_exceptions_schedule_id_fkey:
+              column_mapping:
+                schedule_id:
+                  - id
+              foreign_collection: schedule_schedules
         schedule_schedules:
           fields:
             buffers_id:
@@ -3258,16 +3504,6 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            exceptions:
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
             id:
               type:
                 name: text
@@ -4643,6 +4879,60 @@ definition:
                 name: timestamp
                 type: named
           foreign_keys: {}
+        update_column_promocode_promo_code_applicable_offerings_id:
+          description: Update the 'id' column in the 'promocode_promo_code_applicable_offerings' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_promocode_promo_code_applicable_offerings_offering_id:
+          description: Update the 'offering_id' column in the 'promocode_promo_code_applicable_offerings' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_promocode_promo_code_applicable_offerings_promo_code_id:
+          description: Update the 'promo_code_id' column in the 'promocode_promo_code_applicable_offerings' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_promocode_promo_code_applicable_resources_id:
+          description: Update the 'id' column in the 'promocode_promo_code_applicable_resources' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_promocode_promo_code_applicable_resources_promo_code_id:
+          description: Update the 'promo_code_id' column in the 'promocode_promo_code_applicable_resources' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_promocode_promo_code_applicable_resources_resource_id:
+          description: Update the 'resource_id' column in the 'promocode_promo_code_applicable_resources' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
         update_column_promocode_promo_codes_amount_off:
           description: Update the 'amount_off' column in the 'promocode_promo_codes' collection
           fields:
@@ -4653,36 +4943,6 @@ definition:
                 underlying_type:
                   name: jsonb
                   type: named
-          foreign_keys: {}
-        update_column_promocode_promo_codes_applicable_offerings:
-          description: Update the 'applicable_offerings' column in the 'promocode_promo_codes' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
-          foreign_keys: {}
-        update_column_promocode_promo_codes_applicable_resources:
-          description: Update the 'applicable_resources' column in the 'promocode_promo_codes' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
           foreign_keys: {}
         update_column_promocode_promo_codes_code:
           description: Update the 'code' column in the 'promocode_promo_codes' collection
@@ -5174,6 +5434,33 @@ definition:
                       type: named
                   type: array
           foreign_keys: {}
+        update_column_resource_resource_offerings_id:
+          description: Update the 'id' column in the 'resource_resource_offerings' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_resource_resource_offerings_offering_id:
+          description: Update the 'offering_id' column in the 'resource_resource_offerings' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_resource_resource_offerings_resource_id:
+          description: Update the 'resource_id' column in the 'resource_resource_offerings' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
         update_column_resource_resources_attributes:
           description: Update the 'attributes' column in the 'resource_resources' collection
           fields:
@@ -5262,21 +5549,6 @@ definition:
               type:
                 name: text
                 type: named
-          foreign_keys: {}
-        update_column_resource_resources_offerings:
-          description: Update the 'offerings' column in the 'resource_resources' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
           foreign_keys: {}
         update_column_resource_resources_state:
           description: Update the 'state' column in the 'resource_resources' collection
@@ -5652,6 +5924,33 @@ definition:
                 name: int4
                 type: named
           foreign_keys: {}
+        update_column_schedule_schedule_exceptions_availability_exception_id:
+          description: Update the 'availability_exception_id' column in the 'schedule_schedule_exceptions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_schedule_schedule_exceptions_id:
+          description: Update the 'id' column in the 'schedule_schedule_exceptions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_schedule_schedule_exceptions_schedule_id:
+          description: Update the 'schedule_id' column in the 'schedule_schedule_exceptions' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
         update_column_schedule_schedules_buffers_id:
           description: Update the 'buffers_id' column in the 'schedule_schedules' collection
           fields:
@@ -5684,21 +5983,6 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-          foreign_keys: {}
-        update_column_schedule_schedules_exceptions:
-          description: Update the 'exceptions' column in the 'schedule_schedules' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  element_type:
-                    type: nullable
-                    underlying_type:
-                      name: text
-                      type: named
-                  type: array
           foreign_keys: {}
         update_column_schedule_schedules_id:
           description: Update the 'id' column in the 'schedule_schedules' collection
@@ -6158,6 +6442,88 @@ definition:
                   name: update_column_organisation_organisations_update_time
                   type: named
           foreign_keys: {}
+        update_promocode_promo_code_applicable_offerings_by_id_response:
+          description: Responses from the 'update_promocode_promo_code_applicable_offerings_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: promocode_promo_code_applicable_offerings
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_promocode_promo_code_applicable_offerings_by_id_update_columns:
+          description: Update the columns of the 'promocode_promo_code_applicable_offerings' collection
+          fields:
+            id:
+              description: Update the 'id' column in the 'promocode_promo_code_applicable_offerings' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_promocode_promo_code_applicable_offerings_id
+                  type: named
+            offering_id:
+              description: Update the 'offering_id' column in the 'promocode_promo_code_applicable_offerings' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_promocode_promo_code_applicable_offerings_offering_id
+                  type: named
+            promo_code_id:
+              description: Update the 'promo_code_id' column in the 'promocode_promo_code_applicable_offerings' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_promocode_promo_code_applicable_offerings_promo_code_id
+                  type: named
+          foreign_keys: {}
+        update_promocode_promo_code_applicable_resources_by_id_response:
+          description: Responses from the 'update_promocode_promo_code_applicable_resources_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: promocode_promo_code_applicable_resources
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_promocode_promo_code_applicable_resources_by_id_update_columns:
+          description: Update the columns of the 'promocode_promo_code_applicable_resources' collection
+          fields:
+            id:
+              description: Update the 'id' column in the 'promocode_promo_code_applicable_resources' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_promocode_promo_code_applicable_resources_id
+                  type: named
+            promo_code_id:
+              description: Update the 'promo_code_id' column in the 'promocode_promo_code_applicable_resources' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_promocode_promo_code_applicable_resources_promo_code_id
+                  type: named
+            resource_id:
+              description: Update the 'resource_id' column in the 'promocode_promo_code_applicable_resources' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_promocode_promo_code_applicable_resources_resource_id
+                  type: named
+          foreign_keys: {}
         update_promocode_promo_codes_by_id_response:
           description: Responses from the 'update_promocode_promo_codes_by_id' procedure
           fields:
@@ -6183,20 +6549,6 @@ definition:
                 type: nullable
                 underlying_type:
                   name: update_column_promocode_promo_codes_amount_off
-                  type: named
-            applicable_offerings:
-              description: Update the 'applicable_offerings' column in the 'promocode_promo_codes' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_promocode_promo_codes_applicable_offerings
-                  type: named
-            applicable_resources:
-              description: Update the 'applicable_resources' column in the 'promocode_promo_codes' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_promocode_promo_codes_applicable_resources
                   type: named
             code:
               description: Update the 'code' column in the 'promocode_promo_codes' collection.
@@ -6615,6 +6967,47 @@ definition:
                   name: update_column_resource_rate_overrides_weekdays
                   type: named
           foreign_keys: {}
+        update_resource_resource_offerings_by_id_response:
+          description: Responses from the 'update_resource_resource_offerings_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: resource_resource_offerings
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_resource_resource_offerings_by_id_update_columns:
+          description: Update the columns of the 'resource_resource_offerings' collection
+          fields:
+            id:
+              description: Update the 'id' column in the 'resource_resource_offerings' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_resource_resource_offerings_id
+                  type: named
+            offering_id:
+              description: Update the 'offering_id' column in the 'resource_resource_offerings' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_resource_resource_offerings_offering_id
+                  type: named
+            resource_id:
+              description: Update the 'resource_id' column in the 'resource_resource_offerings' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_resource_resource_offerings_resource_id
+                  type: named
+          foreign_keys: {}
         update_resource_resources_by_id_response:
           description: Responses from the 'update_resource_resources_by_id' procedure
           fields:
@@ -6696,13 +7089,6 @@ definition:
                 type: nullable
                 underlying_type:
                   name: update_column_resource_resources_name
-                  type: named
-            offerings:
-              description: Update the 'offerings' column in the 'resource_resources' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_resource_resources_offerings
                   type: named
             state:
               description: Update the 'state' column in the 'resource_resources' collection.
@@ -7111,6 +7497,47 @@ definition:
                   name: update_column_schedule_refund_tiers_refund_percent
                   type: named
           foreign_keys: {}
+        update_schedule_schedule_exceptions_by_id_response:
+          description: Responses from the 'update_schedule_schedule_exceptions_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: schedule_schedule_exceptions
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_schedule_schedule_exceptions_by_id_update_columns:
+          description: Update the columns of the 'schedule_schedule_exceptions' collection
+          fields:
+            availability_exception_id:
+              description: Update the 'availability_exception_id' column in the 'schedule_schedule_exceptions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_schedule_schedule_exceptions_availability_exception_id
+                  type: named
+            id:
+              description: Update the 'id' column in the 'schedule_schedule_exceptions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_schedule_schedule_exceptions_id
+                  type: named
+            schedule_id:
+              description: Update the 'schedule_id' column in the 'schedule_schedule_exceptions' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_schedule_schedule_exceptions_schedule_id
+                  type: named
+          foreign_keys: {}
         update_schedule_schedules_by_id_response:
           description: Responses from the 'update_schedule_schedules_by_id' procedure
           fields:
@@ -7150,13 +7577,6 @@ definition:
                 type: nullable
                 underlying_type:
                   name: update_column_schedule_schedules_etag
-                  type: named
-            exceptions:
-              description: Update the 'exceptions' column in the 'schedule_schedules' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_schedule_schedules_exceptions
                   type: named
             id:
               description: Update the 'id' column in the 'schedule_schedules' collection.
@@ -7409,6 +7829,40 @@ definition:
                 name: text
                 type: named
             pre_check:
+              description: Delete permission predicate over the 'promocode_promo_code_applicable_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_offerings
+                  type: predicate
+          description: Delete any row on the 'promocode_promo_code_applicable_offerings' collection using the 'id' key
+          name: delete_promocode_promo_code_applicable_offerings_by_id
+          result_type:
+            name: delete_promocode_promo_code_applicable_offerings_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'promocode_promo_code_applicable_resources' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_resources
+                  type: predicate
+          description: Delete any row on the 'promocode_promo_code_applicable_resources' collection using the 'id' key
+          name: delete_promocode_promo_code_applicable_resources_by_id
+          result_type:
+            name: delete_promocode_promo_code_applicable_resources_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
               description: Delete permission predicate over the 'promocode_promo_codes' collection
               type:
                 type: nullable
@@ -7487,6 +7941,23 @@ definition:
           name: delete_resource_rate_overrides_by_id
           result_type:
             name: delete_resource_rate_overrides_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'resource_resource_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: resource_resource_offerings
+                  type: predicate
+          description: Delete any row on the 'resource_resource_offerings' collection using the 'id' key
+          name: delete_resource_resource_offerings_by_id
+          result_type:
+            name: delete_resource_resource_offerings_by_id_response
             type: named
         - arguments:
             key_id:
@@ -7623,6 +8094,23 @@ definition:
           name: delete_schedule_refund_tiers_by_id
           result_type:
             name: delete_schedule_refund_tiers_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'schedule_schedule_exceptions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: schedule_schedule_exceptions
+                  type: predicate
+          description: Delete any row on the 'schedule_schedule_exceptions' collection using the 'id' key
+          name: delete_schedule_schedule_exceptions_by_id
+          result_type:
+            name: delete_schedule_schedule_exceptions_by_id_response
             type: named
         - arguments:
             key_id:
@@ -7833,6 +8321,44 @@ definition:
             objects:
               type:
                 element_type:
+                  name: insert_promocode_promo_code_applicable_offerings_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'promocode_promo_code_applicable_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_offerings
+                  type: predicate
+          description: Insert into the promocode_promo_code_applicable_offerings table
+          name: insert_promocode_promo_code_applicable_offerings
+          result_type:
+            name: insert_promocode_promo_code_applicable_offerings_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_promocode_promo_code_applicable_resources_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'promocode_promo_code_applicable_resources' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_resources
+                  type: predicate
+          description: Insert into the promocode_promo_code_applicable_resources table
+          name: insert_promocode_promo_code_applicable_resources
+          result_type:
+            name: insert_promocode_promo_code_applicable_resources_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
                   name: insert_promocode_promo_codes_object
                   type: named
                 type: array
@@ -7923,6 +8449,25 @@ definition:
           name: insert_resource_rate_overrides
           result_type:
             name: insert_resource_rate_overrides_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_resource_resource_offerings_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'resource_resource_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: resource_resource_offerings
+                  type: predicate
+          description: Insert into the resource_resource_offerings table
+          name: insert_resource_resource_offerings
+          result_type:
+            name: insert_resource_resource_offerings_response
             type: named
         - arguments:
             objects:
@@ -8075,6 +8620,25 @@ definition:
           name: insert_schedule_refund_tiers
           result_type:
             name: insert_schedule_refund_tiers_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_schedule_schedule_exceptions_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'schedule_schedule_exceptions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: schedule_schedule_exceptions
+                  type: predicate
+          description: Insert into the schedule_schedule_exceptions table
+          name: insert_schedule_schedule_exceptions
+          result_type:
+            name: insert_schedule_schedule_exceptions_response
             type: named
         - arguments:
             objects:
@@ -8372,6 +8936,62 @@ definition:
                 name: text
                 type: named
             post_check:
+              description: Update permission post-condition predicate over the 'promocode_promo_code_applicable_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_offerings
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'promocode_promo_code_applicable_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_offerings
+                  type: predicate
+            update_columns:
+              type:
+                name: update_promocode_promo_code_applicable_offerings_by_id_update_columns
+                type: named
+          description: Update any row on the 'promocode_promo_code_applicable_offerings' collection using the 'id' key
+          name: update_promocode_promo_code_applicable_offerings_by_id
+          result_type:
+            name: update_promocode_promo_code_applicable_offerings_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'promocode_promo_code_applicable_resources' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_resources
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'promocode_promo_code_applicable_resources' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: promocode_promo_code_applicable_resources
+                  type: predicate
+            update_columns:
+              type:
+                name: update_promocode_promo_code_applicable_resources_by_id_update_columns
+                type: named
+          description: Update any row on the 'promocode_promo_code_applicable_resources' collection using the 'id' key
+          name: update_promocode_promo_code_applicable_resources_by_id
+          result_type:
+            name: update_promocode_promo_code_applicable_resources_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
               description: Update permission post-condition predicate over the 'promocode_promo_codes' collection
               type:
                 type: nullable
@@ -8505,6 +9125,34 @@ definition:
           name: update_resource_rate_overrides_by_id
           result_type:
             name: update_resource_rate_overrides_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'resource_resource_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: resource_resource_offerings
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'resource_resource_offerings' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: resource_resource_offerings
+                  type: predicate
+            update_columns:
+              type:
+                name: update_resource_resource_offerings_by_id_update_columns
+                type: named
+          description: Update any row on the 'resource_resource_offerings' collection using the 'id' key
+          name: update_resource_resource_offerings_by_id
+          result_type:
+            name: update_resource_resource_offerings_by_id_response
             type: named
         - arguments:
             key_id:
@@ -8729,6 +9377,34 @@ definition:
           name: update_schedule_refund_tiers_by_id
           result_type:
             name: update_schedule_refund_tiers_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'schedule_schedule_exceptions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: schedule_schedule_exceptions
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'schedule_schedule_exceptions' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: schedule_schedule_exceptions
+                  type: predicate
+            update_columns:
+              type:
+                name: update_schedule_schedule_exceptions_by_id_update_columns
+                type: named
+          description: Update any row on the 'schedule_schedule_exceptions' collection using the 'id' key
+          name: update_schedule_schedule_exceptions_by_id
+          result_type:
+            name: update_schedule_schedule_exceptions_by_id_response
             type: named
         - arguments:
             key_id:

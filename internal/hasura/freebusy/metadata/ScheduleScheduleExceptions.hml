@@ -1,0 +1,185 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: ScheduleScheduleExceptions
+  fields:
+    - name: availabilityExceptionId
+      type: String_1!
+    - name: id
+      type: String_1!
+    - name: scheduleId
+      type: String_1!
+  graphql:
+    typeName: ScheduleScheduleExceptions
+    inputTypeName: ScheduleScheduleExceptionsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: schedule_schedule_exceptions
+      fieldMapping:
+        availabilityExceptionId:
+          column:
+            name: availability_exception_id
+        id:
+          column:
+            name: id
+        scheduleId:
+          column:
+            name: schedule_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: ScheduleScheduleExceptions
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - availabilityExceptionId
+          - id
+          - scheduleId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: ScheduleScheduleExceptionsBoolExp
+  operand:
+    object:
+      type: ScheduleScheduleExceptions
+      comparableFields:
+        - fieldName: availabilityExceptionId
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: scheduleId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships:
+        - relationshipName: scheduleAvailabilityException
+        - relationshipName: scheduleSchedule
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: ScheduleScheduleExceptionsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: ScheduleScheduleExceptionsAggExp
+  operand:
+    object:
+      aggregatedType: ScheduleScheduleExceptions
+      aggregatableFields:
+        - fieldName: availabilityExceptionId
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: scheduleId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: ScheduleScheduleExceptionsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: ScheduleScheduleExceptionsOrderByExp
+  operand:
+    object:
+      orderedType: ScheduleScheduleExceptions
+      orderableFields:
+        - fieldName: availabilityExceptionId
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: scheduleId
+          orderByExpression: String1OrderByExp
+      orderableRelationships:
+        - relationshipName: scheduleAvailabilityException
+        - relationshipName: scheduleSchedule
+  graphql:
+    expressionTypeName: ScheduleScheduleExceptionsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: ScheduleScheduleExceptions
+  objectType: ScheduleScheduleExceptions
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: schedule_schedule_exceptions
+  filterExpressionType: ScheduleScheduleExceptionsBoolExp
+  aggregateExpression: ScheduleScheduleExceptionsAggExp
+  orderByExpression: ScheduleScheduleExceptionsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: scheduleScheduleExceptions
+      subscription:
+        rootField: scheduleScheduleExceptions
+    selectUniques:
+      - queryRootField: scheduleScheduleExceptionsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: scheduleScheduleExceptionsById
+    filterInputTypeName: ScheduleScheduleExceptionsFilterInput
+    aggregate:
+      queryRootField: scheduleScheduleExceptionsAggregate
+      subscription:
+        rootField: scheduleScheduleExceptionsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: ScheduleScheduleExceptions
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleAvailabilityException
+  sourceType: ScheduleScheduleExceptions
+  target:
+    model:
+      name: ScheduleAvailabilityExceptions
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: availabilityExceptionId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleSchedule
+  sourceType: ScheduleScheduleExceptions
+  target:
+    model:
+      name: ScheduleSchedules
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: scheduleId
+      target:
+        modelField:
+          - fieldName: id
+

@@ -151,6 +151,8 @@ definition:
         - relationshipName: bookingBookings
         - relationshipName: resourceOfferings
         - relationshipName: scheduleAvailabilityExceptions
+        - relationshipName: promocodePromoCodeApplicableResources
+        - relationshipName: resourceResourceOfferings
   logicalOperators:
     enable: true
   isNull:
@@ -343,4 +345,48 @@ definition:
           - fieldName: resourceId
   graphql:
     aggregateFieldName: scheduleAvailabilityExceptionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodePromoCodeApplicableResources
+  sourceType: ResourceResources
+  target:
+    model:
+      name: PromocodePromoCodeApplicableResources
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PromocodePromoCodeApplicableResourcesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: resourceId
+  graphql:
+    aggregateFieldName: promocodePromoCodeApplicableResourcesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceResourceOfferings
+  sourceType: ResourceResources
+  target:
+    model:
+      name: ResourceResourceOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceResourceOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: resourceId
+  graphql:
+    aggregateFieldName: resourceResourceOfferingsAggregate
 

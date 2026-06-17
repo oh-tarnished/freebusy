@@ -1,0 +1,116 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertPromocodePromoCodeApplicableOfferingsObject
+  fields:
+    - name: id
+      type: String_1!
+    - name: offeringId
+      type: String_1!
+    - name: promoCodeId
+      type: String_1!
+  graphql:
+    typeName: InsertPromocodePromoCodeApplicableOfferingsObject
+    inputTypeName: InsertPromocodePromoCodeApplicableOfferingsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_promocode_promo_code_applicable_offerings_object
+      fieldMapping:
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        promoCodeId:
+          column:
+            name: promo_code_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertPromocodePromoCodeApplicableOfferingsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - offeringId
+          - promoCodeId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertPromocodePromoCodeApplicableOfferingsResponse
+  description: Responses from the
+    'insert_promocode_promo_code_applicable_offerings' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[PromocodePromoCodeApplicableOfferings!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertPromocodePromoCodeApplicableOfferingsResponse
+    inputTypeName: InsertPromocodePromoCodeApplicableOfferingsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_promocode_promo_code_applicable_offerings_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertPromocodePromoCodeApplicableOfferingsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertPromocodePromoCodeApplicableOfferings
+  outputType: InsertPromocodePromoCodeApplicableOfferingsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertPromocodePromoCodeApplicableOfferingsObject!]!"
+    - name: postCheck
+      type: PromocodePromoCodeApplicableOfferingsBoolExp
+      description: Insert permission predicate over the
+        'promocode_promo_code_applicable_offerings' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_promocode_promo_code_applicable_offerings
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertPromocodePromoCodeApplicableOfferings
+    rootFieldKind: Mutation
+  description: Insert into the promocode_promo_code_applicable_offerings table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertPromocodePromoCodeApplicableOfferings
+  permissions:
+    - role: admin
+      allowExecution: true
+

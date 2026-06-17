@@ -134,6 +134,8 @@ definition:
         - relationshipName: resourceResource
         - relationshipName: resourceRateOverrides
         - relationshipName: resourceTaxes
+        - relationshipName: promocodePromoCodeApplicableOfferings
+        - relationshipName: resourceResourceOfferings
   logicalOperators:
     enable: true
   isNull:
@@ -385,4 +387,48 @@ definition:
           - fieldName: offeringId
   graphql:
     aggregateFieldName: resourceTaxesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: promocodePromoCodeApplicableOfferings
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: PromocodePromoCodeApplicableOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PromocodePromoCodeApplicableOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: promocodePromoCodeApplicableOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceResourceOfferings
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceResourceOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceResourceOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceResourceOfferingsAggregate
 
