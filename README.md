@@ -1,5 +1,7 @@
 # Freebusy
 
+> postgresql://postgres:postgrespassword@local.hasura.dev:5432/freebusydb
+
 The pure availability engine: given the facts about a bookable resource and a
 date range, it computes what's bookable — deterministic functions over plain Go
 structs. No database, no auth, no payments, no network.

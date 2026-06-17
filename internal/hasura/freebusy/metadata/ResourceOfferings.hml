@@ -128,18 +128,14 @@ definition:
         - fieldName: updateTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
-        - relationshipName: bookingBookings
-        - relationshipName: promocodePromoCodeApplicableOfferings
-        - relationshipName: resourceFees
-        - relationshipName: resourceLosDiscounts
-        - relationshipName: resourceResource
-        - relationshipName: resourceRateOverrides
-        - relationshipName: resourceResourceOfferings
-        - relationshipName: resourceTaxes
         - relationshipName: bookingResources
         - relationshipName: promocodeApplicableOfferings
+        - relationshipName: resourceFees
+        - relationshipName: resourceLosDiscounts
         - relationshipName: resourceEntity
         - relationshipName: resourceOfferingsLinks
+        - relationshipName: resourceRateOverrides
+        - relationshipName: resourceTaxes
   logicalOperators:
     enable: true
   isNull:
@@ -220,7 +216,6 @@ definition:
         - fieldName: updateTime
           orderByExpression: TimestampOrderByExp
       orderableRelationships:
-        - relationshipName: resourceResource
         - relationshipName: resourceEntity
   graphql:
     expressionTypeName: ResourceOfferingsOrderByExp
@@ -264,178 +259,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingBookings
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: BookingBookings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingBookingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offering
-  graphql:
-    aggregateFieldName: bookingBookingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: promocodePromoCodeApplicableOfferings
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: PromocodePromoCodeApplicableOfferings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: PromocodePromoCodeApplicableOfferingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: promocodePromoCodeApplicableOfferingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceFees
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceFees
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceFeesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: resourceFeesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceLosDiscounts
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceLosDiscounts
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceLosDiscountsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: resourceLosDiscountsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceResource
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceResources
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: resourceId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceRateOverrides
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceRateOverrides
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceRateOverridesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: resourceRateOverridesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceResourceOfferings
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceResourceOfferings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceResourceOfferingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: resourceResourceOfferingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceTaxes
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceTaxes
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceTaxesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: resourceTaxesAggregate
 
 ---
 kind: Relationship
@@ -485,6 +308,50 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: resourceFees
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceFees
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceFeesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceFeesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceLosDiscounts
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceLosDiscounts
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceLosDiscountsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceLosDiscountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
   name: resourceEntity
   sourceType: ResourceOfferings
   target:
@@ -520,4 +387,48 @@ definition:
           - fieldName: offeringId
   graphql:
     aggregateFieldName: resourceOfferingsLinksAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceRateOverrides
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceRateOverrides
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceRateOverridesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceRateOverridesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceTaxes
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceTaxes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceTaxesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceTaxesAggregate
 

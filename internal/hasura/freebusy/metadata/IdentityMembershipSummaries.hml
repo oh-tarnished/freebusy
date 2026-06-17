@@ -72,9 +72,8 @@ definition:
         - fieldName: userId
           booleanExpressionType: TextBoolExp
       comparableRelationships:
-        - relationshipName: organisationOrganisation
-        - relationshipName: identityUser
         - relationshipName: organisationResource
+        - relationshipName: identityUser
   logicalOperators:
     enable: true
   isNull:
@@ -127,9 +126,8 @@ definition:
         - fieldName: userId
           orderByExpression: String1OrderByExp
       orderableRelationships:
-        - relationshipName: organisationOrganisation
-        - relationshipName: identityUser
         - relationshipName: organisationResource
+        - relationshipName: identityUser
   graphql:
     expressionTypeName: IdentityMembershipSummariesOrderByExp
 
@@ -177,11 +175,11 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: organisationOrganisation
+  name: organisationResource
   sourceType: IdentityMembershipSummaries
   target:
     model:
-      name: OrganisationOrganisations
+      name: OrganisationResource
       relationshipType: Object
   mapping:
     - source:
@@ -205,24 +203,6 @@ definition:
     - source:
         fieldPath:
           - fieldName: userId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: organisationResource
-  sourceType: IdentityMembershipSummaries
-  target:
-    model:
-      name: OrganisationResource
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: organisation
       target:
         modelField:
           - fieldName: id

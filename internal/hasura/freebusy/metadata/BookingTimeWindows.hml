@@ -56,9 +56,8 @@ definition:
         - fieldName: startTime
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
-        - relationshipName: bookingBookings
-        - relationshipName: scheduleAvailabilityExceptions
         - relationshipName: bookingResources
+        - relationshipName: scheduleAvailabilityExceptions
   logicalOperators:
     enable: true
   isNull:
@@ -150,14 +149,14 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: bookingBookings
+  name: bookingResources
   sourceType: BookingTimeWindows
   target:
     model:
-      name: BookingBookings
+      name: BookingResource
       relationshipType: Array
       aggregate:
-        aggregateExpression: BookingBookingsAggExp
+        aggregateExpression: BookingResourceAggExp
   mapping:
     - source:
         fieldPath:
@@ -166,7 +165,7 @@ definition:
         modelField:
           - fieldName: windowId
   graphql:
-    aggregateFieldName: bookingBookingsAggregate
+    aggregateFieldName: bookingResourcesAggregate
 
 ---
 kind: Relationship
@@ -189,26 +188,4 @@ definition:
           - fieldName: windowId
   graphql:
     aggregateFieldName: scheduleAvailabilityExceptionsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingResources
-  sourceType: BookingTimeWindows
-  target:
-    model:
-      name: BookingResource
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingResourceAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: windowId
-  graphql:
-    aggregateFieldName: bookingResourcesAggregate
 

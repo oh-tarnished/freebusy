@@ -84,7 +84,6 @@ definition:
         - fieldName: minNights
           booleanExpressionType: Int4BoolExp
       comparableRelationships:
-        - relationshipName: scheduleSchedules
         - relationshipName: scheduleResources
   logicalOperators:
     enable: true
@@ -180,28 +179,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleSchedules
-  sourceType: ScheduleStayConstraints
-  target:
-    model:
-      name: ScheduleSchedules
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleSchedulesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: stayConstraintsId
-  graphql:
-    aggregateFieldName: scheduleSchedulesAggregate
 
 ---
 kind: Relationship

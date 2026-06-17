@@ -64,7 +64,6 @@ definition:
         - fieldName: phoneNumber
           booleanExpressionType: TextBoolExp
       comparableRelationships:
-        - relationshipName: bookingBookings
         - relationshipName: bookingResources
   logicalOperators:
     enable: true
@@ -156,28 +155,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingBookings
-  sourceType: BookingContacts
-  target:
-    model:
-      name: BookingBookings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingBookingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: contactId
-  graphql:
-    aggregateFieldName: bookingBookingsAggregate
 
 ---
 kind: Relationship

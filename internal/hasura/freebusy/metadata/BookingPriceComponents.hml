@@ -80,7 +80,6 @@ definition:
         - fieldName: type
           booleanExpressionType: BookingTypeBoolExp
       comparableRelationships:
-        - relationshipName: bookingBooking
         - relationshipName: bookingResource
   logicalOperators:
     enable: true
@@ -138,7 +137,6 @@ definition:
         - fieldName: type
           orderByExpression: EnumOrderByExp
       orderableRelationships:
-        - relationshipName: bookingBooking
         - relationshipName: bookingResource
   graphql:
     expressionTypeName: BookingPriceComponentsOrderByExp
@@ -182,24 +180,6 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingBooking
-  sourceType: BookingPriceComponents
-  target:
-    model:
-      name: BookingBookings
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: bookingId
-      target:
-        modelField:
-          - fieldName: id
 
 ---
 kind: Relationship
