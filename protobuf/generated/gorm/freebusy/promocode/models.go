@@ -81,12 +81,12 @@ type PromoCode struct {
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Back-relation: PromoCodeApplicableResources records that reference this via promo_code_id.
-	PromoCodeApplicableResources []PromoCodeApplicableResources `gorm:"foreignKey:PromoCodeID" json:"promocodeapplicableresources,omitempty"`
+	ApplicableResources []PromoCodeApplicableResources `gorm:"foreignKey:PromoCodeID" json:"applicableresources,omitempty"`
 	// Back-relation: PromoCodeApplicableOfferings records that reference this via promo_code_id.
-	PromoCodeApplicableOfferings []PromoCodeApplicableOfferings `gorm:"foreignKey:PromoCodeID" json:"promocodeapplicableofferings,omitempty"`
+	ApplicableOfferings []PromoCodeApplicableOfferings `gorm:"foreignKey:PromoCodeID" json:"applicableofferings,omitempty"`
 }
 
-func (*PromoCode) TableName() string { return "promocode.promo_codes" }
+func (*PromoCode) TableName() string { return "promocode.resource" }
 
 // Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
 type PromoCodeApplicableResources struct {
@@ -99,9 +99,7 @@ type PromoCodeApplicableResources struct {
 	ResourceID string `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
 }
 
-func (*PromoCodeApplicableResources) TableName() string {
-	return "promocode.promo_code_applicable_resources"
-}
+func (*PromoCodeApplicableResources) TableName() string { return "promocode.applicable_resources" }
 
 // Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
 type PromoCodeApplicableOfferings struct {
@@ -114,6 +112,4 @@ type PromoCodeApplicableOfferings struct {
 	OfferingID string `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
 }
 
-func (*PromoCodeApplicableOfferings) TableName() string {
-	return "promocode.promo_code_applicable_offerings"
-}
+func (*PromoCodeApplicableOfferings) TableName() string { return "promocode.applicable_offerings" }

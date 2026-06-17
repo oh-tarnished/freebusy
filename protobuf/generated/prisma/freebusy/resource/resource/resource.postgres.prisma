@@ -108,22 +108,22 @@ model Resource {
   etag String? @map("etag")
 
   /// Back-relation: Booking records that reference this model via resource.
-  bookings Booking[]
+  resource Booking[]
 
   /// Back-relation: PromoCodeApplicableResources records that reference this model via resource_id.
-  promoCodeApplicableResources PromoCodeApplicableResources[]
+  applicableResources PromoCodeApplicableResources[]
 
   /// Back-relation: Offering records that reference this model via resource_id.
   offerings Offering[]
 
   /// Back-relation: ResourceOfferings records that reference this model via resource_id.
-  resourceOfferings ResourceOfferings[]
+  offeringsLink ResourceOfferings[]
 
   /// Back-relation: AvailabilityException records that reference this model via resource_id.
   availabilityExceptions AvailabilityException[]
 
-  /// Maps the model to the "resources" table in the database.
-  @@map("resources")
+  /// Maps the model to the "entity" table in the database.
+  @@map("entity")
   /// Maps the model to the "resource" schema in the database.
   @@schema("resource")
 }
@@ -170,10 +170,10 @@ model Offering {
   resource Resource @relation(fields: [resourceID], references: [id], onDelete: Cascade)
 
   /// Back-relation: Booking records that reference this model via offering.
-  bookings Booking[]
+  resource2 Booking[]
 
   /// Back-relation: PromoCodeApplicableOfferings records that reference this model via offering_id.
-  promoCodeApplicableOfferings PromoCodeApplicableOfferings[]
+  applicableOfferings PromoCodeApplicableOfferings[]
 
   /// Back-relation: RateOverride records that reference this model via offering_id.
   rateOverrides RateOverride[]
@@ -188,7 +188,7 @@ model Offering {
   taxes Tax[]
 
   /// Back-relation: ResourceOfferings records that reference this model via offering_id.
-  resourceOfferings ResourceOfferings[]
+  offeringsLink ResourceOfferings[]
 
   /// Composite index on [resource_id].
   @@index([resourceID])
@@ -347,8 +347,8 @@ model ResourceOfferings {
   @@index([resourceID])
   /// Composite index on [offering_id].
   @@index([offeringID])
-  /// Maps the model to the "resource_offerings" table in the database.
-  @@map("resource_offerings")
+  /// Maps the model to the "offerings_link" table in the database.
+  @@map("offerings_link")
   /// Maps the model to the "resource" schema in the database.
   @@schema("resource")
 }

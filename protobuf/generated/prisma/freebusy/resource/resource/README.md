@@ -57,7 +57,7 @@ erDiagram
 
 Schema file: [`resource.postgres.prisma`](./resource.postgres.prisma)
 
-### `Resource` → `resources`
+### `Resource` → `entity`
 
 A bookable thing: a provider, room, piece of equipment, or a unit type. A resource is a pool of `capacity` interchangeable units; the freebusy engine computes how many are free for a given window. Its booking_mode decides whether availability is produced as time slots or per-night counts.
 
@@ -148,7 +148,7 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `percent` | `DOUBLE PRECISION` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 
-### `ResourceOfferings` → `resource_offerings`
+### `ResourceOfferings` → `offerings_link`
 
 Join table for the many-to-many relation Resource.offerings ↔ Offering.
 

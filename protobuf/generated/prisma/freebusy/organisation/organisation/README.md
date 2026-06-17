@@ -32,7 +32,7 @@ erDiagram
 
 Schema file: [`organisation.postgres.prisma`](./organisation.postgres.prisma)
 
-### `Organisation` → `organisations`
+### `Organisation` → `resource`
 
 A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
 

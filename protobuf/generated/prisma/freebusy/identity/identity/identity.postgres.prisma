@@ -42,7 +42,7 @@ model User {
   etag String? @map("etag")
 
   /// Back-relation: Booking records that reference this model via customer.
-  bookings Booking[]
+  resource Booking[]
 
   /// Back-relation: MembershipSummary records that reference this model via user_id.
   membershipSummaries MembershipSummary[]

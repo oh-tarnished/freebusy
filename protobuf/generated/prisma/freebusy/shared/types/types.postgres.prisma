@@ -44,7 +44,7 @@ model Contact {
   phoneNumber String? @map("phone_number")
 
   /// Back-relation: Booking records that reference this model via contact_id.
-  bookings Booking[]
+  resource Booking[]
 
   /// Maps the model to the "contacts" table in the database.
   @@map("contacts")
@@ -64,7 +64,7 @@ model TimeWindow {
   endTime DateTime @map("end_time")
 
   /// Back-relation: Booking records that reference this model via window_id.
-  bookings Booking[]
+  resource Booking[]
 
   /// Back-relation: AvailabilityException records that reference this model via window_id.
   availabilityExceptions AvailabilityException[]

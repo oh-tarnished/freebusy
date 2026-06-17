@@ -40,7 +40,7 @@ erDiagram
 
 Schema file: [`promocode.postgres.prisma`](./promocode.postgres.prisma)
 
-### `PromoCode` → `promo_codes`
+### `PromoCode` → `resource`
 
 A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of resources / offerings it applies to.
 
@@ -66,7 +66,7 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 
-### `PromoCodeApplicableResources` → `promo_code_applicable_resources`
+### `PromoCodeApplicableResources` → `applicable_resources`
 
 Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
 
@@ -76,7 +76,7 @@ Join table for the many-to-many relation PromoCode.applicable_resources ↔ Reso
 | `promo_code_id` | `CHAR(26)` | not null |
 | `resource_id` | `CHAR(26)` | not null |
 
-### `PromoCodeApplicableOfferings` → `promo_code_applicable_offerings`
+### `PromoCodeApplicableOfferings` → `applicable_offerings`
 
 Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
 

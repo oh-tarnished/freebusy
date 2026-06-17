@@ -70,7 +70,7 @@ type Organisation struct {
 	Members []Member `gorm:"foreignKey:OrganisationID" json:"members,omitempty"`
 }
 
-func (*Organisation) TableName() string { return "organisation.organisations" }
+func (*Organisation) TableName() string { return "organisation.resource" }
 
 // The membership of a user in an organisation, with their role.
 type Member struct {

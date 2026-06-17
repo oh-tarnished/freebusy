@@ -100,16 +100,16 @@ model PromoCode {
   etag String? @map("etag")
 
   /// Back-relation: Booking records that reference this model via promo_code.
-  bookings Booking[]
+  resource Booking[]
 
   /// Back-relation: PromoCodeApplicableResources records that reference this model via promo_code_id.
-  promoCodeApplicableResources PromoCodeApplicableResources[]
+  applicableResources PromoCodeApplicableResources[]
 
   /// Back-relation: PromoCodeApplicableOfferings records that reference this model via promo_code_id.
-  promoCodeApplicableOfferings PromoCodeApplicableOfferings[]
+  applicableOfferings PromoCodeApplicableOfferings[]
 
-  /// Maps the model to the "promo_codes" table in the database.
-  @@map("promo_codes")
+  /// Maps the model to the "resource" table in the database.
+  @@map("resource")
   /// Maps the model to the "promocode" schema in the database.
   @@schema("promocode")
 }
@@ -137,8 +137,8 @@ model PromoCodeApplicableResources {
   @@index([promoCodeID])
   /// Composite index on [resource_id].
   @@index([resourceID])
-  /// Maps the model to the "promo_code_applicable_resources" table in the database.
-  @@map("promo_code_applicable_resources")
+  /// Maps the model to the "applicable_resources" table in the database.
+  @@map("applicable_resources")
   /// Maps the model to the "promocode" schema in the database.
   @@schema("promocode")
 }
@@ -166,8 +166,8 @@ model PromoCodeApplicableOfferings {
   @@index([promoCodeID])
   /// Composite index on [offering_id].
   @@index([offeringID])
-  /// Maps the model to the "promo_code_applicable_offerings" table in the database.
-  @@map("promo_code_applicable_offerings")
+  /// Maps the model to the "applicable_offerings" table in the database.
+  @@map("applicable_offerings")
   /// Maps the model to the "promocode" schema in the database.
   @@schema("promocode")
 }

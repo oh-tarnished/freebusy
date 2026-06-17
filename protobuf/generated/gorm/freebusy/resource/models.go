@@ -101,10 +101,10 @@ type Resource struct {
 	// Back-relation: Offering records that reference this via resource_id.
 	Offerings []Offering `gorm:"foreignKey:ResourceID" json:"offerings,omitempty"`
 	// Back-relation: ResourceOfferings records that reference this via resource_id.
-	ResourceOfferings []ResourceOfferings `gorm:"foreignKey:ResourceID" json:"resourceofferings,omitempty"`
+	OfferingsLink []ResourceOfferings `gorm:"foreignKey:ResourceID" json:"offeringslink,omitempty"`
 }
 
-func (*Resource) TableName() string { return "resource.resources" }
+func (*Resource) TableName() string { return "resource.entity" }
 
 // A specific way a resource can be booked, carrying its duration and price. A "30-min consult" and a "60-min session" are two offerings on the same provider. For NIGHTLY resources the duration is unused and price is per-night.
 type Offering struct {
@@ -142,7 +142,7 @@ type Offering struct {
 	// Back-relation: Tax records that reference this via offering_id.
 	Taxes []Tax `gorm:"foreignKey:OfferingID" json:"taxes,omitempty"`
 	// Back-relation: ResourceOfferings records that reference this via offering_id.
-	ResourceOfferings []ResourceOfferings `gorm:"foreignKey:OfferingID" json:"resourceofferings,omitempty"`
+	OfferingsLink []ResourceOfferings `gorm:"foreignKey:OfferingID" json:"offeringslink,omitempty"`
 }
 
 func (*Offering) TableName() string { return "resource.offerings" }
@@ -233,4 +233,4 @@ type ResourceOfferings struct {
 	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
 }
 
-func (*ResourceOfferings) TableName() string { return "resource.resource_offerings" }
+func (*ResourceOfferings) TableName() string { return "resource.offerings_link" }

@@ -86,7 +86,7 @@ An override of a resource's normal hours on a specific span: a blackout / holida
 | `window_id` | `CHAR(26)` | nullable |
 | `date_range_id` | `CHAR(26)` | nullable |
 
-### `Schedule` → `schedules`
+### `Schedule` → `resource`
 
 Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
 
@@ -157,7 +157,7 @@ One tier of a CancellationPolicy: cancel at least `cutoff` before the booking st
 | `refund_percent` | `INTEGER` | not null |
 | `cancellation_policy_id` | `CHAR(26)` | not null |
 
-### `ScheduleExceptions` → `schedule_exceptions`
+### `ScheduleExceptions` → `exceptions`
 
 Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityException.
 
