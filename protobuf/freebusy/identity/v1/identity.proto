@@ -18,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.identity.v1";
 // here; only profile preferences are editable.
 message User {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/User"
+    type: "freebusy.identity.v1/User"
     pattern: "users/{user}"
     singular: "user"
     plural: "users"
@@ -65,7 +65,7 @@ message MembershipSummary {
   // Format: organisations/{organisation}
   string organisation = 1 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
   ];
 
   // Cached display name of the organisation.
@@ -81,7 +81,7 @@ message GetUserRequest {
   // Format: users/{user}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
   ];
 }
 

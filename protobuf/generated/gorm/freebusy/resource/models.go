@@ -45,14 +45,14 @@ const (
 )
 
 // Lifecycle status of a resource.
-type State string
+type ResourceState string
 
-// State values as stored in the database.
+// ResourceState values as stored in the database.
 const (
 	// Bookable.
-	StateActive State = "ACTIVE"
+	ResourceStateActive ResourceState = "ACTIVE"
 	// Retired; hidden from availability and new bookings.
-	StateArchived State = "ARCHIVED"
+	ResourceStateArchived ResourceState = "ARCHIVED"
 )
 
 // What an offering's price is charged per.
@@ -66,6 +66,17 @@ const (
 	PricingUnitPerNight PricingUnit = "PER_NIGHT"
 	// Price multiplied by party size / units booked.
 	PricingUnitPerPerson PricingUnit = "PER_PERSON"
+)
+
+// Lifecycle state of an offering.
+type OfferingState string
+
+// OfferingState values as stored in the database.
+const (
+	// Bookable.
+	OfferingStateActive OfferingState = "ACTIVE"
+	// Hidden from new bookings.
+	OfferingStateInactive OfferingState = "INACTIVE"
 )
 
 // A bookable thing: a provider, room, piece of equipment, or a unit type. A resource is a pool of `capacity` interchangeable units; the freebusy engine computes how many are free for a given window. Its booking_mode decides whether availability is produced as time slots or per-night counts.
@@ -91,7 +102,7 @@ type Resource struct {
 	// Arbitrary attributes used for templating, policy, and segmentation.
 	Attributes json.RawMessage `gorm:"column:attributes" json:"attributes,omitempty"`
 	// Lifecycle state.
-	State *State `gorm:"column:state" json:"state,omitempty"`
+	State *ResourceState `gorm:"column:state" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -123,7 +134,7 @@ type Offering struct {
 	// What the price is charged per.
 	PricingUnit *PricingUnit `gorm:"column:pricing_unit" json:"pricing_unit,omitempty"`
 	// Lifecycle state.
-	State *State `gorm:"column:state" json:"state,omitempty"`
+	State *OfferingState `gorm:"column:state" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.

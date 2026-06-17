@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.promocode.v1;
 
+import "freebusy/promocode/v1/enums.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/timestamp.proto";
@@ -17,26 +18,11 @@ option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 // offerings it applies to.
 message PromoCode {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/PromoCode"
+    type: "freebusy.promocode.v1/PromoCode"
     pattern: "promoCodes/{promo_code}"
     singular: "promoCode"
     plural: "promoCodes"
   };
-
-  // Lifecycle state of a promo code.
-  enum State {
-    // Unset; treated as active.
-    STATE_UNSPECIFIED = 0;
-
-    // Redeemable (subject to window and caps).
-    STATE_ACTIVE = 1;
-
-    // Manually disabled.
-    STATE_DISABLED = 2;
-
-    // Past its redemption window or out of redemptions.
-    STATE_EXPIRED = 3;
-  }
 
   // The promo code name.
   // Format: promoCodes/{promo_code}
@@ -82,14 +68,14 @@ message PromoCode {
   // Format: resources/{resource}
   repeated string applicable_resources = 14 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // Offerings the code applies to. Empty means all offerings.
   // Format: resources/{resource}/offerings/{offering}
   repeated string applicable_offerings = 15 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 
   // How many times the code has been redeemed.
@@ -97,7 +83,7 @@ message PromoCode {
 
   // Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or
   // EXPIRED (past the window or out of redemptions).
-  State state = 17 [(google.api.field_behavior) = OUTPUT_ONLY];
+  PromoCodeState state = 17 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // If true, the code is manually disabled regardless of its window and caps.
   bool disabled = 20 [(google.api.field_behavior) = OPTIONAL];
@@ -110,16 +96,4 @@ message PromoCode {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   string etag = 21;
-}
-
-// How a promo code's discount is computed.
-enum DiscountType {
-  // Unset.
-  DISCOUNT_TYPE_UNSPECIFIED = 0;
-
-  // A percentage off the subtotal (percent_off).
-  DISCOUNT_TYPE_PERCENTAGE = 1;
-
-  // A fixed amount off the subtotal (amount_off).
-  DISCOUNT_TYPE_FIXED_AMOUNT = 2;
 }

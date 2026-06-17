@@ -40,4 +40,5 @@ erDiagram
 
 ## Subfolders
 
+- [`enums/`](./enums/README.md)
 - [`promocode/`](./promocode/README.md)

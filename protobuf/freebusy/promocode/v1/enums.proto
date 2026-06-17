@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package freebusy.promocode.v1;
+
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
+option java_multiple_files = true;
+option java_outer_classname = "EnumsProto";
+option java_package = "dev.ohtarnished.freebusy.promocode.v1";
+
+// Lifecycle state of a promo code.
+enum PromoCodeState {
+  // Unset; treated as active.
+  PROMO_CODE_STATE_UNSPECIFIED = 0;
+
+  // Redeemable (subject to window and caps).
+  PROMO_CODE_STATE_ACTIVE = 1;
+
+  // Manually disabled.
+  PROMO_CODE_STATE_DISABLED = 2;
+
+  // Past its redemption window or out of redemptions.
+  PROMO_CODE_STATE_EXPIRED = 3;
+}
+
+// How a promo code's discount is computed.
+enum DiscountType {
+  // Unset.
+  DISCOUNT_TYPE_UNSPECIFIED = 0;
+
+  // A percentage off the subtotal (percent_off).
+  DISCOUNT_TYPE_PERCENTAGE = 1;
+
+  // A fixed amount off the subtotal (amount_off).
+  DISCOUNT_TYPE_FIXED_AMOUNT = 2;
+}

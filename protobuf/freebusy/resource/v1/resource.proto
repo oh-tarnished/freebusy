@@ -6,6 +6,7 @@ package freebusy.resource.v1;
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
 
+import "freebusy/resource/v1/enums.proto";
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
@@ -26,7 +27,7 @@ option java_package = "dev.ohtarnished.freebusy.resource.v1";
 // whether availability is produced as time slots or per-night counts.
 message Resource {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Resource"
+    type: "freebusy.resource.v1/Resource"
     pattern: "resources/{resource}"
     singular: "resource"
     plural: "resources"
@@ -74,22 +75,11 @@ message Resource {
   // Format: resources/{resource}/offerings/{offering}
   repeated string offerings = 11 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 
-  // Lifecycle status of a resource.
-  enum State {
-    // Unset.
-    STATE_UNSPECIFIED = 0;
-
-    // Bookable.
-    STATE_ACTIVE = 1;
-
-    // Retired; hidden from availability and new bookings.
-    STATE_ARCHIVED = 2;
-  }
   // Lifecycle state.
-  State state = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+  ResourceState state = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -106,7 +96,7 @@ message Resource {
 // provider. For NIGHTLY resources the duration is unused and price is per-night.
 message Offering {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Offering"
+    type: "freebusy.resource.v1/Offering"
     pattern: "resources/{resource}/offerings/{offering}"
     singular: "offering"
     plural: "offerings"
@@ -151,19 +141,8 @@ message Offering {
   // Taxes applied to the taxable base (subtotal plus taxable fees). Each
   // surfaces as a TYPE_TAX line in a booking's price_components.
   repeated Tax taxes = 15 [(google.api.field_behavior) = OPTIONAL];
-  // Lifecycle STATE of an offering.
-  enum State {
-    // Unset; treated as active.
-    STATE_UNSPECIFIED = 0;
-
-    // Bookable.
-    STATE_ACTIVE = 1;
-
-    // Hidden from new bookings.
-    STATE_INACTIVE = 2;
-  }
   // Lifecycle state.
-  State state = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+  OfferingState state = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -237,40 +216,4 @@ message Tax {
 
   // Tax rate as a percentage, e.g. 8.5 for 8.5%.
   double percent = 3 [(google.api.field_behavior) = REQUIRED];
-}
-
-// Kind of bookable resource.
-enum ResourceType {
-  // Unset.
-  RESOURCE_TYPE_UNSPECIFIED = 0;
-
-  // A person who delivers a service (e.g. a doctor, stylist).
-  RESOURCE_TYPE_PROVIDER = 1;
-
-  // A bookable room or space (e.g. a meeting room).
-  RESOURCE_TYPE_ROOM = 2;
-
-  // A bookable piece of equipment (e.g. a kayak).
-  RESOURCE_TYPE_EQUIPMENT = 3;
-
-  // A lodging unit type backed by a pool of identical units.
-  RESOURCE_TYPE_UNIT_TYPE = 4;
-
-  // A generic space or venue.
-  RESOURCE_TYPE_SPACE = 5;
-}
-
-// What an offering's price is charged per.
-enum PricingUnit {
-  // Unset; treated as per-booking.
-  PRICING_UNIT_UNSPECIFIED = 0;
-
-  // A flat price for the whole booking.
-  PRICING_UNIT_PER_BOOKING = 1;
-
-  // Price multiplied by the number of nights (NIGHTLY resources).
-  PRICING_UNIT_PER_NIGHT = 2;
-
-  // Price multiplied by party size / units booked.
-  PRICING_UNIT_PER_PERSON = 3;
 }

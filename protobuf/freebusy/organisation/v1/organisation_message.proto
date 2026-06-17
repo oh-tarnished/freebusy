@@ -10,7 +10,7 @@ import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
-option java_outer_classname = "OrgMessagesProto";
+option java_outer_classname = "OrganisationMessageProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
 // Request message for ListOrganisations.
@@ -44,7 +44,7 @@ message GetOrganisationRequest {
   // Format: organisations/{organisation}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
   ];
 }
 
@@ -79,7 +79,7 @@ message DeleteOrganisationRequest {
   // Format: organisations/{organisation}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
   ];
 
   // If true, delete the organisation and its members; otherwise the call fails when
@@ -93,7 +93,7 @@ message ListMembersRequest {
   // Format: organisations/{organisation}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
   ];
 
   // Maximum number of members to return. The server may cap this.
@@ -124,6 +124,6 @@ message GetMemberRequest {
   // Format: organisations/{organisation}/members/{member}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Member"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Member"}
   ];
 }

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package freebusy.availability.v1;
 
+import "freebusy/availability/v1/enums.proto";
 // (-- api-linter: core::0215::foreign-type-reference=disabled
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
-
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
@@ -66,7 +66,7 @@ message BookableRange {
 message ResourceAvailability {
   // The resource these results are for.
   // Format: resources/{resource}
-  string resource = 1 [(google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}];
+  string resource = 1 [(google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}];
 
   // Which shape is populated, matching the resource's booking_mode.
   freebusy.shared.v1.BookingMode mode = 2;
@@ -84,7 +84,7 @@ message ComputeAvailabilityRequest {
   // Format: resources/{resource}
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // The period to compute availability over. Exactly one must be set.
@@ -105,7 +105,7 @@ message ComputeAvailabilityRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 
   // Number of units required to be free. Defaults to 1.
@@ -130,7 +130,7 @@ message CheckAvailabilityRequest {
   // Format: resources/{resource}
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // The exact span to test for bookability. Exactly one must be set.
@@ -150,52 +150,13 @@ message CheckAvailabilityRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 }
 
 // A reason a span is not bookable, as a machine-readable code plus a
 // human-readable explanation. Clients should branch on code, never on message.
 message UnbookableReason {
-  // Machine-readable reasons a span is not bookable.
-  enum Code {
-    // Unset.
-    CODE_UNSPECIFIED = 0;
-
-    // Not enough free units for the requested count.
-    CODE_NO_CAPACITY = 1;
-
-    // The span falls outside the resource's recurring hours.
-    CODE_OUTSIDE_HOURS = 2;
-
-    // A closure exception (blackout/holiday) covers part of the span.
-    CODE_CLOSED = 3;
-
-    // Shorter than the minimum stay (min_nights).
-    CODE_MIN_NIGHTS = 4;
-
-    // Longer than the maximum stay (max_nights).
-    CODE_MAX_NIGHTS = 5;
-
-    // Check-in falls on a disallowed weekday.
-    CODE_CHECKIN_DAY = 6;
-
-    // Check-out falls on a disallowed weekday.
-    CODE_CHECKOUT_DAY = 7;
-
-    // The span starts sooner than the minimum notice allows.
-    CODE_MIN_NOTICE = 8;
-
-    // The span starts further out than the advance window allows.
-    CODE_MAX_ADVANCE = 9;
-
-    // A buffer or gap rule around an adjacent booking conflicts.
-    CODE_BUFFER_CONFLICT = 10;
-
-    // The resource is archived.
-    CODE_RESOURCE_ARCHIVED = 11;
-  }
-
   // Why the span is not bookable.
   Code code = 1;
 
@@ -221,7 +182,7 @@ message ComputeBookableRangesRequest {
   // Format: resources/{resource}
   string resource = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // The period to search within. Exactly one must be set.
@@ -241,7 +202,7 @@ message ComputeBookableRangesRequest {
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 
   // Number of units required to be free. Defaults to 1.
@@ -314,7 +275,7 @@ message SearchAvailabilityRequest {
 message AvailabilityMatch {
   // The matching resource.
   // Format: resources/{resource}
-  string resource = 1 [(google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}];
+  string resource = 1 [(google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}];
 
   // Cached display name of the resource, for convenience.
   string display_name = 2;

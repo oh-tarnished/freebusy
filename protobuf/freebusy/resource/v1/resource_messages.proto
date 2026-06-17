@@ -50,7 +50,7 @@ message GetResourceRequest {
   // Format: resources/{resource}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 }
 
@@ -84,7 +84,7 @@ message ArchiveResourceRequest {
   // Format: resources/{resource}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 }
 
@@ -94,7 +94,7 @@ message UnarchiveResourceRequest {
   // Format: resources/{resource}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 }
 
@@ -104,7 +104,7 @@ message ListOfferingsRequest {
   // Format: resources/{resource}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // Maximum number of offerings to return.
@@ -135,7 +135,7 @@ message GetOfferingRequest {
   // Format: resources/{resource}/offerings/{offering}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 }
 
@@ -145,7 +145,7 @@ message CreateOfferingRequest {
   // Format: resources/{resource}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // The offering to create. Its name field is ignored.
@@ -176,6 +176,6 @@ message DeleteOfferingRequest {
   // Format: resources/{resource}/offerings/{offering}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 }

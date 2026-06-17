@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package freebusy.organisation.v1;
 
-import "freebusy/organisation/v1/org_actions.proto";
-import "freebusy/organisation/v1/org_messages.proto";
+import "freebusy/organisation/v1/actions.proto";
 import "freebusy/organisation/v1/organisation.proto";
+import "freebusy/organisation/v1/organisation_message.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/protobuf/empty.proto";
@@ -12,7 +12,7 @@ import "mcp/protobuf/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
-option java_outer_classname = "OrgServiceProto";
+option java_outer_classname = "OrganisationServiceProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
 // OrganisationService manages tenants and their members. Day-to-day tenancy is

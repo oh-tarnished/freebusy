@@ -70,4 +70,5 @@ erDiagram
 
 ## Subfolders
 
+- [`enums/`](./enums/README.md)
 - [`schedule/`](./schedule/README.md)

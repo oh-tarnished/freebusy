@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.organisation.v1;
 
+import "freebusy/organisation/v1/enums.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/struct.proto";
@@ -17,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 // stay flat and the organisation appears explicitly only here.
 message Organisation {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Organisation"
+    type: "freebusy.organisation.v1/Organisation"
     pattern: "organisations/{organisation}"
     singular: "organisation"
     plural: "organisations"
@@ -40,7 +41,7 @@ message Organisation {
   string billing_email = 5 [(google.api.field_behavior) = OPTIONAL];
 
   // Lifecycle state.
-  State state = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+  OrganisationState state = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Arbitrary organisation-level settings.
   google.protobuf.Struct settings = 7 [(google.api.field_behavior) = OPTIONAL];
@@ -56,24 +57,12 @@ message Organisation {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   string etag = 11;
-
-  // Lifecycle state of an organisation.
-  enum State {
-    // Unset.
-    STATE_UNSPECIFIED = 0;
-
-    // Active.
-    STATE_ACTIVE = 1;
-
-    // Suspended; access blocked.
-    STATE_SUSPENDED = 2;
-  }
 }
 
 // The membership of a user in an organisation, with their role.
 message Member {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Member"
+    type: "freebusy.organisation.v1/Member"
     pattern: "organisations/{organisation}/members/{member}"
     singular: "member"
     plural: "members"
@@ -90,7 +79,7 @@ message Member {
   // Format: users/{user}
   string user = 3 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
   ];
 
   // The invited email address.
@@ -103,13 +92,13 @@ message Member {
   OrganisationRole role = 6 [(google.api.field_behavior) = REQUIRED];
 
   // Confirmation state of the membership.
-  State state = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+  MemberState state = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // The user who issued the invite.
   // Format: users/{user}
   string inviter = 8 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
   ];
 
   // Creation timestamp (when the invite was created).
@@ -120,37 +109,4 @@ message Member {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   string etag = 11;
-
-  // Confirmation state of a membership.
-  enum State {
-    // Unset.
-    STATE_UNSPECIFIED = 0;
-
-    // Invited, awaiting acceptance.
-    STATE_INVITED = 1;
-
-    // Active member.
-    STATE_ACTIVE = 2;
-
-    // Suspended within the organisation.
-    STATE_SUSPENDED = 3;
-  }
-}
-
-// A member's role within an organisation.
-enum OrganisationRole {
-  // Unset.
-  ORGANISATION_ROLE_UNSPECIFIED = 0;
-
-  // Full control, including billing and deletion.
-  ORGANISATION_ROLE_OWNER = 1;
-
-  // Manage members and resources.
-  ORGANISATION_ROLE_ADMIN = 2;
-
-  // Create and manage bookings and resources.
-  ORGANISATION_ROLE_MEMBER = 3;
-
-  // Read-only access.
-  ORGANISATION_ROLE_VIEWER = 4;
 }

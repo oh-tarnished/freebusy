@@ -19,7 +19,7 @@ message GetScheduleRequest {
   // Format: resources/{resource}/schedule
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Schedule"}
+    (google.api.resource_reference) = {type: "freebusy.schedule.v1/Schedule"}
   ];
 }
 
@@ -40,7 +40,7 @@ message ListAvailabilityExceptionsRequest {
   // Format: resources/{resource}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // Maximum number of exceptions to return.
@@ -71,7 +71,7 @@ message GetAvailabilityExceptionRequest {
   // Format: resources/{resource}/availabilityExceptions/{availability_exception}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/AvailabilityException"}
+    (google.api.resource_reference) = {type: "freebusy.schedule.v1/AvailabilityException"}
   ];
 }
 
@@ -81,7 +81,7 @@ message CreateAvailabilityExceptionRequest {
   // Format: resources/{resource}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // The exception to add. Its name field is ignored.
@@ -103,6 +103,6 @@ message DeleteAvailabilityExceptionRequest {
   // Format: resources/{resource}/availabilityExceptions/{availability_exception}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/AvailabilityException"}
+    (google.api.resource_reference) = {type: "freebusy.schedule.v1/AvailabilityException"}
   ];
 }

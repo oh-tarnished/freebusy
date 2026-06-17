@@ -17,14 +17,14 @@ import (
 )
 
 // Lifecycle state of an organisation.
-type State string
+type OrganisationState string
 
-// State values as stored in the database.
+// OrganisationState values as stored in the database.
 const (
 	// Active.
-	StateActive State = "ACTIVE"
+	OrganisationStateActive OrganisationState = "ACTIVE"
 	// Suspended; access blocked.
-	StateSuspended State = "SUSPENDED"
+	OrganisationStateSuspended OrganisationState = "SUSPENDED"
 )
 
 // A member's role within an organisation.
@@ -42,6 +42,19 @@ const (
 	OrganisationRoleViewer OrganisationRole = "VIEWER"
 )
 
+// Confirmation state of a membership.
+type MemberState string
+
+// MemberState values as stored in the database.
+const (
+	// Invited, awaiting acceptance.
+	MemberStateInvited MemberState = "INVITED"
+	// Active member.
+	MemberStateActive MemberState = "ACTIVE"
+	// Suspended within the organisation.
+	MemberStateSuspended MemberState = "SUSPENDED"
+)
+
 // A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
 type Organisation struct {
 	// Unique identifier for the record.
@@ -55,7 +68,7 @@ type Organisation struct {
 	// Billing contact email.
 	BillingEmail *string `gorm:"column:billing_email" json:"billing_email,omitempty"`
 	// Lifecycle state.
-	State *State `gorm:"column:state" json:"state,omitempty"`
+	State *OrganisationState `gorm:"column:state" json:"state,omitempty"`
 	// Arbitrary organisation-level settings.
 	Settings json.RawMessage `gorm:"column:settings" json:"settings,omitempty"`
 	// Number of members across all states.
@@ -87,7 +100,7 @@ type Member struct {
 	// The member's role in the organisation.
 	Role OrganisationRole `gorm:"column:role;not null;default:'OWNER'" json:"role" validate:"required"`
 	// Confirmation state of the membership.
-	State *State `gorm:"column:state" json:"state,omitempty"`
+	State *MemberState `gorm:"column:state" json:"state,omitempty"`
 	// The user who issued the invite. Format: users/{user}
 	InviterID *string `gorm:"column:inviter" json:"inviter,omitempty"`
 	// Creation timestamp (when the invite was created).

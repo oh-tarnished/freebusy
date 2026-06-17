@@ -17,22 +17,22 @@ import (
 )
 
 // Lifecycle state of a booking.
-type State string
+type BookingState string
 
-// State values as stored in the database.
+// BookingState values as stored in the database.
 const (
 	// Held but not yet confirmed; expires at hold_expire_time.
-	StatePendingHold State = "PENDING_HOLD"
+	BookingStatePendingHold BookingState = "PENDING_HOLD"
 	// Confirmed and active.
-	StateConfirmed State = "CONFIRMED"
+	BookingStateConfirmed BookingState = "CONFIRMED"
 	// Cancelled by customer or operator.
-	StateCancelled State = "CANCELLED"
+	BookingStateCancelled BookingState = "CANCELLED"
 	// Hold lapsed before confirmation (released by the sweeper).
-	StateExpired State = "EXPIRED"
+	BookingStateExpired BookingState = "EXPIRED"
 	// The booked time has passed and the booking was honored.
-	StateCompleted State = "COMPLETED"
+	BookingStateCompleted BookingState = "COMPLETED"
 	// The customer did not show.
-	StateNoShow State = "NO_SHOW"
+	BookingStateNoShow BookingState = "NO_SHOW"
 )
 
 // Why a booking was cancelled.
@@ -84,7 +84,7 @@ type Booking struct {
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
 	AssignedUnit *string `gorm:"column:assigned_unit" json:"assigned_unit,omitempty"`
 	// Current lifecycle state.
-	State *State `gorm:"column:state" json:"state,omitempty"`
+	State *BookingState `gorm:"column:state" json:"state,omitempty"`
 	// When the pending hold lapses, if not confirmed first.
 	HoldExpireTime *time.Time `gorm:"column:hold_expire_time" json:"hold_expire_time,omitempty"`
 	// Computed subtotal before discounts.

@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 7 | 3 |
+| 7 | 4 |
 
 ## Entity relationships
 
@@ -57,4 +57,5 @@ erDiagram
 
 ## Subfolders
 
+- [`enums/`](./enums/README.md)
 - [`resource/`](./resource/README.md)

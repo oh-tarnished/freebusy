@@ -290,38 +290,6 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnResourceResourcesOfferings
-  description: Update the 'offerings' column in the 'resource_resources' collection
-  fields:
-    - name: set
-      type: "[String_1]"
-      description: Set the column to this value
-  graphql:
-    typeName: UpdateColumnResourceResourcesOfferings
-    inputTypeName: UpdateColumnResourceResourcesOfferingsInput
-  dataConnectorTypeMapping:
-    - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_resource_resources_offerings
-      fieldMapping:
-        set:
-          column:
-            name: _set
-
----
-kind: TypePermissions
-version: v1
-definition:
-  typeName: UpdateColumnResourceResourcesOfferings
-  permissions:
-    - role: admin
-      output:
-        allowedFields:
-          - set
-
----
-kind: ObjectType
-version: v1
-definition:
   name: UpdateColumnResourceResourcesState
   description: Update the 'state' column in the 'resource_resources' collection
   fields:
@@ -512,9 +480,6 @@ definition:
     - name: name
       type: UpdateColumnResourceResourcesName
       description: Update the 'name' column in the 'resource_resources' collection.
-    - name: offerings
-      type: UpdateColumnResourceResourcesOfferings
-      description: Update the 'offerings' column in the 'resource_resources' collection.
     - name: state
       type: UpdateColumnResourceResourcesState
       description: Update the 'state' column in the 'resource_resources' collection.
@@ -564,9 +529,6 @@ definition:
         name:
           column:
             name: name
-        offerings:
-          column:
-            name: offerings
         state:
           column:
             name: state
@@ -601,7 +563,6 @@ definition:
           - etag
           - id
           - name
-          - offerings
           - state
           - tags
           - timeZone

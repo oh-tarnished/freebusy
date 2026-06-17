@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 2 | 2 |
+| 2 | 0 |
 
 ## Entity relationships
 
@@ -62,14 +62,9 @@ The membership of a user in an organisation, with their role.
 | `email` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
 | `role` | `OrganisationRole` | not null |
-| `state` | `OrganisationState` | nullable |
+| `state` | `MemberState` | nullable |
 | `inviter` | `CHAR(26)` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 | `organisation_id` | `CHAR(26)` | not null |
-
-### Enums
-
-- `OrganisationState`: ACTIVE, SUSPENDED
-- `OrganisationRole`: OWNER, ADMIN, MEMBER, VIEWER

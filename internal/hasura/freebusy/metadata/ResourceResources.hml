@@ -22,8 +22,6 @@ definition:
       type: String_1!
     - name: name
       type: String_1!
-    - name: offerings
-      type: "[String_1]"
     - name: state
       type: Enum
     - name: tags
@@ -68,9 +66,6 @@ definition:
         name:
           column:
             name: name
-        offerings:
-          column:
-            name: offerings
         state:
           column:
             name: state
@@ -105,7 +100,6 @@ definition:
           - etag
           - id
           - name
-          - offerings
           - state
           - tags
           - timeZone
@@ -149,10 +143,10 @@ definition:
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: bookingBookings
-        - relationshipName: resourceOfferings
-        - relationshipName: scheduleAvailabilityExceptions
         - relationshipName: promocodePromoCodeApplicableResources
+        - relationshipName: resourceOfferings
         - relationshipName: resourceResourceOfferings
+        - relationshipName: scheduleAvailabilityExceptions
   logicalOperators:
     enable: true
   isNull:
@@ -306,50 +300,6 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: resourceOfferings
-  sourceType: ResourceResources
-  target:
-    model:
-      name: ResourceOfferings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceOfferingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resourceId
-  graphql:
-    aggregateFieldName: resourceOfferingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleAvailabilityExceptions
-  sourceType: ResourceResources
-  target:
-    model:
-      name: ScheduleAvailabilityExceptions
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleAvailabilityExceptionsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resourceId
-  graphql:
-    aggregateFieldName: scheduleAvailabilityExceptionsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
   name: promocodePromoCodeApplicableResources
   sourceType: ResourceResources
   target:
@@ -372,6 +322,28 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: resourceOfferings
+  sourceType: ResourceResources
+  target:
+    model:
+      name: ResourceOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: resourceId
+  graphql:
+    aggregateFieldName: resourceOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
   name: resourceResourceOfferings
   sourceType: ResourceResources
   target:
@@ -389,4 +361,26 @@ definition:
           - fieldName: resourceId
   graphql:
     aggregateFieldName: resourceResourceOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: scheduleAvailabilityExceptions
+  sourceType: ResourceResources
+  target:
+    model:
+      name: ScheduleAvailabilityExceptions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleAvailabilityExceptionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: resourceId
+  graphql:
+    aggregateFieldName: scheduleAvailabilityExceptionsAggregate
 

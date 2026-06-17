@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 1 | 2 |
+| 1 | 0 |
 
 ## Entity relationships
 
@@ -82,8 +82,3 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `etag` | `VARCHAR(255)` | nullable |
 | `contact_id` | `CHAR(26)` | nullable |
 | `window_id` | `CHAR(26)` | not null |
-
-### Enums
-
-- `BookingState`: PENDING_HOLD, CONFIRMED, CANCELLED, EXPIRED, COMPLETED, NO_SHOW
-- `CancelReason`: REQUESTED_BY_CUSTOMER, REQUESTED_BY_OPERATOR, PAYMENT_FAILED, NO_SHOW, OTHER

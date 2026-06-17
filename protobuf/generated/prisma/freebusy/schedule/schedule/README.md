@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 8 | 2 |
+| 8 | 1 |
 
 ## Entity relationships
 
@@ -169,5 +169,4 @@ Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityExc
 
 ### Enums
 
-- `ExceptionKind`: CLOSURE, EXTRA_HOURS
 - `AvailabilityExceptionSpanCase`: WINDOW, DATE_RANGE

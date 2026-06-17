@@ -6,10 +6,6 @@ definition:
   fields:
     - name: amountOff
       type: Json
-    - name: applicableOfferings
-      type: "[String_1]"
-    - name: applicableResources
-      type: "[String_1]"
     - name: code
       type: String_1!
     - name: createTime
@@ -56,12 +52,6 @@ definition:
         amountOff:
           column:
             name: amount_off
-        applicableOfferings:
-          column:
-            name: applicable_offerings
-        applicableResources:
-          column:
-            name: applicable_resources
         code:
           column:
             name: code
@@ -127,8 +117,6 @@ definition:
       output:
         allowedFields:
           - amountOff
-          - applicableOfferings
-          - applicableResources
           - code
           - createTime
           - description

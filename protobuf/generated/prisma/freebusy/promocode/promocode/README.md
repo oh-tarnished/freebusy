@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 3 | 2 |
+| 3 | 0 |
 
 ## Entity relationships
 
@@ -60,7 +60,7 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `per_customer_limit` | `INTEGER` | nullable |
 | `min_subtotal` | `JSONB` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
-| `state` | `PromocodeState` | nullable |
+| `state` | `PromoCodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -85,8 +85,3 @@ Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offe
 | `id` | `CHAR(26)` | not null |
 | `promo_code_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
-
-### Enums
-
-- `DiscountType`: PERCENTAGE, FIXED_AMOUNT
-- `PromocodeState`: ACTIVE, DISABLED, EXPIRED

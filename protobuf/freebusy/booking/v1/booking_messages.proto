@@ -44,7 +44,7 @@ message GetBookingRequest {
   // Format: bookings/{booking}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Booking"}
+    (google.api.resource_reference) = {type: "freebusy.booking.v1/Booking"}
   ];
 }
 

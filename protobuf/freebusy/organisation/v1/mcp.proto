@@ -6,7 +6,7 @@ import "google/api/field_behavior.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
-option java_outer_classname = "OrgMcpProto";
+option java_outer_classname = "McpProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
 // Arguments for the "invite_member" prompt.

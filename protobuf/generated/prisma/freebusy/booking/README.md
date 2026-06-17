@@ -51,3 +51,4 @@ erDiagram
 ## Subfolders
 
 - [`booking/`](./booking/README.md)
+- [`enums/`](./enums/README.md)

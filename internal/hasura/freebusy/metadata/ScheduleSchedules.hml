@@ -10,8 +10,6 @@ definition:
       type: String_1
     - name: etag
       type: String_1
-    - name: exceptions
-      type: "[String_1]"
     - name: id
       type: String_1!
     - name: name
@@ -34,9 +32,6 @@ definition:
         etag:
           column:
             name: etag
-        exceptions:
-          column:
-            name: exceptions
         id:
           column:
             name: id
@@ -59,7 +54,6 @@ definition:
           - buffersId
           - cancellationPolicyId
           - etag
-          - exceptions
           - id
           - name
           - stayConstraintsId
@@ -87,10 +81,10 @@ definition:
           booleanExpressionType: TextBoolExp
       comparableRelationships:
         - relationshipName: scheduleRecurringRules
+        - relationshipName: scheduleScheduleExceptions
         - relationshipName: scheduleBufferSetting
         - relationshipName: scheduleCancellationPolicy
         - relationshipName: scheduleStayConstraint
-        - relationshipName: scheduleScheduleExceptions
   logicalOperators:
     enable: true
   isNull:
@@ -219,6 +213,28 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: scheduleScheduleExceptions
+  sourceType: ScheduleSchedules
+  target:
+    model:
+      name: ScheduleScheduleExceptions
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ScheduleScheduleExceptionsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: scheduleId
+  graphql:
+    aggregateFieldName: scheduleScheduleExceptionsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
   name: scheduleBufferSetting
   sourceType: ScheduleSchedules
   target:
@@ -268,26 +284,4 @@ definition:
       target:
         modelField:
           - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleScheduleExceptions
-  sourceType: ScheduleSchedules
-  target:
-    model:
-      name: ScheduleScheduleExceptions
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleScheduleExceptionsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: scheduleId
-  graphql:
-    aggregateFieldName: scheduleScheduleExceptionsAggregate
 

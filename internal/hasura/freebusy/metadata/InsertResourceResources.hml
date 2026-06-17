@@ -22,8 +22,6 @@ definition:
       type: String_1!
     - name: name
       type: String_1!
-    - name: offerings
-      type: "[String_1]"
     - name: state
       type: Enum
     - name: tags
@@ -68,9 +66,6 @@ definition:
         name:
           column:
             name: name
-        offerings:
-          column:
-            name: offerings
         state:
           column:
             name: state
@@ -105,7 +100,6 @@ definition:
           - etag
           - id
           - name
-          - offerings
           - state
           - tags
           - timeZone

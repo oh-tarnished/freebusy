@@ -28,16 +28,16 @@ const (
 )
 
 // Lifecycle state of a promo code.
-type State string
+type PromoCodeState string
 
-// State values as stored in the database.
+// PromoCodeState values as stored in the database.
 const (
 	// Redeemable (subject to window and caps).
-	StateActive State = "ACTIVE"
+	PromoCodeStateActive PromoCodeState = "ACTIVE"
 	// Manually disabled.
-	StateDisabled State = "DISABLED"
+	PromoCodeStateDisabled PromoCodeState = "DISABLED"
 	// Past its redemption window or out of redemptions.
-	StateExpired State = "EXPIRED"
+	PromoCodeStateExpired PromoCodeState = "EXPIRED"
 )
 
 // A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of resources / offerings it applies to.
@@ -71,7 +71,7 @@ type PromoCode struct {
 	// How many times the code has been redeemed.
 	RedemptionCount *int64 `gorm:"column:redemption_count" json:"redemption_count,omitempty"`
 	// Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions).
-	State *State `gorm:"column:state" json:"state,omitempty"`
+	State *PromoCodeState `gorm:"column:state" json:"state,omitempty"`
 	// If true, the code is manually disabled regardless of its window and caps.
 	Disabled *bool `gorm:"column:disabled" json:"disabled,omitempty"`
 	// Creation timestamp.

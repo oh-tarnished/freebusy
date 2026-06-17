@@ -9,60 +9,6 @@
 //
 // protorm — https://github.com/the-protobuf-project/protorm
 
-/// Kind of bookable resource.
-enum ResourceType {
-  /// A person who delivers a service (e.g. a doctor, stylist).
-  PROVIDER
-
-  /// A bookable room or space (e.g. a meeting room).
-  ROOM
-
-  /// A bookable piece of equipment (e.g. a kayak).
-  EQUIPMENT
-
-  /// A lodging unit type backed by a pool of identical units.
-  UNIT_TYPE
-
-  /// A generic space or venue.
-  SPACE
-
-  /// Maps the enum to the "resource_type" type in the database.
-  @@map("resource_type")
-  /// Maps the enum to the "resource" schema in the database.
-  @@schema("resource")
-}
-
-/// Lifecycle status of a resource.
-enum ResourceState {
-  /// Bookable.
-  ACTIVE
-
-  /// Retired; hidden from availability and new bookings.
-  ARCHIVED
-
-  /// Maps the enum to the "resource_state" type in the database.
-  @@map("resource_state")
-  /// Maps the enum to the "resource" schema in the database.
-  @@schema("resource")
-}
-
-/// What an offering's price is charged per.
-enum PricingUnit {
-  /// A flat price for the whole booking.
-  PER_BOOKING
-
-  /// Price multiplied by the number of nights (NIGHTLY resources).
-  PER_NIGHT
-
-  /// Price multiplied by party size / units booked.
-  PER_PERSON
-
-  /// Maps the enum to the "pricing_unit" type in the database.
-  @@map("pricing_unit")
-  /// Maps the enum to the "resource" schema in the database.
-  @@schema("resource")
-}
-
 /// A bookable thing: a provider, room, piece of equipment, or a unit type. A resource is a pool of `capacity` interchangeable units; the freebusy engine computes how many are free for a given window. Its booking_mode decides whether availability is produced as time slots or per-night counts.
 model Resource {
   /// Unique identifier for the record.
@@ -152,7 +98,7 @@ model Offering {
   pricingUnit PricingUnit? @map("pricing_unit")
 
   /// Lifecycle state.
-  state ResourceState? @map("state")
+  state OfferingState? @map("state")
 
   /// Creation timestamp.
   createTime DateTime @default(now()) @map("create_time")

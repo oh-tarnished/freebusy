@@ -129,13 +129,13 @@ definition:
           booleanExpressionType: TimestampBoolExp
       comparableRelationships:
         - relationshipName: bookingBookings
+        - relationshipName: promocodePromoCodeApplicableOfferings
         - relationshipName: resourceFees
         - relationshipName: resourceLosDiscounts
         - relationshipName: resourceResource
         - relationshipName: resourceRateOverrides
-        - relationshipName: resourceTaxes
-        - relationshipName: promocodePromoCodeApplicableOfferings
         - relationshipName: resourceResourceOfferings
+        - relationshipName: resourceTaxes
   logicalOperators:
     enable: true
   isNull:
@@ -286,6 +286,28 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: promocodePromoCodeApplicableOfferings
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: PromocodePromoCodeApplicableOfferings
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: PromocodePromoCodeApplicableOfferingsAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: promocodePromoCodeApplicableOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
   name: resourceFees
   sourceType: ResourceOfferings
   target:
@@ -370,50 +392,6 @@ definition:
 kind: Relationship
 version: v1
 definition:
-  name: resourceTaxes
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: ResourceTaxes
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceTaxesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: resourceTaxesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: promocodePromoCodeApplicableOfferings
-  sourceType: ResourceOfferings
-  target:
-    model:
-      name: PromocodePromoCodeApplicableOfferings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: PromocodePromoCodeApplicableOfferingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: offeringId
-  graphql:
-    aggregateFieldName: promocodePromoCodeApplicableOfferingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
   name: resourceResourceOfferings
   sourceType: ResourceOfferings
   target:
@@ -431,4 +409,26 @@ definition:
           - fieldName: offeringId
   graphql:
     aggregateFieldName: resourceResourceOfferingsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: resourceTaxes
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: ResourceTaxes
+      relationshipType: Array
+      aggregate:
+        aggregateExpression: ResourceTaxesAggExp
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: offeringId
+  graphql:
+    aggregateFieldName: resourceTaxesAggregate
 

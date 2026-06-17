@@ -10,8 +10,6 @@ definition:
       type: String_1
     - name: etag
       type: String_1
-    - name: exceptions
-      type: "[String_1]"
     - name: id
       type: String_1!
     - name: name
@@ -34,9 +32,6 @@ definition:
         etag:
           column:
             name: etag
-        exceptions:
-          column:
-            name: exceptions
         id:
           column:
             name: id
@@ -59,7 +54,6 @@ definition:
           - buffersId
           - cancellationPolicyId
           - etag
-          - exceptions
           - id
           - name
           - stayConstraintsId

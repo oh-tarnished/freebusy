@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.organisation.v1;
 
+import "freebusy/organisation/v1/enums.proto";
 import "freebusy/organisation/v1/organisation.proto";
 import "google/api/field_behavior.proto";
 import "google/api/field_info.proto";
@@ -10,7 +11,7 @@ import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
-option java_outer_classname = "OrgActionsProto";
+option java_outer_classname = "ActionsProto";
 option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
 // Request message for InviteMember.
@@ -19,7 +20,7 @@ message InviteMemberRequest {
   // Format: organisations/{organisation}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
   ];
 
   // Email address to invite.
@@ -57,6 +58,6 @@ message DeleteMemberRequest {
   // Format: organisations/{organisation}/members/{member}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Member"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Member"}
   ];
 }

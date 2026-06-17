@@ -6,6 +6,7 @@ package freebusy.schedule.v1;
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
 
+import "freebusy/schedule/v1/enums.proto";
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
@@ -77,7 +78,7 @@ message StayConstraints {
 // holiday closure, or extra hours beyond the recurring rules.
 message AvailabilityException {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/AvailabilityException"
+    type: "freebusy.schedule.v1/AvailabilityException"
     pattern: "resources/{resource}/availabilityExceptions/{availability_exception}"
     singular: "availabilityException"
     plural: "availabilityExceptions"
@@ -114,7 +115,7 @@ message AvailabilityException {
 // freebusy engine consumes. Modeled as a singleton resource, one per resource.
 message Schedule {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Schedule"
+    type: "freebusy.schedule.v1/Schedule"
     pattern: "resources/{resource}/schedule"
     singular: "schedule"
     plural: "schedules"
@@ -138,7 +139,7 @@ message Schedule {
   // Format: resources/{resource}/availabilityExceptions/{availability_exception}
   repeated string exceptions = 5 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/AvailabilityException"}
+    (google.api.resource_reference) = {type: "freebusy.schedule.v1/AvailabilityException"}
   ];
 
   // Refund rules applied when a booking on this resource is cancelled. Unset
@@ -166,16 +167,4 @@ message RefundTier {
 
   // Percentage of the booking total refunded at this tier (0-100).
   int32 refund_percent = 2 [(google.api.field_behavior) = REQUIRED];
-}
-
-// Whether an exception removes or adds availability.
-enum ExceptionKind {
-  // Unset.
-  EXCEPTION_KIND_UNSPECIFIED = 0;
-
-  // The resource is closed for the span (blackout / holiday).
-  EXCEPTION_KIND_CLOSURE = 1;
-
-  // The resource is open beyond its recurring hours for the span.
-  EXCEPTION_KIND_EXTRA_HOURS = 2;
 }

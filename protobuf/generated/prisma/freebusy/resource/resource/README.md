@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 7 | 3 |
+| 7 | 0 |
 
 ## Entity relationships
 
@@ -91,7 +91,7 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `duration` | `INTERVAL` | nullable |
 | `price` | `JSONB` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
-| `state` | `ResourceState` | nullable |
+| `state` | `OfferingState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
@@ -157,9 +157,3 @@ Join table for the many-to-many relation Resource.offerings ↔ Offering.
 | `id` | `CHAR(26)` | not null |
 | `resource_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
-
-### Enums
-
-- `ResourceType`: PROVIDER, ROOM, EQUIPMENT, UNIT_TYPE, SPACE
-- `ResourceState`: ACTIVE, ARCHIVED
-- `PricingUnit`: PER_BOOKING, PER_NIGHT, PER_PERSON

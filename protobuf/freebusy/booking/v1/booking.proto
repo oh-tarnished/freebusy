@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package freebusy.booking.v1;
 
+import "freebusy/booking/v1/enums.proto";
 // (-- api-linter: core::0215::foreign-type-reference=disabled
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
-
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
@@ -25,35 +25,11 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 // are never confirmed.
 message Booking {
   option (google.api.resource) = {
-    type: "freebusy.ohtarnished.dev/Booking"
+    type: "freebusy.booking.v1/Booking"
     pattern: "bookings/{booking}"
     singular: "booking"
     plural: "bookings"
   };
-
-  // Lifecycle state of a booking.
-  enum State {
-    // Unset.
-    STATE_UNSPECIFIED = 0;
-
-    // Held but not yet confirmed; expires at hold_expire_time.
-    STATE_PENDING_HOLD = 1;
-
-    // Confirmed and active.
-    STATE_CONFIRMED = 2;
-
-    // Cancelled by customer or operator.
-    STATE_CANCELLED = 3;
-
-    // Hold lapsed before confirmation (released by the sweeper).
-    STATE_EXPIRED = 4;
-
-    // The booked time has passed and the booking was honored.
-    STATE_COMPLETED = 5;
-
-    // The customer did not show.
-    STATE_NO_SHOW = 6;
-  }
 
   // The booking name.
   // Format: bookings/{booking}
@@ -66,21 +42,21 @@ message Booking {
   // Format: resources/{resource}
   string resource = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
   ];
 
   // The offering being booked, when applicable.
   // Format: resources/{resource}/offerings/{offering}
   string offering = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
   ];
 
   // The user the booking is for.
   // Format: users/{user}
   string customer = 5 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
   ];
 
   // Contact details for the booker. Required when `customer` is unset (a guest /
@@ -98,7 +74,7 @@ message Booking {
   string assigned_unit = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Current lifecycle state.
-  State state = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
+  BookingState state = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // When the pending hold lapses, if not confirmed first.
   google.protobuf.Timestamp hold_expire_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -110,7 +86,7 @@ message Booking {
   // Format: promoCodes/{promo_code}
   string promo_code = 12 [
     (google.api.field_behavior) = IMMUTABLE,
-    (google.api.resource_reference) = {type: "freebusy.ohtarnished.dev/PromoCode"}
+    (google.api.resource_reference) = {type: "freebusy.promocode.v1/PromoCode"}
   ];
 
   // Discount applied from the promo code.
@@ -161,25 +137,4 @@ message Booking {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   string etag = 23;
-}
-
-// Why a booking was cancelled.
-enum CancelReason {
-  // Unset.
-  CANCEL_REASON_UNSPECIFIED = 0;
-
-  // The customer requested cancellation.
-  CANCEL_REASON_REQUESTED_BY_CUSTOMER = 1;
-
-  // An operator cancelled it.
-  CANCEL_REASON_REQUESTED_BY_OPERATOR = 2;
-
-  // Payment failed or was not completed in time.
-  CANCEL_REASON_PAYMENT_FAILED = 3;
-
-  // The customer did not show.
-  CANCEL_REASON_NO_SHOW = 4;
-
-  // Any other reason.
-  CANCEL_REASON_OTHER = 5;
 }

@@ -9,40 +9,6 @@
 //
 // protorm — https://github.com/the-protobuf-project/protorm
 
-/// Lifecycle state of an organisation.
-enum OrganisationState {
-  /// Active.
-  ACTIVE
-
-  /// Suspended; access blocked.
-  SUSPENDED
-
-  /// Maps the enum to the "organisation_state" type in the database.
-  @@map("organisation_state")
-  /// Maps the enum to the "organisation" schema in the database.
-  @@schema("organisation")
-}
-
-/// A member's role within an organisation.
-enum OrganisationRole {
-  /// Full control, including billing and deletion.
-  OWNER
-
-  /// Manage members and resources.
-  ADMIN
-
-  /// Create and manage bookings and resources.
-  MEMBER
-
-  /// Read-only access.
-  VIEWER
-
-  /// Maps the enum to the "organisation_role" type in the database.
-  @@map("organisation_role")
-  /// Maps the enum to the "organisation" schema in the database.
-  @@schema("organisation")
-}
-
 /// A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
 model Organisation {
   /// Unique identifier for the record.
@@ -114,7 +80,7 @@ model Member {
   role OrganisationRole @default(OWNER) @map("role")
 
   /// Confirmation state of the membership.
-  state OrganisationState? @map("state")
+  state MemberState? @map("state")
 
   /// The user who issued the invite. Format: users/{user}
   inviterID String? @map("inviter")

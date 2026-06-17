@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 27 | 13 |
+| 27 | 15 |
 
 ## Entity relationships
 
@@ -187,7 +187,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `customer` | `CHAR(26)` | nullable |
 | `units` | `INTEGER` | nullable |
 | `assigned_unit` | `VARCHAR(255)` | nullable |
-| `state` | `State` | nullable |
+| `state` | `BookingState` | nullable |
 | `hold_expire_time` | `TIMESTAMPTZ` | nullable |
 | `price` | `JSONB` | nullable |
 | `promo_code` | `CHAR(26)` | nullable |
@@ -243,7 +243,7 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 
 ### Enums
 
-- `State`: PENDING_HOLD, CONFIRMED, CANCELLED, EXPIRED, COMPLETED, NO_SHOW
+- `BookingState`: PENDING_HOLD, CONFIRMED, CANCELLED, EXPIRED, COMPLETED, NO_SHOW
 - `CancelReason`: REQUESTED_BY_CUSTOMER, REQUESTED_BY_OPERATOR, PAYMENT_FAILED, NO_SHOW, OTHER
 - `Type`: BASE, FEE, TAX, DISCOUNT
 
@@ -291,7 +291,7 @@ A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolatio
 | `display_name` | `VARCHAR(255)` | not null |
 | `slug` | `VARCHAR(255)` | nullable |
 | `billing_email` | `VARCHAR(255)` | nullable |
-| `state` | `State` | nullable |
+| `state` | `OrganisationState` | nullable |
 | `settings` | `JSONB` | nullable |
 | `member_count` | `BIGINT` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
@@ -310,7 +310,7 @@ The membership of a user in an organisation, with their role.
 | `email` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
 | `role` | `OrganisationRole` | not null |
-| `state` | `State` | nullable |
+| `state` | `MemberState` | nullable |
 | `inviter` | `CHAR(26)` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -319,8 +319,9 @@ The membership of a user in an organisation, with their role.
 
 ### Enums
 
-- `State`: ACTIVE, SUSPENDED
+- `OrganisationState`: ACTIVE, SUSPENDED
 - `OrganisationRole`: OWNER, ADMIN, MEMBER, VIEWER
+- `MemberState`: INVITED, ACTIVE, SUSPENDED
 
 ## Schema `promocode`
 
@@ -344,7 +345,7 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `per_customer_limit` | `INTEGER` | nullable |
 | `min_subtotal` | `JSONB` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
-| `state` | `State` | nullable |
+| `state` | `PromoCodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
@@ -373,7 +374,7 @@ Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offe
 ### Enums
 
 - `DiscountType`: PERCENTAGE, FIXED_AMOUNT
-- `State`: ACTIVE, DISABLED, EXPIRED
+- `PromoCodeState`: ACTIVE, DISABLED, EXPIRED
 
 ## Schema `resource`
 
@@ -393,7 +394,7 @@ A bookable thing: a provider, room, piece of equipment, or a unit type. A resour
 | `time_zone` | `VARCHAR(255)` | not null |
 | `tags` | `VARCHAR(255)[]` | nullable |
 | `attributes` | `JSONB` | nullable |
-| `state` | `State` | nullable |
+| `state` | `ResourceState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
@@ -411,7 +412,7 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `duration` | `INTERVAL` | nullable |
 | `price` | `JSONB` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
-| `state` | `State` | nullable |
+| `state` | `OfferingState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
@@ -482,8 +483,9 @@ Join table for the many-to-many relation Resource.offerings ↔ Offering.
 
 - `ResourceType`: PROVIDER, ROOM, EQUIPMENT, UNIT_TYPE, SPACE
 - `BookingMode`: TIME_SLOT, NIGHTLY
-- `State`: ACTIVE, ARCHIVED
+- `ResourceState`: ACTIVE, ARCHIVED
 - `PricingUnit`: PER_BOOKING, PER_NIGHT, PER_PERSON
+- `OfferingState`: ACTIVE, INACTIVE
 
 ## Schema `schedule`
 

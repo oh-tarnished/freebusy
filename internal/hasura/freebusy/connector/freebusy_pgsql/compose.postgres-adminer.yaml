@@ -31,7 +31,7 @@ services:
       ADMINER_DEFAULT_USERNAME: user
     image: adminer:latest
     ports:
-      - 7256:8080
+      - 7067:8080
     restart: unless-stopped
   # Bundled Postgres database with pgvector (optional)
   postgres:
@@ -41,7 +41,7 @@ services:
       POSTGRES_USER: user
     image: pgvector/pgvector:pg17
     ports:
-      - 6527:5432
+      - 6415:5432
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
