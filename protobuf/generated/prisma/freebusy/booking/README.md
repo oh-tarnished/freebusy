@@ -21,8 +21,15 @@ erDiagram
         string promo_code FK
         string contact_id FK
         string window_id FK
+        string price_id FK
+        string discount_id FK
+        string total_id FK
+        string refund_amount_id FK
     }
     Contact {
+        string externalStub PK
+    }
+    Money {
         string externalStub PK
     }
     Offering {
@@ -46,6 +53,10 @@ erDiagram
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
     Booking }o--|| TimeWindow : "window_id"
+    Booking }o--|| Money : "price_id"
+    Booking }o--|| Money : "discount_id"
+    Booking }o--|| Money : "total_id"
+    Booking }o--|| Money : "refund_amount_id"
 ```
 
 ## Subfolders

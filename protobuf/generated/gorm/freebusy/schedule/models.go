@@ -44,19 +44,19 @@ type AvailabilityException struct {
 	// The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
 	// Whether this span closes the resource or adds extra availability.
-	Kind ExceptionKind `gorm:"column:kind;not null;default:'CLOSURE'" json:"kind" validate:"required"`
+	Kind ExceptionKind `gorm:"column:kind;not null;default:'CLOSURE';check:chk_availability_exceptions_kind,kind IN ('CLOSURE','EXTRA_HOURS')" json:"kind" validate:"required"`
 	// Human-readable reason (e.g. "Public holiday").
 	Reason *string `gorm:"column:reason" json:"reason,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Discriminator: which span oneof member is set (null = none).
-	SpanCase *AvailabilityExceptionSpanCase `gorm:"column:span_case" json:"span_case,omitempty"`
+	SpanCase *AvailabilityExceptionSpanCase `gorm:"column:span_case;check:chk_availability_exceptions_span_case,span_case IN ('WINDOW','DATE_RANGE')" json:"span_case,omitempty"`
 	// Parent reference to Resource (from the AIP resource pattern).
-	ResourceID string `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
+	ResourceID string `gorm:"column:resource_id;not null;index:idx_availability_exceptions_resource_id" json:"resource_id" validate:"required"`
 	// Foreign key to TimeWindow.
-	WindowID *string `gorm:"column:window_id" json:"window_id,omitempty"`
+	WindowID *string `gorm:"column:window_id;index:idx_availability_exceptions_window_id" json:"window_id,omitempty"`
 	// Foreign key to DateRange.
-	DateRangeID *string    `gorm:"column:date_range_id" json:"date_range_id,omitempty"`
+	DateRangeID *string    `gorm:"column:date_range_id;index:idx_availability_exceptions_date_range_id" json:"date_range_id,omitempty"`
 	DateRange   *DateRange `gorm:"foreignKey:DateRangeID;constraint:OnDelete:SET NULL" json:"daterange,omitempty"`
 	// Back-relation: ScheduleExceptions records that reference this via availability_exception_id.
 	Exceptions []ScheduleExceptions `gorm:"foreignKey:AvailabilityExceptionID" json:"exceptions,omitempty"`
@@ -73,13 +73,13 @@ type Schedule struct {
 	// Opaque version for optimistic concurrency (AIP-154); echo on update.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Foreign key to BufferSettings.
-	BuffersID *string         `gorm:"column:buffers_id" json:"buffers_id,omitempty"`
+	BuffersID *string         `gorm:"column:buffers_id;index:idx_resource_buffers_id" json:"buffers_id,omitempty"`
 	Buffers   *BufferSettings `gorm:"foreignKey:BuffersID;constraint:OnDelete:SET NULL" json:"buffers,omitempty"`
 	// Foreign key to StayConstraints.
-	StayConstraintsID *string          `gorm:"column:stay_constraints_id" json:"stay_constraints_id,omitempty"`
+	StayConstraintsID *string          `gorm:"column:stay_constraints_id;index:idx_resource_stay_constraints_id" json:"stay_constraints_id,omitempty"`
 	StayConstraints   *StayConstraints `gorm:"foreignKey:StayConstraintsID;constraint:OnDelete:SET NULL" json:"stayconstraints,omitempty"`
 	// Foreign key to CancellationPolicy.
-	CancellationPolicyID *string             `gorm:"column:cancellation_policy_id" json:"cancellation_policy_id,omitempty"`
+	CancellationPolicyID *string             `gorm:"column:cancellation_policy_id;index:idx_resource_cancellation_policy_id" json:"cancellation_policy_id,omitempty"`
 	CancellationPolicy   *CancellationPolicy `gorm:"foreignKey:CancellationPolicyID;constraint:OnDelete:SET NULL" json:"cancellationpolicy,omitempty"`
 	// Back-relation: RecurringRule records that reference this via schedule_id.
 	RecurringRules []RecurringRule `gorm:"foreignKey:ScheduleID" json:"recurringrules,omitempty"`
@@ -114,7 +114,7 @@ type RecurringRule struct {
 	// Local time-of-day the window closes, 24-hour "HH:MM" (e.g. "17:00"). A closes at or before opens means the span crosses midnight into the next day (e.g. opens "22:00", closes "02:00").
 	Closes *string `gorm:"column:closes" json:"closes,omitempty"`
 	// Foreign key to Schedule.
-	ScheduleID string    `gorm:"column:schedule_id;not null" json:"schedule_id" validate:"required"`
+	ScheduleID string    `gorm:"column:schedule_id;not null;index:idx_recurring_rules_schedule_id" json:"schedule_id" validate:"required"`
 	Schedule   *Schedule `gorm:"foreignKey:ScheduleID;constraint:OnDelete:CASCADE" json:"schedule,omitempty"`
 }
 
@@ -183,7 +183,7 @@ type RefundTier struct {
 	// Percentage of the booking total refunded at this tier (0-100).
 	RefundPercent int32 `gorm:"column:refund_percent;not null" json:"refund_percent" validate:"required"`
 	// Foreign key to CancellationPolicy.
-	CancellationPolicyID string              `gorm:"column:cancellation_policy_id;not null" json:"cancellation_policy_id" validate:"required"`
+	CancellationPolicyID string              `gorm:"column:cancellation_policy_id;not null;index:idx_refund_tiers_cancellation_policy_id" json:"cancellation_policy_id" validate:"required"`
 	CancellationPolicy   *CancellationPolicy `gorm:"foreignKey:CancellationPolicyID;constraint:OnDelete:CASCADE" json:"cancellationpolicy,omitempty"`
 }
 
@@ -194,10 +194,10 @@ type ScheduleExceptions struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Foreign key to Schedule.
-	ScheduleID string    `gorm:"column:schedule_id;not null" json:"schedule_id" validate:"required"`
+	ScheduleID string    `gorm:"column:schedule_id;not null;uniqueIndex:idx_exceptions_schedule_id_availability_exception_id,priority:1" json:"schedule_id" validate:"required"`
 	Schedule   *Schedule `gorm:"foreignKey:ScheduleID;constraint:OnDelete:CASCADE" json:"schedule,omitempty"`
 	// Foreign key to AvailabilityException.
-	AvailabilityExceptionID string                 `gorm:"column:availability_exception_id;not null" json:"availability_exception_id" validate:"required"`
+	AvailabilityExceptionID string                 `gorm:"column:availability_exception_id;not null;uniqueIndex:idx_exceptions_schedule_id_availability_exception_id,priority:2;index:idx_exceptions_availability_exception_id" json:"availability_exception_id" validate:"required"`
 	AvailabilityException   *AvailabilityException `gorm:"foreignKey:AvailabilityExceptionID;constraint:OnDelete:CASCADE" json:"availabilityexception,omitempty"`
 }
 

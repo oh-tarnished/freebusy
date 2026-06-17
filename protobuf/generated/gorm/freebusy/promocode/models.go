@@ -12,7 +12,6 @@
 package promocode
 
 import (
-	"encoding/json"
 	"time"
 )
 
@@ -53,11 +52,9 @@ type PromoCode struct {
 	// Free-form description.
 	Description *string `gorm:"column:description" json:"description,omitempty"`
 	// Whether the discount is a percentage or a fixed amount.
-	DiscountType DiscountType `gorm:"column:discount_type;not null;default:'PERCENTAGE'" json:"discount_type" validate:"required"`
+	DiscountType DiscountType `gorm:"column:discount_type;not null;default:'PERCENTAGE';check:chk_resource_discount_type,discount_type IN ('PERCENTAGE','FIXED_AMOUNT')" json:"discount_type" validate:"required"`
 	// Percentage off (1-100), when discount_type is PERCENTAGE.
 	PercentOff *int32 `gorm:"column:percent_off" json:"percent_off,omitempty"`
-	// Fixed amount off, when discount_type is FIXED_AMOUNT.
-	AmountOff json.RawMessage `gorm:"column:amount_off" json:"amount_off,omitempty"`
 	// Earliest the code can be redeemed. Unset means no lower bound.
 	RedeemStartTime *time.Time `gorm:"column:redeem_start_time" json:"redeem_start_time,omitempty"`
 	// Latest the code can be redeemed. Unset means no upper bound.
@@ -66,12 +63,10 @@ type PromoCode struct {
 	MaxRedemptions *int64 `gorm:"column:max_redemptions" json:"max_redemptions,omitempty"`
 	// Maximum redemptions per customer. Zero means unlimited.
 	PerCustomerLimit *int32 `gorm:"column:per_customer_limit" json:"per_customer_limit,omitempty"`
-	// Minimum subtotal required for the code to apply.
-	MinSubtotal json.RawMessage `gorm:"column:min_subtotal" json:"min_subtotal,omitempty"`
 	// How many times the code has been redeemed.
 	RedemptionCount *int64 `gorm:"column:redemption_count" json:"redemption_count,omitempty"`
 	// Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions).
-	State *PromoCodeState `gorm:"column:state" json:"state,omitempty"`
+	State *PromoCodeState `gorm:"column:state;check:chk_resource_state,state IN ('ACTIVE','DISABLED','EXPIRED')" json:"state,omitempty"`
 	// If true, the code is manually disabled regardless of its window and caps.
 	Disabled *bool `gorm:"column:disabled" json:"disabled,omitempty"`
 	// Creation timestamp.
@@ -80,6 +75,10 @@ type PromoCode struct {
 	UpdateTime time.Time `gorm:"column:update_time;not null;autoUpdateTime" json:"update_time"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
+	// Foreign key to Money.
+	AmountOffID *string `gorm:"column:amount_off_id;index:idx_resource_amount_off_id" json:"amount_off_id,omitempty"`
+	// Foreign key to Money.
+	MinSubtotalID *string `gorm:"column:min_subtotal_id;index:idx_resource_min_subtotal_id" json:"min_subtotal_id,omitempty"`
 	// Back-relation: PromoCodeApplicableResources records that reference this via promo_code_id.
 	ApplicableResources []PromoCodeApplicableResources `gorm:"foreignKey:PromoCodeID" json:"applicableresources,omitempty"`
 	// Back-relation: PromoCodeApplicableOfferings records that reference this via promo_code_id.
@@ -93,10 +92,10 @@ type PromoCodeApplicableResources struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Foreign key to PromoCode.
-	PromoCodeID string     `gorm:"column:promo_code_id;not null" json:"promo_code_id" validate:"required"`
+	PromoCodeID string     `gorm:"column:promo_code_id;not null;uniqueIndex:idx_applicable_resources_promo_code_id_resource_id,priority:1" json:"promo_code_id" validate:"required"`
 	PromoCode   *PromoCode `gorm:"foreignKey:PromoCodeID;constraint:OnDelete:CASCADE" json:"promocode,omitempty"`
 	// Foreign key to Resource.
-	ResourceID string `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
+	ResourceID string `gorm:"column:resource_id;not null;uniqueIndex:idx_applicable_resources_promo_code_id_resource_id,priority:2;index:idx_applicable_resources_resource_id" json:"resource_id" validate:"required"`
 }
 
 func (*PromoCodeApplicableResources) TableName() string { return "promocode.applicable_resources" }
@@ -106,10 +105,10 @@ type PromoCodeApplicableOfferings struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Foreign key to PromoCode.
-	PromoCodeID string     `gorm:"column:promo_code_id;not null" json:"promo_code_id" validate:"required"`
+	PromoCodeID string     `gorm:"column:promo_code_id;not null;uniqueIndex:idx_applicable_offerings_promo_code_id_offering_id,priority:1" json:"promo_code_id" validate:"required"`
 	PromoCode   *PromoCode `gorm:"foreignKey:PromoCodeID;constraint:OnDelete:CASCADE" json:"promocode,omitempty"`
 	// Foreign key to Offering.
-	OfferingID string `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	OfferingID string `gorm:"column:offering_id;not null;uniqueIndex:idx_applicable_offerings_promo_code_id_offering_id,priority:2;index:idx_applicable_offerings_offering_id" json:"offering_id" validate:"required"`
 }
 
 func (*PromoCodeApplicableOfferings) TableName() string { return "promocode.applicable_offerings" }

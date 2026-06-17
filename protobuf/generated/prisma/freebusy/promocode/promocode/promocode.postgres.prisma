@@ -32,9 +32,6 @@ model PromoCode {
   /// Percentage off (1-100), when discount_type is PERCENTAGE.
   percentOff Int? @map("percent_off")
 
-  /// Fixed amount off, when discount_type is FIXED_AMOUNT.
-  amountOff Json? @map("amount_off")
-
   /// Earliest the code can be redeemed. Unset means no lower bound.
   redeemStartTime DateTime? @map("redeem_start_time")
 
@@ -46,9 +43,6 @@ model PromoCode {
 
   /// Maximum redemptions per customer. Zero means unlimited.
   perCustomerLimit Int? @map("per_customer_limit")
-
-  /// Minimum subtotal required for the code to apply.
-  minSubtotal Json? @map("min_subtotal")
 
   /// How many times the code has been redeemed.
   redemptionCount BigInt? @map("redemption_count")
@@ -68,6 +62,18 @@ model PromoCode {
   /// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   etag String? @map("etag")
 
+  /// Foreign key to Money.
+  amountOffID String? @map("amount_off_id")
+
+  /// Relation to Money via amount_off_id.
+  amountOff Money? @relation("PromoCodeAmountOff", fields: [amountOffID], references: [id], onDelete: SetNull)
+
+  /// Foreign key to Money.
+  minSubtotalID String? @map("min_subtotal_id")
+
+  /// Relation to Money via min_subtotal_id.
+  minSubtotal Money? @relation("PromoCodeMinSubtotal", fields: [minSubtotalID], references: [id], onDelete: SetNull)
+
   /// Back-relation: Booking records that reference this model via promo_code.
   resource Booking[]
 
@@ -77,6 +83,10 @@ model PromoCode {
   /// Back-relation: PromoCodeApplicableOfferings records that reference this model via promo_code_id.
   applicableOfferings PromoCodeApplicableOfferings[]
 
+  /// Composite index on [amount_off_id].
+  @@index([amountOffID])
+  /// Composite index on [min_subtotal_id].
+  @@index([minSubtotalID])
   /// Maps the model to the "resource" table in the database.
   @@map("resource")
   /// Maps the model to the "promocode" schema in the database.
@@ -102,8 +112,6 @@ model PromoCodeApplicableResources {
 
   /// Unique constraint on [promo_code_id, resource_id].
   @@unique([promoCodeID, resourceID])
-  /// Composite index on [promo_code_id].
-  @@index([promoCodeID])
   /// Composite index on [resource_id].
   @@index([resourceID])
   /// Maps the model to the "applicable_resources" table in the database.
@@ -131,8 +139,6 @@ model PromoCodeApplicableOfferings {
 
   /// Unique constraint on [promo_code_id, offering_id].
   @@unique([promoCodeID, offeringID])
-  /// Composite index on [promo_code_id].
-  @@index([promoCodeID])
   /// Composite index on [offering_id].
   @@index([offeringID])
   /// Maps the model to the "applicable_offerings" table in the database.

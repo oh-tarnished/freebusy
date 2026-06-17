@@ -22,6 +22,7 @@ erDiagram
     PriceComponent {
         string id PK
         string booking_id FK
+        string amount_id FK
     }
     TimeWindow {
         string id PK
@@ -29,7 +30,11 @@ erDiagram
     Booking {
         string externalStub PK
     }
+    Money {
+        string externalStub PK
+    }
     PriceComponent }o--|| Booking : "booking_id"
+    PriceComponent }o--|| Money : "amount_id"
 ```
 
 ## Subfolders

@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 27 | 15 |
+| 28 | 15 |
 
 ## Entity relationships
 
@@ -29,6 +29,10 @@ erDiagram
         string promo_code FK
         string contact_id FK
         string window_id FK
+        string price_id FK
+        string discount_id FK
+        string total_id FK
+        string refund_amount_id FK
     }
     BufferSettings {
         string id PK
@@ -45,10 +49,12 @@ erDiagram
     Fee {
         string id PK
         string offering_id FK
+        string amount_id FK
     }
     LosDiscount {
         string id PK
         string offering_id FK
+        string amount_off_id FK
     }
     Member {
         string id PK
@@ -61,9 +67,13 @@ erDiagram
         string organisation FK
         string user_id FK
     }
+    Money {
+        string id PK
+    }
     Offering {
         string id PK
         string resource_id FK
+        string price_id FK
     }
     Organisation {
         string id PK
@@ -71,9 +81,12 @@ erDiagram
     PriceComponent {
         string id PK
         string booking_id FK
+        string amount_id FK
     }
     PromoCode {
         string id PK
+        string amount_off_id FK
+        string min_subtotal_id FK
     }
     PromoCodeApplicableOfferings {
         string id PK
@@ -89,6 +102,7 @@ erDiagram
         string id PK
         string offering_id FK
         string date_range_id FK
+        string price_id FK
     }
     RecurringRule {
         string id PK
@@ -139,21 +153,32 @@ erDiagram
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
     Booking }o--|| TimeWindow : "window_id"
+    Booking }o--|| Money : "price_id"
+    Booking }o--|| Money : "discount_id"
+    Booking }o--|| Money : "total_id"
+    Booking }o--|| Money : "refund_amount_id"
     Fee }o--|| Offering : "offering_id"
+    Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Offering : "offering_id"
+    LosDiscount }o--|| Money : "amount_off_id"
     Member }o--|| User : "user"
     Member }o--|| User : "inviter"
     Member }o--|| Organisation : "organisation_id"
     MembershipSummary }o--|| Organisation : "organisation"
     MembershipSummary }o--|| User : "user_id"
     Offering }o--|| Resource : "resource_id"
+    Offering }o--|| Money : "price_id"
     PriceComponent }o--|| Booking : "booking_id"
+    PriceComponent }o--|| Money : "amount_id"
+    PromoCode }o--|| Money : "amount_off_id"
+    PromoCode }o--|| Money : "min_subtotal_id"
     PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
     PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
     PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
     PromoCodeApplicableResources }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
+    RateOverride }o--|| Money : "price_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
     ResourceOfferings }o--|| Resource : "resource_id"
@@ -169,8 +194,9 @@ erDiagram
 ## Output
 
 - `<schema>/models.go` — one Go package per schema, one struct per table.
+- `migrate.go` — a factory `Registry` (with a preloaded `Default`) that migrates every model in one call; emitted when the `go_module` opt is set.
 - Nullable columns are pointer types; proto enums become string-typed Go enums.
-- Wire the structs into a `*gorm.DB`; run AutoMigrate, or apply the SQL target's DDL.
+- Attach in main: `Default.Migrate(db)`, or wire the structs into a `*gorm.DB` and run AutoMigrate yourself.
 
 ## Schema `booking`
 
@@ -189,10 +215,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `assigned_unit` | `VARCHAR(255)` | nullable |
 | `state` | `BookingState` | nullable |
 | `hold_expire_time` | `TIMESTAMPTZ` | nullable |
-| `price` | `JSONB` | nullable |
 | `promo_code` | `CHAR(26)` | nullable |
-| `discount` | `JSONB` | nullable |
-| `total` | `JSONB` | nullable |
 | `notes` | `VARCHAR(255)` | nullable |
 | `attributes` | `JSONB` | nullable |
 | `cancel_reason` | `CancelReason` | nullable |
@@ -200,12 +223,15 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `confirm_time` | `TIMESTAMPTZ` | nullable |
 | `cancel_time` | `TIMESTAMPTZ` | nullable |
-| `refund_amount` | `JSONB` | nullable |
 | `refund_percent` | `INTEGER` | nullable |
 | `hold_ttl` | `INTERVAL` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `contact_id` | `CHAR(26)` | nullable |
 | `window_id` | `CHAR(26)` | not null |
+| `price_id` | `CHAR(26)` | nullable |
+| `discount_id` | `CHAR(26)` | nullable |
+| `total_id` | `CHAR(26)` | nullable |
+| `refund_amount_id` | `CHAR(26)` | nullable |
 
 ### `Contact` → `contacts`
 
@@ -228,6 +254,17 @@ A half-open time interval [start_time, end_time). Used for query windows and for
 | `start_time` | `TIMESTAMPTZ` | not null |
 | `end_time` | `TIMESTAMPTZ` | not null |
 
+### `Money` → `moneys`
+
+Represents an amount of money with its currency type.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `currency_code` | `VARCHAR(255)` | nullable |
+| `units` | `BIGINT` | nullable |
+| `nanos` | `INTEGER` | nullable |
+
 ### `PriceComponent` → `price_components`
 
 One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).
@@ -238,8 +275,8 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `type` | `Type` | nullable |
 | `code` | `VARCHAR(255)` | nullable |
 | `display_name` | `VARCHAR(255)` | nullable |
-| `amount` | `JSONB` | nullable |
 | `booking_id` | `CHAR(26)` | not null |
+| `amount_id` | `CHAR(26)` | nullable |
 
 ### Enums
 
@@ -338,18 +375,18 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `description` | `VARCHAR(255)` | nullable |
 | `discount_type` | `DiscountType` | not null |
 | `percent_off` | `INTEGER` | nullable |
-| `amount_off` | `JSONB` | nullable |
 | `redeem_start_time` | `TIMESTAMPTZ` | nullable |
 | `redeem_end_time` | `TIMESTAMPTZ` | nullable |
 | `max_redemptions` | `BIGINT` | nullable |
 | `per_customer_limit` | `INTEGER` | nullable |
-| `min_subtotal` | `JSONB` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `PromoCodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `amount_off_id` | `CHAR(26)` | nullable |
+| `min_subtotal_id` | `CHAR(26)` | nullable |
 
 ### `PromoCodeApplicableResources` → `applicable_resources`
 
@@ -410,13 +447,13 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `display_name` | `VARCHAR(255)` | not null |
 | `description` | `VARCHAR(255)` | nullable |
 | `duration` | `INTERVAL` | nullable |
-| `price` | `JSONB` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
 | `state` | `OfferingState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 | `resource_id` | `CHAR(26)` | not null |
+| `price_id` | `CHAR(26)` | nullable |
 
 ### `RateOverride` → `rate_overrides`
 
@@ -426,9 +463,9 @@ A price override for a span of dates and/or specific weekdays, layered over an o
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `weekdays` | `[]` | nullable |
-| `price` | `JSONB` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 | `date_range_id` | `CHAR(26)` | nullable |
+| `price_id` | `CHAR(26)` | not null |
 
 ### `LosDiscount` → `los_discounts`
 
@@ -439,8 +476,8 @@ A discount applied to a NIGHTLY subtotal once the stay reaches a minimum length.
 | `id` | `CHAR(26)` | not null |
 | `min_nights` | `INTEGER` | not null |
 | `percent_off` | `INTEGER` | nullable |
-| `amount_off` | `JSONB` | nullable |
 | `offering_id` | `CHAR(26)` | not null |
+| `amount_off_id` | `CHAR(26)` | nullable |
 
 ### `Fee` → `fees`
 
@@ -451,11 +488,11 @@ A fee added on top of an offering's base subtotal. Exactly one of `amount` or `p
 | `id` | `CHAR(26)` | not null |
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
-| `amount` | `JSONB` | nullable |
 | `percent` | `INTEGER` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
 | `taxable` | `BOOLEAN` | nullable |
 | `offering_id` | `CHAR(26)` | not null |
+| `amount_id` | `CHAR(26)` | nullable |
 
 ### `Tax` → `taxes`
 

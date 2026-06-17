@@ -16,19 +16,23 @@ erDiagram
     Fee {
         string id PK
         string offering_id FK
+        string amount_id FK
     }
     LosDiscount {
         string id PK
         string offering_id FK
+        string amount_off_id FK
     }
     Offering {
         string id PK
         string resource_id FK
+        string price_id FK
     }
     RateOverride {
         string id PK
         string offering_id FK
         string date_range_id FK
+        string price_id FK
     }
     Resource {
         string id PK
@@ -45,11 +49,18 @@ erDiagram
     DateRange {
         string externalStub PK
     }
+    Money {
+        string externalStub PK
+    }
     Fee }o--|| Offering : "offering_id"
+    Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Offering : "offering_id"
+    LosDiscount }o--|| Money : "amount_off_id"
     Offering }o--|| Resource : "resource_id"
+    Offering }o--|| Money : "price_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
+    RateOverride }o--|| Money : "price_id"
     ResourceOfferings }o--|| Resource : "resource_id"
     ResourceOfferings }o--|| Offering : "offering_id"
     Tax }o--|| Offering : "offering_id"
@@ -89,13 +100,13 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `display_name` | `VARCHAR(255)` | not null |
 | `description` | `VARCHAR(255)` | nullable |
 | `duration` | `INTERVAL` | nullable |
-| `price` | `JSONB` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
 | `state` | `OfferingState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 | `resource_id` | `CHAR(26)` | not null |
+| `price_id` | `CHAR(26)` | nullable |
 
 ### `RateOverride` → `rate_overrides`
 
@@ -105,9 +116,9 @@ A price override for a span of dates and/or specific weekdays, layered over an o
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `weekdays` | `[]` | nullable |
-| `price` | `JSONB` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 | `date_range_id` | `CHAR(26)` | nullable |
+| `price_id` | `CHAR(26)` | not null |
 
 ### `LosDiscount` → `los_discounts`
 
@@ -118,8 +129,8 @@ A discount applied to a NIGHTLY subtotal once the stay reaches a minimum length.
 | `id` | `CHAR(26)` | not null |
 | `min_nights` | `INTEGER` | not null |
 | `percent_off` | `INTEGER` | nullable |
-| `amount_off` | `JSONB` | nullable |
 | `offering_id` | `CHAR(26)` | not null |
+| `amount_off_id` | `CHAR(26)` | nullable |
 
 ### `Fee` → `fees`
 
@@ -130,11 +141,11 @@ A fee added on top of an offering's base subtotal. Exactly one of `amount` or `p
 | `id` | `CHAR(26)` | not null |
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
-| `amount` | `JSONB` | nullable |
 | `percent` | `INTEGER` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
 | `taxable` | `BOOLEAN` | nullable |
 | `offering_id` | `CHAR(26)` | not null |
+| `amount_id` | `CHAR(26)` | nullable |
 
 ### `Tax` → `taxes`
 

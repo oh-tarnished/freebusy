@@ -90,9 +90,9 @@ type Resource struct {
 	// Free-form description.
 	Description *string `gorm:"column:description" json:"description,omitempty"`
 	// What kind of bookable thing this is.
-	Type ResourceType `gorm:"column:type;not null;default:'PROVIDER'" json:"type" validate:"required"`
+	Type ResourceType `gorm:"column:type;not null;default:'PROVIDER';check:chk_entity_type,type IN ('PROVIDER','ROOM','EQUIPMENT','UNIT_TYPE','SPACE')" json:"type" validate:"required"`
 	// How this resource is booked, and therefore the availability shape it yields. Immutable: flipping it after bookings exist would invalidate every existing booking and availability computation.
-	BookingMode BookingMode `gorm:"column:booking_mode;not null;default:'TIME_SLOT'" json:"booking_mode" validate:"required"`
+	BookingMode BookingMode `gorm:"column:booking_mode;not null;default:'TIME_SLOT';check:chk_entity_booking_mode,booking_mode IN ('TIME_SLOT','NIGHTLY')" json:"booking_mode" validate:"required"`
 	// Number of interchangeable units in the pool. Defaults to 1 when unset.
 	Capacity *int32 `gorm:"column:capacity" json:"capacity,omitempty"`
 	// IANA timezone (e.g. "America/New_York") the resource's hours and dates are evaluated in. Required so availability is timezone-correct.
@@ -102,7 +102,7 @@ type Resource struct {
 	// Arbitrary attributes used for templating, policy, and segmentation.
 	Attributes json.RawMessage `gorm:"column:attributes" json:"attributes,omitempty"`
 	// Lifecycle state.
-	State *ResourceState `gorm:"column:state" json:"state,omitempty"`
+	State *ResourceState `gorm:"column:state;check:chk_entity_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -129,12 +129,10 @@ type Offering struct {
 	Description *string `gorm:"column:description" json:"description,omitempty"`
 	// Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY.
 	Duration *string `gorm:"column:duration" json:"duration,omitempty"`
-	// Price charged for the offering, interpreted per pricing_unit.
-	Price json.RawMessage `gorm:"column:price" json:"price,omitempty"`
 	// What the price is charged per.
-	PricingUnit *PricingUnit `gorm:"column:pricing_unit" json:"pricing_unit,omitempty"`
+	PricingUnit *PricingUnit `gorm:"column:pricing_unit;check:chk_offerings_pricing_unit,pricing_unit IN ('PER_BOOKING','PER_NIGHT','PER_PERSON')" json:"pricing_unit,omitempty"`
 	// Lifecycle state.
-	State *OfferingState `gorm:"column:state" json:"state,omitempty"`
+	State *OfferingState `gorm:"column:state;check:chk_offerings_state,state IN ('ACTIVE','INACTIVE')" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -142,8 +140,10 @@ type Offering struct {
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Parent reference to Resource (from the AIP resource pattern).
-	ResourceID string    `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
+	ResourceID string    `gorm:"column:resource_id;not null;index:idx_offerings_resource_id" json:"resource_id" validate:"required"`
 	Resource   *Resource `gorm:"foreignKey:ResourceID;constraint:OnDelete:CASCADE" json:"resource,omitempty"`
+	// Foreign key to Money.
+	PriceID *string `gorm:"column:price_id;index:idx_offerings_price_id" json:"price_id,omitempty"`
 	// Back-relation: RateOverride records that reference this via offering_id.
 	RateOverrides []RateOverride `gorm:"foreignKey:OfferingID" json:"rateoverrides,omitempty"`
 	// Back-relation: LosDiscount records that reference this via offering_id.
@@ -164,13 +164,13 @@ type RateOverride struct {
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Weekdays the override applies to. Empty means every day within date_range.
 	Weekdays []string `gorm:"column:weekdays" json:"weekdays,omitempty"`
-	// The price in effect while this override matches.
-	Price json.RawMessage `gorm:"column:price;not null" json:"price" validate:"required"`
 	// Foreign key to Offering.
-	OfferingID string    `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	OfferingID string    `gorm:"column:offering_id;not null;index:idx_rate_overrides_offering_id" json:"offering_id" validate:"required"`
 	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
 	// Foreign key to DateRange.
-	DateRangeID *string `gorm:"column:date_range_id" json:"date_range_id,omitempty"`
+	DateRangeID *string `gorm:"column:date_range_id;index:idx_rate_overrides_date_range_id" json:"date_range_id,omitempty"`
+	// Foreign key to Money.
+	PriceID string `gorm:"column:price_id;not null;index:idx_rate_overrides_price_id" json:"price_id" validate:"required"`
 }
 
 func (*RateOverride) TableName() string { return "resource.rate_overrides" }
@@ -183,11 +183,11 @@ type LosDiscount struct {
 	MinNights int32 `gorm:"column:min_nights;not null" json:"min_nights" validate:"required"`
 	// Percent off the subtotal (1-100), when discounting by percentage.
 	PercentOff *int32 `gorm:"column:percent_off" json:"percent_off,omitempty"`
-	// Fixed amount off the subtotal, when discounting by a flat amount.
-	AmountOff json.RawMessage `gorm:"column:amount_off" json:"amount_off,omitempty"`
 	// Foreign key to Offering.
-	OfferingID string    `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	OfferingID string    `gorm:"column:offering_id;not null;index:idx_los_discounts_offering_id" json:"offering_id" validate:"required"`
 	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
+	// Foreign key to Money.
+	AmountOffID *string `gorm:"column:amount_off_id;index:idx_los_discounts_amount_off_id" json:"amount_off_id,omitempty"`
 }
 
 func (*LosDiscount) TableName() string { return "resource.los_discounts" }
@@ -200,17 +200,17 @@ type Fee struct {
 	Code string `gorm:"column:code;not null" json:"code" validate:"required"`
 	// Human-readable label for receipts.
 	DisplayName *string `gorm:"column:display_name" json:"display_name,omitempty"`
-	// Fixed fee amount, when charging a flat fee.
-	Amount json.RawMessage `gorm:"column:amount" json:"amount,omitempty"`
 	// Percent of the base subtotal (1-100), when charging a proportional fee.
 	Percent *int32 `gorm:"column:percent" json:"percent,omitempty"`
 	// What the fee is charged per (per booking, per night, per person). Defaults to per booking.
-	PricingUnit *PricingUnit `gorm:"column:pricing_unit" json:"pricing_unit,omitempty"`
+	PricingUnit *PricingUnit `gorm:"column:pricing_unit;check:chk_fees_pricing_unit,pricing_unit IN ('PER_BOOKING','PER_NIGHT','PER_PERSON')" json:"pricing_unit,omitempty"`
 	// Whether this fee is included in the taxable base.
 	Taxable *bool `gorm:"column:taxable" json:"taxable,omitempty"`
 	// Foreign key to Offering.
-	OfferingID string    `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	OfferingID string    `gorm:"column:offering_id;not null;index:idx_fees_offering_id" json:"offering_id" validate:"required"`
 	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
+	// Foreign key to Money.
+	AmountID *string `gorm:"column:amount_id;index:idx_fees_amount_id" json:"amount_id,omitempty"`
 }
 
 func (*Fee) TableName() string { return "resource.fees" }
@@ -226,7 +226,7 @@ type Tax struct {
 	// Tax rate as a percentage, e.g. 8.5 for 8.5%.
 	Percent float64 `gorm:"column:percent;not null" json:"percent" validate:"required"`
 	// Foreign key to Offering.
-	OfferingID string    `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	OfferingID string    `gorm:"column:offering_id;not null;index:idx_taxes_offering_id" json:"offering_id" validate:"required"`
 	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
 }
 
@@ -237,10 +237,10 @@ type ResourceOfferings struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Foreign key to Resource.
-	ResourceID string    `gorm:"column:resource_id;not null" json:"resource_id" validate:"required"`
+	ResourceID string    `gorm:"column:resource_id;not null;uniqueIndex:idx_offerings_link_resource_id_offering_id,priority:1" json:"resource_id" validate:"required"`
 	Resource   *Resource `gorm:"foreignKey:ResourceID;constraint:OnDelete:CASCADE" json:"resource,omitempty"`
 	// Foreign key to Offering.
-	OfferingID string    `gorm:"column:offering_id;not null" json:"offering_id" validate:"required"`
+	OfferingID string    `gorm:"column:offering_id;not null;uniqueIndex:idx_offerings_link_resource_id_offering_id,priority:2;index:idx_offerings_link_offering_id" json:"offering_id" validate:"required"`
 	Offering   *Offering `gorm:"foreignKey:OfferingID;constraint:OnDelete:CASCADE" json:"offering,omitempty"`
 }
 

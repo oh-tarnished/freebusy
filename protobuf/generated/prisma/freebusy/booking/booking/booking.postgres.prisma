@@ -47,20 +47,11 @@ model Booking {
   /// When the pending hold lapses, if not confirmed first.
   holdExpireTime DateTime? @map("hold_expire_time")
 
-  /// Computed subtotal before discounts.
-  price Json? @map("price")
-
   /// The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code}
   promoCodeID String? @map("promo_code")
 
   /// Relation to PromoCode via promo_code.
   promoCode PromoCode? @relation(fields: [promoCodeID], references: [id])
-
-  /// Discount applied from the promo code.
-  discount Json? @map("discount")
-
-  /// Final total after discounts.
-  total Json? @map("total")
 
   /// Free-form notes on the booking.
   notes String? @map("notes")
@@ -83,9 +74,6 @@ model Booking {
   /// When the booking was cancelled, if at all.
   cancelTime DateTime? @map("cancel_time")
 
-  /// Amount refunded on cancellation, computed from the resource's cancellation policy and how far ahead of the booking start it was cancelled. Set only once the booking is CANCELLED. Use PreviewCancellation to see this before committing.
-  refundAmount Json? @map("refund_amount")
-
   /// Percentage of the total that `refund_amount` represents (0-100).
   refundPercent Int? @map("refund_percent")
 
@@ -107,6 +95,30 @@ model Booking {
   /// Relation to TimeWindow via window_id.
   window TimeWindow @relation(fields: [windowID], references: [id], onDelete: Cascade)
 
+  /// Foreign key to Money.
+  priceID String? @map("price_id")
+
+  /// Relation to Money via price_id.
+  price Money? @relation("BookingPrice", fields: [priceID], references: [id], onDelete: SetNull)
+
+  /// Foreign key to Money.
+  discountID String? @map("discount_id")
+
+  /// Relation to Money via discount_id.
+  discount Money? @relation("BookingDiscount", fields: [discountID], references: [id], onDelete: SetNull)
+
+  /// Foreign key to Money.
+  totalID String? @map("total_id")
+
+  /// Relation to Money via total_id.
+  total Money? @relation("BookingTotal", fields: [totalID], references: [id], onDelete: SetNull)
+
+  /// Foreign key to Money.
+  refundAmountID String? @map("refund_amount_id")
+
+  /// Relation to Money via refund_amount_id.
+  refundAmount Money? @relation("BookingRefundAmount", fields: [refundAmountID], references: [id], onDelete: SetNull)
+
   /// Back-relation: PriceComponent records that reference this model via booking_id.
   priceComponents PriceComponent[]
 
@@ -122,6 +134,14 @@ model Booking {
   @@index([contactID])
   /// Composite index on [window_id].
   @@index([windowID])
+  /// Composite index on [price_id].
+  @@index([priceID])
+  /// Composite index on [discount_id].
+  @@index([discountID])
+  /// Composite index on [total_id].
+  @@index([totalID])
+  /// Composite index on [refund_amount_id].
+  @@index([refundAmountID])
   /// Maps the model to the "resource" table in the database.
   @@map("resource")
   /// Maps the model to the "booking" schema in the database.

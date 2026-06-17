@@ -15,6 +15,8 @@ erDiagram
     direction LR
     PromoCode {
         string id PK
+        string amount_off_id FK
+        string min_subtotal_id FK
     }
     PromoCodeApplicableOfferings {
         string id PK
@@ -26,12 +28,17 @@ erDiagram
         string promo_code_id FK
         string resource_id FK
     }
+    Money {
+        string externalStub PK
+    }
     Offering {
         string externalStub PK
     }
     Resource {
         string externalStub PK
     }
+    PromoCode }o--|| Money : "amount_off_id"
+    PromoCode }o--|| Money : "min_subtotal_id"
     PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
     PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
     PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"

@@ -21,8 +21,15 @@ erDiagram
         string promo_code FK
         string contact_id FK
         string window_id FK
+        string price_id FK
+        string discount_id FK
+        string total_id FK
+        string refund_amount_id FK
     }
     Contact {
+        string externalStub PK
+    }
+    Money {
         string externalStub PK
     }
     Offering {
@@ -46,6 +53,10 @@ erDiagram
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
     Booking }o--|| TimeWindow : "window_id"
+    Booking }o--|| Money : "price_id"
+    Booking }o--|| Money : "discount_id"
+    Booking }o--|| Money : "total_id"
+    Booking }o--|| Money : "refund_amount_id"
 ```
 
 Schema file: [`booking.postgres.prisma`](./booking.postgres.prisma)
@@ -65,10 +76,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `assigned_unit` | `VARCHAR(255)` | nullable |
 | `state` | `BookingState` | nullable |
 | `hold_expire_time` | `TIMESTAMPTZ` | nullable |
-| `price` | `JSONB` | nullable |
 | `promo_code` | `CHAR(26)` | nullable |
-| `discount` | `JSONB` | nullable |
-| `total` | `JSONB` | nullable |
 | `notes` | `VARCHAR(255)` | nullable |
 | `attributes` | `JSONB` | nullable |
 | `cancel_reason` | `CancelReason` | nullable |
@@ -76,9 +84,12 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `confirm_time` | `TIMESTAMPTZ` | nullable |
 | `cancel_time` | `TIMESTAMPTZ` | nullable |
-| `refund_amount` | `JSONB` | nullable |
 | `refund_percent` | `INTEGER` | nullable |
 | `hold_ttl` | `INTERVAL` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `contact_id` | `CHAR(26)` | nullable |
 | `window_id` | `CHAR(26)` | not null |
+| `price_id` | `CHAR(26)` | nullable |
+| `discount_id` | `CHAR(26)` | nullable |
+| `total_id` | `CHAR(26)` | nullable |
+| `refund_amount_id` | `CHAR(26)` | nullable |

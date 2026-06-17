@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 27 | 15 |
+| 28 | 15 |
 
 ## Entity relationships
 
@@ -27,6 +27,10 @@ erDiagram
         string promo_code FK
         string contact_id FK
         string window_id FK
+        string price_id FK
+        string discount_id FK
+        string total_id FK
+        string refund_amount_id FK
     }
     BufferSettings {
         string id PK
@@ -43,10 +47,12 @@ erDiagram
     Fee {
         string id PK
         string offering_id FK
+        string amount_id FK
     }
     LosDiscount {
         string id PK
         string offering_id FK
+        string amount_off_id FK
     }
     Member {
         string id PK
@@ -59,9 +65,13 @@ erDiagram
         string organisation FK
         string user_id FK
     }
+    Money {
+        string id PK
+    }
     Offering {
         string id PK
         string resource_id FK
+        string price_id FK
     }
     Organisation {
         string id PK
@@ -69,9 +79,12 @@ erDiagram
     PriceComponent {
         string id PK
         string booking_id FK
+        string amount_id FK
     }
     PromoCode {
         string id PK
+        string amount_off_id FK
+        string min_subtotal_id FK
     }
     PromoCodeApplicableOfferings {
         string id PK
@@ -87,6 +100,7 @@ erDiagram
         string id PK
         string offering_id FK
         string date_range_id FK
+        string price_id FK
     }
     RecurringRule {
         string id PK
@@ -137,21 +151,32 @@ erDiagram
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
     Booking }o--|| TimeWindow : "window_id"
+    Booking }o--|| Money : "price_id"
+    Booking }o--|| Money : "discount_id"
+    Booking }o--|| Money : "total_id"
+    Booking }o--|| Money : "refund_amount_id"
     Fee }o--|| Offering : "offering_id"
+    Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Offering : "offering_id"
+    LosDiscount }o--|| Money : "amount_off_id"
     Member }o--|| User : "user"
     Member }o--|| User : "inviter"
     Member }o--|| Organisation : "organisation_id"
     MembershipSummary }o--|| Organisation : "organisation"
     MembershipSummary }o--|| User : "user_id"
     Offering }o--|| Resource : "resource_id"
+    Offering }o--|| Money : "price_id"
     PriceComponent }o--|| Booking : "booking_id"
+    PriceComponent }o--|| Money : "amount_id"
+    PromoCode }o--|| Money : "amount_off_id"
+    PromoCode }o--|| Money : "min_subtotal_id"
     PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
     PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
     PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
     PromoCodeApplicableResources }o--|| Resource : "resource_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
+    RateOverride }o--|| Money : "price_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
     ResourceOfferings }o--|| Resource : "resource_id"
@@ -173,3 +198,4 @@ erDiagram
 - [`resource/`](./resource/README.md)
 - [`schedule/`](./schedule/README.md)
 - [`shared/`](./shared/README.md)
+- [`type/`](./type/README.md)

@@ -68,7 +68,7 @@ type Organisation struct {
 	// Billing contact email.
 	BillingEmail *string `gorm:"column:billing_email" json:"billing_email,omitempty"`
 	// Lifecycle state.
-	State *OrganisationState `gorm:"column:state" json:"state,omitempty"`
+	State *OrganisationState `gorm:"column:state;check:chk_resource_state,state IN ('ACTIVE','SUSPENDED')" json:"state,omitempty"`
 	// Arbitrary organisation-level settings.
 	Settings json.RawMessage `gorm:"column:settings" json:"settings,omitempty"`
 	// Number of members across all states.
@@ -92,17 +92,17 @@ type Member struct {
 	// The member name. Format: organisations/{organisation}/members/{member}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
 	// The user, once the invite is accepted. Format: users/{user}
-	UserID *string `gorm:"column:user" json:"user,omitempty"`
+	UserID *string `gorm:"column:user;index:idx_members_user" json:"user,omitempty"`
 	// The invited email address.
 	Email string `gorm:"column:email;not null" json:"email" validate:"required"`
 	// Cached display name of the member.
 	DisplayName *string `gorm:"column:display_name" json:"display_name,omitempty"`
 	// The member's role in the organisation.
-	Role OrganisationRole `gorm:"column:role;not null;default:'OWNER'" json:"role" validate:"required"`
+	Role OrganisationRole `gorm:"column:role;not null;default:'OWNER';check:chk_members_role,role IN ('OWNER','ADMIN','MEMBER','VIEWER')" json:"role" validate:"required"`
 	// Confirmation state of the membership.
-	State *MemberState `gorm:"column:state" json:"state,omitempty"`
+	State *MemberState `gorm:"column:state;check:chk_members_state,state IN ('INVITED','ACTIVE','SUSPENDED')" json:"state,omitempty"`
 	// The user who issued the invite. Format: users/{user}
-	InviterID *string `gorm:"column:inviter" json:"inviter,omitempty"`
+	InviterID *string `gorm:"column:inviter;index:idx_members_inviter" json:"inviter,omitempty"`
 	// Creation timestamp (when the invite was created).
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -110,7 +110,7 @@ type Member struct {
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Parent reference to Organisation (from the AIP resource pattern).
-	OrganisationID string        `gorm:"column:organisation_id;not null" json:"organisation_id" validate:"required"`
+	OrganisationID string        `gorm:"column:organisation_id;not null;index:idx_members_organisation_id" json:"organisation_id" validate:"required"`
 	Organisation   *Organisation `gorm:"foreignKey:OrganisationID;constraint:OnDelete:CASCADE" json:"organisation,omitempty"`
 }
 

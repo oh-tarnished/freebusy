@@ -273,8 +273,6 @@ model ScheduleExceptions {
 
   /// Unique constraint on [schedule_id, availability_exception_id].
   @@unique([scheduleID, availabilityExceptionID])
-  /// Composite index on [schedule_id].
-  @@index([scheduleID])
   /// Composite index on [availability_exception_id].
   @@index([availabilityExceptionID])
   /// Maps the model to the "exceptions" table in the database.

@@ -10,7 +10,7 @@
 //
 // protorm — https://github.com/the-protobuf-project/protorm
 
-datasource freebusypgsql {
+datasource freebusy {
   provider = "postgresql"
   schemas  = ["booking", "identity", "organisation", "promocode", "resource", "schedule"]
 }

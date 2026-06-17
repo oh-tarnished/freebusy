@@ -15,6 +15,8 @@ erDiagram
     direction LR
     PromoCode {
         string id PK
+        string amount_off_id FK
+        string min_subtotal_id FK
     }
     PromoCodeApplicableOfferings {
         string id PK
@@ -26,12 +28,17 @@ erDiagram
         string promo_code_id FK
         string resource_id FK
     }
+    Money {
+        string externalStub PK
+    }
     Offering {
         string externalStub PK
     }
     Resource {
         string externalStub PK
     }
+    PromoCode }o--|| Money : "amount_off_id"
+    PromoCode }o--|| Money : "min_subtotal_id"
     PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
     PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
     PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
@@ -53,18 +60,18 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `description` | `VARCHAR(255)` | nullable |
 | `discount_type` | `DiscountType` | not null |
 | `percent_off` | `INTEGER` | nullable |
-| `amount_off` | `JSONB` | nullable |
 | `redeem_start_time` | `TIMESTAMPTZ` | nullable |
 | `redeem_end_time` | `TIMESTAMPTZ` | nullable |
 | `max_redemptions` | `BIGINT` | nullable |
 | `per_customer_limit` | `INTEGER` | nullable |
-| `min_subtotal` | `JSONB` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `PromoCodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `amount_off_id` | `CHAR(26)` | nullable |
+| `min_subtotal_id` | `CHAR(26)` | nullable |
 
 ### `PromoCodeApplicableResources` → `applicable_resources`
 

@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-protorm dev
 // 	protoc             (unknown)
-// source: freebusy/booking/v1/booking.proto, freebusy/shared/v1/types.proto
+// source: freebusy/booking/v1/booking.proto, freebusy/shared/v1/types.proto, google/type/money.proto
 //
 // database: freebusy
 // schema:   booking
@@ -74,33 +74,27 @@ type Booking struct {
 	// The booking name. Format: bookings/{booking}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
 	// The resource being booked. Format: resources/{resource}
-	ResourceID string `gorm:"column:resource;not null" json:"resource" validate:"required"`
+	ResourceID string `gorm:"column:resource;not null;index:idx_resource_resource" json:"resource" validate:"required"`
 	// The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}
-	OfferingID *string `gorm:"column:offering" json:"offering,omitempty"`
+	OfferingID *string `gorm:"column:offering;index:idx_resource_offering" json:"offering,omitempty"`
 	// The user the booking is for. Format: users/{user}
-	CustomerID *string `gorm:"column:customer" json:"customer,omitempty"`
+	CustomerID *string `gorm:"column:customer;index:idx_resource_customer" json:"customer,omitempty"`
 	// Number of units / party size reserved. Defaults to 1.
 	Units *int32 `gorm:"column:units" json:"units,omitempty"`
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
 	AssignedUnit *string `gorm:"column:assigned_unit" json:"assigned_unit,omitempty"`
 	// Current lifecycle state.
-	State *BookingState `gorm:"column:state" json:"state,omitempty"`
+	State *BookingState `gorm:"column:state;check:chk_resource_state,state IN ('PENDING_HOLD','CONFIRMED','CANCELLED','EXPIRED','COMPLETED','NO_SHOW')" json:"state,omitempty"`
 	// When the pending hold lapses, if not confirmed first.
 	HoldExpireTime *time.Time `gorm:"column:hold_expire_time" json:"hold_expire_time,omitempty"`
-	// Computed subtotal before discounts.
-	Price json.RawMessage `gorm:"column:price" json:"price,omitempty"`
 	// The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code}
-	PromoCodeID *string `gorm:"column:promo_code" json:"promo_code,omitempty"`
-	// Discount applied from the promo code.
-	Discount json.RawMessage `gorm:"column:discount" json:"discount,omitempty"`
-	// Final total after discounts.
-	Total json.RawMessage `gorm:"column:total" json:"total,omitempty"`
+	PromoCodeID *string `gorm:"column:promo_code;index:idx_resource_promo_code" json:"promo_code,omitempty"`
 	// Free-form notes on the booking.
 	Notes *string `gorm:"column:notes" json:"notes,omitempty"`
 	// Arbitrary attributes.
 	Attributes json.RawMessage `gorm:"column:attributes" json:"attributes,omitempty"`
 	// Why the booking was cancelled, when state is CANCELLED.
-	CancelReason *CancelReason `gorm:"column:cancel_reason" json:"cancel_reason,omitempty"`
+	CancelReason *CancelReason `gorm:"column:cancel_reason;check:chk_resource_cancel_reason,cancel_reason IN ('REQUESTED_BY_CUSTOMER','REQUESTED_BY_OPERATOR','PAYMENT_FAILED','NO_SHOW','OTHER')" json:"cancel_reason,omitempty"`
 	// Creation timestamp (when the hold was placed).
 	CreateTime time.Time `gorm:"column:create_time;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -109,8 +103,6 @@ type Booking struct {
 	ConfirmTime *time.Time `gorm:"column:confirm_time" json:"confirm_time,omitempty"`
 	// When the booking was cancelled, if at all.
 	CancelTime *time.Time `gorm:"column:cancel_time" json:"cancel_time,omitempty"`
-	// Amount refunded on cancellation, computed from the resource's cancellation policy and how far ahead of the booking start it was cancelled. Set only once the booking is CANCELLED. Use PreviewCancellation to see this before committing.
-	RefundAmount json.RawMessage `gorm:"column:refund_amount" json:"refund_amount,omitempty"`
 	// Percentage of the total that `refund_amount` represents (0-100).
 	RefundPercent *int32 `gorm:"column:refund_percent" json:"refund_percent,omitempty"`
 	// Requested time-to-live of the hold, set at creation. The server caps this and reflects the effective expiry in hold_expire_time.
@@ -118,11 +110,23 @@ type Booking struct {
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
 	// Foreign key to Contact.
-	ContactID *string  `gorm:"column:contact_id" json:"contact_id,omitempty"`
+	ContactID *string  `gorm:"column:contact_id;index:idx_resource_contact_id" json:"contact_id,omitempty"`
 	Contact   *Contact `gorm:"foreignKey:ContactID;constraint:OnDelete:SET NULL" json:"contact,omitempty"`
 	// Foreign key to TimeWindow.
-	WindowID string      `gorm:"column:window_id;not null" json:"window_id" validate:"required"`
+	WindowID string      `gorm:"column:window_id;not null;index:idx_resource_window_id" json:"window_id" validate:"required"`
 	Window   *TimeWindow `gorm:"foreignKey:WindowID;constraint:OnDelete:CASCADE" json:"window,omitempty"`
+	// Foreign key to Money.
+	PriceID *string `gorm:"column:price_id;index:idx_resource_price_id" json:"price_id,omitempty"`
+	Price   *Money  `gorm:"foreignKey:PriceID;constraint:OnDelete:SET NULL" json:"price,omitempty"`
+	// Foreign key to Money.
+	DiscountID *string `gorm:"column:discount_id;index:idx_resource_discount_id" json:"discount_id,omitempty"`
+	Discount   *Money  `gorm:"foreignKey:DiscountID;constraint:OnDelete:SET NULL" json:"discount,omitempty"`
+	// Foreign key to Money.
+	TotalID *string `gorm:"column:total_id;index:idx_resource_total_id" json:"total_id,omitempty"`
+	Total   *Money  `gorm:"foreignKey:TotalID;constraint:OnDelete:SET NULL" json:"total,omitempty"`
+	// Foreign key to Money.
+	RefundAmountID *string `gorm:"column:refund_amount_id;index:idx_resource_refund_amount_id" json:"refund_amount_id,omitempty"`
+	RefundAmount   *Money  `gorm:"foreignKey:RefundAmountID;constraint:OnDelete:SET NULL" json:"refundamount,omitempty"`
 	// Back-relation: PriceComponent records that reference this via booking_id.
 	PriceComponents []PriceComponent `gorm:"foreignKey:BookingID" json:"pricecomponents,omitempty"`
 }
@@ -159,21 +163,46 @@ type TimeWindow struct {
 
 func (*TimeWindow) TableName() string { return "booking.time_windows" }
 
+// Represents an amount of money with its currency type.
+type Money struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// The three-letter currency code defined in ISO 4217.
+	CurrencyCode *string `gorm:"column:currency_code" json:"currency_code,omitempty"`
+	// The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
+	Units *int64 `gorm:"column:units" json:"units,omitempty"`
+	// Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
+	Nanos *int32 `gorm:"column:nanos" json:"nanos,omitempty"`
+	// Back-relation: Booking records that reference this via price_id.
+	Resource []Booking `gorm:"foreignKey:PriceID" json:"resource,omitempty"`
+	// Back-relation: Booking records that reference this via discount_id.
+	Resource2 []Booking `gorm:"foreignKey:DiscountID" json:"resource2,omitempty"`
+	// Back-relation: Booking records that reference this via total_id.
+	Resource3 []Booking `gorm:"foreignKey:TotalID" json:"resource3,omitempty"`
+	// Back-relation: Booking records that reference this via refund_amount_id.
+	Resource4 []Booking `gorm:"foreignKey:RefundAmountID" json:"resource4,omitempty"`
+	// Back-relation: PriceComponent records that reference this via amount_id.
+	PriceComponents []PriceComponent `gorm:"foreignKey:AmountID" json:"pricecomponents,omitempty"`
+}
+
+func (*Money) TableName() string { return "booking.moneys" }
+
 // One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).
 type PriceComponent struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Which kind of line this is.
-	Type *Type `gorm:"column:type" json:"type,omitempty"`
+	Type *Type `gorm:"column:type;check:chk_price_components_type,type IN ('BASE','FEE','TAX','DISCOUNT')" json:"type,omitempty"`
 	// Stable machine code for the line, e.g. "base", "cleaning_fee", "occupancy_tax", or a promo code. Clients key display and logic off this.
 	Code *string `gorm:"column:code" json:"code,omitempty"`
 	// Human-readable label suitable for display on an itemized receipt.
 	DisplayName *string `gorm:"column:display_name" json:"display_name,omitempty"`
-	// Signed amount: positive for charges (base, fees, taxes), negative for discounts. Summing every component yields the booking total.
-	Amount json.RawMessage `gorm:"column:amount" json:"amount,omitempty"`
 	// Foreign key to Booking.
-	BookingID string   `gorm:"column:booking_id;not null" json:"booking_id" validate:"required"`
+	BookingID string   `gorm:"column:booking_id;not null;index:idx_price_components_booking_id" json:"booking_id" validate:"required"`
 	Booking   *Booking `gorm:"foreignKey:BookingID;constraint:OnDelete:CASCADE" json:"booking,omitempty"`
+	// Foreign key to Money.
+	AmountID *string `gorm:"column:amount_id;index:idx_price_components_amount_id" json:"amount_id,omitempty"`
+	Amount   *Money  `gorm:"foreignKey:AmountID;constraint:OnDelete:SET NULL" json:"amount,omitempty"`
 }
 
 func (*PriceComponent) TableName() string { return "booking.price_components" }

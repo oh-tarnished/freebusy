@@ -16,19 +16,23 @@ erDiagram
     Fee {
         string id PK
         string offering_id FK
+        string amount_id FK
     }
     LosDiscount {
         string id PK
         string offering_id FK
+        string amount_off_id FK
     }
     Offering {
         string id PK
         string resource_id FK
+        string price_id FK
     }
     RateOverride {
         string id PK
         string offering_id FK
         string date_range_id FK
+        string price_id FK
     }
     Resource {
         string id PK
@@ -45,11 +49,18 @@ erDiagram
     DateRange {
         string externalStub PK
     }
+    Money {
+        string externalStub PK
+    }
     Fee }o--|| Offering : "offering_id"
+    Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Offering : "offering_id"
+    LosDiscount }o--|| Money : "amount_off_id"
     Offering }o--|| Resource : "resource_id"
+    Offering }o--|| Money : "price_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
+    RateOverride }o--|| Money : "price_id"
     ResourceOfferings }o--|| Resource : "resource_id"
     ResourceOfferings }o--|| Offering : "offering_id"
     Tax }o--|| Offering : "offering_id"

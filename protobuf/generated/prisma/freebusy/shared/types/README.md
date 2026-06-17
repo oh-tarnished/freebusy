@@ -22,6 +22,7 @@ erDiagram
     PriceComponent {
         string id PK
         string booking_id FK
+        string amount_id FK
     }
     TimeWindow {
         string id PK
@@ -29,7 +30,11 @@ erDiagram
     Booking {
         string externalStub PK
     }
+    Money {
+        string externalStub PK
+    }
     PriceComponent }o--|| Booking : "booking_id"
+    PriceComponent }o--|| Money : "amount_id"
 ```
 
 Schema file: [`types.postgres.prisma`](./types.postgres.prisma)
@@ -65,8 +70,8 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `type` | `Type` | nullable |
 | `code` | `VARCHAR(255)` | nullable |
 | `display_name` | `VARCHAR(255)` | nullable |
-| `amount` | `JSONB` | nullable |
 | `booking_id` | `CHAR(26)` | not null |
+| `amount_id` | `CHAR(26)` | nullable |
 
 ### `DateRange` → `date_ranges`
 
