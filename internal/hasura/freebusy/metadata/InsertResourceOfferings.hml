@@ -18,8 +18,8 @@ definition:
       type: String_1!
     - name: name
       type: String_1!
-    - name: price
-      type: Json
+    - name: priceId
+      type: String_1
     - name: pricingUnit
       type: Enum
     - name: resourceId
@@ -56,9 +56,9 @@ definition:
         name:
           column:
             name: name
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         pricingUnit:
           column:
             name: pricing_unit
@@ -88,7 +88,7 @@ definition:
           - etag
           - id
           - name
-          - price
+          - priceId
           - pricingUnit
           - resourceId
           - state

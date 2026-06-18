@@ -2,18 +2,18 @@
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnResourceLosDiscountsAmountOff
-  description: Update the 'amount_off' column in the 'resource_los_discounts' collection
+  name: UpdateColumnResourceLosDiscountsAmountOffId
+  description: Update the 'amount_off_id' column in the 'resource_los_discounts' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnResourceLosDiscountsAmountOff
-    inputTypeName: UpdateColumnResourceLosDiscountsAmountOffInput
+    typeName: UpdateColumnResourceLosDiscountsAmountOffId
+    inputTypeName: UpdateColumnResourceLosDiscountsAmountOffIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_resource_los_discounts_amount_off
+      dataConnectorObjectType: update_column_resource_los_discounts_amount_off_id
       fieldMapping:
         set:
           column:
@@ -23,7 +23,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnResourceLosDiscountsAmountOff
+  typeName: UpdateColumnResourceLosDiscountsAmountOffId
   permissions:
     - role: admin
       output:
@@ -165,9 +165,9 @@ definition:
   name: UpdateResourceLosDiscountsByIdUpdateColumns
   description: Update the columns of the 'resource_los_discounts' collection
   fields:
-    - name: amountOff
-      type: UpdateColumnResourceLosDiscountsAmountOff
-      description: Update the 'amount_off' column in the 'resource_los_discounts'
+    - name: amountOffId
+      type: UpdateColumnResourceLosDiscountsAmountOffId
+      description: Update the 'amount_off_id' column in the 'resource_los_discounts'
         collection.
     - name: id
       type: UpdateColumnResourceLosDiscountsId
@@ -191,9 +191,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: update_resource_los_discounts_by_id_update_columns
       fieldMapping:
-        amountOff:
+        amountOffId:
           column:
-            name: amount_off
+            name: amount_off_id
         id:
           column:
             name: id
@@ -216,7 +216,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOff
+          - amountOffId
           - id
           - minNights
           - offeringId

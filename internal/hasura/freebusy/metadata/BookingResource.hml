@@ -20,8 +20,8 @@ definition:
       type: Timestamp!
     - name: customer
       type: String_1
-    - name: discount
-      type: Json
+    - name: discountId
+      type: String_1
     - name: etag
       type: String_1
     - name: holdExpireTime
@@ -36,20 +36,20 @@ definition:
       type: String_1
     - name: offering
       type: String_1
-    - name: price
-      type: Json
+    - name: priceId
+      type: String_1
     - name: promoCode
       type: String_1
-    - name: refundAmount
-      type: Json
+    - name: refundAmountId
+      type: String_1
     - name: refundPercent
       type: Int32
     - name: resource
       type: String_1!
     - name: state
       type: Enum
-    - name: total
-      type: Json
+    - name: totalId
+      type: String_1
     - name: units
       type: Int32
     - name: updateTime
@@ -87,9 +87,9 @@ definition:
         customer:
           column:
             name: customer
-        discount:
+        discountId:
           column:
-            name: discount
+            name: discount_id
         etag:
           column:
             name: etag
@@ -111,15 +111,15 @@ definition:
         offering:
           column:
             name: offering
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         promoCode:
           column:
             name: promo_code
-        refundAmount:
+        refundAmountId:
           column:
-            name: refund_amount
+            name: refund_amount_id
         refundPercent:
           column:
             name: refund_percent
@@ -129,9 +129,9 @@ definition:
         state:
           column:
             name: state
-        total:
+        totalId:
           column:
-            name: total
+            name: total_id
         units:
           column:
             name: units
@@ -159,7 +159,7 @@ definition:
           - contactId
           - createTime
           - customer
-          - discount
+          - discountId
           - etag
           - holdExpireTime
           - holdTtl
@@ -167,13 +167,13 @@ definition:
           - name
           - notes
           - offering
-          - price
+          - priceId
           - promoCode
-          - refundAmount
+          - refundAmountId
           - refundPercent
           - resource
           - state
-          - total
+          - totalId
           - units
           - updateTime
           - windowId
@@ -203,8 +203,8 @@ definition:
           booleanExpressionType: TimestampBoolExp
         - fieldName: customer
           booleanExpressionType: TextBoolExp
-        - fieldName: discount
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: discountId
+          booleanExpressionType: TextBoolExp
         - fieldName: etag
           booleanExpressionType: TextBoolExp
         - fieldName: holdExpireTime
@@ -219,20 +219,20 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: offering
           booleanExpressionType: TextBoolExp
-        - fieldName: price
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: priceId
+          booleanExpressionType: TextBoolExp
         - fieldName: promoCode
           booleanExpressionType: TextBoolExp
-        - fieldName: refundAmount
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: refundAmountId
+          booleanExpressionType: TextBoolExp
         - fieldName: refundPercent
           booleanExpressionType: Int4BoolExp
         - fieldName: resource
           booleanExpressionType: TextBoolExp
         - fieldName: state
           booleanExpressionType: BookingBookingStateBoolExp
-        - fieldName: total
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: totalId
+          booleanExpressionType: TextBoolExp
         - fieldName: units
           booleanExpressionType: Int4BoolExp
         - fieldName: updateTime
@@ -243,9 +243,13 @@ definition:
         - relationshipName: bookingPriceComponents
         - relationshipName: bookingContact
         - relationshipName: identityUser
+        - relationshipName: bookingMoney
         - relationshipName: resourceOffering
+        - relationshipName: bookingMoneyByPriceId
         - relationshipName: promocodeResource
+        - relationshipName: bookingMoneyByRefundAmountId
         - relationshipName: resourceEntity
+        - relationshipName: bookingMoneyByTotalId
         - relationshipName: bookingTimeWindow
   logicalOperators:
     enable: true
@@ -279,8 +283,8 @@ definition:
           aggregateExpression: TimestampAggExp
         - fieldName: customer
           aggregateExpression: TextAggExp
-        - fieldName: discount
-          aggregateExpression: JsonbAggExp
+        - fieldName: discountId
+          aggregateExpression: TextAggExp
         - fieldName: etag
           aggregateExpression: TextAggExp
         - fieldName: holdExpireTime
@@ -295,20 +299,20 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: offering
           aggregateExpression: TextAggExp
-        - fieldName: price
-          aggregateExpression: JsonbAggExp
+        - fieldName: priceId
+          aggregateExpression: TextAggExp
         - fieldName: promoCode
           aggregateExpression: TextAggExp
-        - fieldName: refundAmount
-          aggregateExpression: JsonbAggExp
+        - fieldName: refundAmountId
+          aggregateExpression: TextAggExp
         - fieldName: refundPercent
           aggregateExpression: Int4AggExp
         - fieldName: resource
           aggregateExpression: TextAggExp
         - fieldName: state
           aggregateExpression: BookingBookingStateAggExp
-        - fieldName: total
-          aggregateExpression: JsonbAggExp
+        - fieldName: totalId
+          aggregateExpression: TextAggExp
         - fieldName: units
           aggregateExpression: Int4AggExp
         - fieldName: updateTime
@@ -346,8 +350,8 @@ definition:
           orderByExpression: TimestampOrderByExp
         - fieldName: customer
           orderByExpression: String1OrderByExp
-        - fieldName: discount
-          orderByExpression: JsonOrderByExp
+        - fieldName: discountId
+          orderByExpression: String1OrderByExp
         - fieldName: etag
           orderByExpression: String1OrderByExp
         - fieldName: holdExpireTime
@@ -362,20 +366,20 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: offering
           orderByExpression: String1OrderByExp
-        - fieldName: price
-          orderByExpression: JsonOrderByExp
+        - fieldName: priceId
+          orderByExpression: String1OrderByExp
         - fieldName: promoCode
           orderByExpression: String1OrderByExp
-        - fieldName: refundAmount
-          orderByExpression: JsonOrderByExp
+        - fieldName: refundAmountId
+          orderByExpression: String1OrderByExp
         - fieldName: refundPercent
           orderByExpression: Int32OrderByExp
         - fieldName: resource
           orderByExpression: String1OrderByExp
         - fieldName: state
           orderByExpression: EnumOrderByExp
-        - fieldName: total
-          orderByExpression: JsonOrderByExp
+        - fieldName: totalId
+          orderByExpression: String1OrderByExp
         - fieldName: units
           orderByExpression: Int32OrderByExp
         - fieldName: updateTime
@@ -385,9 +389,13 @@ definition:
       orderableRelationships:
         - relationshipName: bookingContact
         - relationshipName: identityUser
+        - relationshipName: bookingMoney
         - relationshipName: resourceOffering
+        - relationshipName: bookingMoneyByPriceId
         - relationshipName: promocodeResource
+        - relationshipName: bookingMoneyByRefundAmountId
         - relationshipName: resourceEntity
+        - relationshipName: bookingMoneyByTotalId
         - relationshipName: bookingTimeWindow
   graphql:
     expressionTypeName: BookingResourceOrderByExp
@@ -494,6 +502,24 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: bookingMoney
+  sourceType: BookingResource
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: discountId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
   name: resourceOffering
   sourceType: BookingResource
   target:
@@ -504,6 +530,24 @@ definition:
     - source:
         fieldPath:
           - fieldName: offering
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoneyByPriceId
+  sourceType: BookingResource
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: priceId
       target:
         modelField:
           - fieldName: id
@@ -530,6 +574,24 @@ definition:
 kind: Relationship
 version: v1
 definition:
+  name: bookingMoneyByRefundAmountId
+  sourceType: BookingResource
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: refundAmountId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
   name: resourceEntity
   sourceType: BookingResource
   target:
@@ -540,6 +602,24 @@ definition:
     - source:
         fieldPath:
           - fieldName: resource
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoneyByTotalId
+  sourceType: BookingResource
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: totalId
       target:
         modelField:
           - fieldName: id

@@ -2,18 +2,18 @@
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnResourceFeesAmount
-  description: Update the 'amount' column in the 'resource_fees' collection
+  name: UpdateColumnResourceFeesAmountId
+  description: Update the 'amount_id' column in the 'resource_fees' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnResourceFeesAmount
-    inputTypeName: UpdateColumnResourceFeesAmountInput
+    typeName: UpdateColumnResourceFeesAmountId
+    inputTypeName: UpdateColumnResourceFeesAmountIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_resource_fees_amount
+      dataConnectorObjectType: update_column_resource_fees_amount_id
       fieldMapping:
         set:
           column:
@@ -23,7 +23,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnResourceFeesAmount
+  typeName: UpdateColumnResourceFeesAmountId
   permissions:
     - role: admin
       output:
@@ -261,9 +261,9 @@ definition:
   name: UpdateResourceFeesByIdUpdateColumns
   description: Update the columns of the 'resource_fees' collection
   fields:
-    - name: amount
-      type: UpdateColumnResourceFeesAmount
-      description: Update the 'amount' column in the 'resource_fees' collection.
+    - name: amountId
+      type: UpdateColumnResourceFeesAmountId
+      description: Update the 'amount_id' column in the 'resource_fees' collection.
     - name: code
       type: UpdateColumnResourceFeesCode
       description: Update the 'code' column in the 'resource_fees' collection.
@@ -292,9 +292,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: update_resource_fees_by_id_update_columns
       fieldMapping:
-        amount:
+        amountId:
           column:
-            name: amount
+            name: amount_id
         code:
           column:
             name: code
@@ -326,7 +326,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amount
+          - amountId
           - code
           - displayName
           - id

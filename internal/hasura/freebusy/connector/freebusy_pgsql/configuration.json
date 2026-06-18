@@ -140,14 +140,59 @@
         "foreignRelations": {},
         "description": null
       },
+      "booking_moneys": {
+        "schemaName": "booking",
+        "tableName": "moneys",
+        "columns": {
+          "currency_code": {
+            "name": "currency_code",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "nanos": {
+            "name": "nanos",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "units": {
+            "name": "units",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "moneys_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
       "booking_price_components": {
         "schemaName": "booking",
         "tableName": "price_components",
         "columns": {
-          "amount": {
-            "name": "amount",
+          "amount_id": {
+            "name": "amount_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -199,6 +244,13 @@
           ]
         },
         "foreignRelations": {
+          "price_components_amount_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_id": "id"
+            }
+          },
           "price_components_booking_id_fkey": {
             "foreignSchema": "booking",
             "foreignTable": "resource",
@@ -278,10 +330,10 @@
             "nullable": "nullable",
             "description": null
           },
-          "discount": {
-            "name": "discount",
+          "discount_id": {
+            "name": "discount_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -342,10 +394,10 @@
             "nullable": "nullable",
             "description": null
           },
-          "price": {
-            "name": "price",
+          "price_id": {
+            "name": "price_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -358,10 +410,10 @@
             "nullable": "nullable",
             "description": null
           },
-          "refund_amount": {
-            "name": "refund_amount",
+          "refund_amount_id": {
+            "name": "refund_amount_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -390,10 +442,10 @@
             "nullable": "nullable",
             "description": null
           },
-          "total": {
-            "name": "total",
+          "total_id": {
+            "name": "total_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -443,11 +495,25 @@
               "customer": "id"
             }
           },
+          "resource_discount_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "discount_id": "id"
+            }
+          },
           "resource_offering_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "offerings",
             "columnMapping": {
               "offering": "id"
+            }
+          },
+          "resource_price_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "price_id": "id"
             }
           },
           "resource_promo_code_fkey": {
@@ -457,11 +523,25 @@
               "promo_code": "id"
             }
           },
+          "resource_refund_amount_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "refund_amount_id": "id"
+            }
+          },
           "resource_resource_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "entity",
             "columnMapping": {
               "resource": "id"
+            }
+          },
+          "resource_total_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "total_id": "id"
             }
           },
           "resource_window_id_fkey": {
@@ -1016,10 +1096,10 @@
         "schemaName": "promocode",
         "tableName": "resource",
         "columns": {
-          "amount_off": {
-            "name": "amount_off",
+          "amount_off_id": {
+            "name": "amount_off_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -1098,10 +1178,10 @@
             "nullable": "nullable",
             "description": null
           },
-          "min_subtotal": {
-            "name": "min_subtotal",
+          "min_subtotal_id": {
+            "name": "min_subtotal_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -1176,7 +1256,22 @@
             "id"
           ]
         },
-        "foreignRelations": {},
+        "foreignRelations": {
+          "resource_amount_off_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_off_id": "id"
+            }
+          },
+          "resource_min_subtotal_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "min_subtotal_id": "id"
+            }
+          }
+        },
         "description": null
       },
       "resource_entity": {
@@ -1313,10 +1408,10 @@
         "schemaName": "resource",
         "tableName": "fees",
         "columns": {
-          "amount": {
-            "name": "amount",
+          "amount_id": {
+            "name": "amount_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -1384,6 +1479,13 @@
           ]
         },
         "foreignRelations": {
+          "fees_amount_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_id": "id"
+            }
+          },
           "fees_offering_id_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "offerings",
@@ -1398,10 +1500,10 @@
         "schemaName": "resource",
         "tableName": "los_discounts",
         "columns": {
-          "amount_off": {
-            "name": "amount_off",
+          "amount_off_id": {
+            "name": "amount_off_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -1445,6 +1547,13 @@
           ]
         },
         "foreignRelations": {
+          "los_discounts_amount_off_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_off_id": "id"
+            }
+          },
           "los_discounts_offering_id_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "offerings",
@@ -1516,10 +1625,10 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "price": {
-            "name": "price",
+          "price_id": {
+            "name": "price_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -1563,6 +1672,13 @@
           ]
         },
         "foreignRelations": {
+          "offerings_price_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "price_id": "id"
+            }
+          },
           "offerings_resource_id_fkey": {
             "foreignSchema": "resource",
             "foreignTable": "entity",
@@ -1653,10 +1769,10 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "price": {
-            "name": "price",
+          "price_id": {
+            "name": "price_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nonNullable",
             "description": null
@@ -1690,6 +1806,13 @@
             "foreignTable": "offerings",
             "columnMapping": {
               "offering_id": "id"
+            }
+          },
+          "rate_overrides_price_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "price_id": "id"
             }
           }
         },

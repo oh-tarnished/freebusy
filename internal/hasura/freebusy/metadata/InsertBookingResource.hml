@@ -20,8 +20,8 @@ definition:
       type: Timestamp
     - name: customer
       type: String_1
-    - name: discount
-      type: Json
+    - name: discountId
+      type: String_1
     - name: etag
       type: String_1
     - name: holdExpireTime
@@ -36,20 +36,20 @@ definition:
       type: String_1
     - name: offering
       type: String_1
-    - name: price
-      type: Json
+    - name: priceId
+      type: String_1
     - name: promoCode
       type: String_1
-    - name: refundAmount
-      type: Json
+    - name: refundAmountId
+      type: String_1
     - name: refundPercent
       type: Int32
     - name: resource
       type: String_1!
     - name: state
       type: Enum
-    - name: total
-      type: Json
+    - name: totalId
+      type: String_1
     - name: units
       type: Int32
     - name: updateTime
@@ -87,9 +87,9 @@ definition:
         customer:
           column:
             name: customer
-        discount:
+        discountId:
           column:
-            name: discount
+            name: discount_id
         etag:
           column:
             name: etag
@@ -111,15 +111,15 @@ definition:
         offering:
           column:
             name: offering
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         promoCode:
           column:
             name: promo_code
-        refundAmount:
+        refundAmountId:
           column:
-            name: refund_amount
+            name: refund_amount_id
         refundPercent:
           column:
             name: refund_percent
@@ -129,9 +129,9 @@ definition:
         state:
           column:
             name: state
-        total:
+        totalId:
           column:
-            name: total
+            name: total_id
         units:
           column:
             name: units
@@ -159,7 +159,7 @@ definition:
           - contactId
           - createTime
           - customer
-          - discount
+          - discountId
           - etag
           - holdExpireTime
           - holdTtl
@@ -167,13 +167,13 @@ definition:
           - name
           - notes
           - offering
-          - price
+          - priceId
           - promoCode
-          - refundAmount
+          - refundAmountId
           - refundPercent
           - resource
           - state
-          - total
+          - totalId
           - units
           - updateTime
           - windowId

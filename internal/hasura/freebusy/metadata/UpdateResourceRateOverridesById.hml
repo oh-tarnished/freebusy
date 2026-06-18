@@ -98,18 +98,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnResourceRateOverridesPrice
-  description: Update the 'price' column in the 'resource_rate_overrides' collection
+  name: UpdateColumnResourceRateOverridesPriceId
+  description: Update the 'price_id' column in the 'resource_rate_overrides' collection
   fields:
     - name: set
-      type: Json!
+      type: String_1!
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnResourceRateOverridesPrice
-    inputTypeName: UpdateColumnResourceRateOverridesPriceInput
+    typeName: UpdateColumnResourceRateOverridesPriceId
+    inputTypeName: UpdateColumnResourceRateOverridesPriceIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_resource_rate_overrides_price
+      dataConnectorObjectType: update_column_resource_rate_overrides_price_id
       fieldMapping:
         set:
           column:
@@ -119,7 +119,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnResourceRateOverridesPrice
+  typeName: UpdateColumnResourceRateOverridesPriceId
   permissions:
     - role: admin
       output:
@@ -176,9 +176,9 @@ definition:
       type: UpdateColumnResourceRateOverridesOfferingId
       description: Update the 'offering_id' column in the 'resource_rate_overrides'
         collection.
-    - name: price
-      type: UpdateColumnResourceRateOverridesPrice
-      description: Update the 'price' column in the 'resource_rate_overrides' collection.
+    - name: priceId
+      type: UpdateColumnResourceRateOverridesPriceId
+      description: Update the 'price_id' column in the 'resource_rate_overrides' collection.
     - name: weekdays
       type: UpdateColumnResourceRateOverridesWeekdays
       description: Update the 'weekdays' column in the 'resource_rate_overrides' collection.
@@ -198,9 +198,9 @@ definition:
         offeringId:
           column:
             name: offering_id
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         weekdays:
           column:
             name: weekdays
@@ -217,7 +217,7 @@ definition:
           - dateRangeId
           - id
           - offeringId
-          - price
+          - priceId
           - weekdays
 
 ---

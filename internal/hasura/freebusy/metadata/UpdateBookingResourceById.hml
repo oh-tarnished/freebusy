@@ -258,18 +258,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnBookingResourceDiscount
-  description: Update the 'discount' column in the 'booking_resource' collection
+  name: UpdateColumnBookingResourceDiscountId
+  description: Update the 'discount_id' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnBookingResourceDiscount
-    inputTypeName: UpdateColumnBookingResourceDiscountInput
+    typeName: UpdateColumnBookingResourceDiscountId
+    inputTypeName: UpdateColumnBookingResourceDiscountIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_booking_resource_discount
+      dataConnectorObjectType: update_column_booking_resource_discount_id
       fieldMapping:
         set:
           column:
@@ -279,7 +279,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnBookingResourceDiscount
+  typeName: UpdateColumnBookingResourceDiscountId
   permissions:
     - role: admin
       output:
@@ -514,18 +514,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnBookingResourcePrice
-  description: Update the 'price' column in the 'booking_resource' collection
+  name: UpdateColumnBookingResourcePriceId
+  description: Update the 'price_id' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnBookingResourcePrice
-    inputTypeName: UpdateColumnBookingResourcePriceInput
+    typeName: UpdateColumnBookingResourcePriceId
+    inputTypeName: UpdateColumnBookingResourcePriceIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_booking_resource_price
+      dataConnectorObjectType: update_column_booking_resource_price_id
       fieldMapping:
         set:
           column:
@@ -535,7 +535,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnBookingResourcePrice
+  typeName: UpdateColumnBookingResourcePriceId
   permissions:
     - role: admin
       output:
@@ -578,18 +578,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnBookingResourceRefundAmount
-  description: Update the 'refund_amount' column in the 'booking_resource' collection
+  name: UpdateColumnBookingResourceRefundAmountId
+  description: Update the 'refund_amount_id' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnBookingResourceRefundAmount
-    inputTypeName: UpdateColumnBookingResourceRefundAmountInput
+    typeName: UpdateColumnBookingResourceRefundAmountId
+    inputTypeName: UpdateColumnBookingResourceRefundAmountIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_booking_resource_refund_amount
+      dataConnectorObjectType: update_column_booking_resource_refund_amount_id
       fieldMapping:
         set:
           column:
@@ -599,7 +599,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnBookingResourceRefundAmount
+  typeName: UpdateColumnBookingResourceRefundAmountId
   permissions:
     - role: admin
       output:
@@ -706,18 +706,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnBookingResourceTotal
-  description: Update the 'total' column in the 'booking_resource' collection
+  name: UpdateColumnBookingResourceTotalId
+  description: Update the 'total_id' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnBookingResourceTotal
-    inputTypeName: UpdateColumnBookingResourceTotalInput
+    typeName: UpdateColumnBookingResourceTotalId
+    inputTypeName: UpdateColumnBookingResourceTotalIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_booking_resource_total
+      dataConnectorObjectType: update_column_booking_resource_total_id
       fieldMapping:
         set:
           column:
@@ -727,7 +727,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnBookingResourceTotal
+  typeName: UpdateColumnBookingResourceTotalId
   permissions:
     - role: admin
       output:
@@ -861,9 +861,9 @@ definition:
     - name: customer
       type: UpdateColumnBookingResourceCustomer
       description: Update the 'customer' column in the 'booking_resource' collection.
-    - name: discount
-      type: UpdateColumnBookingResourceDiscount
-      description: Update the 'discount' column in the 'booking_resource' collection.
+    - name: discountId
+      type: UpdateColumnBookingResourceDiscountId
+      description: Update the 'discount_id' column in the 'booking_resource' collection.
     - name: etag
       type: UpdateColumnBookingResourceEtag
       description: Update the 'etag' column in the 'booking_resource' collection.
@@ -886,15 +886,16 @@ definition:
     - name: offering
       type: UpdateColumnBookingResourceOffering
       description: Update the 'offering' column in the 'booking_resource' collection.
-    - name: price
-      type: UpdateColumnBookingResourcePrice
-      description: Update the 'price' column in the 'booking_resource' collection.
+    - name: priceId
+      type: UpdateColumnBookingResourcePriceId
+      description: Update the 'price_id' column in the 'booking_resource' collection.
     - name: promoCode
       type: UpdateColumnBookingResourcePromoCode
       description: Update the 'promo_code' column in the 'booking_resource' collection.
-    - name: refundAmount
-      type: UpdateColumnBookingResourceRefundAmount
-      description: Update the 'refund_amount' column in the 'booking_resource' collection.
+    - name: refundAmountId
+      type: UpdateColumnBookingResourceRefundAmountId
+      description: Update the 'refund_amount_id' column in the 'booking_resource'
+        collection.
     - name: refundPercent
       type: UpdateColumnBookingResourceRefundPercent
       description: Update the 'refund_percent' column in the 'booking_resource' collection.
@@ -904,9 +905,9 @@ definition:
     - name: state
       type: UpdateColumnBookingResourceState
       description: Update the 'state' column in the 'booking_resource' collection.
-    - name: total
-      type: UpdateColumnBookingResourceTotal
-      description: Update the 'total' column in the 'booking_resource' collection.
+    - name: totalId
+      type: UpdateColumnBookingResourceTotalId
+      description: Update the 'total_id' column in the 'booking_resource' collection.
     - name: units
       type: UpdateColumnBookingResourceUnits
       description: Update the 'units' column in the 'booking_resource' collection.
@@ -947,9 +948,9 @@ definition:
         customer:
           column:
             name: customer
-        discount:
+        discountId:
           column:
-            name: discount
+            name: discount_id
         etag:
           column:
             name: etag
@@ -971,15 +972,15 @@ definition:
         offering:
           column:
             name: offering
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         promoCode:
           column:
             name: promo_code
-        refundAmount:
+        refundAmountId:
           column:
-            name: refund_amount
+            name: refund_amount_id
         refundPercent:
           column:
             name: refund_percent
@@ -989,9 +990,9 @@ definition:
         state:
           column:
             name: state
-        total:
+        totalId:
           column:
-            name: total
+            name: total_id
         units:
           column:
             name: units
@@ -1019,7 +1020,7 @@ definition:
           - contactId
           - createTime
           - customer
-          - discount
+          - discountId
           - etag
           - holdExpireTime
           - holdTtl
@@ -1027,13 +1028,13 @@ definition:
           - name
           - notes
           - offering
-          - price
+          - priceId
           - promoCode
-          - refundAmount
+          - refundAmountId
           - refundPercent
           - resource
           - state
-          - total
+          - totalId
           - units
           - updateTime
           - windowId

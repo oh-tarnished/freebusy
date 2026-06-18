@@ -4,8 +4,8 @@ version: v1
 definition:
   name: InsertPromocodeResourceObject
   fields:
-    - name: amountOff
-      type: Json
+    - name: amountOffId
+      type: String_1
     - name: code
       type: String_1!
     - name: createTime
@@ -24,8 +24,8 @@ definition:
       type: String_1!
     - name: maxRedemptions
       type: Int64
-    - name: minSubtotal
-      type: Json
+    - name: minSubtotalId
+      type: String_1
     - name: name
       type: String_1!
     - name: perCustomerLimit
@@ -49,9 +49,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: insert_promocode_resource_object
       fieldMapping:
-        amountOff:
+        amountOffId:
           column:
-            name: amount_off
+            name: amount_off_id
         code:
           column:
             name: code
@@ -79,9 +79,9 @@ definition:
         maxRedemptions:
           column:
             name: max_redemptions
-        minSubtotal:
+        minSubtotalId:
           column:
-            name: min_subtotal
+            name: min_subtotal_id
         name:
           column:
             name: name
@@ -116,7 +116,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOff
+          - amountOffId
           - code
           - createTime
           - description
@@ -126,7 +126,7 @@ definition:
           - etag
           - id
           - maxRedemptions
-          - minSubtotal
+          - minSubtotalId
           - name
           - perCustomerLimit
           - percentOff

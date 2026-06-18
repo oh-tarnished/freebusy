@@ -10,8 +10,8 @@ definition:
       type: String_1!
     - name: offeringId
       type: String_1!
-    - name: price
-      type: Json!
+    - name: priceId
+      type: String_1!
     - name: weekdays
       type: "[String_1]"
   graphql:
@@ -30,9 +30,9 @@ definition:
         offeringId:
           column:
             name: offering_id
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         weekdays:
           column:
             name: weekdays
@@ -49,7 +49,7 @@ definition:
           - dateRangeId
           - id
           - offeringId
-          - price
+          - priceId
           - weekdays
 
 ---
@@ -67,11 +67,12 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: offeringId
           booleanExpressionType: TextBoolExp
-        - fieldName: price
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: priceId
+          booleanExpressionType: TextBoolExp
       comparableRelationships:
         - relationshipName: scheduleDateRange
         - relationshipName: resourceOffering
+        - relationshipName: bookingMoney
   logicalOperators:
     enable: true
   isNull:
@@ -94,8 +95,8 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: offeringId
           aggregateExpression: TextAggExp
-        - fieldName: price
-          aggregateExpression: JsonbAggExp
+        - fieldName: priceId
+          aggregateExpression: TextAggExp
   count:
     enable: true
     returnType: Int64
@@ -117,11 +118,12 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: offeringId
           orderByExpression: String1OrderByExp
-        - fieldName: price
-          orderByExpression: JsonOrderByExp
+        - fieldName: priceId
+          orderByExpression: String1OrderByExp
       orderableRelationships:
         - relationshipName: scheduleDateRange
         - relationshipName: resourceOffering
+        - relationshipName: bookingMoney
   graphql:
     expressionTypeName: ResourceRateOverridesOrderByExp
 
@@ -197,6 +199,24 @@ definition:
     - source:
         fieldPath:
           - fieldName: offeringId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoney
+  sourceType: ResourceRateOverrides
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: priceId
       target:
         modelField:
           - fieldName: id

@@ -4,8 +4,8 @@ version: v1
 definition:
   name: ResourceFees
   fields:
-    - name: amount
-      type: Json
+    - name: amountId
+      type: String_1
     - name: code
       type: String_1!
     - name: displayName
@@ -27,9 +27,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: resource_fees
       fieldMapping:
-        amount:
+        amountId:
           column:
-            name: amount
+            name: amount_id
         code:
           column:
             name: code
@@ -61,7 +61,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amount
+          - amountId
           - code
           - displayName
           - id
@@ -79,8 +79,8 @@ definition:
     object:
       type: ResourceFees
       comparableFields:
-        - fieldName: amount
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: amountId
+          booleanExpressionType: TextBoolExp
         - fieldName: code
           booleanExpressionType: TextBoolExp
         - fieldName: displayName
@@ -96,6 +96,7 @@ definition:
         - fieldName: taxable
           booleanExpressionType: BoolBoolExp
       comparableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: resourceOffering
   logicalOperators:
     enable: true
@@ -113,8 +114,8 @@ definition:
     object:
       aggregatedType: ResourceFees
       aggregatableFields:
-        - fieldName: amount
-          aggregateExpression: JsonbAggExp
+        - fieldName: amountId
+          aggregateExpression: TextAggExp
         - fieldName: code
           aggregateExpression: TextAggExp
         - fieldName: displayName
@@ -144,8 +145,8 @@ definition:
     object:
       orderedType: ResourceFees
       orderableFields:
-        - fieldName: amount
-          orderByExpression: JsonOrderByExp
+        - fieldName: amountId
+          orderByExpression: String1OrderByExp
         - fieldName: code
           orderByExpression: String1OrderByExp
         - fieldName: displayName
@@ -161,6 +162,7 @@ definition:
         - fieldName: taxable
           orderByExpression: Boolean1OrderByExp
       orderableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: resourceOffering
   graphql:
     expressionTypeName: ResourceFeesOrderByExp
@@ -204,6 +206,24 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoney
+  sourceType: ResourceFees
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: amountId
+      target:
+        modelField:
+          - fieldName: id
 
 ---
 kind: Relationship

@@ -4,8 +4,8 @@ version: v1
 definition:
   name: InsertResourceLosDiscountsObject
   fields:
-    - name: amountOff
-      type: Json
+    - name: amountOffId
+      type: String_1
     - name: id
       type: String_1!
     - name: minNights
@@ -21,9 +21,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: insert_resource_los_discounts_object
       fieldMapping:
-        amountOff:
+        amountOffId:
           column:
-            name: amount_off
+            name: amount_off_id
         id:
           column:
             name: id
@@ -46,7 +46,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOff
+          - amountOffId
           - id
           - minNights
           - offeringId

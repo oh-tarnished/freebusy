@@ -546,62 +546,91 @@ definition:
     expressionTypeName: TimestamptzOrderByExp
 
 ---
-kind: ScalarType
+kind: AggregateExpression
 version: v1
 definition:
-  name: Json
-  graphql:
-    typeName: Json
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: JsonbBoolExp
+  name: Int8AggExp
   operand:
     scalar:
-      type: Json
-      comparisonOperators:
-        - name: _eq
-          argumentType: Json!
-        - name: _gt
-          argumentType: Json!
-        - name: _gte
-          argumentType: Json!
-        - name: _in
-          argumentType: "[Json!]!"
-        - name: _lt
-          argumentType: Json!
-        - name: _lte
-          argumentType: Json!
-        - name: _neq
-          argumentType: Json!
-        - name: jsonb_contained
-          argumentType: Json!
-        - name: jsonb_contains
-          argumentType: Json!
-        - name: jsonb_exists
-          argumentType: String_1!
-      dataConnectorOperatorMapping:
+      aggregatedType: Int64
+      aggregationFunctions:
+        - name: avg
+          returnType: Bigdecimal
+        - name: bit_and
+          returnType: Int64
+        - name: bit_or
+          returnType: Int64
+        - name: bit_xor
+          returnType: Int64
+        - name: max
+          returnType: Int64
+        - name: min
+          returnType: Int64
+        - name: stddev
+          returnType: Bigdecimal
+        - name: stddev_pop
+          returnType: Bigdecimal
+        - name: stddev_samp
+          returnType: Bigdecimal
+        - name: sum
+          returnType: Bigdecimal
+        - name: var_pop
+          returnType: Bigdecimal
+        - name: var_samp
+          returnType: Bigdecimal
+        - name: variance
+          returnType: Bigdecimal
+      dataConnectorAggregationFunctionMapping:
         - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: jsonb
-          operatorMapping: {}
-  logicalOperators:
+          dataConnectorScalarType: int8
+          functionMapping:
+            avg:
+              name: avg
+            bit_and:
+              name: bit_and
+            bit_or:
+              name: bit_or
+            bit_xor:
+              name: bit_xor
+            max:
+              name: max
+            min:
+              name: min
+            stddev:
+              name: stddev
+            stddev_pop:
+              name: stddev_pop
+            stddev_samp:
+              name: stddev_samp
+            sum:
+              name: sum
+            var_pop:
+              name: var_pop
+            var_samp:
+              name: var_samp
+            variance:
+              name: variance
+  count:
     enable: true
-  isNull:
+    returnType: Int64
+  countDistinct:
     enable: true
+    returnType: Int64
   graphql:
-    typeName: JsonbBoolExp
+    selectTypeName: Int8AggExp
 
 ---
-kind: DataConnectorScalarRepresentation
+kind: OrderByExpression
 version: v1
 definition:
-  dataConnectorName: freebusy_pgsql
-  dataConnectorScalarType: jsonb
-  representation: Json
+  name: Int64OrderByExp
+  operand:
+    scalar:
+      orderedType: Int64
+      enableOrderByDirections:
+        enableAll: true
   graphql:
-    comparisonExpressionTypeName: JsonComparisonExp
+    expressionTypeName: Int64OrderByExp
 
 ---
 kind: ScalarType
@@ -659,28 +688,6 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: JsonbAggExp
-  operand:
-    scalar:
-      aggregatedType: Json
-      aggregationFunctions: []
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: jsonb
-          functionMapping: {}
-  count:
-    enable: true
-    returnType: Int64
-  countDistinct:
-    enable: true
-    returnType: Int64
-  graphql:
-    selectTypeName: JsonbAggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
   name: BookingTypeAggExp
   operand:
     scalar:
@@ -711,19 +718,6 @@ definition:
 kind: OrderByExpression
 version: v1
 definition:
-  name: JsonOrderByExp
-  operand:
-    scalar:
-      orderedType: Json
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: JsonOrderByExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
   name: EnumOrderByExp
   operand:
     scalar:
@@ -732,6 +726,64 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: EnumOrderByExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Json
+  graphql:
+    typeName: Json
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: JsonbBoolExp
+  operand:
+    scalar:
+      type: Json
+      comparisonOperators:
+        - name: _eq
+          argumentType: Json!
+        - name: _gt
+          argumentType: Json!
+        - name: _gte
+          argumentType: Json!
+        - name: _in
+          argumentType: "[Json!]!"
+        - name: _lt
+          argumentType: Json!
+        - name: _lte
+          argumentType: Json!
+        - name: _neq
+          argumentType: Json!
+        - name: jsonb_contained
+          argumentType: Json!
+        - name: jsonb_contains
+          argumentType: Json!
+        - name: jsonb_exists
+          argumentType: String_1!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: jsonb
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: JsonbBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: freebusy_pgsql
+  dataConnectorScalarType: jsonb
+  representation: Json
+  graphql:
+    comparisonExpressionTypeName: JsonComparisonExp
 
 ---
 kind: BooleanExpressionType
@@ -877,6 +929,28 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
+  name: JsonbAggExp
+  operand:
+    scalar:
+      aggregatedType: Json
+      aggregationFunctions: []
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: jsonb
+          functionMapping: {}
+  count:
+    enable: true
+    returnType: Int64
+  countDistinct:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: JsonbAggExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
   name: BookingCancelReasonAggExp
   operand:
     scalar:
@@ -962,6 +1036,19 @@ definition:
     returnType: Int64
   graphql:
     selectTypeName: BookingBookingStateAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: JsonOrderByExp
+  operand:
+    scalar:
+      orderedType: Json
+      enableOrderByDirections:
+        enableAll: true
+  graphql:
+    expressionTypeName: JsonOrderByExp
 
 ---
 kind: OrderByExpression
@@ -1172,80 +1259,6 @@ definition:
 kind: AggregateExpression
 version: v1
 definition:
-  name: Int8AggExp
-  operand:
-    scalar:
-      aggregatedType: Int64
-      aggregationFunctions:
-        - name: avg
-          returnType: Bigdecimal
-        - name: bit_and
-          returnType: Int64
-        - name: bit_or
-          returnType: Int64
-        - name: bit_xor
-          returnType: Int64
-        - name: max
-          returnType: Int64
-        - name: min
-          returnType: Int64
-        - name: stddev
-          returnType: Bigdecimal
-        - name: stddev_pop
-          returnType: Bigdecimal
-        - name: stddev_samp
-          returnType: Bigdecimal
-        - name: sum
-          returnType: Bigdecimal
-        - name: var_pop
-          returnType: Bigdecimal
-        - name: var_samp
-          returnType: Bigdecimal
-        - name: variance
-          returnType: Bigdecimal
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: int8
-          functionMapping:
-            avg:
-              name: avg
-            bit_and:
-              name: bit_and
-            bit_or:
-              name: bit_or
-            bit_xor:
-              name: bit_xor
-            max:
-              name: max
-            min:
-              name: min
-            stddev:
-              name: stddev
-            stddev_pop:
-              name: stddev_pop
-            stddev_samp:
-              name: stddev_samp
-            sum:
-              name: sum
-            var_pop:
-              name: var_pop
-            var_samp:
-              name: var_samp
-            variance:
-              name: variance
-  count:
-    enable: true
-    returnType: Int64
-  countDistinct:
-    enable: true
-    returnType: Int64
-  graphql:
-    selectTypeName: Int8AggExp
-
----
-kind: AggregateExpression
-version: v1
-definition:
   name: OrganisationOrganisationStateAggExp
   operand:
     scalar:
@@ -1271,19 +1284,6 @@ definition:
     returnType: Int64
   graphql:
     selectTypeName: OrganisationOrganisationStateAggExp
-
----
-kind: OrderByExpression
-version: v1
-definition:
-  name: Int64OrderByExp
-  operand:
-    scalar:
-      orderedType: Int64
-      enableOrderByDirections:
-        enableAll: true
-  graphql:
-    expressionTypeName: Int64OrderByExp
 
 ---
 kind: ScalarType

@@ -4,8 +4,8 @@ version: v1
 definition:
   name: ResourceLosDiscounts
   fields:
-    - name: amountOff
-      type: Json
+    - name: amountOffId
+      type: String_1
     - name: id
       type: String_1!
     - name: minNights
@@ -21,9 +21,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: resource_los_discounts
       fieldMapping:
-        amountOff:
+        amountOffId:
           column:
-            name: amount_off
+            name: amount_off_id
         id:
           column:
             name: id
@@ -46,7 +46,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOff
+          - amountOffId
           - id
           - minNights
           - offeringId
@@ -61,8 +61,8 @@ definition:
     object:
       type: ResourceLosDiscounts
       comparableFields:
-        - fieldName: amountOff
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: amountOffId
+          booleanExpressionType: TextBoolExp
         - fieldName: id
           booleanExpressionType: TextBoolExp
         - fieldName: minNights
@@ -72,6 +72,7 @@ definition:
         - fieldName: percentOff
           booleanExpressionType: Int4BoolExp
       comparableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: resourceOffering
   logicalOperators:
     enable: true
@@ -89,8 +90,8 @@ definition:
     object:
       aggregatedType: ResourceLosDiscounts
       aggregatableFields:
-        - fieldName: amountOff
-          aggregateExpression: JsonbAggExp
+        - fieldName: amountOffId
+          aggregateExpression: TextAggExp
         - fieldName: id
           aggregateExpression: TextAggExp
         - fieldName: minNights
@@ -114,8 +115,8 @@ definition:
     object:
       orderedType: ResourceLosDiscounts
       orderableFields:
-        - fieldName: amountOff
-          orderByExpression: JsonOrderByExp
+        - fieldName: amountOffId
+          orderByExpression: String1OrderByExp
         - fieldName: id
           orderByExpression: String1OrderByExp
         - fieldName: minNights
@@ -125,6 +126,7 @@ definition:
         - fieldName: percentOff
           orderByExpression: Int32OrderByExp
       orderableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: resourceOffering
   graphql:
     expressionTypeName: ResourceLosDiscountsOrderByExp
@@ -168,6 +170,24 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoney
+  sourceType: ResourceLosDiscounts
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: amountOffId
+      target:
+        modelField:
+          - fieldName: id
 
 ---
 kind: Relationship

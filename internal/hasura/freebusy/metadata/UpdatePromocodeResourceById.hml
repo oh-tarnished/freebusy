@@ -2,18 +2,18 @@
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnPromocodeResourceAmountOff
-  description: Update the 'amount_off' column in the 'promocode_resource' collection
+  name: UpdateColumnPromocodeResourceAmountOffId
+  description: Update the 'amount_off_id' column in the 'promocode_resource' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnPromocodeResourceAmountOff
-    inputTypeName: UpdateColumnPromocodeResourceAmountOffInput
+    typeName: UpdateColumnPromocodeResourceAmountOffId
+    inputTypeName: UpdateColumnPromocodeResourceAmountOffIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_promocode_resource_amount_off
+      dataConnectorObjectType: update_column_promocode_resource_amount_off_id
       fieldMapping:
         set:
           column:
@@ -23,7 +23,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnPromocodeResourceAmountOff
+  typeName: UpdateColumnPromocodeResourceAmountOffId
   permissions:
     - role: admin
       output:
@@ -322,18 +322,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnPromocodeResourceMinSubtotal
-  description: Update the 'min_subtotal' column in the 'promocode_resource' collection
+  name: UpdateColumnPromocodeResourceMinSubtotalId
+  description: Update the 'min_subtotal_id' column in the 'promocode_resource' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnPromocodeResourceMinSubtotal
-    inputTypeName: UpdateColumnPromocodeResourceMinSubtotalInput
+    typeName: UpdateColumnPromocodeResourceMinSubtotalId
+    inputTypeName: UpdateColumnPromocodeResourceMinSubtotalIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_promocode_resource_min_subtotal
+      dataConnectorObjectType: update_column_promocode_resource_min_subtotal_id
       fieldMapping:
         set:
           column:
@@ -343,7 +343,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnPromocodeResourceMinSubtotal
+  typeName: UpdateColumnPromocodeResourceMinSubtotalId
   permissions:
     - role: admin
       output:
@@ -613,9 +613,9 @@ definition:
   name: UpdatePromocodeResourceByIdUpdateColumns
   description: Update the columns of the 'promocode_resource' collection
   fields:
-    - name: amountOff
-      type: UpdateColumnPromocodeResourceAmountOff
-      description: Update the 'amount_off' column in the 'promocode_resource' collection.
+    - name: amountOffId
+      type: UpdateColumnPromocodeResourceAmountOffId
+      description: Update the 'amount_off_id' column in the 'promocode_resource' collection.
     - name: code
       type: UpdateColumnPromocodeResourceCode
       description: Update the 'code' column in the 'promocode_resource' collection.
@@ -644,9 +644,10 @@ definition:
       type: UpdateColumnPromocodeResourceMaxRedemptions
       description: Update the 'max_redemptions' column in the 'promocode_resource'
         collection.
-    - name: minSubtotal
-      type: UpdateColumnPromocodeResourceMinSubtotal
-      description: Update the 'min_subtotal' column in the 'promocode_resource' collection.
+    - name: minSubtotalId
+      type: UpdateColumnPromocodeResourceMinSubtotalId
+      description: Update the 'min_subtotal_id' column in the 'promocode_resource'
+        collection.
     - name: name
       type: UpdateColumnPromocodeResourceName
       description: Update the 'name' column in the 'promocode_resource' collection.
@@ -682,9 +683,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: update_promocode_resource_by_id_update_columns
       fieldMapping:
-        amountOff:
+        amountOffId:
           column:
-            name: amount_off
+            name: amount_off_id
         code:
           column:
             name: code
@@ -712,9 +713,9 @@ definition:
         maxRedemptions:
           column:
             name: max_redemptions
-        minSubtotal:
+        minSubtotalId:
           column:
-            name: min_subtotal
+            name: min_subtotal_id
         name:
           column:
             name: name
@@ -749,7 +750,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOff
+          - amountOffId
           - code
           - createTime
           - description
@@ -759,7 +760,7 @@ definition:
           - etag
           - id
           - maxRedemptions
-          - minSubtotal
+          - minSubtotalId
           - name
           - perCustomerLimit
           - percentOff

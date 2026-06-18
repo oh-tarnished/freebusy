@@ -1,0 +1,262 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnBookingMoneysCurrencyCode
+  description: Update the 'currency_code' column in the 'booking_moneys' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnBookingMoneysCurrencyCode
+    inputTypeName: UpdateColumnBookingMoneysCurrencyCodeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_booking_moneys_currency_code
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnBookingMoneysCurrencyCode
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnBookingMoneysId
+  description: Update the 'id' column in the 'booking_moneys' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnBookingMoneysId
+    inputTypeName: UpdateColumnBookingMoneysIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_booking_moneys_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnBookingMoneysId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnBookingMoneysNanos
+  description: Update the 'nanos' column in the 'booking_moneys' collection
+  fields:
+    - name: set
+      type: Int32
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnBookingMoneysNanos
+    inputTypeName: UpdateColumnBookingMoneysNanosInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_booking_moneys_nanos
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnBookingMoneysNanos
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnBookingMoneysUnits
+  description: Update the 'units' column in the 'booking_moneys' collection
+  fields:
+    - name: set
+      type: Int64
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnBookingMoneysUnits
+    inputTypeName: UpdateColumnBookingMoneysUnitsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_booking_moneys_units
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnBookingMoneysUnits
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateBookingMoneysByIdUpdateColumns
+  description: Update the columns of the 'booking_moneys' collection
+  fields:
+    - name: currencyCode
+      type: UpdateColumnBookingMoneysCurrencyCode
+      description: Update the 'currency_code' column in the 'booking_moneys' collection.
+    - name: id
+      type: UpdateColumnBookingMoneysId
+      description: Update the 'id' column in the 'booking_moneys' collection.
+    - name: nanos
+      type: UpdateColumnBookingMoneysNanos
+      description: Update the 'nanos' column in the 'booking_moneys' collection.
+    - name: units
+      type: UpdateColumnBookingMoneysUnits
+      description: Update the 'units' column in the 'booking_moneys' collection.
+  graphql:
+    typeName: UpdateBookingMoneysByIdUpdateColumns
+    inputTypeName: UpdateBookingMoneysByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_booking_moneys_by_id_update_columns
+      fieldMapping:
+        currencyCode:
+          column:
+            name: currency_code
+        id:
+          column:
+            name: id
+        nanos:
+          column:
+            name: nanos
+        units:
+          column:
+            name: units
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateBookingMoneysByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - currencyCode
+          - id
+          - nanos
+          - units
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateBookingMoneysByIdResponse
+  description: Responses from the 'update_booking_moneys_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[BookingMoneys!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdateBookingMoneysByIdResponse
+    inputTypeName: UpdateBookingMoneysByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_booking_moneys_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateBookingMoneysByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateBookingMoneysById
+  outputType: UpdateBookingMoneysByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: BookingMoneysBoolExp
+      description: Update permission post-condition predicate over the
+        'booking_moneys' collection
+    - name: preCheck
+      type: BookingMoneysBoolExp
+      description: Update permission pre-condition predicate over the 'booking_moneys'
+        collection
+    - name: updateColumns
+      type: UpdateBookingMoneysByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_booking_moneys_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updateBookingMoneysById
+    rootFieldKind: Mutation
+  description: Update any row on the 'booking_moneys' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateBookingMoneysById
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -4,8 +4,8 @@ version: v1
 definition:
   name: BookingPriceComponents
   fields:
-    - name: amount
-      type: Json
+    - name: amountId
+      type: String_1
     - name: bookingId
       type: String_1!
     - name: code
@@ -23,9 +23,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: booking_price_components
       fieldMapping:
-        amount:
+        amountId:
           column:
-            name: amount
+            name: amount_id
         bookingId:
           column:
             name: booking_id
@@ -51,7 +51,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amount
+          - amountId
           - bookingId
           - code
           - displayName
@@ -67,8 +67,8 @@ definition:
     object:
       type: BookingPriceComponents
       comparableFields:
-        - fieldName: amount
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: amountId
+          booleanExpressionType: TextBoolExp
         - fieldName: bookingId
           booleanExpressionType: TextBoolExp
         - fieldName: code
@@ -80,6 +80,7 @@ definition:
         - fieldName: type
           booleanExpressionType: BookingTypeBoolExp
       comparableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: bookingResource
   logicalOperators:
     enable: true
@@ -97,8 +98,8 @@ definition:
     object:
       aggregatedType: BookingPriceComponents
       aggregatableFields:
-        - fieldName: amount
-          aggregateExpression: JsonbAggExp
+        - fieldName: amountId
+          aggregateExpression: TextAggExp
         - fieldName: bookingId
           aggregateExpression: TextAggExp
         - fieldName: code
@@ -124,8 +125,8 @@ definition:
     object:
       orderedType: BookingPriceComponents
       orderableFields:
-        - fieldName: amount
-          orderByExpression: JsonOrderByExp
+        - fieldName: amountId
+          orderByExpression: String1OrderByExp
         - fieldName: bookingId
           orderByExpression: String1OrderByExp
         - fieldName: code
@@ -137,6 +138,7 @@ definition:
         - fieldName: type
           orderByExpression: EnumOrderByExp
       orderableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: bookingResource
   graphql:
     expressionTypeName: BookingPriceComponentsOrderByExp
@@ -180,6 +182,24 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoney
+  sourceType: BookingPriceComponents
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: amountId
+      target:
+        modelField:
+          - fieldName: id
 
 ---
 kind: Relationship

@@ -226,18 +226,18 @@ definition:
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnResourceOfferingsPrice
-  description: Update the 'price' column in the 'resource_offerings' collection
+  name: UpdateColumnResourceOfferingsPriceId
+  description: Update the 'price_id' column in the 'resource_offerings' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnResourceOfferingsPrice
-    inputTypeName: UpdateColumnResourceOfferingsPriceInput
+    typeName: UpdateColumnResourceOfferingsPriceId
+    inputTypeName: UpdateColumnResourceOfferingsPriceIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_resource_offerings_price
+      dataConnectorObjectType: update_column_resource_offerings_price_id
       fieldMapping:
         set:
           column:
@@ -247,7 +247,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnResourceOfferingsPrice
+  typeName: UpdateColumnResourceOfferingsPriceId
   permissions:
     - role: admin
       output:
@@ -410,9 +410,9 @@ definition:
     - name: name
       type: UpdateColumnResourceOfferingsName
       description: Update the 'name' column in the 'resource_offerings' collection.
-    - name: price
-      type: UpdateColumnResourceOfferingsPrice
-      description: Update the 'price' column in the 'resource_offerings' collection.
+    - name: priceId
+      type: UpdateColumnResourceOfferingsPriceId
+      description: Update the 'price_id' column in the 'resource_offerings' collection.
     - name: pricingUnit
       type: UpdateColumnResourceOfferingsPricingUnit
       description: Update the 'pricing_unit' column in the 'resource_offerings' collection.
@@ -453,9 +453,9 @@ definition:
         name:
           column:
             name: name
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         pricingUnit:
           column:
             name: pricing_unit
@@ -485,7 +485,7 @@ definition:
           - etag
           - id
           - name
-          - price
+          - priceId
           - pricingUnit
           - resourceId
           - state

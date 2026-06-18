@@ -34,6 +34,13 @@ definition:
               unique_columns:
                 - id
         - arguments: {}
+          name: booking_moneys
+          type: booking_moneys
+          uniqueness_constraints:
+            moneys_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
           name: booking_price_components
           type: booking_price_components
           uniqueness_constraints:
@@ -283,13 +290,38 @@ definition:
                   name: text
                   type: named
           foreign_keys: {}
-        booking_price_components:
+        booking_moneys:
           fields:
-            amount:
+            currency_code:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            nanos:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+            units:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int8
+                  type: named
+          foreign_keys: {}
+        booking_price_components:
+          fields:
+            amount_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
             booking_id:
               type:
@@ -318,6 +350,11 @@ definition:
                   name: booking_type
                   type: named
           foreign_keys:
+            price_components_amount_id_fkey:
+              column_mapping:
+                amount_id:
+                  - id
+              foreign_collection: booking_moneys
             price_components_booking_id_fkey:
               column_mapping:
                 booking_id:
@@ -371,11 +408,11 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            discount:
+            discount_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             etag:
               type:
@@ -415,11 +452,11 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            price:
+            price_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             promo_code:
               type:
@@ -427,11 +464,11 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            refund_amount:
+            refund_amount_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             refund_percent:
               type:
@@ -449,11 +486,11 @@ definition:
                 underlying_type:
                   name: booking_booking_state
                   type: named
-            total:
+            total_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             units:
               type:
@@ -480,21 +517,41 @@ definition:
                 customer:
                   - id
               foreign_collection: identity_users
+            resource_discount_id_fkey:
+              column_mapping:
+                discount_id:
+                  - id
+              foreign_collection: booking_moneys
             resource_offering_fkey:
               column_mapping:
                 offering:
                   - id
               foreign_collection: resource_offerings
+            resource_price_id_fkey:
+              column_mapping:
+                price_id:
+                  - id
+              foreign_collection: booking_moneys
             resource_promo_code_fkey:
               column_mapping:
                 promo_code:
                   - id
               foreign_collection: promocode_resource
+            resource_refund_amount_id_fkey:
+              column_mapping:
+                refund_amount_id:
+                  - id
+              foreign_collection: booking_moneys
             resource_resource_fkey:
               column_mapping:
                 resource:
                   - id
               foreign_collection: resource_entity
+            resource_total_id_fkey:
+              column_mapping:
+                total_id:
+                  - id
+              foreign_collection: booking_moneys
             resource_window_id_fkey:
               column_mapping:
                 window_id:
@@ -544,6 +601,22 @@ definition:
               type:
                 element_type:
                   name: booking_contacts
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_booking_moneys_by_id_response:
+          description: Responses from the 'delete_booking_moneys_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: booking_moneys
                   type: named
                 type: array
           foreign_keys: {}
@@ -1159,13 +1232,54 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
-        insert_booking_price_components_object:
+        insert_booking_moneys_object:
           fields:
-            amount:
+            currency_code:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            nanos:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+            units:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int8
+                  type: named
+          foreign_keys: {}
+        insert_booking_moneys_response:
+          description: Responses from the 'insert_booking_moneys' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: booking_moneys
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_booking_price_components_object:
+          fields:
+            amount_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
             booking_id:
               type:
@@ -1260,11 +1374,11 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            discount:
+            discount_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             etag:
               type:
@@ -1304,11 +1418,11 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            price:
+            price_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             promo_code:
               type:
@@ -1316,11 +1430,11 @@ definition:
                 underlying_type:
                   name: text
                   type: named
-            refund_amount:
+            refund_amount_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             refund_percent:
               type:
@@ -1338,11 +1452,11 @@ definition:
                 underlying_type:
                   name: booking_booking_state
                   type: named
-            total:
+            total_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             units:
               type:
@@ -1746,11 +1860,11 @@ definition:
           foreign_keys: {}
         insert_promocode_resource_object:
           fields:
-            amount_off:
+            amount_off_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             code:
               type:
@@ -1802,11 +1916,11 @@ definition:
                 underlying_type:
                   name: int8
                   type: named
-            min_subtotal:
+            min_subtotal_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             name:
               type:
@@ -1968,11 +2082,11 @@ definition:
           foreign_keys: {}
         insert_resource_fees_object:
           fields:
-            amount:
+            amount_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             code:
               type:
@@ -2029,11 +2143,11 @@ definition:
           foreign_keys: {}
         insert_resource_los_discounts_object:
           fields:
-            amount_off:
+            amount_off_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             id:
               type:
@@ -2139,11 +2253,11 @@ definition:
               type:
                 name: text
                 type: named
-            price:
+            price_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             pricing_unit:
               type:
@@ -2198,9 +2312,9 @@ definition:
               type:
                 name: text
                 type: named
-            price:
+            price_id:
               type:
-                name: jsonb
+                name: text
                 type: named
             weekdays:
               type:
@@ -2858,11 +2972,11 @@ definition:
               foreign_collection: resource_entity
         promocode_resource:
           fields:
-            amount_off:
+            amount_off_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             code:
               type:
@@ -2910,11 +3024,11 @@ definition:
                 underlying_type:
                   name: int8
                   type: named
-            min_subtotal:
+            min_subtotal_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             name:
               type:
@@ -2960,7 +3074,17 @@ definition:
               type:
                 name: timestamp
                 type: named
-          foreign_keys: {}
+          foreign_keys:
+            resource_amount_off_id_fkey:
+              column_mapping:
+                amount_off_id:
+                  - id
+              foreign_collection: booking_moneys
+            resource_min_subtotal_id_fkey:
+              column_mapping:
+                min_subtotal_id:
+                  - id
+              foreign_collection: booking_moneys
         resource_entity:
           fields:
             attributes:
@@ -3038,11 +3162,11 @@ definition:
           foreign_keys: {}
         resource_fees:
           fields:
-            amount:
+            amount_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             code:
               type:
@@ -3081,6 +3205,11 @@ definition:
                   name: bool
                   type: named
           foreign_keys:
+            fees_amount_id_fkey:
+              column_mapping:
+                amount_id:
+                  - id
+              foreign_collection: booking_moneys
             fees_offering_id_fkey:
               column_mapping:
                 offering_id:
@@ -3088,11 +3217,11 @@ definition:
               foreign_collection: resource_offerings
         resource_los_discounts:
           fields:
-            amount_off:
+            amount_off_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             id:
               type:
@@ -3113,6 +3242,11 @@ definition:
                   name: int4
                   type: named
           foreign_keys:
+            los_discounts_amount_off_id_fkey:
+              column_mapping:
+                amount_off_id:
+                  - id
+              foreign_collection: booking_moneys
             los_discounts_offering_id_fkey:
               column_mapping:
                 offering_id:
@@ -3154,11 +3288,11 @@ definition:
               type:
                 name: text
                 type: named
-            price:
+            price_id:
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
             pricing_unit:
               type:
@@ -3181,6 +3315,11 @@ definition:
                 name: timestamp
                 type: named
           foreign_keys:
+            offerings_price_id_fkey:
+              column_mapping:
+                price_id:
+                  - id
+              foreign_collection: booking_moneys
             offerings_resource_id_fkey:
               column_mapping:
                 resource_id:
@@ -3227,9 +3366,9 @@ definition:
               type:
                 name: text
                 type: named
-            price:
+            price_id:
               type:
-                name: jsonb
+                name: text
                 type: named
             weekdays:
               type:
@@ -3252,6 +3391,11 @@ definition:
                 offering_id:
                   - id
               foreign_collection: resource_offerings
+            rate_overrides_price_id_fkey:
+              column_mapping:
+                price_id:
+                  - id
+              foreign_collection: booking_moneys
         resource_taxes:
           fields:
             code:
@@ -3709,6 +3853,54 @@ definition:
                   name: update_column_booking_contacts_phone_number
                   type: named
           foreign_keys: {}
+        update_booking_moneys_by_id_response:
+          description: Responses from the 'update_booking_moneys_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: booking_moneys
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_booking_moneys_by_id_update_columns:
+          description: Update the columns of the 'booking_moneys' collection
+          fields:
+            currency_code:
+              description: Update the 'currency_code' column in the 'booking_moneys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_booking_moneys_currency_code
+                  type: named
+            id:
+              description: Update the 'id' column in the 'booking_moneys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_booking_moneys_id
+                  type: named
+            nanos:
+              description: Update the 'nanos' column in the 'booking_moneys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_booking_moneys_nanos
+                  type: named
+            units:
+              description: Update the 'units' column in the 'booking_moneys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_booking_moneys_units
+                  type: named
+          foreign_keys: {}
         update_booking_price_components_by_id_response:
           description: Responses from the 'update_booking_price_components_by_id' procedure
           fields:
@@ -3728,12 +3920,12 @@ definition:
         update_booking_price_components_by_id_update_columns:
           description: Update the columns of the 'booking_price_components' collection
           fields:
-            amount:
-              description: Update the 'amount' column in the 'booking_price_components' collection.
+            amount_id:
+              description: Update the 'amount_id' column in the 'booking_price_components' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_booking_price_components_amount
+                  name: update_column_booking_price_components_amount_id
                   type: named
             booking_id:
               description: Update the 'booking_id' column in the 'booking_price_components' collection.
@@ -3846,12 +4038,12 @@ definition:
                 underlying_type:
                   name: update_column_booking_resource_customer
                   type: named
-            discount:
-              description: Update the 'discount' column in the 'booking_resource' collection.
+            discount_id:
+              description: Update the 'discount_id' column in the 'booking_resource' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_booking_resource_discount
+                  name: update_column_booking_resource_discount_id
                   type: named
             etag:
               description: Update the 'etag' column in the 'booking_resource' collection.
@@ -3902,12 +4094,12 @@ definition:
                 underlying_type:
                   name: update_column_booking_resource_offering
                   type: named
-            price:
-              description: Update the 'price' column in the 'booking_resource' collection.
+            price_id:
+              description: Update the 'price_id' column in the 'booking_resource' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_booking_resource_price
+                  name: update_column_booking_resource_price_id
                   type: named
             promo_code:
               description: Update the 'promo_code' column in the 'booking_resource' collection.
@@ -3916,12 +4108,12 @@ definition:
                 underlying_type:
                   name: update_column_booking_resource_promo_code
                   type: named
-            refund_amount:
-              description: Update the 'refund_amount' column in the 'booking_resource' collection.
+            refund_amount_id:
+              description: Update the 'refund_amount_id' column in the 'booking_resource' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_booking_resource_refund_amount
+                  name: update_column_booking_resource_refund_amount_id
                   type: named
             refund_percent:
               description: Update the 'refund_percent' column in the 'booking_resource' collection.
@@ -3944,12 +4136,12 @@ definition:
                 underlying_type:
                   name: update_column_booking_resource_state
                   type: named
-            total:
-              description: Update the 'total' column in the 'booking_resource' collection.
+            total_id:
+              description: Update the 'total_id' column in the 'booking_resource' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_booking_resource_total
+                  name: update_column_booking_resource_total_id
                   type: named
             units:
               description: Update the 'units' column in the 'booking_resource' collection.
@@ -4134,15 +4326,57 @@ definition:
                   name: text
                   type: named
           foreign_keys: {}
-        update_column_booking_price_components_amount:
-          description: Update the 'amount' column in the 'booking_price_components' collection
+        update_column_booking_moneys_currency_code:
+          description: Update the 'currency_code' column in the 'booking_moneys' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_booking_moneys_id:
+          description: Update the 'id' column in the 'booking_moneys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_booking_moneys_nanos:
+          description: Update the 'nanos' column in the 'booking_moneys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+          foreign_keys: {}
+        update_column_booking_moneys_units:
+          description: Update the 'units' column in the 'booking_moneys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: int8
+                  type: named
+          foreign_keys: {}
+        update_column_booking_price_components_amount_id:
+          description: Update the 'amount_id' column in the 'booking_price_components' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_price_components_booking_id:
@@ -4282,15 +4516,15 @@ definition:
                   name: text
                   type: named
           foreign_keys: {}
-        update_column_booking_resource_discount:
-          description: Update the 'discount' column in the 'booking_resource' collection
+        update_column_booking_resource_discount_id:
+          description: Update the 'discount_id' column in the 'booking_resource' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_resource_etag:
@@ -4366,15 +4600,15 @@ definition:
                   name: text
                   type: named
           foreign_keys: {}
-        update_column_booking_resource_price:
-          description: Update the 'price' column in the 'booking_resource' collection
+        update_column_booking_resource_price_id:
+          description: Update the 'price_id' column in the 'booking_resource' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_resource_promo_code:
@@ -4388,15 +4622,15 @@ definition:
                   name: text
                   type: named
           foreign_keys: {}
-        update_column_booking_resource_refund_amount:
-          description: Update the 'refund_amount' column in the 'booking_resource' collection
+        update_column_booking_resource_refund_amount_id:
+          description: Update the 'refund_amount_id' column in the 'booking_resource' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_resource_refund_percent:
@@ -4430,15 +4664,15 @@ definition:
                   name: booking_booking_state
                   type: named
           foreign_keys: {}
-        update_column_booking_resource_total:
-          description: Update the 'total' column in the 'booking_resource' collection
+        update_column_booking_resource_total_id:
+          description: Update the 'total_id' column in the 'booking_resource' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_resource_units:
@@ -4933,15 +5167,15 @@ definition:
                 name: text
                 type: named
           foreign_keys: {}
-        update_column_promocode_resource_amount_off:
-          description: Update the 'amount_off' column in the 'promocode_resource' collection
+        update_column_promocode_resource_amount_off_id:
+          description: Update the 'amount_off_id' column in the 'promocode_resource' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_promocode_resource_code:
@@ -5035,15 +5269,15 @@ definition:
                   name: int8
                   type: named
           foreign_keys: {}
-        update_column_promocode_resource_min_subtotal:
-          description: Update the 'min_subtotal' column in the 'promocode_resource' collection
+        update_column_promocode_resource_min_subtotal_id:
+          description: Update the 'min_subtotal_id' column in the 'promocode_resource' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_promocode_resource_name:
@@ -5272,15 +5506,15 @@ definition:
                 name: timestamp
                 type: named
           foreign_keys: {}
-        update_column_resource_fees_amount:
-          description: Update the 'amount' column in the 'resource_fees' collection
+        update_column_resource_fees_amount_id:
+          description: Update the 'amount_id' column in the 'resource_fees' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_resource_fees_code:
@@ -5354,15 +5588,15 @@ definition:
                   name: bool
                   type: named
           foreign_keys: {}
-        update_column_resource_los_discounts_amount_off:
-          description: Update the 'amount_off' column in the 'resource_los_discounts' collection
+        update_column_resource_los_discounts_amount_off_id:
+          description: Update the 'amount_off_id' column in the 'resource_los_discounts' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_resource_los_discounts_id:
@@ -5499,15 +5733,15 @@ definition:
                 name: text
                 type: named
           foreign_keys: {}
-        update_column_resource_offerings_price:
-          description: Update the 'price' column in the 'resource_offerings' collection
+        update_column_resource_offerings_price_id:
+          description: Update the 'price_id' column in the 'resource_offerings' collection
           fields:
             _set:
               description: Set the column to this value
               type:
                 type: nullable
                 underlying_type:
-                  name: jsonb
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_resource_offerings_pricing_unit:
@@ -5579,13 +5813,13 @@ definition:
                 name: text
                 type: named
           foreign_keys: {}
-        update_column_resource_rate_overrides_price:
-          description: Update the 'price' column in the 'resource_rate_overrides' collection
+        update_column_resource_rate_overrides_price_id:
+          description: Update the 'price_id' column in the 'resource_rate_overrides' collection
           fields:
             _set:
               description: Set the column to this value
               type:
-                name: jsonb
+                name: text
                 type: named
           foreign_keys: {}
         update_column_resource_rate_overrides_weekdays:
@@ -6543,12 +6777,12 @@ definition:
         update_promocode_resource_by_id_update_columns:
           description: Update the columns of the 'promocode_resource' collection
           fields:
-            amount_off:
-              description: Update the 'amount_off' column in the 'promocode_resource' collection.
+            amount_off_id:
+              description: Update the 'amount_off_id' column in the 'promocode_resource' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_promocode_resource_amount_off
+                  name: update_column_promocode_resource_amount_off_id
                   type: named
             code:
               description: Update the 'code' column in the 'promocode_resource' collection.
@@ -6613,12 +6847,12 @@ definition:
                 underlying_type:
                   name: update_column_promocode_resource_max_redemptions
                   type: named
-            min_subtotal:
-              description: Update the 'min_subtotal' column in the 'promocode_resource' collection.
+            min_subtotal_id:
+              description: Update the 'min_subtotal_id' column in the 'promocode_resource' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_promocode_resource_min_subtotal
+                  name: update_column_promocode_resource_min_subtotal_id
                   type: named
             name:
               description: Update the 'name' column in the 'promocode_resource' collection.
@@ -6814,12 +7048,12 @@ definition:
         update_resource_fees_by_id_update_columns:
           description: Update the columns of the 'resource_fees' collection
           fields:
-            amount:
-              description: Update the 'amount' column in the 'resource_fees' collection.
+            amount_id:
+              description: Update the 'amount_id' column in the 'resource_fees' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_resource_fees_amount
+                  name: update_column_resource_fees_amount_id
                   type: named
             code:
               description: Update the 'code' column in the 'resource_fees' collection.
@@ -6890,12 +7124,12 @@ definition:
         update_resource_los_discounts_by_id_update_columns:
           description: Update the columns of the 'resource_los_discounts' collection
           fields:
-            amount_off:
-              description: Update the 'amount_off' column in the 'resource_los_discounts' collection.
+            amount_off_id:
+              description: Update the 'amount_off_id' column in the 'resource_los_discounts' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_resource_los_discounts_amount_off
+                  name: update_column_resource_los_discounts_amount_off_id
                   type: named
             id:
               description: Update the 'id' column in the 'resource_los_discounts' collection.
@@ -6994,12 +7228,12 @@ definition:
                 underlying_type:
                   name: update_column_resource_offerings_name
                   type: named
-            price:
-              description: Update the 'price' column in the 'resource_offerings' collection.
+            price_id:
+              description: Update the 'price_id' column in the 'resource_offerings' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_resource_offerings_price
+                  name: update_column_resource_offerings_price_id
                   type: named
             pricing_unit:
               description: Update the 'pricing_unit' column in the 'resource_offerings' collection.
@@ -7111,12 +7345,12 @@ definition:
                 underlying_type:
                   name: update_column_resource_rate_overrides_offering_id
                   type: named
-            price:
-              description: Update the 'price' column in the 'resource_rate_overrides' collection.
+            price_id:
+              description: Update the 'price_id' column in the 'resource_rate_overrides' collection.
               type:
                 type: nullable
                 underlying_type:
-                  name: update_column_resource_rate_overrides_price
+                  name: update_column_resource_rate_overrides_price_id
                   type: named
             weekdays:
               description: Update the 'weekdays' column in the 'resource_rate_overrides' collection.
@@ -7710,6 +7944,23 @@ definition:
                 name: text
                 type: named
             pre_check:
+              description: Delete permission predicate over the 'booking_moneys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: booking_moneys
+                  type: predicate
+          description: Delete any row on the 'booking_moneys' collection using the 'id' key
+          name: delete_booking_moneys_by_id
+          result_type:
+            name: delete_booking_moneys_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
               description: Delete permission predicate over the 'booking_price_components' collection
               type:
                 type: nullable
@@ -8183,6 +8434,25 @@ definition:
           name: insert_booking_contacts
           result_type:
             name: insert_booking_contacts_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_booking_moneys_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'booking_moneys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: booking_moneys
+                  type: predicate
+          description: Insert into the booking_moneys table
+          name: insert_booking_moneys
+          result_type:
+            name: insert_booking_moneys_response
             type: named
         - arguments:
             objects:
@@ -8733,6 +9003,34 @@ definition:
           name: update_booking_contacts_by_id
           result_type:
             name: update_booking_contacts_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'booking_moneys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: booking_moneys
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'booking_moneys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: booking_moneys
+                  type: predicate
+            update_columns:
+              type:
+                name: update_booking_moneys_by_id_update_columns
+                type: named
+          description: Update any row on the 'booking_moneys' collection using the 'id' key
+          name: update_booking_moneys_by_id
+          result_type:
+            name: update_booking_moneys_by_id_response
             type: named
         - arguments:
             key_id:

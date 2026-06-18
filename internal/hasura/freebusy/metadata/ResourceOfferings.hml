@@ -18,8 +18,8 @@ definition:
       type: String_1!
     - name: name
       type: String_1!
-    - name: price
-      type: Json
+    - name: priceId
+      type: String_1
     - name: pricingUnit
       type: Enum
     - name: resourceId
@@ -56,9 +56,9 @@ definition:
         name:
           column:
             name: name
-        price:
+        priceId:
           column:
-            name: price
+            name: price_id
         pricingUnit:
           column:
             name: pricing_unit
@@ -88,7 +88,7 @@ definition:
           - etag
           - id
           - name
-          - price
+          - priceId
           - pricingUnit
           - resourceId
           - state
@@ -117,8 +117,8 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: name
           booleanExpressionType: TextBoolExp
-        - fieldName: price
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: priceId
+          booleanExpressionType: TextBoolExp
         - fieldName: pricingUnit
           booleanExpressionType: ResourcePricingUnitBoolExp
         - fieldName: resourceId
@@ -132,6 +132,7 @@ definition:
         - relationshipName: promocodeApplicableOfferings
         - relationshipName: resourceFees
         - relationshipName: resourceLosDiscounts
+        - relationshipName: bookingMoney
         - relationshipName: resourceEntity
         - relationshipName: resourceOfferingsLinks
         - relationshipName: resourceRateOverrides
@@ -166,8 +167,8 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: name
           aggregateExpression: TextAggExp
-        - fieldName: price
-          aggregateExpression: JsonbAggExp
+        - fieldName: priceId
+          aggregateExpression: TextAggExp
         - fieldName: pricingUnit
           aggregateExpression: ResourcePricingUnitAggExp
         - fieldName: resourceId
@@ -205,8 +206,8 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: name
           orderByExpression: String1OrderByExp
-        - fieldName: price
-          orderByExpression: JsonOrderByExp
+        - fieldName: priceId
+          orderByExpression: String1OrderByExp
         - fieldName: pricingUnit
           orderByExpression: EnumOrderByExp
         - fieldName: resourceId
@@ -216,6 +217,7 @@ definition:
         - fieldName: updateTime
           orderByExpression: TimestampOrderByExp
       orderableRelationships:
+        - relationshipName: bookingMoney
         - relationshipName: resourceEntity
   graphql:
     expressionTypeName: ResourceOfferingsOrderByExp
@@ -347,6 +349,24 @@ definition:
           - fieldName: offeringId
   graphql:
     aggregateFieldName: resourceLosDiscountsAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoney
+  sourceType: ResourceOfferings
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: priceId
+      target:
+        modelField:
+          - fieldName: id
 
 ---
 kind: Relationship

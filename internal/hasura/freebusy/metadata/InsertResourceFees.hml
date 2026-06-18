@@ -4,8 +4,8 @@ version: v1
 definition:
   name: InsertResourceFeesObject
   fields:
-    - name: amount
-      type: Json
+    - name: amountId
+      type: String_1
     - name: code
       type: String_1!
     - name: displayName
@@ -27,9 +27,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: insert_resource_fees_object
       fieldMapping:
-        amount:
+        amountId:
           column:
-            name: amount
+            name: amount_id
         code:
           column:
             name: code
@@ -61,7 +61,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amount
+          - amountId
           - code
           - displayName
           - id

@@ -1,0 +1,120 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertBookingMoneysObject
+  fields:
+    - name: currencyCode
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: nanos
+      type: Int32
+    - name: units
+      type: Int64
+  graphql:
+    typeName: InsertBookingMoneysObject
+    inputTypeName: InsertBookingMoneysObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_booking_moneys_object
+      fieldMapping:
+        currencyCode:
+          column:
+            name: currency_code
+        id:
+          column:
+            name: id
+        nanos:
+          column:
+            name: nanos
+        units:
+          column:
+            name: units
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertBookingMoneysObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - currencyCode
+          - id
+          - nanos
+          - units
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertBookingMoneysResponse
+  description: Responses from the 'insert_booking_moneys' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[BookingMoneys!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertBookingMoneysResponse
+    inputTypeName: InsertBookingMoneysResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_booking_moneys_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertBookingMoneysResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertBookingMoneys
+  outputType: InsertBookingMoneysResponse!
+  arguments:
+    - name: objects
+      type: "[InsertBookingMoneysObject!]!"
+    - name: postCheck
+      type: BookingMoneysBoolExp
+      description: Insert permission predicate over the 'booking_moneys' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_booking_moneys
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertBookingMoneys
+    rootFieldKind: Mutation
+  description: Insert into the booking_moneys table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertBookingMoneys
+  permissions:
+    - role: admin
+      allowExecution: true
+

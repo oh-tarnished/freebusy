@@ -4,8 +4,8 @@ version: v1
 definition:
   name: InsertBookingPriceComponentsObject
   fields:
-    - name: amount
-      type: Json
+    - name: amountId
+      type: String_1
     - name: bookingId
       type: String_1!
     - name: code
@@ -23,9 +23,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: insert_booking_price_components_object
       fieldMapping:
-        amount:
+        amountId:
           column:
-            name: amount
+            name: amount_id
         bookingId:
           column:
             name: booking_id
@@ -51,7 +51,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amount
+          - amountId
           - bookingId
           - code
           - displayName

@@ -4,8 +4,8 @@ version: v1
 definition:
   name: PromocodeResource
   fields:
-    - name: amountOff
-      type: Json
+    - name: amountOffId
+      type: String_1
     - name: code
       type: String_1!
     - name: createTime
@@ -24,8 +24,8 @@ definition:
       type: String_1!
     - name: maxRedemptions
       type: Int64
-    - name: minSubtotal
-      type: Json
+    - name: minSubtotalId
+      type: String_1
     - name: name
       type: String_1!
     - name: perCustomerLimit
@@ -49,9 +49,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: promocode_resource
       fieldMapping:
-        amountOff:
+        amountOffId:
           column:
-            name: amount_off
+            name: amount_off_id
         code:
           column:
             name: code
@@ -79,9 +79,9 @@ definition:
         maxRedemptions:
           column:
             name: max_redemptions
-        minSubtotal:
+        minSubtotalId:
           column:
-            name: min_subtotal
+            name: min_subtotal_id
         name:
           column:
             name: name
@@ -116,7 +116,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOff
+          - amountOffId
           - code
           - createTime
           - description
@@ -126,7 +126,7 @@ definition:
           - etag
           - id
           - maxRedemptions
-          - minSubtotal
+          - minSubtotalId
           - name
           - perCustomerLimit
           - percentOff
@@ -145,8 +145,8 @@ definition:
     object:
       type: PromocodeResource
       comparableFields:
-        - fieldName: amountOff
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: amountOffId
+          booleanExpressionType: TextBoolExp
         - fieldName: code
           booleanExpressionType: TextBoolExp
         - fieldName: createTime
@@ -165,8 +165,8 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: maxRedemptions
           booleanExpressionType: Int8BoolExp
-        - fieldName: minSubtotal
-          booleanExpressionType: JsonbBoolExp
+        - fieldName: minSubtotalId
+          booleanExpressionType: TextBoolExp
         - fieldName: name
           booleanExpressionType: TextBoolExp
         - fieldName: perCustomerLimit
@@ -187,6 +187,8 @@ definition:
         - relationshipName: bookingResources
         - relationshipName: promocodeApplicableOfferings
         - relationshipName: promocodeApplicableResources
+        - relationshipName: bookingMoney
+        - relationshipName: bookingMoneyByMinSubtotalId
   logicalOperators:
     enable: true
   isNull:
@@ -203,8 +205,8 @@ definition:
     object:
       aggregatedType: PromocodeResource
       aggregatableFields:
-        - fieldName: amountOff
-          aggregateExpression: JsonbAggExp
+        - fieldName: amountOffId
+          aggregateExpression: TextAggExp
         - fieldName: code
           aggregateExpression: TextAggExp
         - fieldName: createTime
@@ -223,8 +225,8 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: maxRedemptions
           aggregateExpression: Int8AggExp
-        - fieldName: minSubtotal
-          aggregateExpression: JsonbAggExp
+        - fieldName: minSubtotalId
+          aggregateExpression: TextAggExp
         - fieldName: name
           aggregateExpression: TextAggExp
         - fieldName: perCustomerLimit
@@ -256,8 +258,8 @@ definition:
     object:
       orderedType: PromocodeResource
       orderableFields:
-        - fieldName: amountOff
-          orderByExpression: JsonOrderByExp
+        - fieldName: amountOffId
+          orderByExpression: String1OrderByExp
         - fieldName: code
           orderByExpression: String1OrderByExp
         - fieldName: createTime
@@ -276,8 +278,8 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: maxRedemptions
           orderByExpression: Int64OrderByExp
-        - fieldName: minSubtotal
-          orderByExpression: JsonOrderByExp
+        - fieldName: minSubtotalId
+          orderByExpression: String1OrderByExp
         - fieldName: name
           orderByExpression: String1OrderByExp
         - fieldName: perCustomerLimit
@@ -294,7 +296,9 @@ definition:
           orderByExpression: EnumOrderByExp
         - fieldName: updateTime
           orderByExpression: TimestampOrderByExp
-      orderableRelationships: []
+      orderableRelationships:
+        - relationshipName: bookingMoney
+        - relationshipName: bookingMoneyByMinSubtotalId
   graphql:
     expressionTypeName: PromocodeResourceOrderByExp
 
@@ -403,4 +407,40 @@ definition:
           - fieldName: promoCodeId
   graphql:
     aggregateFieldName: promocodeApplicableResourcesAggregate
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoney
+  sourceType: PromocodeResource
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: amountOffId
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: bookingMoneyByMinSubtotalId
+  sourceType: PromocodeResource
+  target:
+    model:
+      name: BookingMoneys
+      relationshipType: Object
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: minSubtotalId
+      target:
+        modelField:
+          - fieldName: id
 

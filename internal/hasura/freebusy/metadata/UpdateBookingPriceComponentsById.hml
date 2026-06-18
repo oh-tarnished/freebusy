@@ -2,18 +2,18 @@
 kind: ObjectType
 version: v1
 definition:
-  name: UpdateColumnBookingPriceComponentsAmount
-  description: Update the 'amount' column in the 'booking_price_components' collection
+  name: UpdateColumnBookingPriceComponentsAmountId
+  description: Update the 'amount_id' column in the 'booking_price_components' collection
   fields:
     - name: set
-      type: Json
+      type: String_1
       description: Set the column to this value
   graphql:
-    typeName: UpdateColumnBookingPriceComponentsAmount
-    inputTypeName: UpdateColumnBookingPriceComponentsAmountInput
+    typeName: UpdateColumnBookingPriceComponentsAmountId
+    inputTypeName: UpdateColumnBookingPriceComponentsAmountIdInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: update_column_booking_price_components_amount
+      dataConnectorObjectType: update_column_booking_price_components_amount_id
       fieldMapping:
         set:
           column:
@@ -23,7 +23,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: UpdateColumnBookingPriceComponentsAmount
+  typeName: UpdateColumnBookingPriceComponentsAmountId
   permissions:
     - role: admin
       output:
@@ -197,9 +197,10 @@ definition:
   name: UpdateBookingPriceComponentsByIdUpdateColumns
   description: Update the columns of the 'booking_price_components' collection
   fields:
-    - name: amount
-      type: UpdateColumnBookingPriceComponentsAmount
-      description: Update the 'amount' column in the 'booking_price_components' collection.
+    - name: amountId
+      type: UpdateColumnBookingPriceComponentsAmountId
+      description: Update the 'amount_id' column in the 'booking_price_components'
+        collection.
     - name: bookingId
       type: UpdateColumnBookingPriceComponentsBookingId
       description: Update the 'booking_id' column in the 'booking_price_components'
@@ -224,9 +225,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: update_booking_price_components_by_id_update_columns
       fieldMapping:
-        amount:
+        amountId:
           column:
-            name: amount
+            name: amount_id
         bookingId:
           column:
             name: booking_id
@@ -252,7 +253,7 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amount
+          - amountId
           - bookingId
           - code
           - displayName
