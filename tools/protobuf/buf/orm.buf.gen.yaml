@@ -23,4 +23,6 @@ plugins:
     strategy: all
     opt:
       - target=gorm
+      - stores=true
       - config=tools/protobuf/buf/protorm.yaml
+      - otel=true

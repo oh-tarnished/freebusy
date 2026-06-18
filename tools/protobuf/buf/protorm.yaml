@@ -20,3 +20,6 @@ datasources:
   - match: "freebusy.**" # every freebusy.<service>.<version> package
     database: freebusy
     schema: "{leaf}" # the service segment: schedule, identity, booking, ...
+otel:
+  enabled: true               # override the otel opt's master switch
+  metrics: false              # spans only — bakes tracing.WithoutMetrics() into the default config
