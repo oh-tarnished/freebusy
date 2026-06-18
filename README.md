@@ -1,6 +1,7 @@
 # Freebusy
 
 > Hasura - `postgresql://postgres:postgrespassword@local.hasura.dev:5432/freebusydb`
+> 
 > Prisma - `postgresql://postgres:postgrespassword@localhost:5432/freebusydb`
 
 The pure availability engine: given the facts about a bookable resource and a
