@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: freebusy/organisation/v1/org_messages.proto
+// source: freebusy/organisation/v1/organisation_message.proto
 
 package orgpbv1
 
@@ -41,7 +41,7 @@ type ListOrganisationsRequest struct {
 
 func (x *ListOrganisationsRequest) Reset() {
 	*x = ListOrganisationsRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[0]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -53,7 +53,7 @@ func (x *ListOrganisationsRequest) String() string {
 func (*ListOrganisationsRequest) ProtoMessage() {}
 
 func (x *ListOrganisationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[0]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -66,7 +66,7 @@ func (x *ListOrganisationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOrganisationsRequest.ProtoReflect.Descriptor instead.
 func (*ListOrganisationsRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{0}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ListOrganisationsRequest) GetPageSize() int32 {
@@ -110,7 +110,7 @@ type ListOrganisationsResponse struct {
 
 func (x *ListOrganisationsResponse) Reset() {
 	*x = ListOrganisationsResponse{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[1]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -122,7 +122,7 @@ func (x *ListOrganisationsResponse) String() string {
 func (*ListOrganisationsResponse) ProtoMessage() {}
 
 func (x *ListOrganisationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[1]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -135,7 +135,7 @@ func (x *ListOrganisationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOrganisationsResponse.ProtoReflect.Descriptor instead.
 func (*ListOrganisationsResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{1}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ListOrganisationsResponse) GetOrganisations() []*Organisation {
@@ -164,7 +164,7 @@ type GetOrganisationRequest struct {
 
 func (x *GetOrganisationRequest) Reset() {
 	*x = GetOrganisationRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[2]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -176,7 +176,7 @@ func (x *GetOrganisationRequest) String() string {
 func (*GetOrganisationRequest) ProtoMessage() {}
 
 func (x *GetOrganisationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[2]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -189,7 +189,7 @@ func (x *GetOrganisationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrganisationRequest.ProtoReflect.Descriptor instead.
 func (*GetOrganisationRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{2}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetOrganisationRequest) GetName() string {
@@ -215,7 +215,7 @@ type CreateOrganisationRequest struct {
 
 func (x *CreateOrganisationRequest) Reset() {
 	*x = CreateOrganisationRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[3]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -227,7 +227,7 @@ func (x *CreateOrganisationRequest) String() string {
 func (*CreateOrganisationRequest) ProtoMessage() {}
 
 func (x *CreateOrganisationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[3]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -240,7 +240,7 @@ func (x *CreateOrganisationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrganisationRequest.ProtoReflect.Descriptor instead.
 func (*CreateOrganisationRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{3}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CreateOrganisationRequest) GetOrganisation() *Organisation {
@@ -277,7 +277,7 @@ type UpdateOrganisationRequest struct {
 
 func (x *UpdateOrganisationRequest) Reset() {
 	*x = UpdateOrganisationRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[4]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -289,7 +289,7 @@ func (x *UpdateOrganisationRequest) String() string {
 func (*UpdateOrganisationRequest) ProtoMessage() {}
 
 func (x *UpdateOrganisationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[4]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -302,7 +302,7 @@ func (x *UpdateOrganisationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateOrganisationRequest.ProtoReflect.Descriptor instead.
 func (*UpdateOrganisationRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{4}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateOrganisationRequest) GetOrganisation() *Organisation {
@@ -334,7 +334,7 @@ type DeleteOrganisationRequest struct {
 
 func (x *DeleteOrganisationRequest) Reset() {
 	*x = DeleteOrganisationRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[5]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -346,7 +346,7 @@ func (x *DeleteOrganisationRequest) String() string {
 func (*DeleteOrganisationRequest) ProtoMessage() {}
 
 func (x *DeleteOrganisationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[5]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -359,7 +359,7 @@ func (x *DeleteOrganisationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOrganisationRequest.ProtoReflect.Descriptor instead.
 func (*DeleteOrganisationRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{5}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DeleteOrganisationRequest) GetName() string {
@@ -396,7 +396,7 @@ type ListMembersRequest struct {
 
 func (x *ListMembersRequest) Reset() {
 	*x = ListMembersRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[6]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -408,7 +408,7 @@ func (x *ListMembersRequest) String() string {
 func (*ListMembersRequest) ProtoMessage() {}
 
 func (x *ListMembersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[6]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -421,7 +421,7 @@ func (x *ListMembersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMembersRequest.ProtoReflect.Descriptor instead.
 func (*ListMembersRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{6}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListMembersRequest) GetParent() string {
@@ -472,7 +472,7 @@ type ListMembersResponse struct {
 
 func (x *ListMembersResponse) Reset() {
 	*x = ListMembersResponse{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[7]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -484,7 +484,7 @@ func (x *ListMembersResponse) String() string {
 func (*ListMembersResponse) ProtoMessage() {}
 
 func (x *ListMembersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[7]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -497,7 +497,7 @@ func (x *ListMembersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMembersResponse.ProtoReflect.Descriptor instead.
 func (*ListMembersResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{7}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ListMembersResponse) GetMembers() []*Member {
@@ -526,7 +526,7 @@ type GetMemberRequest struct {
 
 func (x *GetMemberRequest) Reset() {
 	*x = GetMemberRequest{}
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[8]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -538,7 +538,7 @@ func (x *GetMemberRequest) String() string {
 func (*GetMemberRequest) ProtoMessage() {}
 
 func (x *GetMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_messages_proto_msgTypes[8]
+	mi := &file_freebusy_organisation_v1_organisation_message_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -551,7 +551,7 @@ func (x *GetMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMemberRequest.ProtoReflect.Descriptor instead.
 func (*GetMemberRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP(), []int{8}
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetMemberRequest) GetName() string {
@@ -561,11 +561,11 @@ func (x *GetMemberRequest) GetName() string {
 	return ""
 }
 
-var File_freebusy_organisation_v1_org_messages_proto protoreflect.FileDescriptor
+var File_freebusy_organisation_v1_organisation_message_proto protoreflect.FileDescriptor
 
-const file_freebusy_organisation_v1_org_messages_proto_rawDesc = "" +
+const file_freebusy_organisation_v1_organisation_message_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/organisation/v1/org_messages.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9d\x01\n" +
+	"3freebusy/organisation/v1/organisation_message.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9d\x01\n" +
 	"\x18ListOrganisationsRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
@@ -577,7 +577,7 @@ const file_freebusy_organisation_v1_org_messages_proto_rawDesc = "" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"[\n" +
 	"\x16GetOrganisationRequest\x12A\n" +
 	"\x04name\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.ohtarnished.dev/OrganisationR\x04name\"\xc6\x01\n" +
+	"%freebusy.organisation.v1/OrganisationR\x04name\"\xc6\x01\n" +
 	"\x19CreateOrganisationRequest\x12O\n" +
 	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationB\x03\xe0A\x02R\forganisation\x12,\n" +
 	"\x0forganisation_id\x18\x02 \x01(\tB\x03\xe0A\x01R\x0eorganisationId\x12*\n" +
@@ -589,11 +589,11 @@ const file_freebusy_organisation_v1_org_messages_proto_rawDesc = "" +
 	"updateMask\"y\n" +
 	"\x19DeleteOrganisationRequest\x12A\n" +
 	"\x04name\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.ohtarnished.dev/OrganisationR\x04name\x12\x19\n" +
+	"%freebusy.organisation.v1/OrganisationR\x04name\x12\x19\n" +
 	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xde\x01\n" +
 	"\x12ListMembersRequest\x12E\n" +
 	"\x06parent\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.ohtarnished.dev/OrganisationR\x06parent\x12 \n" +
+	"%freebusy.organisation.v1/OrganisationR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
@@ -604,23 +604,23 @@ const file_freebusy_organisation_v1_org_messages_proto_rawDesc = "" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"O\n" +
 	"\x10GetMemberRequest\x12;\n" +
 	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.ohtarnished.dev/MemberR\x04nameB\x8a\x02\n" +
-	"\x1ccom.freebusy.organisation.v1B\x10OrgMessagesProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
+	"\x1ffreebusy.organisation.v1/MemberR\x04nameB\x92\x02\n" +
+	"\x1ccom.freebusy.organisation.v1B\x18OrganisationMessageProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (
-	file_freebusy_organisation_v1_org_messages_proto_rawDescOnce sync.Once
-	file_freebusy_organisation_v1_org_messages_proto_rawDescData []byte
+	file_freebusy_organisation_v1_organisation_message_proto_rawDescOnce sync.Once
+	file_freebusy_organisation_v1_organisation_message_proto_rawDescData []byte
 )
 
-func file_freebusy_organisation_v1_org_messages_proto_rawDescGZIP() []byte {
-	file_freebusy_organisation_v1_org_messages_proto_rawDescOnce.Do(func() {
-		file_freebusy_organisation_v1_org_messages_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_messages_proto_rawDesc), len(file_freebusy_organisation_v1_org_messages_proto_rawDesc)))
+func file_freebusy_organisation_v1_organisation_message_proto_rawDescGZIP() []byte {
+	file_freebusy_organisation_v1_organisation_message_proto_rawDescOnce.Do(func() {
+		file_freebusy_organisation_v1_organisation_message_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_organisation_message_proto_rawDesc), len(file_freebusy_organisation_v1_organisation_message_proto_rawDesc)))
 	})
-	return file_freebusy_organisation_v1_org_messages_proto_rawDescData
+	return file_freebusy_organisation_v1_organisation_message_proto_rawDescData
 }
 
-var file_freebusy_organisation_v1_org_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
-var file_freebusy_organisation_v1_org_messages_proto_goTypes = []any{
+var file_freebusy_organisation_v1_organisation_message_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_freebusy_organisation_v1_organisation_message_proto_goTypes = []any{
 	(*ListOrganisationsRequest)(nil),  // 0: freebusy.organisation.v1.ListOrganisationsRequest
 	(*ListOrganisationsResponse)(nil), // 1: freebusy.organisation.v1.ListOrganisationsResponse
 	(*GetOrganisationRequest)(nil),    // 2: freebusy.organisation.v1.GetOrganisationRequest
@@ -634,7 +634,7 @@ var file_freebusy_organisation_v1_org_messages_proto_goTypes = []any{
 	(*fieldmaskpb.FieldMask)(nil),     // 10: google.protobuf.FieldMask
 	(*Member)(nil),                    // 11: freebusy.organisation.v1.Member
 }
-var file_freebusy_organisation_v1_org_messages_proto_depIdxs = []int32{
+var file_freebusy_organisation_v1_organisation_message_proto_depIdxs = []int32{
 	9,  // 0: freebusy.organisation.v1.ListOrganisationsResponse.organisations:type_name -> freebusy.organisation.v1.Organisation
 	9,  // 1: freebusy.organisation.v1.CreateOrganisationRequest.organisation:type_name -> freebusy.organisation.v1.Organisation
 	9,  // 2: freebusy.organisation.v1.UpdateOrganisationRequest.organisation:type_name -> freebusy.organisation.v1.Organisation
@@ -647,9 +647,9 @@ var file_freebusy_organisation_v1_org_messages_proto_depIdxs = []int32{
 	0,  // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_freebusy_organisation_v1_org_messages_proto_init() }
-func file_freebusy_organisation_v1_org_messages_proto_init() {
-	if File_freebusy_organisation_v1_org_messages_proto != nil {
+func init() { file_freebusy_organisation_v1_organisation_message_proto_init() }
+func file_freebusy_organisation_v1_organisation_message_proto_init() {
+	if File_freebusy_organisation_v1_organisation_message_proto != nil {
 		return
 	}
 	file_freebusy_organisation_v1_organisation_proto_init()
@@ -657,17 +657,17 @@ func file_freebusy_organisation_v1_org_messages_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_messages_proto_rawDesc), len(file_freebusy_organisation_v1_org_messages_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_organisation_message_proto_rawDesc), len(file_freebusy_organisation_v1_organisation_message_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_freebusy_organisation_v1_org_messages_proto_goTypes,
-		DependencyIndexes: file_freebusy_organisation_v1_org_messages_proto_depIdxs,
-		MessageInfos:      file_freebusy_organisation_v1_org_messages_proto_msgTypes,
+		GoTypes:           file_freebusy_organisation_v1_organisation_message_proto_goTypes,
+		DependencyIndexes: file_freebusy_organisation_v1_organisation_message_proto_depIdxs,
+		MessageInfos:      file_freebusy_organisation_v1_organisation_message_proto_msgTypes,
 	}.Build()
-	File_freebusy_organisation_v1_org_messages_proto = out.File
-	file_freebusy_organisation_v1_org_messages_proto_goTypes = nil
-	file_freebusy_organisation_v1_org_messages_proto_depIdxs = nil
+	File_freebusy_organisation_v1_organisation_message_proto = out.File
+	file_freebusy_organisation_v1_organisation_message_proto_goTypes = nil
+	file_freebusy_organisation_v1_organisation_message_proto_depIdxs = nil
 }

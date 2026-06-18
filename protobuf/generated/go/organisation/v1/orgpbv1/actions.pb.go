@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: freebusy/organisation/v1/org_actions.proto
+// source: freebusy/organisation/v1/actions.proto
 
 package orgpbv1
 
@@ -41,7 +41,7 @@ type InviteMemberRequest struct {
 
 func (x *InviteMemberRequest) Reset() {
 	*x = InviteMemberRequest{}
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[0]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -53,7 +53,7 @@ func (x *InviteMemberRequest) String() string {
 func (*InviteMemberRequest) ProtoMessage() {}
 
 func (x *InviteMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[0]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -66,7 +66,7 @@ func (x *InviteMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteMemberRequest.ProtoReflect.Descriptor instead.
 func (*InviteMemberRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_actions_proto_rawDescGZIP(), []int{0}
+	return file_freebusy_organisation_v1_actions_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *InviteMemberRequest) GetParent() string {
@@ -108,7 +108,7 @@ type InviteMemberResponse struct {
 
 func (x *InviteMemberResponse) Reset() {
 	*x = InviteMemberResponse{}
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[1]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -120,7 +120,7 @@ func (x *InviteMemberResponse) String() string {
 func (*InviteMemberResponse) ProtoMessage() {}
 
 func (x *InviteMemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[1]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -133,7 +133,7 @@ func (x *InviteMemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteMemberResponse.ProtoReflect.Descriptor instead.
 func (*InviteMemberResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_actions_proto_rawDescGZIP(), []int{1}
+	return file_freebusy_organisation_v1_actions_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *InviteMemberResponse) GetMember() *Member {
@@ -157,7 +157,7 @@ type UpdateMemberRequest struct {
 
 func (x *UpdateMemberRequest) Reset() {
 	*x = UpdateMemberRequest{}
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[2]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -169,7 +169,7 @@ func (x *UpdateMemberRequest) String() string {
 func (*UpdateMemberRequest) ProtoMessage() {}
 
 func (x *UpdateMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[2]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -182,7 +182,7 @@ func (x *UpdateMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateMemberRequest.ProtoReflect.Descriptor instead.
 func (*UpdateMemberRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_actions_proto_rawDescGZIP(), []int{2}
+	return file_freebusy_organisation_v1_actions_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UpdateMemberRequest) GetMember() *Member {
@@ -211,7 +211,7 @@ type DeleteMemberRequest struct {
 
 func (x *DeleteMemberRequest) Reset() {
 	*x = DeleteMemberRequest{}
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[3]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -223,7 +223,7 @@ func (x *DeleteMemberRequest) String() string {
 func (*DeleteMemberRequest) ProtoMessage() {}
 
 func (x *DeleteMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_actions_proto_msgTypes[3]
+	mi := &file_freebusy_organisation_v1_actions_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -236,7 +236,7 @@ func (x *DeleteMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteMemberRequest.ProtoReflect.Descriptor instead.
 func (*DeleteMemberRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_actions_proto_rawDescGZIP(), []int{3}
+	return file_freebusy_organisation_v1_actions_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *DeleteMemberRequest) GetName() string {
@@ -246,14 +246,14 @@ func (x *DeleteMemberRequest) GetName() string {
 	return ""
 }
 
-var File_freebusy_organisation_v1_org_actions_proto protoreflect.FileDescriptor
+var File_freebusy_organisation_v1_actions_proto protoreflect.FileDescriptor
 
-const file_freebusy_organisation_v1_org_actions_proto_rawDesc = "" +
+const file_freebusy_organisation_v1_actions_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/organisation/v1/org_actions.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xe8\x01\n" +
+	"&freebusy/organisation/v1/actions.proto\x12\x18freebusy.organisation.v1\x1a$freebusy/organisation/v1/enums.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xe8\x01\n" +
 	"\x13InviteMemberRequest\x12E\n" +
 	"\x06parent\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.ohtarnished.dev/OrganisationR\x06parent\x12\x19\n" +
+	"%freebusy.organisation.v1/OrganisationR\x06parent\x12\x19\n" +
 	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x02R\x05email\x12C\n" +
 	"\x04role\x18\x03 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\x12*\n" +
 	"\n" +
@@ -266,23 +266,23 @@ const file_freebusy_organisation_v1_org_actions_proto_rawDesc = "" +
 	"updateMask\"R\n" +
 	"\x13DeleteMemberRequest\x12;\n" +
 	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.ohtarnished.dev/MemberR\x04nameB\x89\x02\n" +
-	"\x1ccom.freebusy.organisation.v1B\x0fOrgActionsProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
+	"\x1ffreebusy.organisation.v1/MemberR\x04nameB\x86\x02\n" +
+	"\x1ccom.freebusy.organisation.v1B\fActionsProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (
-	file_freebusy_organisation_v1_org_actions_proto_rawDescOnce sync.Once
-	file_freebusy_organisation_v1_org_actions_proto_rawDescData []byte
+	file_freebusy_organisation_v1_actions_proto_rawDescOnce sync.Once
+	file_freebusy_organisation_v1_actions_proto_rawDescData []byte
 )
 
-func file_freebusy_organisation_v1_org_actions_proto_rawDescGZIP() []byte {
-	file_freebusy_organisation_v1_org_actions_proto_rawDescOnce.Do(func() {
-		file_freebusy_organisation_v1_org_actions_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_actions_proto_rawDesc), len(file_freebusy_organisation_v1_org_actions_proto_rawDesc)))
+func file_freebusy_organisation_v1_actions_proto_rawDescGZIP() []byte {
+	file_freebusy_organisation_v1_actions_proto_rawDescOnce.Do(func() {
+		file_freebusy_organisation_v1_actions_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_actions_proto_rawDesc), len(file_freebusy_organisation_v1_actions_proto_rawDesc)))
 	})
-	return file_freebusy_organisation_v1_org_actions_proto_rawDescData
+	return file_freebusy_organisation_v1_actions_proto_rawDescData
 }
 
-var file_freebusy_organisation_v1_org_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_freebusy_organisation_v1_org_actions_proto_goTypes = []any{
+var file_freebusy_organisation_v1_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_freebusy_organisation_v1_actions_proto_goTypes = []any{
 	(*InviteMemberRequest)(nil),   // 0: freebusy.organisation.v1.InviteMemberRequest
 	(*InviteMemberResponse)(nil),  // 1: freebusy.organisation.v1.InviteMemberResponse
 	(*UpdateMemberRequest)(nil),   // 2: freebusy.organisation.v1.UpdateMemberRequest
@@ -291,7 +291,7 @@ var file_freebusy_organisation_v1_org_actions_proto_goTypes = []any{
 	(*Member)(nil),                // 5: freebusy.organisation.v1.Member
 	(*fieldmaskpb.FieldMask)(nil), // 6: google.protobuf.FieldMask
 }
-var file_freebusy_organisation_v1_org_actions_proto_depIdxs = []int32{
+var file_freebusy_organisation_v1_actions_proto_depIdxs = []int32{
 	4, // 0: freebusy.organisation.v1.InviteMemberRequest.role:type_name -> freebusy.organisation.v1.OrganisationRole
 	5, // 1: freebusy.organisation.v1.InviteMemberResponse.member:type_name -> freebusy.organisation.v1.Member
 	5, // 2: freebusy.organisation.v1.UpdateMemberRequest.member:type_name -> freebusy.organisation.v1.Member
@@ -303,27 +303,28 @@ var file_freebusy_organisation_v1_org_actions_proto_depIdxs = []int32{
 	0, // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_freebusy_organisation_v1_org_actions_proto_init() }
-func file_freebusy_organisation_v1_org_actions_proto_init() {
-	if File_freebusy_organisation_v1_org_actions_proto != nil {
+func init() { file_freebusy_organisation_v1_actions_proto_init() }
+func file_freebusy_organisation_v1_actions_proto_init() {
+	if File_freebusy_organisation_v1_actions_proto != nil {
 		return
 	}
+	file_freebusy_organisation_v1_enums_proto_init()
 	file_freebusy_organisation_v1_organisation_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_actions_proto_rawDesc), len(file_freebusy_organisation_v1_org_actions_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_actions_proto_rawDesc), len(file_freebusy_organisation_v1_actions_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_freebusy_organisation_v1_org_actions_proto_goTypes,
-		DependencyIndexes: file_freebusy_organisation_v1_org_actions_proto_depIdxs,
-		MessageInfos:      file_freebusy_organisation_v1_org_actions_proto_msgTypes,
+		GoTypes:           file_freebusy_organisation_v1_actions_proto_goTypes,
+		DependencyIndexes: file_freebusy_organisation_v1_actions_proto_depIdxs,
+		MessageInfos:      file_freebusy_organisation_v1_actions_proto_msgTypes,
 	}.Build()
-	File_freebusy_organisation_v1_org_actions_proto = out.File
-	file_freebusy_organisation_v1_org_actions_proto_goTypes = nil
-	file_freebusy_organisation_v1_org_actions_proto_depIdxs = nil
+	File_freebusy_organisation_v1_actions_proto = out.File
+	file_freebusy_organisation_v1_actions_proto_goTypes = nil
+	file_freebusy_organisation_v1_actions_proto_depIdxs = nil
 }

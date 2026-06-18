@@ -27,234 +27,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Kind of bookable resource.
-type ResourceType int32
-
-const (
-	// Unset.
-	ResourceType_RESOURCE_TYPE_UNSPECIFIED ResourceType = 0
-	// A person who delivers a service (e.g. a doctor, stylist).
-	ResourceType_RESOURCE_TYPE_PROVIDER ResourceType = 1
-	// A bookable room or space (e.g. a meeting room).
-	ResourceType_RESOURCE_TYPE_ROOM ResourceType = 2
-	// A bookable piece of equipment (e.g. a kayak).
-	ResourceType_RESOURCE_TYPE_EQUIPMENT ResourceType = 3
-	// A lodging unit type backed by a pool of identical units.
-	ResourceType_RESOURCE_TYPE_UNIT_TYPE ResourceType = 4
-	// A generic space or venue.
-	ResourceType_RESOURCE_TYPE_SPACE ResourceType = 5
-)
-
-// Enum value maps for ResourceType.
-var (
-	ResourceType_name = map[int32]string{
-		0: "RESOURCE_TYPE_UNSPECIFIED",
-		1: "RESOURCE_TYPE_PROVIDER",
-		2: "RESOURCE_TYPE_ROOM",
-		3: "RESOURCE_TYPE_EQUIPMENT",
-		4: "RESOURCE_TYPE_UNIT_TYPE",
-		5: "RESOURCE_TYPE_SPACE",
-	}
-	ResourceType_value = map[string]int32{
-		"RESOURCE_TYPE_UNSPECIFIED": 0,
-		"RESOURCE_TYPE_PROVIDER":    1,
-		"RESOURCE_TYPE_ROOM":        2,
-		"RESOURCE_TYPE_EQUIPMENT":   3,
-		"RESOURCE_TYPE_UNIT_TYPE":   4,
-		"RESOURCE_TYPE_SPACE":       5,
-	}
-)
-
-func (x ResourceType) Enum() *ResourceType {
-	p := new(ResourceType)
-	*p = x
-	return p
-}
-
-func (x ResourceType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (ResourceType) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_resource_v1_resource_proto_enumTypes[0].Descriptor()
-}
-
-func (ResourceType) Type() protoreflect.EnumType {
-	return &file_freebusy_resource_v1_resource_proto_enumTypes[0]
-}
-
-func (x ResourceType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use ResourceType.Descriptor instead.
-func (ResourceType) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{0}
-}
-
-// What an offering's price is charged per.
-type PricingUnit int32
-
-const (
-	// Unset; treated as per-booking.
-	PricingUnit_PRICING_UNIT_UNSPECIFIED PricingUnit = 0
-	// A flat price for the whole booking.
-	PricingUnit_PRICING_UNIT_PER_BOOKING PricingUnit = 1
-	// Price multiplied by the number of nights (NIGHTLY resources).
-	PricingUnit_PRICING_UNIT_PER_NIGHT PricingUnit = 2
-	// Price multiplied by party size / units booked.
-	PricingUnit_PRICING_UNIT_PER_PERSON PricingUnit = 3
-)
-
-// Enum value maps for PricingUnit.
-var (
-	PricingUnit_name = map[int32]string{
-		0: "PRICING_UNIT_UNSPECIFIED",
-		1: "PRICING_UNIT_PER_BOOKING",
-		2: "PRICING_UNIT_PER_NIGHT",
-		3: "PRICING_UNIT_PER_PERSON",
-	}
-	PricingUnit_value = map[string]int32{
-		"PRICING_UNIT_UNSPECIFIED": 0,
-		"PRICING_UNIT_PER_BOOKING": 1,
-		"PRICING_UNIT_PER_NIGHT":   2,
-		"PRICING_UNIT_PER_PERSON":  3,
-	}
-)
-
-func (x PricingUnit) Enum() *PricingUnit {
-	p := new(PricingUnit)
-	*p = x
-	return p
-}
-
-func (x PricingUnit) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (PricingUnit) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_resource_v1_resource_proto_enumTypes[1].Descriptor()
-}
-
-func (PricingUnit) Type() protoreflect.EnumType {
-	return &file_freebusy_resource_v1_resource_proto_enumTypes[1]
-}
-
-func (x PricingUnit) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use PricingUnit.Descriptor instead.
-func (PricingUnit) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{1}
-}
-
-// Lifecycle status of a resource.
-type Resource_State int32
-
-const (
-	// Unset.
-	Resource_STATE_UNSPECIFIED Resource_State = 0
-	// Bookable.
-	Resource_STATE_ACTIVE Resource_State = 1
-	// Retired; hidden from availability and new bookings.
-	Resource_STATE_ARCHIVED Resource_State = 2
-)
-
-// Enum value maps for Resource_State.
-var (
-	Resource_State_name = map[int32]string{
-		0: "STATE_UNSPECIFIED",
-		1: "STATE_ACTIVE",
-		2: "STATE_ARCHIVED",
-	}
-	Resource_State_value = map[string]int32{
-		"STATE_UNSPECIFIED": 0,
-		"STATE_ACTIVE":      1,
-		"STATE_ARCHIVED":    2,
-	}
-)
-
-func (x Resource_State) Enum() *Resource_State {
-	p := new(Resource_State)
-	*p = x
-	return p
-}
-
-func (x Resource_State) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Resource_State) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_resource_v1_resource_proto_enumTypes[2].Descriptor()
-}
-
-func (Resource_State) Type() protoreflect.EnumType {
-	return &file_freebusy_resource_v1_resource_proto_enumTypes[2]
-}
-
-func (x Resource_State) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Resource_State.Descriptor instead.
-func (Resource_State) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{0, 0}
-}
-
-// Lifecycle STATE of an offering.
-type Offering_State int32
-
-const (
-	// Unset; treated as active.
-	Offering_STATE_UNSPECIFIED Offering_State = 0
-	// Bookable.
-	Offering_STATE_ACTIVE Offering_State = 1
-	// Hidden from new bookings.
-	Offering_STATE_INACTIVE Offering_State = 2
-)
-
-// Enum value maps for Offering_State.
-var (
-	Offering_State_name = map[int32]string{
-		0: "STATE_UNSPECIFIED",
-		1: "STATE_ACTIVE",
-		2: "STATE_INACTIVE",
-	}
-	Offering_State_value = map[string]int32{
-		"STATE_UNSPECIFIED": 0,
-		"STATE_ACTIVE":      1,
-		"STATE_INACTIVE":    2,
-	}
-)
-
-func (x Offering_State) Enum() *Offering_State {
-	p := new(Offering_State)
-	*p = x
-	return p
-}
-
-func (x Offering_State) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Offering_State) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_resource_v1_resource_proto_enumTypes[3].Descriptor()
-}
-
-func (Offering_State) Type() protoreflect.EnumType {
-	return &file_freebusy_resource_v1_resource_proto_enumTypes[3]
-}
-
-func (x Offering_State) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Offering_State.Descriptor instead.
-func (Offering_State) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_resource_v1_resource_proto_rawDescGZIP(), []int{1, 0}
-}
-
 // A bookable thing: a provider, room, piece of equipment, or a unit type. A
 // resource is a pool of `capacity` interchangeable units; the freebusy engine
 // computes how many are free for a given window. Its booking_mode decides
@@ -288,7 +60,7 @@ type Resource struct {
 	// Format: resources/{resource}/offerings/{offering}
 	Offerings []string `protobuf:"bytes,11,rep,name=offerings,proto3" json:"offerings,omitempty"`
 	// Lifecycle state.
-	State Resource_State `protobuf:"varint,12,opt,name=state,proto3,enum=freebusy.resource.v1.Resource_State" json:"state,omitempty"`
+	State ResourceState `protobuf:"varint,12,opt,name=state,proto3,enum=freebusy.resource.v1.ResourceState" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
@@ -399,11 +171,11 @@ func (x *Resource) GetOfferings() []string {
 	return nil
 }
 
-func (x *Resource) GetState() Resource_State {
+func (x *Resource) GetState() ResourceState {
 	if x != nil {
 		return x.State
 	}
-	return Resource_STATE_UNSPECIFIED
+	return ResourceState_RESOURCE_STATE_UNSPECIFIED
 }
 
 func (x *Resource) GetCreateTime() *timestamppb.Timestamp {
@@ -460,7 +232,7 @@ type Offering struct {
 	// surfaces as a TYPE_TAX line in a booking's price_components.
 	Taxes []*Tax `protobuf:"bytes,15,rep,name=taxes,proto3" json:"taxes,omitempty"`
 	// Lifecycle state.
-	State Offering_State `protobuf:"varint,8,opt,name=state,proto3,enum=freebusy.resource.v1.Offering_State" json:"state,omitempty"`
+	State OfferingState `protobuf:"varint,8,opt,name=state,proto3,enum=freebusy.resource.v1.OfferingState" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
@@ -571,11 +343,11 @@ func (x *Offering) GetTaxes() []*Tax {
 	return nil
 }
 
-func (x *Offering) GetState() Offering_State {
+func (x *Offering) GetState() OfferingState {
 	if x != nil {
 		return x.State
 	}
-	return Offering_STATE_UNSPECIFIED
+	return OfferingState_OFFERING_STATE_UNSPECIFIED
 }
 
 func (x *Offering) GetCreateTime() *timestamppb.Timestamp {
@@ -893,7 +665,7 @@ var File_freebusy_resource_v1_resource_proto protoreflect.FileDescriptor
 
 const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xd6\x06\n" +
+	"#freebusy/resource/v1/resource.proto\x12\x14freebusy.resource.v1\x1a freebusy/resource/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\x87\x06\n" +
 	"\bResource\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
@@ -906,20 +678,16 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\n" +
 	"attributes\x18\n" +
 	" \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\n" +
-	"attributes\x12G\n" +
-	"\tofferings\x18\v \x03(\tB)\xe0A\x03\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\tofferings\x12?\n" +
-	"\x05state\x18\f \x01(\x0e2$.freebusy.resource.v1.Resource.StateB\x03\xe0A\x03R\x05state\x12@\n" +
+	"attributes\x12C\n" +
+	"\tofferings\x18\v \x03(\tB%\xe0A\x03\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\tofferings\x12>\n" +
+	"\x05state\x18\f \x01(\x0e2#.freebusy.resource.v1.ResourceStateB\x03\xe0A\x03R\x05state\x12@\n" +
 	"\vcreate_time\x18\r \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
-	"\x04etag\x18\x0f \x01(\tR\x04etag\"D\n" +
-	"\x05State\x12\x15\n" +
-	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
-	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
-	"\x0eSTATE_ARCHIVED\x10\x02:Q\xeaAN\n" +
-	"!freebusy.ohtarnished.dev/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xbc\a\n" +
+	"\x04etag\x18\x0f \x01(\tR\x04etag:M\xeaAJ\n" +
+	"\x1dfreebusy.resource.v1/Resource\x12\x14resources/{resource}*\tresources2\bresourceJ\x04\b\x02\x10\x03\"\xf1\x06\n" +
 	"\bOffering\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
@@ -930,19 +698,15 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\x0erate_overrides\x18\f \x03(\v2\".freebusy.resource.v1.RateOverrideB\x03\xe0A\x01R\rrateOverrides\x12K\n" +
 	"\rlos_discounts\x18\r \x03(\v2!.freebusy.resource.v1.LosDiscountB\x03\xe0A\x01R\flosDiscounts\x122\n" +
 	"\x04fees\x18\x0e \x03(\v2\x19.freebusy.resource.v1.FeeB\x03\xe0A\x01R\x04fees\x124\n" +
-	"\x05taxes\x18\x0f \x03(\v2\x19.freebusy.resource.v1.TaxB\x03\xe0A\x01R\x05taxes\x12?\n" +
-	"\x05state\x18\b \x01(\x0e2$.freebusy.resource.v1.Offering.StateB\x03\xe0A\x03R\x05state\x12@\n" +
+	"\x05taxes\x18\x0f \x03(\v2\x19.freebusy.resource.v1.TaxB\x03\xe0A\x01R\x05taxes\x12>\n" +
+	"\x05state\x18\b \x01(\x0e2#.freebusy.resource.v1.OfferingStateB\x03\xe0A\x03R\x05state\x12@\n" +
 	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
-	"\x04etag\x18\v \x01(\tR\x04etag\"D\n" +
-	"\x05State\x12\x15\n" +
-	"\x11STATE_UNSPECIFIED\x10\x00\x12\x10\n" +
-	"\fSTATE_ACTIVE\x10\x01\x12\x12\n" +
-	"\x0eSTATE_INACTIVE\x10\x02:f\xeaAc\n" +
-	"!freebusy.ohtarnished.dev/Offering\x12)resources/{resource}/offerings/{offering}*\tofferings2\bofferingJ\x04\b\x02\x10\x03\"\xbe\x01\n" +
+	"\x04etag\x18\v \x01(\tR\x04etag:b\xeaA_\n" +
+	"\x1dfreebusy.resource.v1/Offering\x12)resources/{resource}/offerings/{offering}*\tofferings2\bofferingJ\x04\b\x02\x10\x03\"\xbe\x01\n" +
 	"\fRateOverride\x12A\n" +
 	"\n" +
 	"date_range\x18\x01 \x01(\v2\x1d.freebusy.shared.v1.DateRangeB\x03\xe0A\x01R\tdateRange\x12<\n" +
@@ -965,19 +729,7 @@ const file_freebusy_resource_v1_resource_proto_rawDesc = "" +
 	"\x03Tax\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x1d\n" +
-	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent*\xb4\x01\n" +
-	"\fResourceType\x12\x1d\n" +
-	"\x19RESOURCE_TYPE_UNSPECIFIED\x10\x00\x12\x1a\n" +
-	"\x16RESOURCE_TYPE_PROVIDER\x10\x01\x12\x16\n" +
-	"\x12RESOURCE_TYPE_ROOM\x10\x02\x12\x1b\n" +
-	"\x17RESOURCE_TYPE_EQUIPMENT\x10\x03\x12\x1b\n" +
-	"\x17RESOURCE_TYPE_UNIT_TYPE\x10\x04\x12\x17\n" +
-	"\x13RESOURCE_TYPE_SPACE\x10\x05*\x82\x01\n" +
-	"\vPricingUnit\x12\x1c\n" +
-	"\x18PRICING_UNIT_UNSPECIFIED\x10\x00\x12\x1c\n" +
-	"\x18PRICING_UNIT_PER_BOOKING\x10\x01\x12\x1a\n" +
-	"\x16PRICING_UNIT_PER_NIGHT\x10\x02\x12\x1b\n" +
-	"\x17PRICING_UNIT_PER_PERSON\x10\x03B\xf9\x01\n" +
+	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercentB\xf9\x01\n" +
 	"\x18com.freebusy.resource.v1B\rResourceProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1\xa2\x02\x03FRX\xaa\x02\x14Freebusy.Resource.V1\xca\x02\x14Freebusy\\Resource\\V1\xe2\x02 Freebusy\\Resource\\V1\\GPBMetadata\xea\x02\x16Freebusy::Resource::V1b\x06proto3"
 
 var (
@@ -992,50 +744,49 @@ func file_freebusy_resource_v1_resource_proto_rawDescGZIP() []byte {
 	return file_freebusy_resource_v1_resource_proto_rawDescData
 }
 
-var file_freebusy_resource_v1_resource_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_freebusy_resource_v1_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_freebusy_resource_v1_resource_proto_goTypes = []any{
-	(ResourceType)(0),             // 0: freebusy.resource.v1.ResourceType
-	(PricingUnit)(0),              // 1: freebusy.resource.v1.PricingUnit
-	(Resource_State)(0),           // 2: freebusy.resource.v1.Resource.State
-	(Offering_State)(0),           // 3: freebusy.resource.v1.Offering.State
-	(*Resource)(nil),              // 4: freebusy.resource.v1.Resource
-	(*Offering)(nil),              // 5: freebusy.resource.v1.Offering
-	(*RateOverride)(nil),          // 6: freebusy.resource.v1.RateOverride
-	(*LosDiscount)(nil),           // 7: freebusy.resource.v1.LosDiscount
-	(*Fee)(nil),                   // 8: freebusy.resource.v1.Fee
-	(*Tax)(nil),                   // 9: freebusy.resource.v1.Tax
-	(sharedpbv1.BookingMode)(0),   // 10: freebusy.shared.v1.BookingMode
-	(*structpb.Struct)(nil),       // 11: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),   // 13: google.protobuf.Duration
-	(*money.Money)(nil),           // 14: google.type.Money
+	(*Resource)(nil),              // 0: freebusy.resource.v1.Resource
+	(*Offering)(nil),              // 1: freebusy.resource.v1.Offering
+	(*RateOverride)(nil),          // 2: freebusy.resource.v1.RateOverride
+	(*LosDiscount)(nil),           // 3: freebusy.resource.v1.LosDiscount
+	(*Fee)(nil),                   // 4: freebusy.resource.v1.Fee
+	(*Tax)(nil),                   // 5: freebusy.resource.v1.Tax
+	(ResourceType)(0),             // 6: freebusy.resource.v1.ResourceType
+	(sharedpbv1.BookingMode)(0),   // 7: freebusy.shared.v1.BookingMode
+	(*structpb.Struct)(nil),       // 8: google.protobuf.Struct
+	(ResourceState)(0),            // 9: freebusy.resource.v1.ResourceState
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),   // 11: google.protobuf.Duration
+	(*money.Money)(nil),           // 12: google.type.Money
+	(PricingUnit)(0),              // 13: freebusy.resource.v1.PricingUnit
+	(OfferingState)(0),            // 14: freebusy.resource.v1.OfferingState
 	(*sharedpbv1.DateRange)(nil),  // 15: freebusy.shared.v1.DateRange
 	(sharedpbv1.Weekday)(0),       // 16: freebusy.shared.v1.Weekday
 }
 var file_freebusy_resource_v1_resource_proto_depIdxs = []int32{
-	0,  // 0: freebusy.resource.v1.Resource.type:type_name -> freebusy.resource.v1.ResourceType
-	10, // 1: freebusy.resource.v1.Resource.booking_mode:type_name -> freebusy.shared.v1.BookingMode
-	11, // 2: freebusy.resource.v1.Resource.attributes:type_name -> google.protobuf.Struct
-	2,  // 3: freebusy.resource.v1.Resource.state:type_name -> freebusy.resource.v1.Resource.State
-	12, // 4: freebusy.resource.v1.Resource.create_time:type_name -> google.protobuf.Timestamp
-	12, // 5: freebusy.resource.v1.Resource.update_time:type_name -> google.protobuf.Timestamp
-	13, // 6: freebusy.resource.v1.Offering.duration:type_name -> google.protobuf.Duration
-	14, // 7: freebusy.resource.v1.Offering.price:type_name -> google.type.Money
-	1,  // 8: freebusy.resource.v1.Offering.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
-	6,  // 9: freebusy.resource.v1.Offering.rate_overrides:type_name -> freebusy.resource.v1.RateOverride
-	7,  // 10: freebusy.resource.v1.Offering.los_discounts:type_name -> freebusy.resource.v1.LosDiscount
-	8,  // 11: freebusy.resource.v1.Offering.fees:type_name -> freebusy.resource.v1.Fee
-	9,  // 12: freebusy.resource.v1.Offering.taxes:type_name -> freebusy.resource.v1.Tax
-	3,  // 13: freebusy.resource.v1.Offering.state:type_name -> freebusy.resource.v1.Offering.State
-	12, // 14: freebusy.resource.v1.Offering.create_time:type_name -> google.protobuf.Timestamp
-	12, // 15: freebusy.resource.v1.Offering.update_time:type_name -> google.protobuf.Timestamp
+	6,  // 0: freebusy.resource.v1.Resource.type:type_name -> freebusy.resource.v1.ResourceType
+	7,  // 1: freebusy.resource.v1.Resource.booking_mode:type_name -> freebusy.shared.v1.BookingMode
+	8,  // 2: freebusy.resource.v1.Resource.attributes:type_name -> google.protobuf.Struct
+	9,  // 3: freebusy.resource.v1.Resource.state:type_name -> freebusy.resource.v1.ResourceState
+	10, // 4: freebusy.resource.v1.Resource.create_time:type_name -> google.protobuf.Timestamp
+	10, // 5: freebusy.resource.v1.Resource.update_time:type_name -> google.protobuf.Timestamp
+	11, // 6: freebusy.resource.v1.Offering.duration:type_name -> google.protobuf.Duration
+	12, // 7: freebusy.resource.v1.Offering.price:type_name -> google.type.Money
+	13, // 8: freebusy.resource.v1.Offering.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
+	2,  // 9: freebusy.resource.v1.Offering.rate_overrides:type_name -> freebusy.resource.v1.RateOverride
+	3,  // 10: freebusy.resource.v1.Offering.los_discounts:type_name -> freebusy.resource.v1.LosDiscount
+	4,  // 11: freebusy.resource.v1.Offering.fees:type_name -> freebusy.resource.v1.Fee
+	5,  // 12: freebusy.resource.v1.Offering.taxes:type_name -> freebusy.resource.v1.Tax
+	14, // 13: freebusy.resource.v1.Offering.state:type_name -> freebusy.resource.v1.OfferingState
+	10, // 14: freebusy.resource.v1.Offering.create_time:type_name -> google.protobuf.Timestamp
+	10, // 15: freebusy.resource.v1.Offering.update_time:type_name -> google.protobuf.Timestamp
 	15, // 16: freebusy.resource.v1.RateOverride.date_range:type_name -> freebusy.shared.v1.DateRange
 	16, // 17: freebusy.resource.v1.RateOverride.weekdays:type_name -> freebusy.shared.v1.Weekday
-	14, // 18: freebusy.resource.v1.RateOverride.price:type_name -> google.type.Money
-	14, // 19: freebusy.resource.v1.LosDiscount.amount_off:type_name -> google.type.Money
-	14, // 20: freebusy.resource.v1.Fee.amount:type_name -> google.type.Money
-	1,  // 21: freebusy.resource.v1.Fee.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
+	12, // 18: freebusy.resource.v1.RateOverride.price:type_name -> google.type.Money
+	12, // 19: freebusy.resource.v1.LosDiscount.amount_off:type_name -> google.type.Money
+	12, // 20: freebusy.resource.v1.Fee.amount:type_name -> google.type.Money
+	13, // 21: freebusy.resource.v1.Fee.pricing_unit:type_name -> freebusy.resource.v1.PricingUnit
 	22, // [22:22] is the sub-list for method output_type
 	22, // [22:22] is the sub-list for method input_type
 	22, // [22:22] is the sub-list for extension type_name
@@ -1048,19 +799,19 @@ func file_freebusy_resource_v1_resource_proto_init() {
 	if File_freebusy_resource_v1_resource_proto != nil {
 		return
 	}
+	file_freebusy_resource_v1_enums_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_resource_v1_resource_proto_rawDesc), len(file_freebusy_resource_v1_resource_proto_rawDesc)),
-			NumEnums:      4,
+			NumEnums:      0,
 			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_freebusy_resource_v1_resource_proto_goTypes,
 		DependencyIndexes: file_freebusy_resource_v1_resource_proto_depIdxs,
-		EnumInfos:         file_freebusy_resource_v1_resource_proto_enumTypes,
 		MessageInfos:      file_freebusy_resource_v1_resource_proto_msgTypes,
 	}.Build()
 	File_freebusy_resource_v1_resource_proto = out.File

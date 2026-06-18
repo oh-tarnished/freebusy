@@ -1,0 +1,145 @@
+components:
+  schemas:
+    freebusy.booking.v1.CancelBookingRequest:
+      description: Request message for CancelBooking.
+      properties:
+        name:
+          description: 'The booking to cancel. Format: bookings/{booking}'
+          type: string
+        note:
+          description: Free-form note explaining the cancellation.
+          type: string
+        reason:
+          description: Why the booking is being cancelled.
+          enum:
+          - CANCEL_REASON_UNSPECIFIED
+          - CANCEL_REASON_REQUESTED_BY_CUSTOMER
+          - CANCEL_REASON_REQUESTED_BY_OPERATOR
+          - CANCEL_REASON_PAYMENT_FAILED
+          - CANCEL_REASON_NO_SHOW
+          - CANCEL_REASON_OTHER
+          type: string
+        requestId:
+          description: Caller-supplied idempotency key; identical retries return the
+            first result.
+          type: string
+      type: object
+    freebusy.booking.v1.ConfirmBookingRequest:
+      description: Request message for ConfirmBooking. Confirmation normally arrives
+        via the payment webhook rather than a direct client call; either way it flips
+        a PENDING_HOLD to CONFIRMED.
+      properties:
+        name:
+          description: 'The booking to confirm. Format: bookings/{booking}'
+          type: string
+        paymentRef:
+          description: Opaque reference to the payment/settlement that confirmed this
+            booking.
+          type: string
+        requestId:
+          description: Caller-supplied idempotency key; identical retries return the
+            first result.
+          type: string
+      type: object
+    freebusy.booking.v1.PreviewCancellationRequest:
+      description: Request message for PreviewCancellation. Computes the refund a
+        cancellation would yield right now, under the resource's cancellation policy,
+        without cancelling the booking.
+      properties:
+        name:
+          description: 'The booking to preview a cancellation for. Format: bookings/{booking}'
+          type: string
+      type: object
+    freebusy.booking.v1.PreviewCancellationResponse:
+      description: Response message for PreviewCancellation.
+      properties:
+        nonRefundableAmount:
+          description: Amount that would be retained (total minus refund_amount).
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        policySummary:
+          description: Human-readable summary of the policy tier that applied, for
+            display.
+          type: string
+        refundAmount:
+          description: Amount that would be refunded now.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        refundPercent:
+          description: Percentage of the total that would be refunded (0-100).
+          format: int32
+          type: integer
+        refundable:
+          description: Whether cancelling now would refund anything.
+          type: boolean
+      type: object
+    freebusy.booking.v1.RescheduleBookingRequest:
+      description: Request message for RescheduleBooking. Atomically moves a booking
+        to a new span (and optionally offering), re-running availability and the exclusion
+        check on the new window.
+      properties:
+        name:
+          description: 'The booking to reschedule. Format: bookings/{booking}'
+          type: string
+        offering:
+          description: 'The new offering, when changing it as part of the reschedule.
+            Format: resources/{resource}/offerings/{offering}'
+          type: string
+        requestId:
+          description: Caller-supplied idempotency key that dedupes retries of this
+            reschedule.
+          type: string
+        window:
+          description: The new reserved span.
+          properties:
+            endTime:
+              description: Exclusive end of the interval.
+              format: date-time
+              type: string
+            startTime:
+              description: Inclusive start of the interval.
+              format: date-time
+              type: string
+          type: object
+      type: object
+info:
+  title: OpenAPI Spec for Solo APIs.
+  version: v1
+openapi: 3.0.1
+paths: null

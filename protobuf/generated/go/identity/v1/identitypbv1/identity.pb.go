@@ -459,7 +459,7 @@ var File_freebusy_identity_v1_identity_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf2\x03\n" +
+	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xee\x03\n" +
 	"\x04User\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tB\x03\xe0A\x03R\x05email\x12&\n" +
@@ -474,16 +474,16 @@ const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
-	"\x04etag\x18\v \x01(\tR\x04etag:=\xeaA:\n" +
-	"\x1dfreebusy.ohtarnished.dev/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03\"\xae\x01\n" +
+	"\x04etag\x18\v \x01(\tR\x04etag:9\xeaA6\n" +
+	"\x19freebusy.identity.v1/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03\"\xae\x01\n" +
 	"\x11MembershipSummary\x12Q\n" +
 	"\forganisation\x18\x01 \x01(\tB-\xe0A\x03\xfaA'\n" +
-	"%freebusy.ohtarnished.dev/OrganisationR\forganisation\x12-\n" +
+	"%freebusy.organisation.v1/OrganisationR\forganisation\x12-\n" +
 	"\x10org_display_name\x18\x02 \x01(\tB\x03\xe0A\x03R\x0eorgDisplayName\x12\x17\n" +
-	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x03R\x04role\"K\n" +
-	"\x0eGetUserRequest\x129\n" +
-	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.ohtarnished.dev/UserR\x04name\"\x8a\x01\n" +
+	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x03R\x04role\"G\n" +
+	"\x0eGetUserRequest\x125\n" +
+	"\x04name\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/UserR\x04name\"\x8a\x01\n" +
 	"\x11UpdateUserRequest\x123\n" +
 	"\x04user\x18\x01 \x01(\v2\x1a.freebusy.identity.v1.UserB\x03\xe0A\x02R\x04user\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +

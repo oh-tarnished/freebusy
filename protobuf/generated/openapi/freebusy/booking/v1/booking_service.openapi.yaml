@@ -1,0 +1,629 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: BookingService API
+    description: |-
+        BookingService is the transactional heart. CreateBooking carries the
+         idempotency key, runs policy checks, and does the exclusion-constraint insert
+         that places a hold. The hold lifecycle is modeled as booking states. Two
+         things are deliberately NOT RPCs: the sweeper that releases expired holds is
+         an internal goroutine/cron, and confirmation usually arrives as a payment
+         webhook that calls ConfirmBooking server-side.
+    version: 0.0.1
+servers:
+    - url: https://freebusy.ohtarnished.dev
+paths:
+    /v1/bookings:
+        get:
+            tags:
+                - BookingService
+            description: Lists bookings.
+            operationId: BookingService_ListBookings
+            parameters:
+                - name: pageSize
+                  in: query
+                  description: Maximum number of bookings to return. The server may cap this.
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageToken
+                  in: query
+                  description: Page token from a previous ListBookings call's next_page_token.
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: |-
+                    Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+                     `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
+                  schema:
+                    type: string
+                - name: orderBy
+                  in: query
+                  description: Sort order, e.g. "create_time desc" or "window.start_time".
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListBookingsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BookingService
+            description: Creates a booking, placing a hold.
+            operationId: BookingService_CreateBooking
+            parameters:
+                - name: requestId
+                  in: query
+                  description: |-
+                    Caller-supplied idempotency key that dedupes retries of this create. Reusing
+                     an id returns the booking created by the first call.
+                  schema:
+                    type: string
+                - name: bookingId
+                  in: query
+                  description: Optional caller-chosen ID for the booking; the server generates one if unset.
+                  schema:
+                    type: string
+                - name: validateOnly
+                  in: query
+                  description: |-
+                    If true, validate the request (availability + policy) and report what would
+                     happen, but place no hold.
+                  schema:
+                    type: boolean
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Booking'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Booking'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/bookings/{booking}:
+        get:
+            tags:
+                - BookingService
+            description: Gets a single booking.
+            operationId: BookingService_GetBooking
+            parameters:
+                - name: booking
+                  in: path
+                  description: The booking id.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Booking'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/bookings/{booking}:cancel:
+        post:
+            tags:
+                - BookingService
+            description: Cancels a booking.
+            operationId: BookingService_CancelBooking
+            parameters:
+                - name: booking
+                  in: path
+                  description: The booking id.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CancelBookingRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Booking'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/bookings/{booking}:confirm:
+        post:
+            tags:
+                - BookingService
+            description: Confirms a held booking.
+            operationId: BookingService_ConfirmBooking
+            parameters:
+                - name: booking
+                  in: path
+                  description: The booking id.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ConfirmBookingRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Booking'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/bookings/{booking}:previewCancellation:
+        post:
+            tags:
+                - BookingService
+            description: Previews the refund a cancellation would yield now, without cancelling.
+            operationId: BookingService_PreviewCancellation
+            parameters:
+                - name: booking
+                  in: path
+                  description: The booking id.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PreviewCancellationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PreviewCancellationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/bookings/{booking}:reschedule:
+        post:
+            tags:
+                - BookingService
+            description: Reschedules a booking to a new span.
+            operationId: BookingService_RescheduleBooking
+            parameters:
+                - name: booking
+                  in: path
+                  description: The booking id.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RescheduleBookingRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Booking'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        Booking:
+            required:
+                - resource
+                - window
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The booking name.
+                         Format: bookings/{booking}
+                resource:
+                    type: string
+                    description: |-
+                        The resource being booked.
+                         Format: resources/{resource}
+                offering:
+                    type: string
+                    description: |-
+                        The offering being booked, when applicable.
+                         Format: resources/{resource}/offerings/{offering}
+                customer:
+                    type: string
+                    description: |-
+                        The user the booking is for.
+                         Format: users/{user}
+                contact:
+                    allOf:
+                        - $ref: '#/components/schemas/Contact'
+                    description: |-
+                        Contact details for the booker. Required when `customer` is unset (a guest /
+                         walk-in booking); when `customer` is set these supplement or override the
+                         user's profile contact for this booking.
+                units:
+                    type: integer
+                    description: Number of units / party size reserved. Defaults to 1.
+                    format: int32
+                window:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeWindow'
+                    description: The reserved span. For NIGHTLY resources this spans check-in to check-out.
+                assignedUnit:
+                    readOnly: true
+                    type: string
+                    description: Which specific unit of the pool was assigned (the shell's atomic pick).
+                state:
+                    readOnly: true
+                    type: integer
+                    description: Current lifecycle state.
+                    format: enum
+                holdExpireTime:
+                    readOnly: true
+                    type: string
+                    description: When the pending hold lapses, if not confirmed first.
+                    format: date-time
+                price:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Computed subtotal before discounts.
+                promoCode:
+                    type: string
+                    description: |-
+                        The promo code to apply to this booking, set at creation, if any.
+                         Format: promoCodes/{promo_code}
+                discount:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Discount applied from the promo code.
+                total:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Final total after discounts.
+                priceComponents:
+                    readOnly: true
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PriceComponent'
+                    description: |-
+                        Itemized breakdown behind the total: the base charge, each fee and tax, and
+                         each discount, as signed lines. `price` is the TYPE_BASE subtotal and
+                         `total` is the sum of every component; these lines expose the fees and taxes
+                         in between. Empty for simple bookings with no fees or taxes configured.
+                notes:
+                    type: string
+                    description: Free-form notes on the booking.
+                attributes:
+                    type: object
+                    description: Arbitrary attributes.
+                cancelReason:
+                    readOnly: true
+                    type: integer
+                    description: Why the booking was cancelled, when state is CANCELLED.
+                    format: enum
+                createTime:
+                    readOnly: true
+                    type: string
+                    description: Creation timestamp (when the hold was placed).
+                    format: date-time
+                updateTime:
+                    readOnly: true
+                    type: string
+                    description: Last-modification timestamp.
+                    format: date-time
+                confirmTime:
+                    readOnly: true
+                    type: string
+                    description: When the booking was confirmed, if at all.
+                    format: date-time
+                cancelTime:
+                    readOnly: true
+                    type: string
+                    description: When the booking was cancelled, if at all.
+                    format: date-time
+                refundAmount:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: |-
+                        Amount refunded on cancellation, computed from the resource's cancellation
+                         policy and how far ahead of the booking start it was cancelled. Set only
+                         once the booking is CANCELLED. Use PreviewCancellation to see this before
+                         committing.
+                refundPercent:
+                    readOnly: true
+                    type: integer
+                    description: Percentage of the total that `refund_amount` represents (0-100).
+                    format: int32
+                holdTtl:
+                    pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
+                    type: string
+                    description: |-
+                        Requested time-to-live of the hold, set at creation. The server caps this
+                         and reflects the effective expiry in hold_expire_time.
+                etag:
+                    type: string
+                    description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+            description: |-
+                A reservation against a resource. The hold lifecycle lives here as states
+                 rather than a separate service: CreateBooking places a PENDING_HOLD,
+                 confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
+                 are never confirmed.
+        CancelBookingRequest:
+            required:
+                - name
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The booking to cancel.
+                         Format: bookings/{booking}
+                reason:
+                    type: integer
+                    description: Why the booking is being cancelled.
+                    format: enum
+                note:
+                    type: string
+                    description: Free-form note explaining the cancellation.
+                requestId:
+                    type: string
+                    description: Caller-supplied idempotency key; identical retries return the first result.
+            description: Request message for CancelBooking.
+        ConfirmBookingRequest:
+            required:
+                - name
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The booking to confirm.
+                         Format: bookings/{booking}
+                paymentRef:
+                    type: string
+                    description: Opaque reference to the payment/settlement that confirmed this booking.
+                requestId:
+                    type: string
+                    description: Caller-supplied idempotency key; identical retries return the first result.
+            description: |-
+                Request message for ConfirmBooking. Confirmation normally arrives via the
+                 payment webhook rather than a direct client call; either way it flips a
+                 PENDING_HOLD to CONFIRMED.
+        Contact:
+            type: object
+            properties:
+                displayName:
+                    type: string
+                    description: Full name of the guest.
+                email:
+                    type: string
+                    description: Email address for the confirmation and any follow-ups.
+                phoneNumber:
+                    type: string
+                    description: Phone number in E.164 form (e.g. "+14155552671").
+            description: |-
+                Contact details for the person a booking is for. When a booking carries a
+                 `customer` (a users/{user} reference) these typically mirror the user's
+                 profile; for walk-in or email-only bookings made by someone who is not a
+                 registered user, this is the only contact information captured. The server
+                 requires at least one reachable channel (email or phone) when no customer is
+                 set.
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListBookingsResponse:
+            type: object
+            properties:
+                bookings:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Booking'
+                    description: The page of bookings.
+                nextPageToken:
+                    type: string
+                    description: Token to pass as page_token to retrieve the next page; empty when no more.
+            description: Response message for ListBookings.
+        Money:
+            type: object
+            properties:
+                currencyCode:
+                    type: string
+                    description: The three-letter currency code defined in ISO 4217.
+                units:
+                    type: string
+                    description: |-
+                        The whole units of the amount.
+                         For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
+                nanos:
+                    type: integer
+                    description: |-
+                        Number of nano (10^-9) units of the amount.
+                         The value must be between -999,999,999 and +999,999,999 inclusive.
+                         If `units` is positive, `nanos` must be positive or zero.
+                         If `units` is zero, `nanos` can be positive, zero, or negative.
+                         If `units` is negative, `nanos` must be negative or zero.
+                         For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+            description: Represents an amount of money with its currency type.
+        PreviewCancellationRequest:
+            required:
+                - name
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The booking to preview a cancellation for.
+                         Format: bookings/{booking}
+            description: |-
+                Request message for PreviewCancellation. Computes the refund a cancellation
+                 would yield right now, under the resource's cancellation policy, without
+                 cancelling the booking.
+        PreviewCancellationResponse:
+            type: object
+            properties:
+                refundable:
+                    type: boolean
+                    description: Whether cancelling now would refund anything.
+                refundPercent:
+                    type: integer
+                    description: Percentage of the total that would be refunded (0-100).
+                    format: int32
+                refundAmount:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Amount that would be refunded now.
+                nonRefundableAmount:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Amount that would be retained (total minus refund_amount).
+                policySummary:
+                    type: string
+                    description: Human-readable summary of the policy tier that applied, for display.
+            description: Response message for PreviewCancellation.
+        PriceComponent:
+            type: object
+            properties:
+                type:
+                    type: integer
+                    description: Which kind of line this is.
+                    format: enum
+                code:
+                    type: string
+                    description: |-
+                        Stable machine code for the line, e.g. "base", "cleaning_fee",
+                         "occupancy_tax", or a promo code. Clients key display and logic off this.
+                displayName:
+                    type: string
+                    description: Human-readable label suitable for display on an itemized receipt.
+                amount:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: |-
+                        Signed amount: positive for charges (base, fees, taxes), negative for
+                         discounts. Summing every component yields the booking total.
+            description: |-
+                One line in a price breakdown: a base charge, a fee, a tax, or a discount.
+                 Clients branch on `type` and `code`; the signed `amount` rolls up to the
+                 booking total (charges positive, discounts negative).
+        RescheduleBookingRequest:
+            required:
+                - name
+                - window
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The booking to reschedule.
+                         Format: bookings/{booking}
+                window:
+                    allOf:
+                        - $ref: '#/components/schemas/TimeWindow'
+                    description: The new reserved span.
+                offering:
+                    type: string
+                    description: |-
+                        The new offering, when changing it as part of the reschedule.
+                         Format: resources/{resource}/offerings/{offering}
+                requestId:
+                    type: string
+                    description: Caller-supplied idempotency key that dedupes retries of this reschedule.
+            description: |-
+                Request message for RescheduleBooking. Atomically moves a booking to a new
+                 span (and optionally offering), re-running availability and the exclusion
+                 check on the new window.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        TimeWindow:
+            required:
+                - startTime
+                - endTime
+            type: object
+            properties:
+                startTime:
+                    type: string
+                    description: Inclusive start of the interval.
+                    format: date-time
+                endTime:
+                    type: string
+                    description: Exclusive end of the interval.
+                    format: date-time
+            description: |-
+                A half-open time interval [start_time, end_time). Used for query windows and
+                 for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
+tags:
+    - name: BookingService

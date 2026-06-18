@@ -377,32 +377,32 @@ var File_freebusy_booking_v1_booking_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a\x17google/type/money.proto\"\xa7\x01\n" +
-	"\x15ConfirmBookingRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" freebusy.ohtarnished.dev/BookingR\x04name\x12$\n" +
+	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a\x17google/type/money.proto\"\xa2\x01\n" +
+	"\x15ConfirmBookingRequest\x127\n" +
+	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/BookingR\x04name\x12$\n" +
 	"\vpayment_ref\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
 	"paymentRef\x12*\n" +
 	"\n" +
-	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xd9\x01\n" +
-	"\x14CancelBookingRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" freebusy.ohtarnished.dev/BookingR\x04name\x12>\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xd4\x01\n" +
+	"\x14CancelBookingRequest\x127\n" +
+	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/BookingR\x04name\x12>\n" +
 	"\x06reason\x18\x02 \x01(\x0e2!.freebusy.booking.v1.CancelReasonB\x03\xe0A\x01R\x06reason\x12\x17\n" +
 	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x88\x02\n" +
-	"\x18RescheduleBookingRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" freebusy.ohtarnished.dev/BookingR\x04name\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12E\n" +
-	"\boffering\x18\x03 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12*\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xff\x01\n" +
+	"\x18RescheduleBookingRequest\x127\n" +
+	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/BookingR\x04name\x12;\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12A\n" +
+	"\boffering\x18\x03 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"Z\n" +
-	"\x1aPreviewCancellationRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" freebusy.ohtarnished.dev/BookingR\x04name\"\x8c\x02\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"U\n" +
+	"\x1aPreviewCancellationRequest\x127\n" +
+	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/BookingR\x04name\"\x8c\x02\n" +
 	"\x1bPreviewCancellationResponse\x12\x1e\n" +
 	"\n" +
 	"refundable\x18\x01 \x01(\bR\n" +
@@ -454,6 +454,7 @@ func file_freebusy_booking_v1_booking_actions_proto_init() {
 		return
 	}
 	file_freebusy_booking_v1_booking_proto_init()
+	file_freebusy_booking_v1_enums_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

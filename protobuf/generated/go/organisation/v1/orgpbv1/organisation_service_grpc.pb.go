@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.0
 // - protoc             (unknown)
-// source: freebusy/organisation/v1/org_service.proto
+// source: freebusy/organisation/v1/organisation_service.proto
 
 package orgpbv1
 
@@ -488,5 +488,5 @@ var OrganisationService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "freebusy/organisation/v1/org_service.proto",
+	Metadata: "freebusy/organisation/v1/organisation_service.proto",
 }

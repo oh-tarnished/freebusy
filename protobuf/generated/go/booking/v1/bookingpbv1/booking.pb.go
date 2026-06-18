@@ -27,140 +27,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Why a booking was cancelled.
-type CancelReason int32
-
-const (
-	// Unset.
-	CancelReason_CANCEL_REASON_UNSPECIFIED CancelReason = 0
-	// The customer requested cancellation.
-	CancelReason_CANCEL_REASON_REQUESTED_BY_CUSTOMER CancelReason = 1
-	// An operator cancelled it.
-	CancelReason_CANCEL_REASON_REQUESTED_BY_OPERATOR CancelReason = 2
-	// Payment failed or was not completed in time.
-	CancelReason_CANCEL_REASON_PAYMENT_FAILED CancelReason = 3
-	// The customer did not show.
-	CancelReason_CANCEL_REASON_NO_SHOW CancelReason = 4
-	// Any other reason.
-	CancelReason_CANCEL_REASON_OTHER CancelReason = 5
-)
-
-// Enum value maps for CancelReason.
-var (
-	CancelReason_name = map[int32]string{
-		0: "CANCEL_REASON_UNSPECIFIED",
-		1: "CANCEL_REASON_REQUESTED_BY_CUSTOMER",
-		2: "CANCEL_REASON_REQUESTED_BY_OPERATOR",
-		3: "CANCEL_REASON_PAYMENT_FAILED",
-		4: "CANCEL_REASON_NO_SHOW",
-		5: "CANCEL_REASON_OTHER",
-	}
-	CancelReason_value = map[string]int32{
-		"CANCEL_REASON_UNSPECIFIED":           0,
-		"CANCEL_REASON_REQUESTED_BY_CUSTOMER": 1,
-		"CANCEL_REASON_REQUESTED_BY_OPERATOR": 2,
-		"CANCEL_REASON_PAYMENT_FAILED":        3,
-		"CANCEL_REASON_NO_SHOW":               4,
-		"CANCEL_REASON_OTHER":                 5,
-	}
-)
-
-func (x CancelReason) Enum() *CancelReason {
-	p := new(CancelReason)
-	*p = x
-	return p
-}
-
-func (x CancelReason) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (CancelReason) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_booking_v1_booking_proto_enumTypes[0].Descriptor()
-}
-
-func (CancelReason) Type() protoreflect.EnumType {
-	return &file_freebusy_booking_v1_booking_proto_enumTypes[0]
-}
-
-func (x CancelReason) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use CancelReason.Descriptor instead.
-func (CancelReason) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_booking_v1_booking_proto_rawDescGZIP(), []int{0}
-}
-
-// Lifecycle state of a booking.
-type Booking_State int32
-
-const (
-	// Unset.
-	Booking_STATE_UNSPECIFIED Booking_State = 0
-	// Held but not yet confirmed; expires at hold_expire_time.
-	Booking_STATE_PENDING_HOLD Booking_State = 1
-	// Confirmed and active.
-	Booking_STATE_CONFIRMED Booking_State = 2
-	// Cancelled by customer or operator.
-	Booking_STATE_CANCELLED Booking_State = 3
-	// Hold lapsed before confirmation (released by the sweeper).
-	Booking_STATE_EXPIRED Booking_State = 4
-	// The booked time has passed and the booking was honored.
-	Booking_STATE_COMPLETED Booking_State = 5
-	// The customer did not show.
-	Booking_STATE_NO_SHOW Booking_State = 6
-)
-
-// Enum value maps for Booking_State.
-var (
-	Booking_State_name = map[int32]string{
-		0: "STATE_UNSPECIFIED",
-		1: "STATE_PENDING_HOLD",
-		2: "STATE_CONFIRMED",
-		3: "STATE_CANCELLED",
-		4: "STATE_EXPIRED",
-		5: "STATE_COMPLETED",
-		6: "STATE_NO_SHOW",
-	}
-	Booking_State_value = map[string]int32{
-		"STATE_UNSPECIFIED":  0,
-		"STATE_PENDING_HOLD": 1,
-		"STATE_CONFIRMED":    2,
-		"STATE_CANCELLED":    3,
-		"STATE_EXPIRED":      4,
-		"STATE_COMPLETED":    5,
-		"STATE_NO_SHOW":      6,
-	}
-)
-
-func (x Booking_State) Enum() *Booking_State {
-	p := new(Booking_State)
-	*p = x
-	return p
-}
-
-func (x Booking_State) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Booking_State) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_booking_v1_booking_proto_enumTypes[1].Descriptor()
-}
-
-func (Booking_State) Type() protoreflect.EnumType {
-	return &file_freebusy_booking_v1_booking_proto_enumTypes[1]
-}
-
-func (x Booking_State) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Booking_State.Descriptor instead.
-func (Booking_State) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_booking_v1_booking_proto_rawDescGZIP(), []int{0, 0}
-}
-
 // A reservation against a resource. The hold lifecycle lives here as states
 // rather than a separate service: CreateBooking places a PENDING_HOLD,
 // confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
@@ -190,7 +56,7 @@ type Booking struct {
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
 	AssignedUnit string `protobuf:"bytes,8,opt,name=assigned_unit,json=assignedUnit,proto3" json:"assigned_unit,omitempty"`
 	// Current lifecycle state.
-	State Booking_State `protobuf:"varint,9,opt,name=state,proto3,enum=freebusy.booking.v1.Booking_State" json:"state,omitempty"`
+	State BookingState `protobuf:"varint,9,opt,name=state,proto3,enum=freebusy.booking.v1.BookingState" json:"state,omitempty"`
 	// When the pending hold lapses, if not confirmed first.
 	HoldExpireTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=hold_expire_time,json=holdExpireTime,proto3" json:"hold_expire_time,omitempty"`
 	// Computed subtotal before discounts.
@@ -323,11 +189,11 @@ func (x *Booking) GetAssignedUnit() string {
 	return ""
 }
 
-func (x *Booking) GetState() Booking_State {
+func (x *Booking) GetState() BookingState {
 	if x != nil {
 		return x.State
 	}
-	return Booking_STATE_UNSPECIFIED
+	return BookingState_BOOKING_STATE_UNSPECIFIED
 }
 
 func (x *Booking) GetHoldExpireTime() *timestamppb.Timestamp {
@@ -453,26 +319,26 @@ var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xc8\r\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\x95\f\n" +
 	"\aBooking\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12E\n" +
-	"\bresource\x18\x03 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x12E\n" +
-	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12A\n" +
-	"\bcustomer\x18\x05 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.ohtarnished.dev/UserR\bcustomer\x12:\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12A\n" +
+	"\bresource\x18\x03 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x12A\n" +
+	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12=\n" +
+	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/UserR\bcustomer\x12:\n" +
 	"\acontact\x18\x18 \x01(\v2\x1b.freebusy.shared.v1.ContactB\x03\xe0A\x01R\acontact\x12\x19\n" +
 	"\x05units\x18\x06 \x01(\x05B\x03\xe0A\x01R\x05units\x12;\n" +
 	"\x06window\x18\a \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12(\n" +
-	"\rassigned_unit\x18\b \x01(\tB\x03\xe0A\x03R\fassignedUnit\x12=\n" +
-	"\x05state\x18\t \x01(\x0e2\".freebusy.booking.v1.Booking.StateB\x03\xe0A\x03R\x05state\x12I\n" +
+	"\rassigned_unit\x18\b \x01(\tB\x03\xe0A\x03R\fassignedUnit\x12<\n" +
+	"\x05state\x18\t \x01(\x0e2!.freebusy.booking.v1.BookingStateB\x03\xe0A\x03R\x05state\x12I\n" +
 	"\x10hold_expire_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\x0eholdExpireTime\x12-\n" +
-	"\x05price\x18\v \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05price\x12I\n" +
+	"\x05price\x18\v \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05price\x12F\n" +
 	"\n" +
-	"promo_code\x18\f \x01(\tB*\xe0A\x05\xfaA$\n" +
-	"\"freebusy.ohtarnished.dev/PromoCodeR\tpromoCode\x123\n" +
+	"promo_code\x18\f \x01(\tB'\xe0A\x05\xfaA!\n" +
+	"\x1ffreebusy.promocode.v1/PromoCodeR\tpromoCode\x123\n" +
 	"\bdiscount\x18\r \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\bdiscount\x12-\n" +
 	"\x05total\x18\x0e \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05total\x12R\n" +
 	"\x10price_components\x18\x19 \x03(\v2\".freebusy.shared.v1.PriceComponentB\x03\xe0A\x03R\x0fpriceComponents\x12\x19\n" +
@@ -491,23 +357,8 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\rrefund_amount\x18\x1a \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\frefundAmount\x12*\n" +
 	"\x0erefund_percent\x18\x1b \x01(\x05B\x03\xe0A\x03R\rrefundPercent\x129\n" +
 	"\bhold_ttl\x18\x16 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x05R\aholdTtl\x12\x12\n" +
-	"\x04etag\x18\x17 \x01(\tR\x04etag\"\x9b\x01\n" +
-	"\x05State\x12\x15\n" +
-	"\x11STATE_UNSPECIFIED\x10\x00\x12\x16\n" +
-	"\x12STATE_PENDING_HOLD\x10\x01\x12\x13\n" +
-	"\x0fSTATE_CONFIRMED\x10\x02\x12\x13\n" +
-	"\x0fSTATE_CANCELLED\x10\x03\x12\x11\n" +
-	"\rSTATE_EXPIRED\x10\x04\x12\x13\n" +
-	"\x0fSTATE_COMPLETED\x10\x05\x12\x11\n" +
-	"\rSTATE_NO_SHOW\x10\x06:L\xeaAI\n" +
-	" freebusy.ohtarnished.dev/Booking\x12\x12bookings/{booking}*\bbookings2\abookingJ\x04\b\x02\x10\x03*\xd5\x01\n" +
-	"\fCancelReason\x12\x1d\n" +
-	"\x19CANCEL_REASON_UNSPECIFIED\x10\x00\x12'\n" +
-	"#CANCEL_REASON_REQUESTED_BY_CUSTOMER\x10\x01\x12'\n" +
-	"#CANCEL_REASON_REQUESTED_BY_OPERATOR\x10\x02\x12 \n" +
-	"\x1cCANCEL_REASON_PAYMENT_FAILED\x10\x03\x12\x19\n" +
-	"\x15CANCEL_REASON_NO_SHOW\x10\x04\x12\x17\n" +
-	"\x13CANCEL_REASON_OTHER\x10\x05B\xf0\x01\n" +
+	"\x04etag\x18\x17 \x01(\tR\x04etag:G\xeaAD\n" +
+	"\x1bfreebusy.booking.v1/Booking\x12\x12bookings/{booking}*\bbookings2\abookingJ\x04\b\x02\x10\x03B\xf0\x01\n" +
 	"\x17com.freebusy.booking.v1B\fBookingProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"
 
 var (
@@ -522,36 +373,35 @@ func file_freebusy_booking_v1_booking_proto_rawDescGZIP() []byte {
 	return file_freebusy_booking_v1_booking_proto_rawDescData
 }
 
-var file_freebusy_booking_v1_booking_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_freebusy_booking_v1_booking_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_freebusy_booking_v1_booking_proto_goTypes = []any{
-	(CancelReason)(0),                 // 0: freebusy.booking.v1.CancelReason
-	(Booking_State)(0),                // 1: freebusy.booking.v1.Booking.State
-	(*Booking)(nil),                   // 2: freebusy.booking.v1.Booking
-	(*sharedpbv1.Contact)(nil),        // 3: freebusy.shared.v1.Contact
-	(*sharedpbv1.TimeWindow)(nil),     // 4: freebusy.shared.v1.TimeWindow
-	(*timestamppb.Timestamp)(nil),     // 5: google.protobuf.Timestamp
-	(*money.Money)(nil),               // 6: google.type.Money
-	(*sharedpbv1.PriceComponent)(nil), // 7: freebusy.shared.v1.PriceComponent
-	(*structpb.Struct)(nil),           // 8: google.protobuf.Struct
+	(*Booking)(nil),                   // 0: freebusy.booking.v1.Booking
+	(*sharedpbv1.Contact)(nil),        // 1: freebusy.shared.v1.Contact
+	(*sharedpbv1.TimeWindow)(nil),     // 2: freebusy.shared.v1.TimeWindow
+	(BookingState)(0),                 // 3: freebusy.booking.v1.BookingState
+	(*timestamppb.Timestamp)(nil),     // 4: google.protobuf.Timestamp
+	(*money.Money)(nil),               // 5: google.type.Money
+	(*sharedpbv1.PriceComponent)(nil), // 6: freebusy.shared.v1.PriceComponent
+	(*structpb.Struct)(nil),           // 7: google.protobuf.Struct
+	(CancelReason)(0),                 // 8: freebusy.booking.v1.CancelReason
 	(*durationpb.Duration)(nil),       // 9: google.protobuf.Duration
 }
 var file_freebusy_booking_v1_booking_proto_depIdxs = []int32{
-	3,  // 0: freebusy.booking.v1.Booking.contact:type_name -> freebusy.shared.v1.Contact
-	4,  // 1: freebusy.booking.v1.Booking.window:type_name -> freebusy.shared.v1.TimeWindow
-	1,  // 2: freebusy.booking.v1.Booking.state:type_name -> freebusy.booking.v1.Booking.State
-	5,  // 3: freebusy.booking.v1.Booking.hold_expire_time:type_name -> google.protobuf.Timestamp
-	6,  // 4: freebusy.booking.v1.Booking.price:type_name -> google.type.Money
-	6,  // 5: freebusy.booking.v1.Booking.discount:type_name -> google.type.Money
-	6,  // 6: freebusy.booking.v1.Booking.total:type_name -> google.type.Money
-	7,  // 7: freebusy.booking.v1.Booking.price_components:type_name -> freebusy.shared.v1.PriceComponent
-	8,  // 8: freebusy.booking.v1.Booking.attributes:type_name -> google.protobuf.Struct
-	0,  // 9: freebusy.booking.v1.Booking.cancel_reason:type_name -> freebusy.booking.v1.CancelReason
-	5,  // 10: freebusy.booking.v1.Booking.create_time:type_name -> google.protobuf.Timestamp
-	5,  // 11: freebusy.booking.v1.Booking.update_time:type_name -> google.protobuf.Timestamp
-	5,  // 12: freebusy.booking.v1.Booking.confirm_time:type_name -> google.protobuf.Timestamp
-	5,  // 13: freebusy.booking.v1.Booking.cancel_time:type_name -> google.protobuf.Timestamp
-	6,  // 14: freebusy.booking.v1.Booking.refund_amount:type_name -> google.type.Money
+	1,  // 0: freebusy.booking.v1.Booking.contact:type_name -> freebusy.shared.v1.Contact
+	2,  // 1: freebusy.booking.v1.Booking.window:type_name -> freebusy.shared.v1.TimeWindow
+	3,  // 2: freebusy.booking.v1.Booking.state:type_name -> freebusy.booking.v1.BookingState
+	4,  // 3: freebusy.booking.v1.Booking.hold_expire_time:type_name -> google.protobuf.Timestamp
+	5,  // 4: freebusy.booking.v1.Booking.price:type_name -> google.type.Money
+	5,  // 5: freebusy.booking.v1.Booking.discount:type_name -> google.type.Money
+	5,  // 6: freebusy.booking.v1.Booking.total:type_name -> google.type.Money
+	6,  // 7: freebusy.booking.v1.Booking.price_components:type_name -> freebusy.shared.v1.PriceComponent
+	7,  // 8: freebusy.booking.v1.Booking.attributes:type_name -> google.protobuf.Struct
+	8,  // 9: freebusy.booking.v1.Booking.cancel_reason:type_name -> freebusy.booking.v1.CancelReason
+	4,  // 10: freebusy.booking.v1.Booking.create_time:type_name -> google.protobuf.Timestamp
+	4,  // 11: freebusy.booking.v1.Booking.update_time:type_name -> google.protobuf.Timestamp
+	4,  // 12: freebusy.booking.v1.Booking.confirm_time:type_name -> google.protobuf.Timestamp
+	4,  // 13: freebusy.booking.v1.Booking.cancel_time:type_name -> google.protobuf.Timestamp
+	5,  // 14: freebusy.booking.v1.Booking.refund_amount:type_name -> google.type.Money
 	9,  // 15: freebusy.booking.v1.Booking.hold_ttl:type_name -> google.protobuf.Duration
 	16, // [16:16] is the sub-list for method output_type
 	16, // [16:16] is the sub-list for method input_type
@@ -565,19 +415,19 @@ func file_freebusy_booking_v1_booking_proto_init() {
 	if File_freebusy_booking_v1_booking_proto != nil {
 		return
 	}
+	file_freebusy_booking_v1_enums_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_booking_v1_booking_proto_rawDesc), len(file_freebusy_booking_v1_booking_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_freebusy_booking_v1_booking_proto_goTypes,
 		DependencyIndexes: file_freebusy_booking_v1_booking_proto_depIdxs,
-		EnumInfos:         file_freebusy_booking_v1_booking_proto_enumTypes,
 		MessageInfos:      file_freebusy_booking_v1_booking_proto_msgTypes,
 	}.Build()
 	File_freebusy_booking_v1_booking_proto = out.File

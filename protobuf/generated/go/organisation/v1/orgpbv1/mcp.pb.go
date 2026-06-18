@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: freebusy/organisation/v1/org_mcp.proto
+// source: freebusy/organisation/v1/mcp.proto
 
 package orgpbv1
 
@@ -37,7 +37,7 @@ type InviteMemberArgs struct {
 
 func (x *InviteMemberArgs) Reset() {
 	*x = InviteMemberArgs{}
-	mi := &file_freebusy_organisation_v1_org_mcp_proto_msgTypes[0]
+	mi := &file_freebusy_organisation_v1_mcp_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -49,7 +49,7 @@ func (x *InviteMemberArgs) String() string {
 func (*InviteMemberArgs) ProtoMessage() {}
 
 func (x *InviteMemberArgs) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_organisation_v1_org_mcp_proto_msgTypes[0]
+	mi := &file_freebusy_organisation_v1_mcp_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,7 +62,7 @@ func (x *InviteMemberArgs) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteMemberArgs.ProtoReflect.Descriptor instead.
 func (*InviteMemberArgs) Descriptor() ([]byte, []int) {
-	return file_freebusy_organisation_v1_org_mcp_proto_rawDescGZIP(), []int{0}
+	return file_freebusy_organisation_v1_mcp_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *InviteMemberArgs) GetOrganisation() string {
@@ -86,34 +86,34 @@ func (x *InviteMemberArgs) GetRole() string {
 	return ""
 }
 
-var File_freebusy_organisation_v1_org_mcp_proto protoreflect.FileDescriptor
+var File_freebusy_organisation_v1_mcp_proto protoreflect.FileDescriptor
 
-const file_freebusy_organisation_v1_org_mcp_proto_rawDesc = "" +
+const file_freebusy_organisation_v1_mcp_proto_rawDesc = "" +
 	"\n" +
-	"&freebusy/organisation/v1/org_mcp.proto\x12\x18freebusy.organisation.v1\x1a\x1fgoogle/api/field_behavior.proto\"o\n" +
+	"\"freebusy/organisation/v1/mcp.proto\x12\x18freebusy.organisation.v1\x1a\x1fgoogle/api/field_behavior.proto\"o\n" +
 	"\x10InviteMemberArgs\x12'\n" +
 	"\forganisation\x18\x01 \x01(\tB\x03\xe0A\x02R\forganisation\x12\x19\n" +
 	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x02R\x05email\x12\x17\n" +
-	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x02R\x04roleB\x85\x02\n" +
-	"\x1ccom.freebusy.organisation.v1B\vOrgMcpProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
+	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x02R\x04roleB\x82\x02\n" +
+	"\x1ccom.freebusy.organisation.v1B\bMcpProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (
-	file_freebusy_organisation_v1_org_mcp_proto_rawDescOnce sync.Once
-	file_freebusy_organisation_v1_org_mcp_proto_rawDescData []byte
+	file_freebusy_organisation_v1_mcp_proto_rawDescOnce sync.Once
+	file_freebusy_organisation_v1_mcp_proto_rawDescData []byte
 )
 
-func file_freebusy_organisation_v1_org_mcp_proto_rawDescGZIP() []byte {
-	file_freebusy_organisation_v1_org_mcp_proto_rawDescOnce.Do(func() {
-		file_freebusy_organisation_v1_org_mcp_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_mcp_proto_rawDesc), len(file_freebusy_organisation_v1_org_mcp_proto_rawDesc)))
+func file_freebusy_organisation_v1_mcp_proto_rawDescGZIP() []byte {
+	file_freebusy_organisation_v1_mcp_proto_rawDescOnce.Do(func() {
+		file_freebusy_organisation_v1_mcp_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_mcp_proto_rawDesc), len(file_freebusy_organisation_v1_mcp_proto_rawDesc)))
 	})
-	return file_freebusy_organisation_v1_org_mcp_proto_rawDescData
+	return file_freebusy_organisation_v1_mcp_proto_rawDescData
 }
 
-var file_freebusy_organisation_v1_org_mcp_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_freebusy_organisation_v1_org_mcp_proto_goTypes = []any{
+var file_freebusy_organisation_v1_mcp_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_freebusy_organisation_v1_mcp_proto_goTypes = []any{
 	(*InviteMemberArgs)(nil), // 0: freebusy.organisation.v1.InviteMemberArgs
 }
-var file_freebusy_organisation_v1_org_mcp_proto_depIdxs = []int32{
+var file_freebusy_organisation_v1_mcp_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -121,26 +121,26 @@ var file_freebusy_organisation_v1_org_mcp_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_freebusy_organisation_v1_org_mcp_proto_init() }
-func file_freebusy_organisation_v1_org_mcp_proto_init() {
-	if File_freebusy_organisation_v1_org_mcp_proto != nil {
+func init() { file_freebusy_organisation_v1_mcp_proto_init() }
+func file_freebusy_organisation_v1_mcp_proto_init() {
+	if File_freebusy_organisation_v1_mcp_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_mcp_proto_rawDesc), len(file_freebusy_organisation_v1_org_mcp_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_mcp_proto_rawDesc), len(file_freebusy_organisation_v1_mcp_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_freebusy_organisation_v1_org_mcp_proto_goTypes,
-		DependencyIndexes: file_freebusy_organisation_v1_org_mcp_proto_depIdxs,
-		MessageInfos:      file_freebusy_organisation_v1_org_mcp_proto_msgTypes,
+		GoTypes:           file_freebusy_organisation_v1_mcp_proto_goTypes,
+		DependencyIndexes: file_freebusy_organisation_v1_mcp_proto_depIdxs,
+		MessageInfos:      file_freebusy_organisation_v1_mcp_proto_msgTypes,
 	}.Build()
-	File_freebusy_organisation_v1_org_mcp_proto = out.File
-	file_freebusy_organisation_v1_org_mcp_proto_goTypes = nil
-	file_freebusy_organisation_v1_org_mcp_proto_depIdxs = nil
+	File_freebusy_organisation_v1_mcp_proto = out.File
+	file_freebusy_organisation_v1_mcp_proto_goTypes = nil
+	file_freebusy_organisation_v1_mcp_proto_depIdxs = nil
 }

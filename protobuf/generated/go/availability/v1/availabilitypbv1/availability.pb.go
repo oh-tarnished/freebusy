@@ -27,95 +27,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Machine-readable reasons a span is not bookable.
-type UnbookableReason_Code int32
-
-const (
-	// Unset.
-	UnbookableReason_CODE_UNSPECIFIED UnbookableReason_Code = 0
-	// Not enough free units for the requested count.
-	UnbookableReason_CODE_NO_CAPACITY UnbookableReason_Code = 1
-	// The span falls outside the resource's recurring hours.
-	UnbookableReason_CODE_OUTSIDE_HOURS UnbookableReason_Code = 2
-	// A closure exception (blackout/holiday) covers part of the span.
-	UnbookableReason_CODE_CLOSED UnbookableReason_Code = 3
-	// Shorter than the minimum stay (min_nights).
-	UnbookableReason_CODE_MIN_NIGHTS UnbookableReason_Code = 4
-	// Longer than the maximum stay (max_nights).
-	UnbookableReason_CODE_MAX_NIGHTS UnbookableReason_Code = 5
-	// Check-in falls on a disallowed weekday.
-	UnbookableReason_CODE_CHECKIN_DAY UnbookableReason_Code = 6
-	// Check-out falls on a disallowed weekday.
-	UnbookableReason_CODE_CHECKOUT_DAY UnbookableReason_Code = 7
-	// The span starts sooner than the minimum notice allows.
-	UnbookableReason_CODE_MIN_NOTICE UnbookableReason_Code = 8
-	// The span starts further out than the advance window allows.
-	UnbookableReason_CODE_MAX_ADVANCE UnbookableReason_Code = 9
-	// A buffer or gap rule around an adjacent booking conflicts.
-	UnbookableReason_CODE_BUFFER_CONFLICT UnbookableReason_Code = 10
-	// The resource is archived.
-	UnbookableReason_CODE_RESOURCE_ARCHIVED UnbookableReason_Code = 11
-)
-
-// Enum value maps for UnbookableReason_Code.
-var (
-	UnbookableReason_Code_name = map[int32]string{
-		0:  "CODE_UNSPECIFIED",
-		1:  "CODE_NO_CAPACITY",
-		2:  "CODE_OUTSIDE_HOURS",
-		3:  "CODE_CLOSED",
-		4:  "CODE_MIN_NIGHTS",
-		5:  "CODE_MAX_NIGHTS",
-		6:  "CODE_CHECKIN_DAY",
-		7:  "CODE_CHECKOUT_DAY",
-		8:  "CODE_MIN_NOTICE",
-		9:  "CODE_MAX_ADVANCE",
-		10: "CODE_BUFFER_CONFLICT",
-		11: "CODE_RESOURCE_ARCHIVED",
-	}
-	UnbookableReason_Code_value = map[string]int32{
-		"CODE_UNSPECIFIED":       0,
-		"CODE_NO_CAPACITY":       1,
-		"CODE_OUTSIDE_HOURS":     2,
-		"CODE_CLOSED":            3,
-		"CODE_MIN_NIGHTS":        4,
-		"CODE_MAX_NIGHTS":        5,
-		"CODE_CHECKIN_DAY":       6,
-		"CODE_CHECKOUT_DAY":      7,
-		"CODE_MIN_NOTICE":        8,
-		"CODE_MAX_ADVANCE":       9,
-		"CODE_BUFFER_CONFLICT":   10,
-		"CODE_RESOURCE_ARCHIVED": 11,
-	}
-)
-
-func (x UnbookableReason_Code) Enum() *UnbookableReason_Code {
-	p := new(UnbookableReason_Code)
-	*p = x
-	return p
-}
-
-func (x UnbookableReason_Code) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (UnbookableReason_Code) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_availability_v1_availability_proto_enumTypes[0].Descriptor()
-}
-
-func (UnbookableReason_Code) Type() protoreflect.EnumType {
-	return &file_freebusy_availability_v1_availability_proto_enumTypes[0]
-}
-
-func (x UnbookableReason_Code) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use UnbookableReason_Code.Descriptor instead.
-func (UnbookableReason_Code) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{7, 0}
-}
-
 // A discrete bookable time slot, produced for TIME_SLOT resources.
 type Slot struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -713,7 +624,7 @@ func (*CheckAvailabilityRequest_DateRange) isCheckAvailabilityRequest_Period() {
 type UnbookableReason struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Why the span is not bookable.
-	Code UnbookableReason_Code `protobuf:"varint,1,opt,name=code,proto3,enum=freebusy.availability.v1.UnbookableReason_Code" json:"code,omitempty"`
+	Code Code `protobuf:"varint,1,opt,name=code,proto3,enum=freebusy.availability.v1.Code" json:"code,omitempty"`
 	// Human-readable explanation suitable for display, not for parsing.
 	Message       string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -750,11 +661,11 @@ func (*UnbookableReason) Descriptor() ([]byte, []int) {
 	return file_freebusy_availability_v1_availability_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *UnbookableReason) GetCode() UnbookableReason_Code {
+func (x *UnbookableReason) GetCode() Code {
 	if x != nil {
 		return x.Code
 	}
-	return UnbookableReason_CODE_UNSPECIFIED
+	return Code_CODE_UNSPECIFIED
 }
 
 func (x *UnbookableReason) GetMessage() string {
@@ -1387,7 +1298,7 @@ var File_freebusy_availability_v1_availability_proto protoreflect.FileDescriptor
 
 const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/availability/v1/availability.proto\x12\x18freebusy.availability.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\xdd\x01\n" +
+	"+freebusy/availability/v1/availability.proto\x12\x18freebusy.availability.v1\x1a$freebusy/availability/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\xdd\x01\n" +
 	"\x04Slot\x129\n" +
 	"\n" +
 	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
@@ -1404,69 +1315,55 @@ const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\x05price\x18\x04 \x01(\v2\x12.google.type.MoneyR\x05price\"c\n" +
 	"\rBookableRange\x126\n" +
 	"\x06window\x18\x01 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowR\x06window\x12\x1a\n" +
-	"\bbookable\x18\x02 \x01(\bR\bbookable\"\x8a\x02\n" +
-	"\x14ResourceAvailability\x12B\n" +
-	"\bresource\x18\x01 \x01(\tB&\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x123\n" +
+	"\bbookable\x18\x02 \x01(\bR\bbookable\"\x86\x02\n" +
+	"\x14ResourceAvailability\x12>\n" +
+	"\bresource\x18\x01 \x01(\tB\"\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x123\n" +
 	"\x04mode\x18\x02 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x124\n" +
 	"\x05slots\x18\x03 \x03(\v2\x1e.freebusy.availability.v1.SlotR\x05slots\x12C\n" +
-	"\x06nights\x18\x04 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\x85\x03\n" +
-	"\x1aComputeAvailabilityRequest\x12E\n" +
-	"\bresource\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x128\n" +
+	"\x06nights\x18\x04 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xfd\x02\n" +
+	"\x1aComputeAvailabilityRequest\x12A\n" +
+	"\bresource\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x128\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
 	"date_range\x18\x06 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12E\n" +
-	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12\x19\n" +
+	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12A\n" +
+	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12\x19\n" +
 	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
 	"\x06period\"\xcd\x01\n" +
 	"\x1bComputeAvailabilityResponse\x123\n" +
 	"\x04mode\x18\x01 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x124\n" +
 	"\x05slots\x18\x02 \x03(\v2\x1e.freebusy.availability.v1.SlotR\x05slots\x12C\n" +
-	"\x06nights\x18\x03 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xc7\x02\n" +
-	"\x18CheckAvailabilityRequest\x12E\n" +
-	"\bresource\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x128\n" +
+	"\x06nights\x18\x03 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xbf\x02\n" +
+	"\x18CheckAvailabilityRequest\x12A\n" +
+	"\bresource\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x128\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
 	"date_range\x18\x05 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x19\n" +
-	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05units\x12E\n" +
-	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\bofferingB\b\n" +
-	"\x06period\"\x87\x03\n" +
-	"\x10UnbookableReason\x12C\n" +
-	"\x04code\x18\x01 \x01(\x0e2/.freebusy.availability.v1.UnbookableReason.CodeR\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\x93\x02\n" +
-	"\x04Code\x12\x14\n" +
-	"\x10CODE_UNSPECIFIED\x10\x00\x12\x14\n" +
-	"\x10CODE_NO_CAPACITY\x10\x01\x12\x16\n" +
-	"\x12CODE_OUTSIDE_HOURS\x10\x02\x12\x0f\n" +
-	"\vCODE_CLOSED\x10\x03\x12\x13\n" +
-	"\x0fCODE_MIN_NIGHTS\x10\x04\x12\x13\n" +
-	"\x0fCODE_MAX_NIGHTS\x10\x05\x12\x14\n" +
-	"\x10CODE_CHECKIN_DAY\x10\x06\x12\x15\n" +
-	"\x11CODE_CHECKOUT_DAY\x10\a\x12\x13\n" +
-	"\x0fCODE_MIN_NOTICE\x10\b\x12\x14\n" +
-	"\x10CODE_MAX_ADVANCE\x10\t\x12\x18\n" +
-	"\x14CODE_BUFFER_CONFLICT\x10\n" +
-	"\x12\x1a\n" +
-	"\x16CODE_RESOURCE_ARCHIVED\x10\v\"\x9c\x01\n" +
+	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05units\x12A\n" +
+	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\bofferingB\b\n" +
+	"\x06period\"`\n" +
+	"\x10UnbookableReason\x122\n" +
+	"\x04code\x18\x01 \x01(\x0e2\x1e.freebusy.availability.v1.CodeR\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x9c\x01\n" +
 	"\x19CheckAvailabilityResponse\x12\x1a\n" +
 	"\bbookable\x18\x01 \x01(\bR\bbookable\x12\x1d\n" +
 	"\n" +
 	"free_count\x18\x02 \x01(\x05R\tfreeCount\x12D\n" +
-	"\areasons\x18\x03 \x03(\v2*.freebusy.availability.v1.UnbookableReasonR\areasons\"\x87\x03\n" +
-	"\x1cComputeBookableRangesRequest\x12E\n" +
-	"\bresource\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x128\n" +
+	"\areasons\x18\x03 \x03(\v2*.freebusy.availability.v1.UnbookableReasonR\areasons\"\xff\x02\n" +
+	"\x1cComputeBookableRangesRequest\x12A\n" +
+	"\bresource\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x128\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
 	"date_range\x18\x06 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12E\n" +
-	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12\x19\n" +
+	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12A\n" +
+	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12\x19\n" +
 	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
 	"\x06period\"`\n" +
 	"\x1dComputeBookableRangesResponse\x12?\n" +
@@ -1486,10 +1383,10 @@ const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\n" +
 	"page_token\x18\a \x01(\tB\x03\xe0A\x01R\tpageToken\x124\n" +
 	"\x13include_unavailable\x18\b \x01(\bB\x03\xe0A\x01R\x12includeUnavailableB\b\n" +
-	"\x06period\"\xf5\x01\n" +
-	"\x11AvailabilityMatch\x12B\n" +
-	"\bresource\x18\x01 \x01(\tB&\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x12!\n" +
+	"\x06period\"\xf1\x01\n" +
+	"\x11AvailabilityMatch\x12>\n" +
+	"\bresource\x18\x01 \x01(\tB\"\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x123\n" +
 	"\x04mode\x18\x03 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x12\x1a\n" +
 	"\bbookable\x18\x04 \x01(\bR\bbookable\x12(\n" +
@@ -1511,65 +1408,64 @@ func file_freebusy_availability_v1_availability_proto_rawDescGZIP() []byte {
 	return file_freebusy_availability_v1_availability_proto_rawDescData
 }
 
-var file_freebusy_availability_v1_availability_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_freebusy_availability_v1_availability_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_freebusy_availability_v1_availability_proto_goTypes = []any{
-	(UnbookableReason_Code)(0),               // 0: freebusy.availability.v1.UnbookableReason.Code
-	(*Slot)(nil),                             // 1: freebusy.availability.v1.Slot
-	(*NightAvailability)(nil),                // 2: freebusy.availability.v1.NightAvailability
-	(*BookableRange)(nil),                    // 3: freebusy.availability.v1.BookableRange
-	(*ResourceAvailability)(nil),             // 4: freebusy.availability.v1.ResourceAvailability
-	(*ComputeAvailabilityRequest)(nil),       // 5: freebusy.availability.v1.ComputeAvailabilityRequest
-	(*ComputeAvailabilityResponse)(nil),      // 6: freebusy.availability.v1.ComputeAvailabilityResponse
-	(*CheckAvailabilityRequest)(nil),         // 7: freebusy.availability.v1.CheckAvailabilityRequest
-	(*UnbookableReason)(nil),                 // 8: freebusy.availability.v1.UnbookableReason
-	(*CheckAvailabilityResponse)(nil),        // 9: freebusy.availability.v1.CheckAvailabilityResponse
-	(*ComputeBookableRangesRequest)(nil),     // 10: freebusy.availability.v1.ComputeBookableRangesRequest
-	(*ComputeBookableRangesResponse)(nil),    // 11: freebusy.availability.v1.ComputeBookableRangesResponse
-	(*BatchComputeAvailabilityRequest)(nil),  // 12: freebusy.availability.v1.BatchComputeAvailabilityRequest
-	(*BatchComputeAvailabilityResponse)(nil), // 13: freebusy.availability.v1.BatchComputeAvailabilityResponse
-	(*SearchAvailabilityRequest)(nil),        // 14: freebusy.availability.v1.SearchAvailabilityRequest
-	(*AvailabilityMatch)(nil),                // 15: freebusy.availability.v1.AvailabilityMatch
-	(*SearchAvailabilityResponse)(nil),       // 16: freebusy.availability.v1.SearchAvailabilityResponse
-	(*timestamppb.Timestamp)(nil),            // 17: google.protobuf.Timestamp
-	(*money.Money)(nil),                      // 18: google.type.Money
-	(*date.Date)(nil),                        // 19: google.type.Date
-	(*sharedpbv1.TimeWindow)(nil),            // 20: freebusy.shared.v1.TimeWindow
-	(sharedpbv1.BookingMode)(0),              // 21: freebusy.shared.v1.BookingMode
-	(*sharedpbv1.DateRange)(nil),             // 22: freebusy.shared.v1.DateRange
-	(*durationpb.Duration)(nil),              // 23: google.protobuf.Duration
+	(*Slot)(nil),                             // 0: freebusy.availability.v1.Slot
+	(*NightAvailability)(nil),                // 1: freebusy.availability.v1.NightAvailability
+	(*BookableRange)(nil),                    // 2: freebusy.availability.v1.BookableRange
+	(*ResourceAvailability)(nil),             // 3: freebusy.availability.v1.ResourceAvailability
+	(*ComputeAvailabilityRequest)(nil),       // 4: freebusy.availability.v1.ComputeAvailabilityRequest
+	(*ComputeAvailabilityResponse)(nil),      // 5: freebusy.availability.v1.ComputeAvailabilityResponse
+	(*CheckAvailabilityRequest)(nil),         // 6: freebusy.availability.v1.CheckAvailabilityRequest
+	(*UnbookableReason)(nil),                 // 7: freebusy.availability.v1.UnbookableReason
+	(*CheckAvailabilityResponse)(nil),        // 8: freebusy.availability.v1.CheckAvailabilityResponse
+	(*ComputeBookableRangesRequest)(nil),     // 9: freebusy.availability.v1.ComputeBookableRangesRequest
+	(*ComputeBookableRangesResponse)(nil),    // 10: freebusy.availability.v1.ComputeBookableRangesResponse
+	(*BatchComputeAvailabilityRequest)(nil),  // 11: freebusy.availability.v1.BatchComputeAvailabilityRequest
+	(*BatchComputeAvailabilityResponse)(nil), // 12: freebusy.availability.v1.BatchComputeAvailabilityResponse
+	(*SearchAvailabilityRequest)(nil),        // 13: freebusy.availability.v1.SearchAvailabilityRequest
+	(*AvailabilityMatch)(nil),                // 14: freebusy.availability.v1.AvailabilityMatch
+	(*SearchAvailabilityResponse)(nil),       // 15: freebusy.availability.v1.SearchAvailabilityResponse
+	(*timestamppb.Timestamp)(nil),            // 16: google.protobuf.Timestamp
+	(*money.Money)(nil),                      // 17: google.type.Money
+	(*date.Date)(nil),                        // 18: google.type.Date
+	(*sharedpbv1.TimeWindow)(nil),            // 19: freebusy.shared.v1.TimeWindow
+	(sharedpbv1.BookingMode)(0),              // 20: freebusy.shared.v1.BookingMode
+	(*sharedpbv1.DateRange)(nil),             // 21: freebusy.shared.v1.DateRange
+	(*durationpb.Duration)(nil),              // 22: google.protobuf.Duration
+	(Code)(0),                                // 23: freebusy.availability.v1.Code
 }
 var file_freebusy_availability_v1_availability_proto_depIdxs = []int32{
-	17, // 0: freebusy.availability.v1.Slot.start_time:type_name -> google.protobuf.Timestamp
-	17, // 1: freebusy.availability.v1.Slot.end_time:type_name -> google.protobuf.Timestamp
-	18, // 2: freebusy.availability.v1.Slot.price:type_name -> google.type.Money
-	19, // 3: freebusy.availability.v1.NightAvailability.night:type_name -> google.type.Date
-	18, // 4: freebusy.availability.v1.NightAvailability.price:type_name -> google.type.Money
-	20, // 5: freebusy.availability.v1.BookableRange.window:type_name -> freebusy.shared.v1.TimeWindow
-	21, // 6: freebusy.availability.v1.ResourceAvailability.mode:type_name -> freebusy.shared.v1.BookingMode
-	1,  // 7: freebusy.availability.v1.ResourceAvailability.slots:type_name -> freebusy.availability.v1.Slot
-	2,  // 8: freebusy.availability.v1.ResourceAvailability.nights:type_name -> freebusy.availability.v1.NightAvailability
-	20, // 9: freebusy.availability.v1.ComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	22, // 10: freebusy.availability.v1.ComputeAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
-	23, // 11: freebusy.availability.v1.ComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
-	21, // 12: freebusy.availability.v1.ComputeAvailabilityResponse.mode:type_name -> freebusy.shared.v1.BookingMode
-	1,  // 13: freebusy.availability.v1.ComputeAvailabilityResponse.slots:type_name -> freebusy.availability.v1.Slot
-	2,  // 14: freebusy.availability.v1.ComputeAvailabilityResponse.nights:type_name -> freebusy.availability.v1.NightAvailability
-	20, // 15: freebusy.availability.v1.CheckAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	22, // 16: freebusy.availability.v1.CheckAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
-	0,  // 17: freebusy.availability.v1.UnbookableReason.code:type_name -> freebusy.availability.v1.UnbookableReason.Code
-	8,  // 18: freebusy.availability.v1.CheckAvailabilityResponse.reasons:type_name -> freebusy.availability.v1.UnbookableReason
-	20, // 19: freebusy.availability.v1.ComputeBookableRangesRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	22, // 20: freebusy.availability.v1.ComputeBookableRangesRequest.date_range:type_name -> freebusy.shared.v1.DateRange
-	23, // 21: freebusy.availability.v1.ComputeBookableRangesRequest.duration:type_name -> google.protobuf.Duration
-	3,  // 22: freebusy.availability.v1.ComputeBookableRangesResponse.ranges:type_name -> freebusy.availability.v1.BookableRange
-	5,  // 23: freebusy.availability.v1.BatchComputeAvailabilityRequest.requests:type_name -> freebusy.availability.v1.ComputeAvailabilityRequest
-	4,  // 24: freebusy.availability.v1.BatchComputeAvailabilityResponse.resources:type_name -> freebusy.availability.v1.ResourceAvailability
-	20, // 25: freebusy.availability.v1.SearchAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	22, // 26: freebusy.availability.v1.SearchAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
-	21, // 27: freebusy.availability.v1.AvailabilityMatch.mode:type_name -> freebusy.shared.v1.BookingMode
-	18, // 28: freebusy.availability.v1.AvailabilityMatch.price:type_name -> google.type.Money
-	15, // 29: freebusy.availability.v1.SearchAvailabilityResponse.matches:type_name -> freebusy.availability.v1.AvailabilityMatch
+	16, // 0: freebusy.availability.v1.Slot.start_time:type_name -> google.protobuf.Timestamp
+	16, // 1: freebusy.availability.v1.Slot.end_time:type_name -> google.protobuf.Timestamp
+	17, // 2: freebusy.availability.v1.Slot.price:type_name -> google.type.Money
+	18, // 3: freebusy.availability.v1.NightAvailability.night:type_name -> google.type.Date
+	17, // 4: freebusy.availability.v1.NightAvailability.price:type_name -> google.type.Money
+	19, // 5: freebusy.availability.v1.BookableRange.window:type_name -> freebusy.shared.v1.TimeWindow
+	20, // 6: freebusy.availability.v1.ResourceAvailability.mode:type_name -> freebusy.shared.v1.BookingMode
+	0,  // 7: freebusy.availability.v1.ResourceAvailability.slots:type_name -> freebusy.availability.v1.Slot
+	1,  // 8: freebusy.availability.v1.ResourceAvailability.nights:type_name -> freebusy.availability.v1.NightAvailability
+	19, // 9: freebusy.availability.v1.ComputeAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	21, // 10: freebusy.availability.v1.ComputeAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	22, // 11: freebusy.availability.v1.ComputeAvailabilityRequest.duration:type_name -> google.protobuf.Duration
+	20, // 12: freebusy.availability.v1.ComputeAvailabilityResponse.mode:type_name -> freebusy.shared.v1.BookingMode
+	0,  // 13: freebusy.availability.v1.ComputeAvailabilityResponse.slots:type_name -> freebusy.availability.v1.Slot
+	1,  // 14: freebusy.availability.v1.ComputeAvailabilityResponse.nights:type_name -> freebusy.availability.v1.NightAvailability
+	19, // 15: freebusy.availability.v1.CheckAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	21, // 16: freebusy.availability.v1.CheckAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	23, // 17: freebusy.availability.v1.UnbookableReason.code:type_name -> freebusy.availability.v1.Code
+	7,  // 18: freebusy.availability.v1.CheckAvailabilityResponse.reasons:type_name -> freebusy.availability.v1.UnbookableReason
+	19, // 19: freebusy.availability.v1.ComputeBookableRangesRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	21, // 20: freebusy.availability.v1.ComputeBookableRangesRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	22, // 21: freebusy.availability.v1.ComputeBookableRangesRequest.duration:type_name -> google.protobuf.Duration
+	2,  // 22: freebusy.availability.v1.ComputeBookableRangesResponse.ranges:type_name -> freebusy.availability.v1.BookableRange
+	4,  // 23: freebusy.availability.v1.BatchComputeAvailabilityRequest.requests:type_name -> freebusy.availability.v1.ComputeAvailabilityRequest
+	3,  // 24: freebusy.availability.v1.BatchComputeAvailabilityResponse.resources:type_name -> freebusy.availability.v1.ResourceAvailability
+	19, // 25: freebusy.availability.v1.SearchAvailabilityRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	21, // 26: freebusy.availability.v1.SearchAvailabilityRequest.date_range:type_name -> freebusy.shared.v1.DateRange
+	20, // 27: freebusy.availability.v1.AvailabilityMatch.mode:type_name -> freebusy.shared.v1.BookingMode
+	17, // 28: freebusy.availability.v1.AvailabilityMatch.price:type_name -> google.type.Money
+	14, // 29: freebusy.availability.v1.SearchAvailabilityResponse.matches:type_name -> freebusy.availability.v1.AvailabilityMatch
 	30, // [30:30] is the sub-list for method output_type
 	30, // [30:30] is the sub-list for method input_type
 	30, // [30:30] is the sub-list for extension type_name
@@ -1582,6 +1478,7 @@ func file_freebusy_availability_v1_availability_proto_init() {
 	if File_freebusy_availability_v1_availability_proto != nil {
 		return
 	}
+	file_freebusy_availability_v1_enums_proto_init()
 	file_freebusy_availability_v1_availability_proto_msgTypes[4].OneofWrappers = []any{
 		(*ComputeAvailabilityRequest_Window)(nil),
 		(*ComputeAvailabilityRequest_DateRange)(nil),
@@ -1603,14 +1500,13 @@ func file_freebusy_availability_v1_availability_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_availability_v1_availability_proto_rawDesc), len(file_freebusy_availability_v1_availability_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      0,
 			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_freebusy_availability_v1_availability_proto_goTypes,
 		DependencyIndexes: file_freebusy_availability_v1_availability_proto_depIdxs,
-		EnumInfos:         file_freebusy_availability_v1_availability_proto_enumTypes,
 		MessageInfos:      file_freebusy_availability_v1_availability_proto_msgTypes,
 	}.Build()
 	File_freebusy_availability_v1_availability_proto = out.File

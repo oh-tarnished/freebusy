@@ -24,6 +24,20 @@ This repository contains two things:
 One line: freebusy answers "is this free, and which unit?" deterministically —
 everything stateful or external is the shell's job.
 
+## Code generation
+
+Generated artifacts under `protobuf/generated/` are produced from the protobuf
+definitions via [`buf`](https://buf.build) and recipes in the `justfile`:
+
+- `just generate` — regenerate everything (Go, OpenAPI, ORM, docs)
+- `just orm` — regenerate the ORM schemas (Prisma + GORM) only
+- `just docs` — regenerate the protobuf docs only
+
+ORM generation requires the `protoc-gen-protorm` plugin to be installed and on
+your `PATH`. Install it globally, e.g. via Homebrew or `go install`, before
+running `just orm` / `just generate`. The generated ORM output reflects whatever
+`protoc-gen-protorm` version is installed, so keep it up to date.
+
 ---
 
 © 2026 oh-tarnished | Apache 2.0 License

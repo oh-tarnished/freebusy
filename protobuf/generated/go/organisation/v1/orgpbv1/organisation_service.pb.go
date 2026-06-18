@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: freebusy/organisation/v1/org_service.proto
+// source: freebusy/organisation/v1/organisation_service.proto
 
 package orgpbv1
 
@@ -23,11 +23,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_freebusy_organisation_v1_org_service_proto protoreflect.FileDescriptor
+var File_freebusy_organisation_v1_organisation_service_proto protoreflect.FileDescriptor
 
-const file_freebusy_organisation_v1_org_service_proto_rawDesc = "" +
+const file_freebusy_organisation_v1_organisation_service_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/organisation/v1/org_service.proto\x12\x18freebusy.organisation.v1\x1a*freebusy/organisation/v1/org_actions.proto\x1a+freebusy/organisation/v1/org_messages.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xce\x13\n" +
+	"3freebusy/organisation/v1/organisation_service.proto\x12\x18freebusy.organisation.v1\x1a&freebusy/organisation/v1/actions.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a3freebusy/organisation/v1/organisation_message.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xce\x13\n" +
 	"\x13OrganisationService\x12\xca\x01\n" +
 	"\x11ListOrganisations\x122.freebusy.organisation.v1.ListOrganisationsRequest\x1a3.freebusy.organisation.v1.ListOrganisationsResponse\"L\xca\xf3\x18/\x12-List the organizations the caller belongs to.\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/organisations\x12\xc7\x01\n" +
 	"\x0fGetOrganisation\x120.freebusy.organisation.v1.GetOrganisationRequest\x1a&.freebusy.organisation.v1.Organisation\"Z\xdaA\x04name\xca\xf3\x18-\x12+Get a single organization by resource name.\x82\xd3\xe4\x93\x02\x1c\x12\x1a/v1/{name=organisations/*}\x12\xfb\x01\n" +
@@ -41,10 +41,10 @@ const file_freebusy_organisation_v1_org_service_proto_rawDesc = "" +
 	"\fUpdateMember\x12-.freebusy.organisation.v1.UpdateMemberRequest\x1a .freebusy.organisation.v1.Member\"{\xdaA\x12member,update_mask\xca\xf3\x18'\x12%Change an organisation member's role.\x82\xd3\xe4\x93\x025:\x06member2+/v1/{member.name=organisations/*/members/*}\x12\xcd\x01\n" +
 	"\fDeleteMember\x12-.freebusy.organisation.v1.DeleteMemberRequest\x1a\x16.google.protobuf.Empty\"v\xdaA\x04name\xca\xf3\x18?\x12=Remove a member from an organisation by member resource name.\x82\xd3\xe4\x93\x02&*$/v1/{name=organisations/*/members/*}\x1al\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18M\n" +
 	"K\n" +
-	"\rOrganizations\x12\x051.0.0\x1a3Manage organizations (tenants), members, and roles.B\x89\x02\n" +
-	"\x1ccom.freebusy.organisation.v1B\x0fOrgServiceProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
+	"\rOrganizations\x12\x051.0.0\x1a3Manage organizations (tenants), members, and roles.B\x92\x02\n" +
+	"\x1ccom.freebusy.organisation.v1B\x18OrganisationServiceProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
-var file_freebusy_organisation_v1_org_service_proto_goTypes = []any{
+var file_freebusy_organisation_v1_organisation_service_proto_goTypes = []any{
 	(*ListOrganisationsRequest)(nil),  // 0: freebusy.organisation.v1.ListOrganisationsRequest
 	(*GetOrganisationRequest)(nil),    // 1: freebusy.organisation.v1.GetOrganisationRequest
 	(*CreateOrganisationRequest)(nil), // 2: freebusy.organisation.v1.CreateOrganisationRequest
@@ -62,7 +62,7 @@ var file_freebusy_organisation_v1_org_service_proto_goTypes = []any{
 	(*ListMembersResponse)(nil),       // 14: freebusy.organisation.v1.ListMembersResponse
 	(*Member)(nil),                    // 15: freebusy.organisation.v1.Member
 }
-var file_freebusy_organisation_v1_org_service_proto_depIdxs = []int32{
+var file_freebusy_organisation_v1_organisation_service_proto_depIdxs = []int32{
 	0,  // 0: freebusy.organisation.v1.OrganisationService.ListOrganisations:input_type -> freebusy.organisation.v1.ListOrganisationsRequest
 	1,  // 1: freebusy.organisation.v1.OrganisationService.GetOrganisation:input_type -> freebusy.organisation.v1.GetOrganisationRequest
 	2,  // 2: freebusy.organisation.v1.OrganisationService.CreateOrganisation:input_type -> freebusy.organisation.v1.CreateOrganisationRequest
@@ -90,28 +90,28 @@ var file_freebusy_organisation_v1_org_service_proto_depIdxs = []int32{
 	0,  // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_freebusy_organisation_v1_org_service_proto_init() }
-func file_freebusy_organisation_v1_org_service_proto_init() {
-	if File_freebusy_organisation_v1_org_service_proto != nil {
+func init() { file_freebusy_organisation_v1_organisation_service_proto_init() }
+func file_freebusy_organisation_v1_organisation_service_proto_init() {
+	if File_freebusy_organisation_v1_organisation_service_proto != nil {
 		return
 	}
-	file_freebusy_organisation_v1_org_actions_proto_init()
-	file_freebusy_organisation_v1_org_messages_proto_init()
+	file_freebusy_organisation_v1_actions_proto_init()
 	file_freebusy_organisation_v1_organisation_proto_init()
+	file_freebusy_organisation_v1_organisation_message_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_org_service_proto_rawDesc), len(file_freebusy_organisation_v1_org_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_organisation_v1_organisation_service_proto_rawDesc), len(file_freebusy_organisation_v1_organisation_service_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_freebusy_organisation_v1_org_service_proto_goTypes,
-		DependencyIndexes: file_freebusy_organisation_v1_org_service_proto_depIdxs,
+		GoTypes:           file_freebusy_organisation_v1_organisation_service_proto_goTypes,
+		DependencyIndexes: file_freebusy_organisation_v1_organisation_service_proto_depIdxs,
 	}.Build()
-	File_freebusy_organisation_v1_org_service_proto = out.File
-	file_freebusy_organisation_v1_org_service_proto_goTypes = nil
-	file_freebusy_organisation_v1_org_service_proto_depIdxs = nil
+	File_freebusy_organisation_v1_organisation_service_proto = out.File
+	file_freebusy_organisation_v1_organisation_service_proto_goTypes = nil
+	file_freebusy_organisation_v1_organisation_service_proto_depIdxs = nil
 }

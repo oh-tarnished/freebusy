@@ -557,7 +557,7 @@ var File_freebusy_promocode_v1_promocode_messages_proto protoreflect.FileDescrip
 
 const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\n" +
-	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\x9a\x01\n" +
+	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\x9a\x01\n" +
 	"\x15ListPromoCodesRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
@@ -567,10 +567,10 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\x16ListPromoCodesResponse\x12A\n" +
 	"\vpromo_codes\x18\x01 \x03(\v2 .freebusy.promocode.v1.PromoCodeR\n" +
 	"promoCodes\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"U\n" +
-	"\x13GetPromoCodeRequest\x12>\n" +
-	"\x04name\x18\x01 \x01(\tB*\xe0A\x02\xfaA$\n" +
-	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\xdd\x01\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"R\n" +
+	"\x13GetPromoCodeRequest\x12;\n" +
+	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\"\xdd\x01\n" +
 	"\x16CreatePromoCodeRequest\x12D\n" +
 	"\n" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12'\n" +
@@ -583,25 +583,25 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
 	"updateMask\x12(\n" +
-	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"X\n" +
-	"\x16DeletePromoCodeRequest\x12>\n" +
-	"\x04name\x18\x01 \x01(\tB*\xe0A\x02\xfaA$\n" +
-	"\"freebusy.ohtarnished.dev/PromoCodeR\x04name\"\xb9\x02\n" +
+	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"U\n" +
+	"\x16DeletePromoCodeRequest\x12;\n" +
+	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\"\xad\x02\n" +
 	"\x18ValidatePromoCodeRequest\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x123\n" +
-	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\bsubtotal\x12E\n" +
-	"\bresource\x18\x03 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\bresource\x12E\n" +
-	"\boffering\x18\x04 \x01(\tB)\xe0A\x01\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\boffering\x12A\n" +
-	"\bcustomer\x18\x05 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.ohtarnished.dev/UserR\bcustomer\"\x83\x02\n" +
+	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\bsubtotal\x12A\n" +
+	"\bresource\x18\x03 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\bresource\x12A\n" +
+	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12=\n" +
+	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/UserR\bcustomer\"\x80\x02\n" +
 	"\x19ValidatePromoCodeResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\x12F\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\x12C\n" +
 	"\n" +
-	"promo_code\x18\x03 \x01(\tB'\xfaA$\n" +
-	"\"freebusy.ohtarnished.dev/PromoCodeR\tpromoCode\x12;\n" +
+	"promo_code\x18\x03 \x01(\tB$\xfaA!\n" +
+	"\x1ffreebusy.promocode.v1/PromoCodeR\tpromoCode\x12;\n" +
 	"\x0fdiscount_amount\x18\x04 \x01(\v2\x12.google.type.MoneyR\x0ediscountAmount\x123\n" +
 	"\vfinal_total\x18\x05 \x01(\v2\x12.google.type.MoneyR\n" +
 	"finalTotalB\x8a\x02\n" +
@@ -653,6 +653,7 @@ func file_freebusy_promocode_v1_promocode_messages_proto_init() {
 	if File_freebusy_promocode_v1_promocode_messages_proto != nil {
 		return
 	}
+	file_freebusy_promocode_v1_enums_proto_init()
 	file_freebusy_promocode_v1_promocode_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{

@@ -1,0 +1,272 @@
+components:
+  schemas:
+    freebusy.booking.v1.Booking:
+      description: 'A reservation against a resource. The hold lifecycle lives here
+        as states rather than a separate service: CreateBooking places a PENDING_HOLD,
+        confirmation flips it to CONFIRMED, and an internal sweeper expires holds
+        that are never confirmed.'
+      properties:
+        assignedUnit:
+          description: Which specific unit of the pool was assigned (the shell's atomic
+            pick).
+          type: string
+        attributes:
+          description: Arbitrary attributes.
+          type: object
+          x-kubernetes-preserve-unknown-fields: true
+        cancelReason:
+          description: Why the booking was cancelled, when state is CANCELLED.
+          enum:
+          - CANCEL_REASON_UNSPECIFIED
+          - CANCEL_REASON_REQUESTED_BY_CUSTOMER
+          - CANCEL_REASON_REQUESTED_BY_OPERATOR
+          - CANCEL_REASON_PAYMENT_FAILED
+          - CANCEL_REASON_NO_SHOW
+          - CANCEL_REASON_OTHER
+          type: string
+        cancelTime:
+          description: When the booking was cancelled, if at all.
+          format: date-time
+          type: string
+        confirmTime:
+          description: When the booking was confirmed, if at all.
+          format: date-time
+          type: string
+        contact:
+          description: Contact details for the booker. Required when `customer` is
+            unset (a guest / walk-in booking); when `customer` is set these supplement
+            or override the user's profile contact for this booking.
+          properties:
+            displayName:
+              description: Full name of the guest.
+              type: string
+            email:
+              description: Email address for the confirmation and any follow-ups.
+              type: string
+            phoneNumber:
+              description: Phone number in E.164 form (e.g. "+14155552671").
+              type: string
+          type: object
+        createTime:
+          description: Creation timestamp (when the hold was placed).
+          format: date-time
+          type: string
+        customer:
+          description: 'The user the booking is for. Format: users/{user}'
+          type: string
+        discount:
+          description: Discount applied from the promo code.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        etag:
+          description: Opaque version for optimistic concurrency (AIP-154); echo on
+            update/delete.
+          type: string
+        holdExpireTime:
+          description: When the pending hold lapses, if not confirmed first.
+          format: date-time
+          type: string
+        holdTtl:
+          description: Requested time-to-live of the hold, set at creation. The server
+            caps this and reflects the effective expiry in hold_expire_time.
+          type: string
+        name:
+          description: 'The booking name. Format: bookings/{booking}'
+          type: string
+        notes:
+          description: Free-form notes on the booking.
+          type: string
+        offering:
+          description: 'The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}'
+          type: string
+        price:
+          description: Computed subtotal before discounts.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        priceComponents:
+          description: 'Itemized breakdown behind the total: the base charge, each
+            fee and tax, and each discount, as signed lines. `price` is the TYPE_BASE
+            subtotal and `total` is the sum of every component; these lines expose
+            the fees and taxes in between. Empty for simple bookings with no fees
+            or taxes configured.'
+          items:
+            description: 'One line in a price breakdown: a base charge, a fee, a tax,
+              or a discount. Clients branch on `type` and `code`; the signed `amount`
+              rolls up to the booking total (charges positive, discounts negative).'
+            properties:
+              amount:
+                description: 'Signed amount: positive for charges (base, fees, taxes),
+                  negative for discounts. Summing every component yields the booking
+                  total.'
+                properties:
+                  currencyCode:
+                    description: The three-letter currency code defined in ISO 4217.
+                    type: string
+                  nanos:
+                    description: Number of nano (10^-9) units of the amount. The value
+                      must be between -999,999,999 and +999,999,999 inclusive. If
+                      `units` is positive, `nanos` must be positive or zero. If `units`
+                      is zero, `nanos` can be positive, zero, or negative. If `units`
+                      is negative, `nanos` must be negative or zero. For example $-1.75
+                      is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+                    type: integer
+                  units:
+                    description: The whole units of the amount. For example if `currencyCode`
+                      is `"USD"`, then 1 unit is one US dollar.
+                    format: int64
+                    type: integer
+                    x-kubernetes-int-or-string: true
+                type: object
+              code:
+                description: Stable machine code for the line, e.g. "base", "cleaning_fee",
+                  "occupancy_tax", or a promo code. Clients key display and logic
+                  off this.
+                type: string
+              displayName:
+                description: Human-readable label suitable for display on an itemized
+                  receipt.
+                type: string
+              type:
+                description: Which kind of line this is.
+                enum:
+                - TYPE_UNSPECIFIED
+                - TYPE_BASE
+                - TYPE_FEE
+                - TYPE_TAX
+                - TYPE_DISCOUNT
+                type: string
+            type: object
+          type: array
+        promoCode:
+          description: 'The promo code to apply to this booking, set at creation,
+            if any. Format: promoCodes/{promo_code}'
+          type: string
+        refundAmount:
+          description: Amount refunded on cancellation, computed from the resource's
+            cancellation policy and how far ahead of the booking start it was cancelled.
+            Set only once the booking is CANCELLED. Use PreviewCancellation to see
+            this before committing.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        refundPercent:
+          description: Percentage of the total that `refund_amount` represents (0-100).
+          format: int32
+          type: integer
+        resource:
+          description: 'The resource being booked. Format: resources/{resource}'
+          type: string
+        state:
+          description: Current lifecycle state.
+          enum:
+          - BOOKING_STATE_UNSPECIFIED
+          - BOOKING_STATE_PENDING_HOLD
+          - BOOKING_STATE_CONFIRMED
+          - BOOKING_STATE_CANCELLED
+          - BOOKING_STATE_EXPIRED
+          - BOOKING_STATE_COMPLETED
+          - BOOKING_STATE_NO_SHOW
+          type: string
+        total:
+          description: Final total after discounts.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        units:
+          description: Number of units / party size reserved. Defaults to 1.
+          format: int32
+          type: integer
+        updateTime:
+          description: Last-modification timestamp.
+          format: date-time
+          type: string
+        window:
+          description: The reserved span. For NIGHTLY resources this spans check-in
+            to check-out.
+          properties:
+            endTime:
+              description: Exclusive end of the interval.
+              format: date-time
+              type: string
+            startTime:
+              description: Inclusive start of the interval.
+              format: date-time
+              type: string
+          type: object
+      type: object
+info:
+  title: OpenAPI Spec for Solo APIs.
+  version: v1
+openapi: 3.0.1
+paths: null

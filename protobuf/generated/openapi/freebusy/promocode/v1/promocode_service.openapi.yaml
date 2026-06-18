@@ -1,0 +1,423 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: PromoCodeService API
+    description: |-
+        PromoCodeService manages redeemable discount codes and validates them against
+         a prospective booking. Redemption itself happens inside CreateBooking.
+    version: 0.0.1
+servers:
+    - url: https://freebusy.ohtarnished.dev
+paths:
+    /v1/promoCodes:
+        get:
+            tags:
+                - PromoCodeService
+            description: Lists promo codes.
+            operationId: PromoCodeService_ListPromoCodes
+            parameters:
+                - name: pageSize
+                  in: query
+                  description: Maximum number of promo codes to return. The server may cap this.
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageToken
+                  in: query
+                  description: Page token from a previous ListPromoCodes call's next_page_token.
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: |-
+                    Filter expression over promo code fields, e.g. `state = ACTIVE` or a
+                     substring match on code/display_name (AIP-160).
+                  schema:
+                    type: string
+                - name: orderBy
+                  in: query
+                  description: Sort order, e.g. "code" or "create_time desc".
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListPromoCodesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - PromoCodeService
+            description: Creates a promo code.
+            operationId: PromoCodeService_CreatePromoCode
+            parameters:
+                - name: promoCodeId
+                  in: query
+                  description: Optional caller-chosen ID for the promo code; the server generates one if unset.
+                  schema:
+                    type: string
+                - name: requestId
+                  in: query
+                  description: Caller-supplied idempotency key; identical retries return the first result.
+                  schema:
+                    type: string
+                - name: validateOnly
+                  in: query
+                  description: If true, validate the request and return what would happen, but don't commit.
+                  schema:
+                    type: boolean
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PromoCode'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PromoCode'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/promoCodes/{promoCode}:
+        get:
+            tags:
+                - PromoCodeService
+            description: Gets a single promo code.
+            operationId: PromoCodeService_GetPromoCode
+            parameters:
+                - name: promoCode
+                  in: path
+                  description: The promoCode id.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PromoCode'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - PromoCodeService
+            description: Deletes a promo code.
+            operationId: PromoCodeService_DeletePromoCode
+            parameters:
+                - name: promoCode
+                  in: path
+                  description: The promoCode id.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - PromoCodeService
+            description: Updates a promo code.
+            operationId: PromoCodeService_UpdatePromoCode
+            parameters:
+                - name: promoCode
+                  in: path
+                  description: The promoCode id.
+                  required: true
+                  schema:
+                    type: string
+                - name: updateMask
+                  in: query
+                  description: Fields to overwrite. Omit to replace all mutable fields.
+                  schema:
+                    type: string
+                    format: field-mask
+                - name: validateOnly
+                  in: query
+                  description: If true, validate the request and return what would happen, but don't commit.
+                  schema:
+                    type: boolean
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PromoCode'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PromoCode'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/promoCodes:validatePromoCode:
+        post:
+            tags:
+                - PromoCodeService
+            description: Validates a code against a prospective booking and returns the discount.
+            operationId: PromoCodeService_ValidatePromoCode
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ValidatePromoCodeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidatePromoCodeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListPromoCodesResponse:
+            type: object
+            properties:
+                promoCodes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PromoCode'
+                    description: The page of promo codes.
+                nextPageToken:
+                    type: string
+                    description: Token to pass as page_token to retrieve the next page; empty when no more.
+            description: Response message for ListPromoCodes.
+        Money:
+            type: object
+            properties:
+                currencyCode:
+                    type: string
+                    description: The three-letter currency code defined in ISO 4217.
+                units:
+                    type: string
+                    description: |-
+                        The whole units of the amount.
+                         For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
+                nanos:
+                    type: integer
+                    description: |-
+                        Number of nano (10^-9) units of the amount.
+                         The value must be between -999,999,999 and +999,999,999 inclusive.
+                         If `units` is positive, `nanos` must be positive or zero.
+                         If `units` is zero, `nanos` can be positive, zero, or negative.
+                         If `units` is negative, `nanos` must be negative or zero.
+                         For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+            description: Represents an amount of money with its currency type.
+        PromoCode:
+            required:
+                - code
+                - discountType
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The promo code name.
+                         Format: promoCodes/{promo_code}
+                code:
+                    type: string
+                    description: The human-entered code, unique across all promo codes (e.g. "SUMMER25").
+                displayName:
+                    type: string
+                    description: Internal display name (not shown to customers).
+                description:
+                    type: string
+                    description: Free-form description.
+                discountType:
+                    type: integer
+                    description: Whether the discount is a percentage or a fixed amount.
+                    format: enum
+                percentOff:
+                    type: integer
+                    description: Percentage off (1-100), when discount_type is PERCENTAGE.
+                    format: int32
+                amountOff:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Fixed amount off, when discount_type is FIXED_AMOUNT.
+                redeemStartTime:
+                    type: string
+                    description: Earliest the code can be redeemed. Unset means no lower bound.
+                    format: date-time
+                redeemEndTime:
+                    type: string
+                    description: Latest the code can be redeemed. Unset means no upper bound.
+                    format: date-time
+                maxRedemptions:
+                    type: string
+                    description: Maximum total redemptions across all customers. Zero means unlimited.
+                perCustomerLimit:
+                    type: integer
+                    description: Maximum redemptions per customer. Zero means unlimited.
+                    format: int32
+                minSubtotal:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Minimum subtotal required for the code to apply.
+                applicableResources:
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        Resources the code applies to. Empty means all resources.
+                         Format: resources/{resource}
+                applicableOfferings:
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        Offerings the code applies to. Empty means all offerings.
+                         Format: resources/{resource}/offerings/{offering}
+                redemptionCount:
+                    readOnly: true
+                    type: string
+                    description: How many times the code has been redeemed.
+                state:
+                    readOnly: true
+                    type: integer
+                    description: |-
+                        Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or
+                         EXPIRED (past the window or out of redemptions).
+                    format: enum
+                disabled:
+                    type: boolean
+                    description: If true, the code is manually disabled regardless of its window and caps.
+                createTime:
+                    readOnly: true
+                    type: string
+                    description: Creation timestamp.
+                    format: date-time
+                updateTime:
+                    readOnly: true
+                    type: string
+                    description: Last-modification timestamp.
+                    format: date-time
+                etag:
+                    type: string
+                    description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+            description: |-
+                A redeemable discount applied to a booking's subtotal. Scoped by a redemption
+                 window, usage caps, a minimum subtotal, and an optional set of resources /
+                 offerings it applies to.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        ValidatePromoCodeRequest:
+            required:
+                - code
+                - subtotal
+            type: object
+            properties:
+                code:
+                    type: string
+                    description: The human-entered code to validate (e.g. "SUMMER25").
+                subtotal:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Subtotal the discount would apply to.
+                resource:
+                    type: string
+                    description: |-
+                        Resource being booked, for scope checks.
+                         Format: resources/{resource}
+                offering:
+                    type: string
+                    description: |-
+                        Offering being booked, for scope checks.
+                         Format: resources/{resource}/offerings/{offering}
+                customer:
+                    type: string
+                    description: |-
+                        Customer redeeming the code, for per-customer limit checks.
+                         Format: users/{user}
+            description: |-
+                Request message for ValidatePromoCode. Computes the discount a code would
+                 apply to a prospective booking without redeeming it.
+        ValidatePromoCodeResponse:
+            type: object
+            properties:
+                valid:
+                    type: boolean
+                    description: Whether the code is valid and applicable to the given context.
+                reason:
+                    type: string
+                    description: Why the code is not valid, when valid is false.
+                promoCode:
+                    type: string
+                    description: |-
+                        The resolved promo code, when valid.
+                         Format: promoCodes/{promo_code}
+                discountAmount:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Discount the code applies to the subtotal.
+                finalTotal:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: Subtotal minus the discount.
+            description: Response message for ValidatePromoCode.
+tags:
+    - name: PromoCodeService

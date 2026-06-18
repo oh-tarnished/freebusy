@@ -787,10 +787,10 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\border_by\x18\v \x01(\tB\x03\xe0A\x01R\aorderByJ\x04\b\x02\x10\t\"\x83\x01\n" +
 	"\x15ListResourcesResponse\x12<\n" +
 	"\tresources\x18\x01 \x03(\v2\x1e.freebusy.resource.v1.ResourceR\tresources\x12&\n" +
-	"\x0fnext_page_token\x18\x05 \x01(\tR\rnextPageTokenJ\x04\b\x02\x10\x05\"S\n" +
-	"\x12GetResourceRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x04name\"\xaa\x01\n" +
+	"\x0fnext_page_token\x18\x05 \x01(\tR\rnextPageTokenJ\x04\b\x02\x10\x05\"O\n" +
+	"\x12GetResourceRequest\x129\n" +
+	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\x04name\"\xaa\x01\n" +
 	"\x15CreateResourceRequest\x12?\n" +
 	"\bresource\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.ResourceB\x03\xe0A\x02R\bresource\x12$\n" +
 	"\vresource_id\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
@@ -800,16 +800,16 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\x15UpdateResourceRequest\x12?\n" +
 	"\bresource\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.ResourceB\x03\xe0A\x02R\bresource\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"W\n" +
-	"\x16ArchiveResourceRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x04name\"Y\n" +
-	"\x18UnarchiveResourceRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x04name\"\xdc\x01\n" +
-	"\x14ListOfferingsRequest\x12A\n" +
-	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12 \n" +
+	"updateMask\"S\n" +
+	"\x16ArchiveResourceRequest\x129\n" +
+	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\x04name\"U\n" +
+	"\x18UnarchiveResourceRequest\x129\n" +
+	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\x04name\"\xd8\x01\n" +
+	"\x14ListOfferingsRequest\x12=\n" +
+	"\x06parent\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\x06parent\x12 \n" +
 	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1e\n" +
@@ -817,13 +817,13 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\x06filter\x18\x05 \x01(\tB\x03\xe0A\x01R\x06filter\"}\n" +
 	"\x15ListOfferingsResponse\x12<\n" +
 	"\tofferings\x18\x01 \x03(\v2\x1e.freebusy.resource.v1.OfferingR\tofferings\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"S\n" +
-	"\x12GetOfferingRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\x04name\"\xed\x01\n" +
-	"\x15CreateOfferingRequest\x12A\n" +
-	"\x06parent\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/ResourceR\x06parent\x12?\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"O\n" +
+	"\x12GetOfferingRequest\x129\n" +
+	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\x04name\"\xe9\x01\n" +
+	"\x15CreateOfferingRequest\x12=\n" +
+	"\x06parent\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\x06parent\x12?\n" +
 	"\boffering\x18\x02 \x01(\v2\x1e.freebusy.resource.v1.OfferingB\x03\xe0A\x02R\boffering\x12$\n" +
 	"\voffering_id\x18\x03 \x01(\tB\x03\xe0A\x01R\n" +
 	"offeringId\x12*\n" +
@@ -832,10 +832,10 @@ const file_freebusy_resource_v1_resource_messages_proto_rawDesc = "" +
 	"\x15UpdateOfferingRequest\x12?\n" +
 	"\boffering\x18\x01 \x01(\v2\x1e.freebusy.resource.v1.OfferingB\x03\xe0A\x02R\boffering\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"V\n" +
-	"\x15DeleteOfferingRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.ohtarnished.dev/OfferingR\x04nameB\x81\x02\n" +
+	"updateMask\"R\n" +
+	"\x15DeleteOfferingRequest\x129\n" +
+	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\x04nameB\x81\x02\n" +
 	"\x18com.freebusy.resource.v1B\x15ResourceMessagesProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/resource/v1/resourcepbv1;resourcepbv1\xa2\x02\x03FRX\xaa\x02\x14Freebusy.Resource.V1\xca\x02\x14Freebusy\\Resource\\V1\xe2\x02 Freebusy\\Resource\\V1\\GPBMetadata\xea\x02\x16Freebusy::Resource::V1b\x06proto3"
 
 var (

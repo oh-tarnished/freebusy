@@ -25,59 +25,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Whether an exception removes or adds availability.
-type ExceptionKind int32
-
-const (
-	// Unset.
-	ExceptionKind_EXCEPTION_KIND_UNSPECIFIED ExceptionKind = 0
-	// The resource is closed for the span (blackout / holiday).
-	ExceptionKind_EXCEPTION_KIND_CLOSURE ExceptionKind = 1
-	// The resource is open beyond its recurring hours for the span.
-	ExceptionKind_EXCEPTION_KIND_EXTRA_HOURS ExceptionKind = 2
-)
-
-// Enum value maps for ExceptionKind.
-var (
-	ExceptionKind_name = map[int32]string{
-		0: "EXCEPTION_KIND_UNSPECIFIED",
-		1: "EXCEPTION_KIND_CLOSURE",
-		2: "EXCEPTION_KIND_EXTRA_HOURS",
-	}
-	ExceptionKind_value = map[string]int32{
-		"EXCEPTION_KIND_UNSPECIFIED": 0,
-		"EXCEPTION_KIND_CLOSURE":     1,
-		"EXCEPTION_KIND_EXTRA_HOURS": 2,
-	}
-)
-
-func (x ExceptionKind) Enum() *ExceptionKind {
-	p := new(ExceptionKind)
-	*p = x
-	return p
-}
-
-func (x ExceptionKind) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (ExceptionKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_freebusy_schedule_v1_schedule_proto_enumTypes[0].Descriptor()
-}
-
-func (ExceptionKind) Type() protoreflect.EnumType {
-	return &file_freebusy_schedule_v1_schedule_proto_enumTypes[0]
-}
-
-func (x ExceptionKind) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use ExceptionKind.Descriptor instead.
-func (ExceptionKind) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_schedule_v1_schedule_proto_rawDescGZIP(), []int{0}
-}
-
 // A recurring availability window expressed as an RRULE plus a daily open span.
 // The freebusy engine expands these against the resource's timezone.
 type RecurringRule struct {
@@ -659,7 +606,7 @@ var File_freebusy_schedule_v1_schedule_proto protoreflect.FileDescriptor
 
 const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/schedule/v1/schedule.proto\x12\x14freebusy.schedule.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"b\n" +
+	"#freebusy/schedule/v1/schedule.proto\x12\x14freebusy.schedule.v1\x1a freebusy/schedule/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"b\n" +
 	"\rRecurringRule\x12\x19\n" +
 	"\x05rrule\x18\x01 \x01(\tB\x03\xe0A\x02R\x05rrule\x12\x19\n" +
 	"\x05opens\x18\x02 \x01(\tB\x03\xe0A\x01R\x05opens\x12\x1b\n" +
@@ -681,7 +628,7 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\x10checkin_weekdays\x18\x03 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x0fcheckinWeekdays\x12M\n" +
 	"\x11checkout_weekdays\x18\x04 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x10checkoutWeekdays\x12-\n" +
 	"\x10advance_min_days\x18\x05 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMinDays\x12-\n" +
-	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\x81\x04\n" +
+	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\xfd\x03\n" +
 	"\x15AvailabilityException\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12<\n" +
 	"\x04kind\x18\x03 \x01(\x0e2#.freebusy.schedule.v1.ExceptionKindB\x03\xe0A\x02R\x04kind\x128\n" +
@@ -690,31 +637,27 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"date_range\x18\a \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x1b\n" +
 	"\x06reason\x18\x05 \x01(\tB\x03\xe0A\x01R\x06reason\x12@\n" +
 	"\vcreate_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"createTime:\xa9\x01\xeaA\xa5\x01\n" +
-	".freebusy.ohtarnished.dev/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
-	"\x04spanJ\x04\b\x02\x10\x03\"\xba\x04\n" +
+	"createTime:\xa5\x01\xeaA\xa1\x01\n" +
+	"*freebusy.schedule.v1/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
+	"\x04spanJ\x04\b\x02\x10\x03\"\xb2\x04\n" +
 	"\bSchedule\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\x0frecurring_rules\x18\x02 \x03(\v2#.freebusy.schedule.v1.RecurringRuleB\x03\xe0A\x01R\x0erecurringRules\x12C\n" +
 	"\abuffers\x18\x03 \x01(\v2$.freebusy.schedule.v1.BufferSettingsB\x03\xe0A\x01R\abuffers\x12U\n" +
-	"\x10stay_constraints\x18\x04 \x01(\v2%.freebusy.schedule.v1.StayConstraintsB\x03\xe0A\x01R\x0fstayConstraints\x12V\n" +
+	"\x10stay_constraints\x18\x04 \x01(\v2%.freebusy.schedule.v1.StayConstraintsB\x03\xe0A\x01R\x0fstayConstraints\x12R\n" +
 	"\n" +
-	"exceptions\x18\x05 \x03(\tB6\xe0A\x03\xfaA0\n" +
-	".freebusy.ohtarnished.dev/AvailabilityExceptionR\n" +
+	"exceptions\x18\x05 \x03(\tB2\xe0A\x03\xfaA,\n" +
+	"*freebusy.schedule.v1/AvailabilityExceptionR\n" +
 	"exceptions\x12^\n" +
 	"\x13cancellation_policy\x18\a \x01(\v2(.freebusy.schedule.v1.CancellationPolicyB\x03\xe0A\x01R\x12cancellationPolicy\x12\x12\n" +
-	"\x04etag\x18\x06 \x01(\tR\x04etag:Z\xeaAW\n" +
-	"!freebusy.ohtarnished.dev/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule\"Q\n" +
+	"\x04etag\x18\x06 \x01(\tR\x04etag:V\xeaAS\n" +
+	"\x1dfreebusy.schedule.v1/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule\"Q\n" +
 	"\x12CancellationPolicy\x12;\n" +
 	"\x05tiers\x18\x01 \x03(\v2 .freebusy.schedule.v1.RefundTierB\x03\xe0A\x01R\x05tiers\"p\n" +
 	"\n" +
 	"RefundTier\x126\n" +
 	"\x06cutoff\x18\x01 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x02R\x06cutoff\x12*\n" +
-	"\x0erefund_percent\x18\x02 \x01(\x05B\x03\xe0A\x02R\rrefundPercent*k\n" +
-	"\rExceptionKind\x12\x1e\n" +
-	"\x1aEXCEPTION_KIND_UNSPECIFIED\x10\x00\x12\x1a\n" +
-	"\x16EXCEPTION_KIND_CLOSURE\x10\x01\x12\x1e\n" +
-	"\x1aEXCEPTION_KIND_EXTRA_HOURS\x10\x02B\xf9\x01\n" +
+	"\x0erefund_percent\x18\x02 \x01(\x05B\x03\xe0A\x02R\rrefundPercentB\xf9\x01\n" +
 	"\x18com.freebusy.schedule.v1B\rScheduleProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1;schedulepbv1\xa2\x02\x03FSX\xaa\x02\x14Freebusy.Schedule.V1\xca\x02\x14Freebusy\\Schedule\\V1\xe2\x02 Freebusy\\Schedule\\V1\\GPBMetadata\xea\x02\x16Freebusy::Schedule::V1b\x06proto3"
 
 var (
@@ -729,41 +672,40 @@ func file_freebusy_schedule_v1_schedule_proto_rawDescGZIP() []byte {
 	return file_freebusy_schedule_v1_schedule_proto_rawDescData
 }
 
-var file_freebusy_schedule_v1_schedule_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_freebusy_schedule_v1_schedule_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_freebusy_schedule_v1_schedule_proto_goTypes = []any{
-	(ExceptionKind)(0),            // 0: freebusy.schedule.v1.ExceptionKind
-	(*RecurringRule)(nil),         // 1: freebusy.schedule.v1.RecurringRule
-	(*BufferSettings)(nil),        // 2: freebusy.schedule.v1.BufferSettings
-	(*StayConstraints)(nil),       // 3: freebusy.schedule.v1.StayConstraints
-	(*AvailabilityException)(nil), // 4: freebusy.schedule.v1.AvailabilityException
-	(*Schedule)(nil),              // 5: freebusy.schedule.v1.Schedule
-	(*CancellationPolicy)(nil),    // 6: freebusy.schedule.v1.CancellationPolicy
-	(*RefundTier)(nil),            // 7: freebusy.schedule.v1.RefundTier
-	(*durationpb.Duration)(nil),   // 8: google.protobuf.Duration
-	(sharedpbv1.Weekday)(0),       // 9: freebusy.shared.v1.Weekday
+	(*RecurringRule)(nil),         // 0: freebusy.schedule.v1.RecurringRule
+	(*BufferSettings)(nil),        // 1: freebusy.schedule.v1.BufferSettings
+	(*StayConstraints)(nil),       // 2: freebusy.schedule.v1.StayConstraints
+	(*AvailabilityException)(nil), // 3: freebusy.schedule.v1.AvailabilityException
+	(*Schedule)(nil),              // 4: freebusy.schedule.v1.Schedule
+	(*CancellationPolicy)(nil),    // 5: freebusy.schedule.v1.CancellationPolicy
+	(*RefundTier)(nil),            // 6: freebusy.schedule.v1.RefundTier
+	(*durationpb.Duration)(nil),   // 7: google.protobuf.Duration
+	(sharedpbv1.Weekday)(0),       // 8: freebusy.shared.v1.Weekday
+	(ExceptionKind)(0),            // 9: freebusy.schedule.v1.ExceptionKind
 	(*sharedpbv1.TimeWindow)(nil), // 10: freebusy.shared.v1.TimeWindow
 	(*sharedpbv1.DateRange)(nil),  // 11: freebusy.shared.v1.DateRange
 	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
 }
 var file_freebusy_schedule_v1_schedule_proto_depIdxs = []int32{
-	8,  // 0: freebusy.schedule.v1.BufferSettings.start_delta:type_name -> google.protobuf.Duration
-	8,  // 1: freebusy.schedule.v1.BufferSettings.end_delta:type_name -> google.protobuf.Duration
-	8,  // 2: freebusy.schedule.v1.BufferSettings.min_notice:type_name -> google.protobuf.Duration
-	8,  // 3: freebusy.schedule.v1.BufferSettings.max_advance:type_name -> google.protobuf.Duration
-	8,  // 4: freebusy.schedule.v1.BufferSettings.gap:type_name -> google.protobuf.Duration
-	9,  // 5: freebusy.schedule.v1.StayConstraints.checkin_weekdays:type_name -> freebusy.shared.v1.Weekday
-	9,  // 6: freebusy.schedule.v1.StayConstraints.checkout_weekdays:type_name -> freebusy.shared.v1.Weekday
-	0,  // 7: freebusy.schedule.v1.AvailabilityException.kind:type_name -> freebusy.schedule.v1.ExceptionKind
+	7,  // 0: freebusy.schedule.v1.BufferSettings.start_delta:type_name -> google.protobuf.Duration
+	7,  // 1: freebusy.schedule.v1.BufferSettings.end_delta:type_name -> google.protobuf.Duration
+	7,  // 2: freebusy.schedule.v1.BufferSettings.min_notice:type_name -> google.protobuf.Duration
+	7,  // 3: freebusy.schedule.v1.BufferSettings.max_advance:type_name -> google.protobuf.Duration
+	7,  // 4: freebusy.schedule.v1.BufferSettings.gap:type_name -> google.protobuf.Duration
+	8,  // 5: freebusy.schedule.v1.StayConstraints.checkin_weekdays:type_name -> freebusy.shared.v1.Weekday
+	8,  // 6: freebusy.schedule.v1.StayConstraints.checkout_weekdays:type_name -> freebusy.shared.v1.Weekday
+	9,  // 7: freebusy.schedule.v1.AvailabilityException.kind:type_name -> freebusy.schedule.v1.ExceptionKind
 	10, // 8: freebusy.schedule.v1.AvailabilityException.window:type_name -> freebusy.shared.v1.TimeWindow
 	11, // 9: freebusy.schedule.v1.AvailabilityException.date_range:type_name -> freebusy.shared.v1.DateRange
 	12, // 10: freebusy.schedule.v1.AvailabilityException.create_time:type_name -> google.protobuf.Timestamp
-	1,  // 11: freebusy.schedule.v1.Schedule.recurring_rules:type_name -> freebusy.schedule.v1.RecurringRule
-	2,  // 12: freebusy.schedule.v1.Schedule.buffers:type_name -> freebusy.schedule.v1.BufferSettings
-	3,  // 13: freebusy.schedule.v1.Schedule.stay_constraints:type_name -> freebusy.schedule.v1.StayConstraints
-	6,  // 14: freebusy.schedule.v1.Schedule.cancellation_policy:type_name -> freebusy.schedule.v1.CancellationPolicy
-	7,  // 15: freebusy.schedule.v1.CancellationPolicy.tiers:type_name -> freebusy.schedule.v1.RefundTier
-	8,  // 16: freebusy.schedule.v1.RefundTier.cutoff:type_name -> google.protobuf.Duration
+	0,  // 11: freebusy.schedule.v1.Schedule.recurring_rules:type_name -> freebusy.schedule.v1.RecurringRule
+	1,  // 12: freebusy.schedule.v1.Schedule.buffers:type_name -> freebusy.schedule.v1.BufferSettings
+	2,  // 13: freebusy.schedule.v1.Schedule.stay_constraints:type_name -> freebusy.schedule.v1.StayConstraints
+	5,  // 14: freebusy.schedule.v1.Schedule.cancellation_policy:type_name -> freebusy.schedule.v1.CancellationPolicy
+	6,  // 15: freebusy.schedule.v1.CancellationPolicy.tiers:type_name -> freebusy.schedule.v1.RefundTier
+	7,  // 16: freebusy.schedule.v1.RefundTier.cutoff:type_name -> google.protobuf.Duration
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -776,6 +718,7 @@ func file_freebusy_schedule_v1_schedule_proto_init() {
 	if File_freebusy_schedule_v1_schedule_proto != nil {
 		return
 	}
+	file_freebusy_schedule_v1_enums_proto_init()
 	file_freebusy_schedule_v1_schedule_proto_msgTypes[3].OneofWrappers = []any{
 		(*AvailabilityException_Window)(nil),
 		(*AvailabilityException_DateRange)(nil),
@@ -785,14 +728,13 @@ func file_freebusy_schedule_v1_schedule_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_schedule_v1_schedule_proto_rawDesc), len(file_freebusy_schedule_v1_schedule_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_freebusy_schedule_v1_schedule_proto_goTypes,
 		DependencyIndexes: file_freebusy_schedule_v1_schedule_proto_depIdxs,
-		EnumInfos:         file_freebusy_schedule_v1_schedule_proto_enumTypes,
 		MessageInfos:      file_freebusy_schedule_v1_schedule_proto_msgTypes,
 	}.Build()
 	File_freebusy_schedule_v1_schedule_proto = out.File

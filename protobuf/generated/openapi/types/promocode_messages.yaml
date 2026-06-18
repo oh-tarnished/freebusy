@@ -1,0 +1,584 @@
+components:
+  schemas:
+    freebusy.promocode.v1.CreatePromoCodeRequest:
+      description: Request message for CreatePromoCode.
+      properties:
+        promoCode:
+          description: The promo code to create. The name and redemption_count fields
+            are ignored.
+          properties:
+            amountOff:
+              description: Fixed amount off, when discount_type is FIXED_AMOUNT.
+              properties:
+                currencyCode:
+                  description: The three-letter currency code defined in ISO 4217.
+                  type: string
+                nanos:
+                  description: Number of nano (10^-9) units of the amount. The value
+                    must be between -999,999,999 and +999,999,999 inclusive. If `units`
+                    is positive, `nanos` must be positive or zero. If `units` is zero,
+                    `nanos` can be positive, zero, or negative. If `units` is negative,
+                    `nanos` must be negative or zero. For example $-1.75 is represented
+                    as `units`=-1 and `nanos`=-750,000,000.
+                  format: int32
+                  type: integer
+                units:
+                  description: The whole units of the amount. For example if `currencyCode`
+                    is `"USD"`, then 1 unit is one US dollar.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+              type: object
+            applicableOfferings:
+              description: 'Offerings the code applies to. Empty means all offerings.
+                Format: resources/{resource}/offerings/{offering}'
+              items:
+                type: string
+              type: array
+            applicableResources:
+              description: 'Resources the code applies to. Empty means all resources.
+                Format: resources/{resource}'
+              items:
+                type: string
+              type: array
+            code:
+              description: The human-entered code, unique across all promo codes (e.g.
+                "SUMMER25").
+              type: string
+            createTime:
+              description: Creation timestamp.
+              format: date-time
+              type: string
+            description:
+              description: Free-form description.
+              type: string
+            disabled:
+              description: If true, the code is manually disabled regardless of its
+                window and caps.
+              type: boolean
+            discountType:
+              description: Whether the discount is a percentage or a fixed amount.
+              enum:
+              - DISCOUNT_TYPE_UNSPECIFIED
+              - DISCOUNT_TYPE_PERCENTAGE
+              - DISCOUNT_TYPE_FIXED_AMOUNT
+              type: string
+            displayName:
+              description: Internal display name (not shown to customers).
+              type: string
+            etag:
+              description: Opaque version for optimistic concurrency (AIP-154); echo
+                on update/delete.
+              type: string
+            maxRedemptions:
+              description: Maximum total redemptions across all customers. Zero means
+                unlimited.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+            minSubtotal:
+              description: Minimum subtotal required for the code to apply.
+              properties:
+                currencyCode:
+                  description: The three-letter currency code defined in ISO 4217.
+                  type: string
+                nanos:
+                  description: Number of nano (10^-9) units of the amount. The value
+                    must be between -999,999,999 and +999,999,999 inclusive. If `units`
+                    is positive, `nanos` must be positive or zero. If `units` is zero,
+                    `nanos` can be positive, zero, or negative. If `units` is negative,
+                    `nanos` must be negative or zero. For example $-1.75 is represented
+                    as `units`=-1 and `nanos`=-750,000,000.
+                  format: int32
+                  type: integer
+                units:
+                  description: The whole units of the amount. For example if `currencyCode`
+                    is `"USD"`, then 1 unit is one US dollar.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+              type: object
+            name:
+              description: 'The promo code name. Format: promoCodes/{promo_code}'
+              type: string
+            perCustomerLimit:
+              description: Maximum redemptions per customer. Zero means unlimited.
+              format: int32
+              type: integer
+            percentOff:
+              description: Percentage off (1-100), when discount_type is PERCENTAGE.
+              format: int32
+              type: integer
+            redeemEndTime:
+              description: Latest the code can be redeemed. Unset means no upper bound.
+              format: date-time
+              type: string
+            redeemStartTime:
+              description: Earliest the code can be redeemed. Unset means no lower
+                bound.
+              format: date-time
+              type: string
+            redemptionCount:
+              description: How many times the code has been redeemed.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+            state:
+              description: 'Derived lifecycle state: ACTIVE, DISABLED (when `disabled`
+                is set), or EXPIRED (past the window or out of redemptions).'
+              enum:
+              - PROMO_CODE_STATE_UNSPECIFIED
+              - PROMO_CODE_STATE_ACTIVE
+              - PROMO_CODE_STATE_DISABLED
+              - PROMO_CODE_STATE_EXPIRED
+              type: string
+            updateTime:
+              description: Last-modification timestamp.
+              format: date-time
+              type: string
+          type: object
+        promoCodeId:
+          description: Optional caller-chosen ID for the promo code; the server generates
+            one if unset.
+          type: string
+        requestId:
+          description: Caller-supplied idempotency key; identical retries return the
+            first result.
+          type: string
+        validateOnly:
+          description: If true, validate the request and return what would happen,
+            but don't commit.
+          type: boolean
+      type: object
+    freebusy.promocode.v1.DeletePromoCodeRequest:
+      description: Request message for DeletePromoCode.
+      properties:
+        name:
+          description: 'The promo code to delete. Format: promoCodes/{promo_code}'
+          type: string
+      type: object
+    freebusy.promocode.v1.GetPromoCodeRequest:
+      description: Request message for GetPromoCode.
+      properties:
+        name:
+          description: 'The promo code to retrieve. Format: promoCodes/{promo_code}'
+          type: string
+      type: object
+    freebusy.promocode.v1.ListPromoCodesRequest:
+      description: Request message for ListPromoCodes.
+      properties:
+        filter:
+          description: Filter expression over promo code fields, e.g. `state = ACTIVE`
+            or a substring match on code/display_name (AIP-160).
+          type: string
+        orderBy:
+          description: Sort order, e.g. "code" or "create_time desc".
+          type: string
+        pageSize:
+          description: Maximum number of promo codes to return. The server may cap
+            this.
+          format: int32
+          type: integer
+        pageToken:
+          description: Page token from a previous ListPromoCodes call's next_page_token.
+          type: string
+      type: object
+    freebusy.promocode.v1.ListPromoCodesResponse:
+      description: Response message for ListPromoCodes.
+      properties:
+        nextPageToken:
+          description: Token to pass as page_token to retrieve the next page; empty
+            when no more.
+          type: string
+        promoCodes:
+          description: The page of promo codes.
+          items:
+            description: A redeemable discount applied to a booking's subtotal. Scoped
+              by a redemption window, usage caps, a minimum subtotal, and an optional
+              set of resources / offerings it applies to.
+            properties:
+              amountOff:
+                description: Fixed amount off, when discount_type is FIXED_AMOUNT.
+                properties:
+                  currencyCode:
+                    description: The three-letter currency code defined in ISO 4217.
+                    type: string
+                  nanos:
+                    description: Number of nano (10^-9) units of the amount. The value
+                      must be between -999,999,999 and +999,999,999 inclusive. If
+                      `units` is positive, `nanos` must be positive or zero. If `units`
+                      is zero, `nanos` can be positive, zero, or negative. If `units`
+                      is negative, `nanos` must be negative or zero. For example $-1.75
+                      is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+                    type: integer
+                  units:
+                    description: The whole units of the amount. For example if `currencyCode`
+                      is `"USD"`, then 1 unit is one US dollar.
+                    format: int64
+                    type: integer
+                    x-kubernetes-int-or-string: true
+                type: object
+              applicableOfferings:
+                description: 'Offerings the code applies to. Empty means all offerings.
+                  Format: resources/{resource}/offerings/{offering}'
+                items:
+                  type: string
+                type: array
+              applicableResources:
+                description: 'Resources the code applies to. Empty means all resources.
+                  Format: resources/{resource}'
+                items:
+                  type: string
+                type: array
+              code:
+                description: The human-entered code, unique across all promo codes
+                  (e.g. "SUMMER25").
+                type: string
+              createTime:
+                description: Creation timestamp.
+                format: date-time
+                type: string
+              description:
+                description: Free-form description.
+                type: string
+              disabled:
+                description: If true, the code is manually disabled regardless of
+                  its window and caps.
+                type: boolean
+              discountType:
+                description: Whether the discount is a percentage or a fixed amount.
+                enum:
+                - DISCOUNT_TYPE_UNSPECIFIED
+                - DISCOUNT_TYPE_PERCENTAGE
+                - DISCOUNT_TYPE_FIXED_AMOUNT
+                type: string
+              displayName:
+                description: Internal display name (not shown to customers).
+                type: string
+              etag:
+                description: Opaque version for optimistic concurrency (AIP-154);
+                  echo on update/delete.
+                type: string
+              maxRedemptions:
+                description: Maximum total redemptions across all customers. Zero
+                  means unlimited.
+                format: int64
+                type: integer
+                x-kubernetes-int-or-string: true
+              minSubtotal:
+                description: Minimum subtotal required for the code to apply.
+                properties:
+                  currencyCode:
+                    description: The three-letter currency code defined in ISO 4217.
+                    type: string
+                  nanos:
+                    description: Number of nano (10^-9) units of the amount. The value
+                      must be between -999,999,999 and +999,999,999 inclusive. If
+                      `units` is positive, `nanos` must be positive or zero. If `units`
+                      is zero, `nanos` can be positive, zero, or negative. If `units`
+                      is negative, `nanos` must be negative or zero. For example $-1.75
+                      is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+                    type: integer
+                  units:
+                    description: The whole units of the amount. For example if `currencyCode`
+                      is `"USD"`, then 1 unit is one US dollar.
+                    format: int64
+                    type: integer
+                    x-kubernetes-int-or-string: true
+                type: object
+              name:
+                description: 'The promo code name. Format: promoCodes/{promo_code}'
+                type: string
+              perCustomerLimit:
+                description: Maximum redemptions per customer. Zero means unlimited.
+                format: int32
+                type: integer
+              percentOff:
+                description: Percentage off (1-100), when discount_type is PERCENTAGE.
+                format: int32
+                type: integer
+              redeemEndTime:
+                description: Latest the code can be redeemed. Unset means no upper
+                  bound.
+                format: date-time
+                type: string
+              redeemStartTime:
+                description: Earliest the code can be redeemed. Unset means no lower
+                  bound.
+                format: date-time
+                type: string
+              redemptionCount:
+                description: How many times the code has been redeemed.
+                format: int64
+                type: integer
+                x-kubernetes-int-or-string: true
+              state:
+                description: 'Derived lifecycle state: ACTIVE, DISABLED (when `disabled`
+                  is set), or EXPIRED (past the window or out of redemptions).'
+                enum:
+                - PROMO_CODE_STATE_UNSPECIFIED
+                - PROMO_CODE_STATE_ACTIVE
+                - PROMO_CODE_STATE_DISABLED
+                - PROMO_CODE_STATE_EXPIRED
+                type: string
+              updateTime:
+                description: Last-modification timestamp.
+                format: date-time
+                type: string
+            type: object
+          type: array
+      type: object
+    freebusy.promocode.v1.UpdatePromoCodeRequest:
+      description: Request message for UpdatePromoCode.
+      properties:
+        promoCode:
+          description: The promo code to update; its name identifies the target.
+          properties:
+            amountOff:
+              description: Fixed amount off, when discount_type is FIXED_AMOUNT.
+              properties:
+                currencyCode:
+                  description: The three-letter currency code defined in ISO 4217.
+                  type: string
+                nanos:
+                  description: Number of nano (10^-9) units of the amount. The value
+                    must be between -999,999,999 and +999,999,999 inclusive. If `units`
+                    is positive, `nanos` must be positive or zero. If `units` is zero,
+                    `nanos` can be positive, zero, or negative. If `units` is negative,
+                    `nanos` must be negative or zero. For example $-1.75 is represented
+                    as `units`=-1 and `nanos`=-750,000,000.
+                  format: int32
+                  type: integer
+                units:
+                  description: The whole units of the amount. For example if `currencyCode`
+                    is `"USD"`, then 1 unit is one US dollar.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+              type: object
+            applicableOfferings:
+              description: 'Offerings the code applies to. Empty means all offerings.
+                Format: resources/{resource}/offerings/{offering}'
+              items:
+                type: string
+              type: array
+            applicableResources:
+              description: 'Resources the code applies to. Empty means all resources.
+                Format: resources/{resource}'
+              items:
+                type: string
+              type: array
+            code:
+              description: The human-entered code, unique across all promo codes (e.g.
+                "SUMMER25").
+              type: string
+            createTime:
+              description: Creation timestamp.
+              format: date-time
+              type: string
+            description:
+              description: Free-form description.
+              type: string
+            disabled:
+              description: If true, the code is manually disabled regardless of its
+                window and caps.
+              type: boolean
+            discountType:
+              description: Whether the discount is a percentage or a fixed amount.
+              enum:
+              - DISCOUNT_TYPE_UNSPECIFIED
+              - DISCOUNT_TYPE_PERCENTAGE
+              - DISCOUNT_TYPE_FIXED_AMOUNT
+              type: string
+            displayName:
+              description: Internal display name (not shown to customers).
+              type: string
+            etag:
+              description: Opaque version for optimistic concurrency (AIP-154); echo
+                on update/delete.
+              type: string
+            maxRedemptions:
+              description: Maximum total redemptions across all customers. Zero means
+                unlimited.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+            minSubtotal:
+              description: Minimum subtotal required for the code to apply.
+              properties:
+                currencyCode:
+                  description: The three-letter currency code defined in ISO 4217.
+                  type: string
+                nanos:
+                  description: Number of nano (10^-9) units of the amount. The value
+                    must be between -999,999,999 and +999,999,999 inclusive. If `units`
+                    is positive, `nanos` must be positive or zero. If `units` is zero,
+                    `nanos` can be positive, zero, or negative. If `units` is negative,
+                    `nanos` must be negative or zero. For example $-1.75 is represented
+                    as `units`=-1 and `nanos`=-750,000,000.
+                  format: int32
+                  type: integer
+                units:
+                  description: The whole units of the amount. For example if `currencyCode`
+                    is `"USD"`, then 1 unit is one US dollar.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+              type: object
+            name:
+              description: 'The promo code name. Format: promoCodes/{promo_code}'
+              type: string
+            perCustomerLimit:
+              description: Maximum redemptions per customer. Zero means unlimited.
+              format: int32
+              type: integer
+            percentOff:
+              description: Percentage off (1-100), when discount_type is PERCENTAGE.
+              format: int32
+              type: integer
+            redeemEndTime:
+              description: Latest the code can be redeemed. Unset means no upper bound.
+              format: date-time
+              type: string
+            redeemStartTime:
+              description: Earliest the code can be redeemed. Unset means no lower
+                bound.
+              format: date-time
+              type: string
+            redemptionCount:
+              description: How many times the code has been redeemed.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+            state:
+              description: 'Derived lifecycle state: ACTIVE, DISABLED (when `disabled`
+                is set), or EXPIRED (past the window or out of redemptions).'
+              enum:
+              - PROMO_CODE_STATE_UNSPECIFIED
+              - PROMO_CODE_STATE_ACTIVE
+              - PROMO_CODE_STATE_DISABLED
+              - PROMO_CODE_STATE_EXPIRED
+              type: string
+            updateTime:
+              description: Last-modification timestamp.
+              format: date-time
+              type: string
+          type: object
+        updateMask:
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          properties:
+            paths:
+              description: The set of field mask paths.
+              items:
+                type: string
+              type: array
+          type: object
+        validateOnly:
+          description: If true, validate the request and return what would happen,
+            but don't commit.
+          type: boolean
+      type: object
+    freebusy.promocode.v1.ValidatePromoCodeRequest:
+      description: Request message for ValidatePromoCode. Computes the discount a
+        code would apply to a prospective booking without redeeming it.
+      properties:
+        code:
+          description: The human-entered code to validate (e.g. "SUMMER25").
+          type: string
+        customer:
+          description: 'Customer redeeming the code, for per-customer limit checks.
+            Format: users/{user}'
+          type: string
+        offering:
+          description: 'Offering being booked, for scope checks. Format: resources/{resource}/offerings/{offering}'
+          type: string
+        resource:
+          description: 'Resource being booked, for scope checks. Format: resources/{resource}'
+          type: string
+        subtotal:
+          description: Subtotal the discount would apply to.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+      type: object
+    freebusy.promocode.v1.ValidatePromoCodeResponse:
+      description: Response message for ValidatePromoCode.
+      properties:
+        discountAmount:
+          description: Discount the code applies to the subtotal.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        finalTotal:
+          description: Subtotal minus the discount.
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+        promoCode:
+          description: 'The resolved promo code, when valid. Format: promoCodes/{promo_code}'
+          type: string
+        reason:
+          description: Why the code is not valid, when valid is false.
+          type: string
+        valid:
+          description: Whether the code is valid and applicable to the given context.
+          type: boolean
+      type: object
+info:
+  title: OpenAPI Spec for Solo APIs.
+  version: v1
+openapi: 3.0.1
+paths: null
