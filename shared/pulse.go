@@ -26,6 +26,7 @@ func init() {
 func Close() error {
 	if Pulse != nil {
 		Pulse.Close()
+		Pulse = nil
 	}
 	return nil
 }
