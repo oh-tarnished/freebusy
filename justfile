@@ -50,3 +50,92 @@ generate language="all" descriptors="true":
         echo "Available languages: go, openapiv3, orm, docs"
         exit 1
     fi
+
+# ============================================================================
+# Application (server) — run, build, test, and exercise the gRPC API.
+# Override any variable on the CLI (e.g. `just dsn='...' run`) or export the
+# matching FREEBUSY_* env var before invoking just.
+# ============================================================================
+
+# GORM/Postgres DSN (libpq keyword/value form). The generated models use
+# schema-qualified tables (e.g. promocode.resource), so those schemas must exist.
+dsn := env_var_or_default("FREEBUSY_DATABASE_DSN", "host=127.0.0.1 port=5432 user=postgres password=postgrespassword dbname=freebusydb sslmode=disable TimeZone=UTC")
+# Hasura GraphQL endpoint.
+hasura_url := env_var_or_default("FREEBUSY_HASURA_URL", "http://localhost:8080/v1/graphql")
+# Server ports (exported so the config loader in main.go picks them up).
+grpc_port := env_var_or_default("FREEBUSY_GRPC_PORT", "50051")
+http_port := env_var_or_default("FREEBUSY_HTTP_PORT", "8080")
+
+export FREEBUSY_GRPC_PORT := grpc_port
+export FREEBUSY_HTTP_PORT := http_port
+
+# Run the server with the default GORM/Postgres provider.
+run:
+    FREEBUSY_DB_PROVIDER=gorm FREEBUSY_DATABASE_DSN="{{dsn}}" go run .
+
+# Run the server with the Hasura provider.
+run-hasura:
+    FREEBUSY_DB_PROVIDER=hasura FREEBUSY_HASURA_URL="{{hasura_url}}" go run .
+
+# DEV ONLY: create the Postgres schemas + AutoMigrate every generated model.
+# Run once before `just run`. Not for production — use real migrations there.
+migrate:
+    FREEBUSY_DATABASE_DSN="{{dsn}}" go run ./cmd/migrate
+
+# Dev convenience: migrate the schema, then run the server (GORM/Postgres).
+dev: migrate run
+
+# Compile everything.
+build:
+    go build ./...
+
+# Vet everything.
+vet:
+    go vet ./...
+
+# Run the unit tests (pure-logic packages; no database required).
+test:
+    go test ./...
+
+# Verbose unit tests for the pulse-free pure-logic packages.
+test-unit:
+    go test -v ./internal/discount/ ./internal/database/repository/ ./internal/database/gorm/
+
+# Format all Go files.
+fmt:
+    gofmt -w .
+
+# Tidy module dependencies.
+gotidy:
+    go mod tidy
+
+# CI-style gate: build, vet, and test.
+check: build vet test
+
+# Remove the Go build/test caches.
+clean:
+    go clean -cache -testcache
+
+# --- exercise the API (server must be running; needs grpcurl) ---
+
+# List the gRPC services exposed via reflection.
+grpc-list:
+    grpcurl -plaintext localhost:{{grpc_port}} list
+
+# gRPC health check.
+grpc-health:
+    grpcurl -plaintext localhost:{{grpc_port}} grpc.health.v1.Health/Check
+
+# List promo codes.
+promo-list:
+    grpcurl -plaintext -d '{}' localhost:{{grpc_port}} freebusy.promocode.v1.PromoCodeService/ListPromoCodes
+
+# Create a sample 25%-off promo code.
+promo-create:
+    grpcurl -plaintext -d '{"promo_code":{"code":"SUMMER25","display_name":"Summer Sale","discount_type":"DISCOUNT_TYPE_PERCENTAGE","percent_off":25}}' \
+        localhost:{{grpc_port}} freebusy.promocode.v1.PromoCodeService/CreatePromoCode
+
+# Validate a code against a $100 subtotal.
+promo-validate code="SUMMER25":
+    grpcurl -plaintext -d '{"code":"{{code}}","subtotal":{"currency_code":"USD","units":100}}' \
+        localhost:{{grpc_port}} freebusy.promocode.v1.PromoCodeService/ValidatePromoCode
