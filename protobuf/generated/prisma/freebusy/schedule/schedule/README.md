@@ -166,6 +166,7 @@ Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityExc
 | `id` | `CHAR(26)` | not null |
 | `schedule_id` | `CHAR(26)` | not null |
 | `availability_exception_id` | `CHAR(26)` | not null |
+| `availability_exception_name` | `TEXT` | not null |
 
 ### Enums
 

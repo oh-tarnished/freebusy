@@ -14,8 +14,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository"
-	"github.com/oh-tarnished/freebusy/internal/service"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/internal/runtime"
 	"github.com/oh-tarnished/freebusy/shared"
 	"github.com/oh-tarnished/runtime-go/config"
 	"github.com/oh-tarnished/runtime-go/grpc"
@@ -33,9 +32,7 @@ func main() {
 		fatal("database connection failed: %v", err)
 	}
 
-	factory := database.NewFactory(conn)
-	promoServer := service.NewPromoCodeServer(factory.PromoCodes())
-	shared.Pulse.Logger.Infof("freebusy starting with %q database provider", factory.Provider())
+	shared.Pulse.Logger.Infof("freebusy starting with %q database provider", database.ProviderFromEnv())
 
 	srv := grpc.NewHybridServer(
 		options.Options{
@@ -47,10 +44,10 @@ func main() {
 			EnableHealth: true,
 		},
 		grpc.WithGRPCServers(func(s *grpc.GRPCServer) {
-			promocodepbv1.RegisterPromoCodeServiceServer(s, promoServer)
+			runtime.Register(s, conn)
 		}),
 		grpc.WithHTTPGateways(func(mux *grpc.ServeMux, endpoint string, opts []grpc.DialOption) error {
-			return promocodepbv1.RegisterPromoCodeServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+			return runtime.RegisterGateway(context.Background(), mux, endpoint, opts)
 		}),
 	)
 
@@ -123,6 +120,9 @@ func openConnection(cfg *config.Config) (*database.Connection, error) {
 	// correctly even through "timestamp without time zone" columns.
 	db, err := gorm.Open(postgres.Open(cfg.String("database.dsn")), &gorm.Config{
 		NowFunc: func() time.Time { return time.Now().UTC() },
+		// TranslateError maps driver errors (e.g. Postgres unique/FK violations) to
+		// gorm sentinels so the adapter can return AlreadyExists/Conflict, not Internal.
+		TranslateError: true,
 	})
 	if err != nil {
 		return nil, err

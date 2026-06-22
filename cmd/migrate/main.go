@@ -1,41 +1,22 @@
 // Command migrate is a DEV-ONLY helper: it creates the Postgres schemas and runs
-// gorm AutoMigrate for the models the PromoCode service needs, so `just run` has
-// tables to talk to. It is not a production migration tool — use real, versioned
-// migrations there. Configuration is the same FREEBUSY_DATABASE_DSN the server reads.
+// gorm AutoMigrate for every generated freebusy model (all domains), so `just run`
+// has tables to talk to. It is not a production migration tool — use real,
+// versioned migrations there. Configuration is the same FREEBUSY_DATABASE_DSN the
+// server reads.
 //
-// Scope: the booking and promocode schemas only. The resource and schedule models
-// carry plain []string columns (e.g. Tags, Weekdays, CheckinWeekdays) that gorm
-// AutoMigrate cannot map without a serializer/array tag, so they are intentionally
-// excluded until the generator emits proper column types for those fields.
+// It delegates to the generated freebusy.Default registry (protorm emits it with
+// every model + EnsureSchemas), so new entities are covered automatically on the
+// next `just orm`.
 package main
 
 import (
 	"log"
 	"os"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
+	freebusy "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-// schemas are the Postgres schemas the migrated models live in (their TableName
-// values are "<schema>.<table>"). gorm AutoMigrate does not create schemas, so
-// they must exist first.
-var schemas = []string{"booking", "promocode"}
-
-// migrated returns one struct per table the PromoCode service touches: booking.moneys
-// (backs the amount_off / min_subtotal value-objects) and the three promocode tables
-// (the resource plus its two applicable-* join tables). The rest of the booking
-// domain is intentionally excluded — e.g. booking.resource (Booking) carries a
-// json.RawMessage "attributes" column that gorm AutoMigrate tries to coerce to
-// bytea, which Postgres rejects when the column already exists as jsonb.
-func migrated() []any {
-	return []any{
-		&booking.Money{},
-		&promocode.PromoCode{}, &promocode.PromoCodeApplicableResources{}, &promocode.PromoCodeApplicableOfferings{},
-	}
-}
 
 func main() {
 	dsn := os.Getenv("FREEBUSY_DATABASE_DSN")
@@ -43,24 +24,19 @@ func main() {
 		log.Fatal("FREEBUSY_DATABASE_DSN is required (e.g. host=127.0.0.1 port=5432 user=postgres password=... dbname=freebusydb sslmode=disable)")
 	}
 
-	// Foreign-key constraints are disabled during migration so cross-schema
-	// references (e.g. promocode.resource -> booking.moneys) don't impose an
-	// ordering requirement on table creation.
+	// FK constraints are disabled during migration so cross-schema references
+	// (e.g. promocode.resource -> booking.moneys) don't impose a table-creation
+	// ordering.
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	if err != nil {
 		log.Fatalf("open database: %v", err)
 	}
 
-	for _, schema := range schemas {
-		if err := db.Exec("CREATE SCHEMA IF NOT EXISTS " + schema).Error; err != nil {
-			log.Fatalf("create schema %q: %v", schema, err)
-		}
-		log.Printf("schema ready: %s", schema)
+	if err := freebusy.Default.EnsureSchemas(db); err != nil {
+		log.Fatalf("ensure schemas: %v", err)
 	}
-
-	models := migrated()
-	if err := db.AutoMigrate(models...); err != nil {
+	if err := freebusy.Default.Migrate(db); err != nil {
 		log.Fatalf("auto-migrate: %v", err)
 	}
-	log.Printf("migrated %d tables across %d schemas", len(models), len(schemas))
+	log.Printf("migrated %d models across all freebusy schemas", len(freebusy.Default.Models()))
 }

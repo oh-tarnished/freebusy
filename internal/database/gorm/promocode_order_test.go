@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 )
 
 func TestOrderClauseAllowlisted(t *testing.T) {
@@ -21,11 +21,11 @@ func TestOrderClauseRejectsInjection(t *testing.T) {
 	// Fields outside the allowlist (including SQL-injection attempts) must be
 	// rejected, never passed through to the ORDER BY clause.
 	for _, in := range []string{
-		"id",                       // real column, but not allowlisted
-		"code; DROP TABLE x",       // injection via extra tokens
+		"id",                 // real column, but not allowlisted
+		"code; DROP TABLE x", // injection via extra tokens
 		"(CASE WHEN 1=1 THEN name END)",
 	} {
-		if _, err := orderClause(in); !errors.Is(err, repository.ErrInvalidArgument) {
+		if _, err := orderClause(in); !errors.Is(err, types.ErrInvalidArgument) {
 			t.Fatalf("orderClause(%q) err = %v, want ErrInvalidArgument", in, err)
 		}
 	}

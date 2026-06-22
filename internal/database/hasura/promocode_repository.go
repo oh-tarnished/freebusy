@@ -13,6 +13,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/applicableresourcesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -37,7 +38,7 @@ func NewPromoCodeRepository(svc *freebusyql.Service) repository.PromoCodeReposit
 // Create inserts the Money value-objects, the promo code resource, and the join
 // rows, then re-reads the stored record.
 func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.PromoCode) (*promocodepbv1.PromoCode, error) {
-	id, name, err := repository.ResolvePromoCodeName(pc.GetName())
+	id, name, err := types.ResolvePromoCodeName(pc.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +79,7 @@ func (r *PromoCodeRepository) cleanupMoney(ctx context.Context, ids ...string) {
 
 // Get reads a promo code (with its Money and applicable relations) by name.
 func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodepbv1.PromoCode, error) {
-	id, err := repository.PromoCodeID(name)
+	id, err := types.PromoCodeID(name)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +88,7 @@ func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodep
 		return nil, err
 	}
 	if res == nil {
-		return nil, repository.ErrNotFound
+		return nil, types.ErrNotFound
 	}
 	return resourceFromModel(res), nil
 }
@@ -99,19 +100,19 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 		return nil, err
 	}
 	if res == nil {
-		return nil, repository.ErrNotFound
+		return nil, types.ErrNotFound
 	}
 	return resourceFromModel(res), nil
 }
 
 // List returns a page of promo codes, fetching one extra row to detect whether a
 // further page exists.
-func (r *PromoCodeRepository) List(ctx context.Context, params repository.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
+func (r *PromoCodeRepository) List(ctx context.Context, params types.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
 	order, err := orderTerms(params.OrderBy)
 	if err != nil {
 		return nil, "", err
 	}
-	limit, offset := repository.PageBounds(params)
+	limit, offset := types.PageBounds(params)
 	req := resourceql.List().Limit(limit + 1).Offset(offset)
 	if len(order) > 0 {
 		req = req.OrderBy(order...)
@@ -124,7 +125,7 @@ func (r *PromoCodeRepository) List(ctx context.Context, params repository.ListPa
 	next := ""
 	if len(rows) > limit {
 		rows = rows[:limit]
-		next = repository.EncodeOffset(offset + limit)
+		next = types.EncodeOffset(offset + limit)
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(rows))
@@ -179,4 +180,4 @@ func (r *PromoCodeRepository) createJoins(ctx context.Context, promoID string, r
 
 // inMask aliases the shared field-mask predicate so update semantics stay
 // identical across the gorm and hasura adapters.
-var inMask = repository.InMask
+var inMask = types.InMask

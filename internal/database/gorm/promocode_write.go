@@ -3,10 +3,10 @@ package gorm
 import (
 	"context"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/money"
 	"gorm.io/gorm"
@@ -14,11 +14,11 @@ import (
 
 // Update applies the masked fields of pc to the stored record and returns the
 // result. An empty paths slice replaces every mutable field. pc.Etag, when set,
-// guards against concurrent writes (repository.ErrConflict on mismatch). The
+// guards against concurrent writes (types.ErrConflict on mismatch). The
 // whole update — scalars, Money value-objects, and join rows — runs in one
 // transaction.
 func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.PromoCode, paths []string) (*promocodepbv1.PromoCode, error) {
-	id, err := repository.PromoCodeID(pc.GetName())
+	id, err := types.PromoCodeID(pc.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 			return e
 		}
 		if pc.GetEtag() != "" && existing.Etag != nil && pc.GetEtag() != *existing.Etag {
-			return repository.ErrConflict
+			return types.ErrConflict
 		}
 
 		applyMask(existing, pc, paths)
@@ -83,7 +83,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 
 // Delete removes the promo code, its join rows, and its Money value-objects.
 func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
-	id, err := repository.PromoCodeID(name)
+	id, err := types.PromoCodeID(name)
 	if err != nil {
 		return err
 	}

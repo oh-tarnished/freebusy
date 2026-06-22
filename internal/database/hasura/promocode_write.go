@@ -7,7 +7,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/applicableresourcesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 )
@@ -17,7 +17,7 @@ import (
 // keys and join-row ids it must replace. New Money rows are inserted before the
 // resource patch points at them, and the superseded rows are deleted afterwards.
 func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.PromoCode, paths []string) (*promocodepbv1.PromoCode, error) {
-	id, err := repository.PromoCodeID(pc.GetName())
+	id, err := types.PromoCodeID(pc.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -26,14 +26,14 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		return nil, err
 	}
 	if existing == nil {
-		return nil, repository.ErrNotFound
+		return nil, types.ErrNotFound
 	}
 	if pc.GetEtag() != "" && existing.Etag != nil && pc.GetEtag() != *existing.Etag {
-		return nil, repository.ErrConflict
+		return nil, types.ErrConflict
 	}
 
 	patch := buildUpdatePatch(pc, paths)
-	patch.Etag = ulid.GenerateString()
+	patch.Etag = nullableStr(ulid.GenerateString())
 
 	var staleMoney []string
 	if inMask(paths, "amount_off") {
@@ -41,7 +41,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		if err != nil {
 			return nil, err
 		}
-		patch.AmountOffId = newID
+		patch.AmountOffId = nullableStr(newID)
 		staleMoney = appendMoneyID(staleMoney, existing.AmountOffId)
 	}
 	if inMask(paths, "min_subtotal") {
@@ -49,7 +49,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		if err != nil {
 			return nil, err
 		}
-		patch.MinSubtotalId = newID
+		patch.MinSubtotalId = nullableStr(newID)
 		staleMoney = appendMoneyID(staleMoney, existing.MinSubtotalId)
 	}
 
@@ -66,7 +66,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		return nil, err
 	}
 	if pc.GetEtag() != "" && resp.AffectedRows == 0 {
-		return nil, repository.ErrConflict
+		return nil, types.ErrConflict
 	}
 	for _, mid := range staleMoney {
 		_, _ = r.svc.Mutation.Booking.Moneys.Delete(ctx, mid)
@@ -87,7 +87,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 
 // Delete removes the join rows, the promo code resource, and its Money rows.
 func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
-	id, err := repository.PromoCodeID(name)
+	id, err := types.PromoCodeID(name)
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 		return err
 	}
 	if existing == nil {
-		return repository.ErrNotFound
+		return types.ErrNotFound
 	}
 	for _, rowID := range resourceJoinIDs(existing) {
 		if _, err := r.svc.Mutation.Promocode.ApplicableResources.Delete(ctx, rowID); err != nil {

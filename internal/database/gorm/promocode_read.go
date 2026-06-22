@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/gormx"
 	"gorm.io/gorm"
 )
 
@@ -101,14 +102,14 @@ func offeringJoinNames(rows []promocode.PromoCodeApplicableOfferings) []string {
 // loadApplicable returns the applicable-resources and applicable-offerings names
 // stored against the promo code.
 func (r *PromoCodeRepository) loadApplicable(ctx context.Context, promoID string) (resNames, offNames []string, err error) {
-	resRows, err := promocode.NewPromoCodeApplicableResourcesStore(r.db).ListByPromoCodeID(ctx, promoID, promocode.ListOptions{})
+	resRows, err := promocode.NewPromoCodeApplicableResourcesStore(r.db).ListByPromoCodeID(ctx, promoID, gormx.ListOptions{})
 	if err != nil {
 		return nil, nil, mapGormErr(err)
 	}
 	for _, row := range resRows {
 		resNames = append(resNames, row.ResourceID)
 	}
-	offRows, err := promocode.NewPromoCodeApplicableOfferingsStore(r.db).ListByPromoCodeID(ctx, promoID, promocode.ListOptions{})
+	offRows, err := promocode.NewPromoCodeApplicableOfferingsStore(r.db).ListByPromoCodeID(ctx, promoID, gormx.ListOptions{})
 	if err != nil {
 		return nil, nil, mapGormErr(err)
 	}
@@ -125,9 +126,9 @@ func mapGormErr(err error) error {
 	case err == nil:
 		return nil
 	case errors.Is(err, gorm.ErrRecordNotFound):
-		return repository.ErrNotFound
+		return types.ErrNotFound
 	case errors.Is(err, gorm.ErrDuplicatedKey):
-		return repository.ErrAlreadyExists
+		return types.ErrAlreadyExists
 	default:
 		return err
 	}

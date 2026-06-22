@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 )
 
 // promoSortColumns is the allowlist of order_by fields the PromoCode List accepts,
@@ -20,10 +20,10 @@ var promoSortColumns = map[string]string{
 }
 
 // orderClause turns an AIP-132 order_by string into a safe "col DIR, ..." clause.
-// Unknown fields are rejected with repository.ErrInvalidArgument; only allowlisted
+// Unknown fields are rejected with types.ErrInvalidArgument; only allowlisted
 // columns and the literals ASC/DESC ever reach the SQL.
 func orderClause(orderBy string) (string, error) {
-	terms, err := repository.ParseOrderBy(orderBy)
+	terms, err := types.ParseOrderBy(orderBy)
 	if err != nil {
 		return "", err
 	}
@@ -31,7 +31,7 @@ func orderClause(orderBy string) (string, error) {
 	for _, term := range terms {
 		col, ok := promoSortColumns[term.Field]
 		if !ok {
-			return "", fmt.Errorf("%w: cannot sort by %q", repository.ErrInvalidArgument, term.Field)
+			return "", fmt.Errorf("%w: cannot sort by %q", types.ErrInvalidArgument, term.Field)
 		}
 		dir := "ASC"
 		if term.Desc {

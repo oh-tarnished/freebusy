@@ -1,5 +1,5 @@
 // Package service implements the freebusy gRPC service servers on top of the
-// provider-agnostic repositories in internal/database/repository. Each server
+// provider-agnostic repositories in internal/database/types. Each server
 // owns request validation, observability (pulse logging, tracing, and metrics),
 // and the mapping of repository errors to gRPC status codes; persistence and
 // protobuf conversions live in the repository layer.
@@ -10,7 +10,7 @@ import (
 	"errors"
 
 	"github.com/machanirobotics/pulse/pulse-go"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/shared"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -56,13 +56,13 @@ func toStatusErr(err error) error {
 	switch {
 	case err == nil:
 		return nil
-	case errors.Is(err, repository.ErrNotFound):
+	case errors.Is(err, types.ErrNotFound):
 		return status.Error(codes.NotFound, err.Error())
-	case errors.Is(err, repository.ErrAlreadyExists):
+	case errors.Is(err, types.ErrAlreadyExists):
 		return status.Error(codes.AlreadyExists, err.Error())
-	case errors.Is(err, repository.ErrConflict):
+	case errors.Is(err, types.ErrConflict):
 		return status.Error(codes.Aborted, err.Error())
-	case errors.Is(err, repository.ErrInvalidArgument):
+	case errors.Is(err, types.ErrInvalidArgument):
 		return status.Error(codes.InvalidArgument, err.Error())
 	}
 	if _, ok := status.FromError(err); ok {

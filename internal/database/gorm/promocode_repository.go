@@ -1,6 +1,6 @@
 // Package gorm provides the GORM-backed implementations of the freebusy
 // repository interfaces. It adapts the generated per-entity stores under
-// internal/database/gorm/freebusy/... to the provider-agnostic contracts in
+// protobuf/generated/gorm/freebusy/... to the provider-agnostic contracts in
 // internal/database/repository, converting between protobuf domain types and the
 // relational storage models.
 package gorm
@@ -8,10 +8,12 @@ package gorm
 import (
 	"context"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/gormx"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"gorm.io/gorm"
 )
@@ -34,7 +36,7 @@ func NewPromoCodeRepository(db *gorm.DB) repository.PromoCodeRepository {
 // Create persists pc and returns the stored record. The resource name is taken
 // from pc.Name when present, otherwise a fresh ULID id is assigned.
 func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.PromoCode) (*promocodepbv1.PromoCode, error) {
-	id, name, err := repository.ResolvePromoCodeName(pc.GetName())
+	id, name, err := types.ResolvePromoCodeName(pc.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +94,7 @@ func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.Prom
 
 // Get returns the promo code addressed by its resource name.
 func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodepbv1.PromoCode, error) {
-	id, err := repository.PromoCodeID(name)
+	id, err := types.PromoCodeID(name)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +103,7 @@ func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodep
 
 // FindByCode returns the promo code with the given human-entered code.
 func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*promocodepbv1.PromoCode, error) {
-	models, err := promocode.NewPromoCodeStore(r.db).List(ctx, promocode.ListOptions{
+	models, err := promocode.NewPromoCodeStore(r.db).List(ctx, gormx.ListOptions{
 		Where: "code = ?",
 		Args:  []any{code},
 		Limit: 1,
@@ -110,7 +112,7 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 		return nil, mapGormErr(err)
 	}
 	if len(models) == 0 {
-		return nil, repository.ErrNotFound
+		return nil, types.ErrNotFound
 	}
 	return r.hydrate(ctx, &models[0])
 }
@@ -119,12 +121,12 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 // extra row to decide whether a further page exists. To avoid an N+1, the join
 // rows are preloaded in two batch queries and every page's Money value-objects are
 // fetched with a single IN query (rather than per-row lookups).
-func (r *PromoCodeRepository) List(ctx context.Context, params repository.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
+func (r *PromoCodeRepository) List(ctx context.Context, params types.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
 	order, err := orderClause(params.OrderBy)
 	if err != nil {
 		return nil, "", err
 	}
-	limit, offset := repository.PageBounds(params)
+	limit, offset := types.PageBounds(params)
 
 	q := r.db.WithContext(ctx).
 		Preload("ApplicableResources").
@@ -141,7 +143,7 @@ func (r *PromoCodeRepository) List(ctx context.Context, params repository.ListPa
 	next := ""
 	if len(models) > limit {
 		models = models[:limit]
-		next = repository.EncodeOffset(offset + limit)
+		next = types.EncodeOffset(offset + limit)
 	}
 
 	moneys, err := r.loadMoneyMap(ctx, models)

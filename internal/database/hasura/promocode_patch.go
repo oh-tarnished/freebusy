@@ -8,54 +8,60 @@ import (
 	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 )
 
-// buildUpdatePatch sets the masked scalar/enum/timestamp fields of an UpdateInput.
-//
-// KNOWN LIMITATION (generator-side): the generated input uses omitzero json tags,
-// so a field set to its zero value is omitted from the mutation — a masked Update
-// on the Hasura provider therefore CANNOT clear an optional field back to
-// empty/null. The GORM adapter can (it writes NULL), so clear-to-empty via
-// update_mask diverges between providers. Removing the divergence requires the
-// generator to emit nullable (pointer) update inputs; until then callers should
-// not rely on clearing optional fields through Hasura. The Money foreign keys and
-// etag are set by the caller (see Update).
+// buildUpdatePatch sets the masked fields of an UpdateInput. The generated input
+// is now nullable (graphql.Nullable[T]): a field left at its zero value is Unset
+// (omitted from the mutation, leaving the column untouched), graphql.Value sets a
+// value, and graphql.Null clears the column. Optional fields use nullableStr so an
+// empty masked value clears the column to NULL — matching the GORM adapter, which
+// resolves the old clear-to-null divergence between providers.
 func buildUpdatePatch(pc *promocodepbv1.PromoCode, paths []string) resourceql.UpdateInput {
-	p := resourceql.UpdateInput{UpdateTime: time.Now().UTC().Format(time.RFC3339Nano)}
+	var p resourceql.UpdateInput
+	p.UpdateTime = graphql.Value(time.Now().UTC().Format(time.RFC3339Nano))
 	if inMask(paths, "code") {
-		p.Code = pc.GetCode()
+		p.Code = graphql.Value(pc.GetCode())
 	}
 	if inMask(paths, "display_name") {
-		p.DisplayName = pc.GetDisplayName()
+		p.DisplayName = nullableStr(pc.GetDisplayName())
 	}
 	if inMask(paths, "description") {
-		p.Description = pc.GetDescription()
+		p.Description = nullableStr(pc.GetDescription())
 	}
 	if inMask(paths, "discount_type") {
-		p.DiscountType = discountTypeToStr[pc.GetDiscountType()]
+		p.DiscountType = graphql.Value(discountTypeToStr[pc.GetDiscountType()])
 	}
 	if inMask(paths, "percent_off") {
-		p.PercentOff = pc.GetPercentOff()
+		p.PercentOff = graphql.Value(pc.GetPercentOff())
 	}
 	if inMask(paths, "redeem_start_time") {
-		p.RedeemStartTime = tsToRFC(pc.GetRedeemStartTime())
+		p.RedeemStartTime = nullableStr(tsToRFC(pc.GetRedeemStartTime()))
 	}
 	if inMask(paths, "redeem_end_time") {
-		p.RedeemEndTime = tsToRFC(pc.GetRedeemEndTime())
+		p.RedeemEndTime = nullableStr(tsToRFC(pc.GetRedeemEndTime()))
 	}
 	if inMask(paths, "max_redemptions") {
-		p.MaxRedemptions = graphql.Int64(pc.GetMaxRedemptions())
+		p.MaxRedemptions = graphql.Value(graphql.Int64(pc.GetMaxRedemptions()))
 	}
 	if inMask(paths, "per_customer_limit") {
-		p.PerCustomerLimit = pc.GetPerCustomerLimit()
+		p.PerCustomerLimit = graphql.Value(pc.GetPerCustomerLimit())
 	}
 	if inMask(paths, "redemption_count") {
-		p.RedemptionCount = graphql.Int64(pc.GetRedemptionCount())
+		p.RedemptionCount = graphql.Value(graphql.Int64(pc.GetRedemptionCount()))
 	}
 	if inMask(paths, "disabled") {
-		p.Disabled = pc.GetDisabled()
-		p.State = stateForWrite(pc)
+		p.Disabled = graphql.Value(pc.GetDisabled())
+		p.State = graphql.Value(stateForWrite(pc))
 	}
 	if inMask(paths, "state") {
-		p.State = stateToStr[pc.GetState()]
+		p.State = graphql.Value(stateToStr[pc.GetState()])
 	}
 	return p
+}
+
+// nullableStr maps an empty string to a NULL column (clear) and a non-empty
+// string to a set value, so masked optional fields clear consistently with GORM.
+func nullableStr(s string) graphql.Nullable[string] {
+	if s == "" {
+		return graphql.Null[string]()
+	}
+	return graphql.Value(s)
 }

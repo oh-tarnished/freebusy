@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,7 +33,7 @@ func (s *PromoCodeServer) ListPromoCodes(ctx context.Context, req *promocodepbv1
 	}
 	var out *promocodepbv1.ListPromoCodesResponse
 	err := traced(ctx, "ListPromoCodes", func(ctx context.Context) error {
-		items, next, err := s.repo.List(ctx, repository.ListParams{
+		items, next, err := s.repo.List(ctx, types.ListParams{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
@@ -78,7 +80,7 @@ func (s *PromoCodeServer) CreatePromoCode(ctx context.Context, req *promocodepbv
 		}
 	}
 	if id := req.GetPromoCodeId(); id != "" {
-		name, err := repository.PromoCodeName(id)
+		name, err := types.PromoCodeName(id)
 		if err != nil {
 			return nil, status.Error(codes.InvalidArgument, "invalid promo_code_id")
 		}
@@ -87,7 +89,20 @@ func (s *PromoCodeServer) CreatePromoCode(ctx context.Context, req *promocodepbv
 		pc.Name = name
 	}
 	if req.GetValidateOnly() {
-		return pc, nil
+		// Dry run: surface what a real create would reject (duplicate code) without
+		// persisting, rather than blindly echoing the request.
+		var out *promocodepbv1.PromoCode
+		err := traced(ctx, "CreatePromoCode.validateOnly", func(ctx context.Context) error {
+			switch _, err := s.repo.FindByCode(ctx, pc.GetCode()); {
+			case err == nil:
+				return status.Error(codes.AlreadyExists, "a promo code with this code already exists")
+			case !errors.Is(err, types.ErrNotFound):
+				return toStatusErr(err)
+			}
+			out = pc
+			return nil
+		})
+		return out, err
 	}
 	var out *promocodepbv1.PromoCode
 	err := traced(ctx, "CreatePromoCode", func(ctx context.Context) error {
@@ -109,7 +124,21 @@ func (s *PromoCodeServer) UpdatePromoCode(ctx context.Context, req *promocodepbv
 		return nil, status.Error(codes.InvalidArgument, "promo_code.name is required")
 	}
 	if req.GetValidateOnly() {
-		return pc, nil
+		// Dry run: confirm the target exists and the etag matches (the checks a real
+		// update would enforce) without persisting, rather than echoing the request.
+		var out *promocodepbv1.PromoCode
+		err := traced(ctx, "UpdatePromoCode.validateOnly", func(ctx context.Context) error {
+			existing, err := s.repo.Get(ctx, pc.GetName())
+			if err != nil {
+				return toStatusErr(err)
+			}
+			if pc.GetEtag() != "" && existing.GetEtag() != "" && pc.GetEtag() != existing.GetEtag() {
+				return status.Error(codes.Aborted, "etag mismatch")
+			}
+			out = pc
+			return nil
+		})
+		return out, err
 	}
 	var out *promocodepbv1.PromoCode
 	err := traced(ctx, "UpdatePromoCode", func(ctx context.Context) error {

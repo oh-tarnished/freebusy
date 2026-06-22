@@ -1,14 +1,14 @@
 package gorm
 
 import (
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
 )
 
 // inMask aliases the shared field-mask predicate so update semantics stay
 // identical across the gorm and hasura adapters.
-var inMask = repository.InMask
+var inMask = types.InMask
 
 // applyMask copies the masked scalar/enum fields from pc onto the existing model.
 // Identity, timestamps, and etag are managed by the repository, and the Money and

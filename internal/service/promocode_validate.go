@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/internal/discount"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"google.golang.org/grpc/codes"
@@ -28,7 +28,7 @@ func (s *PromoCodeServer) ValidatePromoCode(ctx context.Context, req *promocodep
 	err := traced(ctx, "ValidatePromoCode", func(ctx context.Context) error {
 		pc, err := s.repo.FindByCode(ctx, req.GetCode())
 		if err != nil {
-			if errors.Is(err, repository.ErrNotFound) {
+			if errors.Is(err, types.ErrNotFound) {
 				out = &promocodepbv1.ValidatePromoCodeResponse{Valid: false, Reason: "promo code not found"}
 				return nil
 			}

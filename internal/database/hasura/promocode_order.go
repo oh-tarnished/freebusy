@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 )
 
@@ -21,9 +21,9 @@ var promoSortFields = map[string]graphql.StringField{
 }
 
 // orderTerms turns an AIP-132 order_by string into GraphQL order terms. Unknown
-// fields are rejected with repository.ErrInvalidArgument.
+// fields are rejected with types.ErrInvalidArgument.
 func orderTerms(orderBy string) ([]graphql.OrderTerm, error) {
-	terms, err := repository.ParseOrderBy(orderBy)
+	terms, err := types.ParseOrderBy(orderBy)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func orderTerms(orderBy string) ([]graphql.OrderTerm, error) {
 	for _, term := range terms {
 		field, ok := promoSortFields[term.Field]
 		if !ok {
-			return nil, fmt.Errorf("%w: cannot sort by %q", repository.ErrInvalidArgument, term.Field)
+			return nil, fmt.Errorf("%w: cannot sort by %q", types.ErrInvalidArgument, term.Field)
 		}
 		if term.Desc {
 			out = append(out, field.Desc())

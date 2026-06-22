@@ -168,3 +168,4 @@ Join table for the many-to-many relation Resource.offerings ↔ Offering.
 | `id` | `CHAR(26)` | not null |
 | `resource_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
+| `offering_name` | `TEXT` | not null |

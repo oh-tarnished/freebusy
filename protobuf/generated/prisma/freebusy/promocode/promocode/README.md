@@ -92,3 +92,4 @@ Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offe
 | `id` | `CHAR(26)` | not null |
 | `promo_code_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
+| `offering_name` | `TEXT` | not null |

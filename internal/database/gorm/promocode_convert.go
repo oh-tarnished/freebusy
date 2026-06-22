@@ -3,10 +3,10 @@ package gorm
 import (
 	"time"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/discount"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/protobuf/types/known/timestamppb"
