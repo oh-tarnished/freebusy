@@ -14,7 +14,7 @@ package promocode
 import (
 	"time"
 
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
 )
 
 // How a promo code's discount is computed.

@@ -1,7 +1,7 @@
 // Package repository defines the provider-agnostic persistence interfaces for the
 // freebusy domain. Each interface speaks protobuf domain types (the wire/domain
-// currency); concrete implementations live in sibling packages
-// (internal/database/gorm and internal/database/hasura) and the factory in
+// currency); concrete implementations live in the adapter packages
+// (internal/service/gorm and internal/service/hasura) and the factory in
 // internal/database selects one at runtime. Shared, provider-neutral vocabulary
 // (errors, list params, names, field masks) lives in internal/types.
 package repository

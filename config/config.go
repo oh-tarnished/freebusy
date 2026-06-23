@@ -1,0 +1,210 @@
+// Package config loads the freebusy service configuration from an embedded TOML
+// file (freebusy.release.toml) and exposes it via Get(). The release file is
+// compiled into the binary with //go:embed and holds production-safe defaults
+// (secrets left blank, to be injected at deploy time). On developer machines an
+// optional, non-embedded config/freebusy.dev.toml is layered on top, so local
+// runs need no environment variables. Configuration is the single source of
+// truth for service identity and database connectivity.
+package config
+
+import (
+	"embed"
+	"fmt"
+	"os"
+
+	"github.com/oh-tarnished/freebusy/shared"
+	"github.com/oh-tarnished/runtime-go/grpc/options"
+)
+
+//go:embed freebusy.release.toml
+var configFS embed.FS
+
+// devOverlayPath is the optional local-development config layered over the
+// embedded production defaults. It is read from disk (relative to the working
+// directory) only when present, so production builds — which ship just the
+// binary — never load it.
+const devOverlayPath = "config/freebusy.dev.toml"
+
+// AppConfig is the top-level configuration tree.
+type AppConfig struct {
+	// Meta holds service identity metadata.
+	Meta AppMeta `koanf:"app"`
+	// Server holds the hybrid gRPC/HTTP/MCP server settings.
+	Server ServerConfig `koanf:"server"`
+	// Database holds the backend selection and per-provider connection settings.
+	Database DatabaseConfig `koanf:"database"`
+}
+
+// AppMeta contains service identity fields.
+type AppMeta struct {
+	// Name is the service display name.
+	Name string `koanf:"name"`
+	// Version is the service version (e.g. "v1.0.0").
+	Version string `koanf:"version"`
+	// Description is the long-form description shown to clients and MCP.
+	Description string `koanf:"description"`
+}
+
+// ServerConfig holds the hybrid gRPC/HTTP/MCP server settings. GetGRPCOptions
+// (options.go) maps these onto the runtime's options.Options.
+type ServerConfig struct {
+	// Environment is the operating mode: development, debug, staging, or production.
+	Environment options.ServerEnvironment `koanf:"environment"`
+	// EnableHTTP starts the HTTP/JSON gateway alongside gRPC.
+	EnableHTTP bool `koanf:"enable_http"`
+	// EnableHealth registers the standard gRPC health-check service.
+	EnableHealth bool `koanf:"enable_health"`
+	// EnableMCP starts the Model Context Protocol server.
+	EnableMCP bool `koanf:"enable_mcp"`
+	// ExperimentalHTTP3 enables experimental HTTP/3 on the HTTP port + 1. It
+	// requires TLS (see TLS below).
+	ExperimentalHTTP3 bool `koanf:"experimental_http3"`
+	// TLS holds the certificate/key pair. When both paths are set, TLS is enabled
+	// for gRPC and HTTP; it is required for ExperimentalHTTP3.
+	TLS TLSConfig `koanf:"tls"`
+	// GRPC is the gRPC listener host/port.
+	GRPC ListenConfig `koanf:"grpc"`
+	// HTTP is the HTTP gateway listener host/port.
+	HTTP ListenConfig `koanf:"http"`
+	// MCP is the MCP server listener and transport.
+	MCP MCPConfig `koanf:"mcp"`
+}
+
+// TLSConfig is the TLS certificate/key pair. Leave both paths empty to serve
+// plaintext; set both to enable TLS (and, with ExperimentalHTTP3, HTTP/3).
+type TLSConfig struct {
+	// CertFile is the path to the PEM-encoded certificate.
+	CertFile string `koanf:"cert_file"`
+	// KeyFile is the path to the PEM-encoded private key.
+	KeyFile string `koanf:"key_file"`
+}
+
+// Enabled reports whether both a certificate and key are configured.
+func (t TLSConfig) Enabled() bool { return t.CertFile != "" && t.KeyFile != "" }
+
+// ListenConfig is a network host/port pair.
+type ListenConfig struct {
+	// Host is the interface to bind (e.g. "0.0.0.0").
+	Host string `koanf:"host"`
+	// Port is the TCP port to listen on.
+	Port int `koanf:"port"`
+}
+
+// MCPConfig is the MCP listener plus its transport protocol.
+type MCPConfig struct {
+	// Host is the interface to bind (ignored for the stdio transport).
+	Host string `koanf:"host"`
+	// Port is the TCP port for HTTP-based transports (ignored for stdio).
+	Port int `koanf:"port"`
+	// Transport is the MCP protocol: stdio, streamable-http, or sse.
+	Transport options.MCPTransport `koanf:"transport"`
+}
+
+// DatabaseConfig selects the persistence backend and carries the connection
+// settings for each supported provider. Only the selected provider's block
+// needs to be populated.
+type DatabaseConfig struct {
+	// Provider selects the backend: "gorm" (Postgres) or "hasura".
+	Provider string `koanf:"provider"`
+	// Postgres holds the GORM/Postgres connection settings.
+	Postgres PostgresConfig `koanf:"postgres"`
+	// Hasura holds the Hasura GraphQL endpoint and admin authentication.
+	Hasura HasuraConfig `koanf:"hasura"`
+}
+
+// PostgresConfig is the GORM/Postgres backend connection.
+type PostgresConfig struct {
+	// Host is the database server hostname or IP (e.g. "127.0.0.1").
+	Host string `koanf:"host"`
+	// Port is the database server port (Postgres default is 5432).
+	Port int `koanf:"port"`
+	// User is the role to connect as.
+	User string `koanf:"user"`
+	// Password is the role's password (blank in release; injected at deploy).
+	Password string `koanf:"password"`
+	// DBName is the target database name.
+	DBName string `koanf:"dbname"`
+	// SSLMode is the libpq sslmode, e.g. "disable" (local) or "require" (prod).
+	SSLMode string `koanf:"sslmode"`
+	// TimeZone is the session time zone passed to the driver (e.g. "UTC").
+	TimeZone string `koanf:"timezone"`
+}
+
+// DSN renders the libpq keyword/value connection string that
+// gorm.Open(postgres.Open(...)) expects.
+func (p PostgresConfig) DSN() string {
+	return fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s TimeZone=%s",
+		p.Host, p.Port, p.User, p.Password, p.DBName, p.SSLMode, p.TimeZone,
+	)
+}
+
+// HasuraConfig is the Hasura GraphQL backend connection and admin auth.
+type HasuraConfig struct {
+	// URL is the GraphQL endpoint, e.g. "http://localhost:8080/v1/graphql".
+	URL string `koanf:"url"`
+	// AdminSecret is sent as the x-hasura-admin-secret header (empty to omit).
+	AdminSecret string `koanf:"admin_secret"`
+}
+
+// loadedConfig holds the parsed configuration singleton.
+var loadedConfig *AppConfig
+
+func init() {
+	// 1. Embedded production defaults (always present).
+	data, err := configFS.ReadFile("freebusy.release.toml")
+	if err != nil {
+		panic(fmt.Sprintf("embedded config not found: %v", err))
+	}
+	if err := shared.LoadTomlBytes(data); err != nil {
+		panic(fmt.Sprintf("failed to load embedded config: %v", err))
+	}
+
+	// 2. Optional local-dev overlay (developer machines only). Keys it defines
+	// win; everything else falls through to the embedded release defaults.
+	if overlay, err := os.ReadFile(devOverlayPath); err == nil {
+		if err := shared.LoadTomlBytes(overlay); err != nil {
+			panic(fmt.Sprintf("failed to load dev overlay %q: %v", devOverlayPath, err))
+		}
+	}
+
+	loadedConfig = &AppConfig{}
+	if err := shared.Getconfig().Toml.Unmarshal("", loadedConfig); err != nil {
+		panic(fmt.Sprintf("failed to unmarshal config: %v", err))
+	}
+
+	if loadedConfig.Meta.Name == "" || loadedConfig.Meta.Version == "" {
+		panic(fmt.Sprintf("config invalid: name=%q version=%q",
+			loadedConfig.Meta.Name, loadedConfig.Meta.Version))
+	}
+	if !loadedConfig.Server.Environment.IsValid() {
+		panic(fmt.Sprintf("config invalid: server.environment=%q (want development|debug|staging|production)",
+			loadedConfig.Server.Environment))
+	}
+	if loadedConfig.Server.EnableMCP && !validMCPTransport(loadedConfig.Server.MCP.Transport) {
+		panic(fmt.Sprintf("config invalid: server.mcp.transport=%q (want stdio|streamable-http|sse)",
+			loadedConfig.Server.MCP.Transport))
+	}
+	if loadedConfig.Server.ExperimentalHTTP3 && !loadedConfig.Server.TLS.Enabled() {
+		panic("config invalid: server.experimental_http3 requires server.tls.cert_file and server.tls.key_file")
+	}
+}
+
+// validMCPTransport reports whether t is one of the supported MCP transports.
+// MCPTransport carries no validity method of its own, so the check lives here.
+func validMCPTransport(t options.MCPTransport) bool {
+	switch t {
+	case options.MCPTransportStdio, options.MCPTransportStreamableHTTP, options.MCPTransportSSE:
+		return true
+	default:
+		return false
+	}
+}
+
+// Get returns the loaded application configuration.
+func Get() *AppConfig {
+	if loadedConfig == nil {
+		panic("configuration not initialized")
+	}
+	return loadedConfig
+}

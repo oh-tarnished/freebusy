@@ -53,36 +53,29 @@ generate language="all" descriptors="true":
 
 # ============================================================================
 # Application (server) — run, build, test, and exercise the gRPC API.
-# Override any variable on the CLI (e.g. `just dsn='...' run`) or export the
-# matching FREEBUSY_* env var before invoking just.
+# Database settings (provider + connection) come from config: the embedded
+# config/freebusy.release.toml defaults, overlaid by config/freebusy.dev.toml
+# for local development. Switch backends by editing [database].provider there.
 # ============================================================================
 
-# GORM/Postgres DSN (libpq keyword/value form). The generated models use
-# schema-qualified tables (e.g. promocode.resource), so those schemas must exist.
-dsn := env_var_or_default("FREEBUSY_DATABASE_DSN", "host=127.0.0.1 port=5432 user=postgres password=postgrespassword dbname=freebusydb sslmode=disable TimeZone=UTC")
-# Hasura GraphQL endpoint.
-hasura_url := env_var_or_default("FREEBUSY_HASURA_URL", "http://localhost:8080/v1/graphql")
-# Server ports (exported so the config loader in main.go picks them up).
+# Server ports (exported so the runtime picks them up). Override on the CLI or
+# via the matching FREEBUSY_* env var.
 grpc_port := env_var_or_default("FREEBUSY_GRPC_PORT", "50051")
 http_port := env_var_or_default("FREEBUSY_HTTP_PORT", "8080")
 
 export FREEBUSY_GRPC_PORT := grpc_port
 export FREEBUSY_HTTP_PORT := http_port
 
-# Run the server with the default GORM/Postgres provider.
+# Run the server (DB provider + connection come from config; dev overlay applies).
 run:
-    FREEBUSY_DB_PROVIDER=gorm FREEBUSY_DATABASE_DSN="{{dsn}}" go run .
-
-# Run the server with the Hasura provider.
-run-hasura:
-    FREEBUSY_DB_PROVIDER=hasura FREEBUSY_HASURA_URL="{{hasura_url}}" go run .
+    go run .
 
 # DEV ONLY: create the Postgres schemas + AutoMigrate every generated model.
-# Run once before `just run`. Not for production — use real migrations there.
+# Run once before `just run`. Uses the same config as the server.
 migrate:
-    FREEBUSY_DATABASE_DSN="{{dsn}}" go run ./cmd/migrate
+    go run ./cmd/migrate
 
-# Dev convenience: migrate the schema, then run the server (GORM/Postgres).
+# Dev convenience: migrate the schema, then run the server.
 dev: migrate run
 
 # Compile everything.
@@ -99,7 +92,7 @@ test:
 
 # Verbose unit tests for the pulse-free pure-logic packages.
 test-unit:
-    go test -v ./internal/discount/ ./internal/database/repository/ ./internal/database/gorm/
+    go test -v ./internal/discount/ ./internal/database/repository/ ./internal/service/gorm/
 
 # Format all Go files.
 fmt:

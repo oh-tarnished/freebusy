@@ -1,0 +1,54 @@
+# Local development overlay for the freebusy service.
+#
+# NOT embedded in the binary — loaded from disk over the production defaults in
+# freebusy.release.toml when present (developer machines only; see
+# config/config.go). Safe to hold localhost credentials here. Keys defined here
+# win; anything omitted falls through to the release defaults.
+
+[app]
+name = "freebusy"
+version = "v1.0.0"
+description = "Promo code service for the freebusy booking platform: create, validate, and redeem discount codes."
+
+[server]
+# environment: "development", "debug", "staging", or "production".
+environment = "debug"
+enable_http = true
+enable_health = true
+enable_mcp = true
+experimental_http3 = true
+
+[server.grpc]
+host = "0.0.0.0"
+port = 50051
+
+[server.http]
+host = "0.0.0.0"
+port = 8080
+
+[server.mcp]
+host = "0.0.0.0"
+port = 8081
+# transport: "stdio", "streamable-http", or "sse".
+transport = "streamable-http"
+
+[server.tls]
+# Dev certificate (mkcert). Required because experimental_http3 = true above.
+# Paths are relative to the working directory (repo root for `just run`).
+cert_file = ".certs/freebusy-dev+2.pem"
+key_file = ".certs/freebusy-dev+2-key.pem"
+
+[database]
+provider = "gorm"
+
+[database.postgres]
+host = "127.0.0.1"
+port = 5432
+user = "postgres"
+password = "postgrespassword"
+dbname = "freebusydb"
+sslmode = "disable"
+timezone = "UTC"
+
+[database.hasura]
+url = "http://localhost:3280/graphql"

@@ -1,7 +1,0 @@
-[service]
-name = "freebusy"
-version = "1.0.0"
-environment = "development"
-
-[logging]
-level = 2 # Global log level (1=Error, 2=Info, 3=Debug)

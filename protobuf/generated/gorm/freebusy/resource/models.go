@@ -16,8 +16,8 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/schedule"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 )
 
 // Kind of bookable resource.

@@ -26,6 +26,6 @@ plugins:
       - stores=true
       # Import path of the gorm output dir (module path + out). The generated
       # stores import the shared gormx runtime package by this path.
-      - go_module=github.com/oh-tarnished/freebusy/protobuf/generated/gorm
+      - go_module=github.com/oh-tarnished/freebusy/internal/database/gorm
       - config=tools/protobuf/buf/protorm.yaml
       - otel=true

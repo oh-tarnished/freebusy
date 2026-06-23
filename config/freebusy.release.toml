@@ -1,0 +1,55 @@
+# Production configuration for the freebusy service.
+#
+# Compiled into the binary via //go:embed (see config/config.go). Holds
+# production-safe, non-secret topology only — secrets (passwords, admin secret)
+# are left blank here and injected at deploy time. For local development these
+# defaults are overlaid by config/freebusy.dev.toml.
+
+[app]
+name = "freebusy"
+version = "v1.0.0"
+description = "Promo code service for the freebusy booking platform: create, validate, and redeem discount codes."
+
+[server]
+# environment: "development", "debug", "staging", or "production".
+environment = "production"
+enable_http = true
+enable_health = true
+enable_mcp = true
+experimental_http3 = false
+
+[server.grpc]
+host = "0.0.0.0"
+port = 50051
+
+[server.http]
+host = "0.0.0.0"
+port = 8080
+
+[server.mcp]
+host = "0.0.0.0"
+port = 8081
+# transport: "stdio", "streamable-http", or "sse".
+transport = "streamable-http"
+
+[server.tls]
+# Required when experimental_http3 = true. Provide the PEM cert/key at deploy time.
+cert_file = ""
+key_file = ""
+
+[database]
+# provider selects the backend: "gorm" (Postgres) or "hasura".
+provider = "gorm"
+
+[database.postgres]
+host = "127.0.0.1"
+port = 5432
+user = "postgres"
+password = ""
+dbname = "freebusydb"
+sslmode = "require"
+timezone = "UTC"
+
+[database.hasura]
+url = ""
+admin_secret = ""

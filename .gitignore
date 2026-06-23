@@ -1,0 +1,2 @@
+# Local TLS certificates / private keys (e.g. mkcert dev certs). Never commit keys.
+.certs/

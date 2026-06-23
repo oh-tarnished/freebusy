@@ -1,0 +1,42 @@
+# Telemetry configuration for the freebusy service (Pulse: logs, metrics, traces).
+#
+# This file is embedded in the binary and holds defaults. The values that vary
+# per deployment — the OTLP collector endpoint, the environment, and the
+# hotel-property labels — are overridden at runtime from environment variables
+# (see shared/pulse.go), so the same binary serves every property without a
+# rebuild.
+
+[service]
+name = "freebusy"
+version = "1.0.0"
+environment = "development"
+description = "Booking and promo-code service for the freebusy platform."
+
+# Global attributes added to ALL telemetry (logs, metrics, traces). Here they
+# identify the hotel property this instance serves. Override per deployment with
+# FREEBUSY_PROPERTY / FREEBUSY_PROPERTY_NAME (see shared/pulse.go).
+[service.labels]
+brand = "hilton"
+property = "doubletree-del-mar-san-diego"
+property_name = "DoubleTree by Hilton Hotel San Diego - Del Mar"
+city = "san-diego"
+region = "us-west"
+
+[telemetry]
+enabled = true
+
+# OpenTelemetry collector. The endpoint below is the local-dev default; in
+# deployment set FREEBUSY_OTLP_ENDPOINT=host:port to point at the cluster
+# collector.
+[telemetry.otlp]
+endpoint = "192.168.0.161:4317"
+
+# Metrics export interval
+[telemetry.metrics]
+export_interval_seconds = 5
+
+# Logging Configuration
+[logging.log]
+report_caller = true    # Include file:line in logs
+report_timestamp = true # Include timestamp in logs
+caller_offset = 1       # Stack frame offset for caller info

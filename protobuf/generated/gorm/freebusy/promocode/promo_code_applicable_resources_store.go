@@ -14,7 +14,7 @@ package promocode
 import (
 	"context"
 
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/gormx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/gormx"
 	"gorm.io/gorm"
 )
 

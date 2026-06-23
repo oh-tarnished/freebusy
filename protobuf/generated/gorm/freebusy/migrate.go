@@ -17,12 +17,12 @@
 package freebusy
 
 import (
-	booking "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
-	identity "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/identity"
-	organisation "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/organisation"
-	promocode "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
-	resource "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/resource"
-	schedule "github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/schedule"
+	booking "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
+	identity "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/identity"
+	organisation "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/organisation"
+	promocode "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
+	resource "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/resource"
+	schedule "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 
 	"gorm.io/gorm"
 	"gorm.io/plugin/opentelemetry/tracing"

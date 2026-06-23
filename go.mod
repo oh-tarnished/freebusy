@@ -4,6 +4,7 @@ go 1.26.4
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.12.3
 	github.com/machanirobotics/grpc-mcp-gateway v1.5.63
 	github.com/machanirobotics/pulse/pulse-go v0.0.0-20260524060824-a62605622128
@@ -65,7 +66,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.18.6 // indirect
 	github.com/knadh/koanf/maps v0.1.2 // indirect
 	github.com/knadh/koanf/parsers/json v1.0.0 // indirect
