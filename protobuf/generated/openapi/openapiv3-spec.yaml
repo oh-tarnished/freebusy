@@ -1,16 +1,14 @@
+# Base skeleton for the merged OpenAPI spec: everything that is fixed rather than
+# derived from the per-service specs. Key order here is the output order.
+# Embedded into the openapi tool (see main.go); override with `-base <file>`.
 openapi: 3.0.0
 info:
   title: FreeBusy API
   summary: Scheduling, availability, and booking platform API.
-  description: 'FreeBusy is a scheduling platform that exposes resources, schedules,
-    availability windows, bookings, organisations, and promotional codes over a RESTful,
-    OpenAPI-described surface. This document is generated from Protocol Buffer service
-    definitions and merged into a single specification.
+  description: |-
+    FreeBusy is a scheduling platform that exposes resources, schedules, availability windows, bookings, organisations, and promotional codes over a RESTful, OpenAPI-described surface. This document is generated from Protocol Buffer service definitions and merged into a single specification.
 
-
-    Authentication is performed via bearer tokens unless otherwise noted. All timestamps
-    are RFC 3339 and all monetary amounts follow the associated currency''s minor
-    units.'
+    Authentication is performed via bearer tokens unless otherwise noted. All timestamps are RFC 3339 and all monetary amounts follow the associated currency's minor units.
   version: 1.0.0
   termsOfService: https://freebusy.oh-tarnished.dev/terms
   contact:
@@ -24,36 +22,36 @@ externalDocs:
   description: FreeBusy API documentation
   url: https://freebusy.oh-tarnished.dev/docs
 servers:
-- url: https://freebusy.oh-tarnished.dev
-  description: Production
-- url: https://staging.freebusy.oh-tarnished.dev
-  description: Staging
-- url: http://localhost:8080
-  description: Local development
+  - url: https://freebusy.oh-tarnished.dev
+    description: Production
+  - url: https://staging.freebusy.oh-tarnished.dev
+    description: Staging
+  - url: http://localhost:8080
+    description: Local development
 security:
-- bearerAuth: []
+  - bearerAuth: []
 tags:
-- name: Availability Service
-- name: Booking Service
-- name: Identity Service
-- name: Organisation Service
-- name: Promo Code Service
-- name: Resource Service
-- name: Schedule Service
+  - name: Availability Service
+  - name: Booking Service
+  - name: Identity Service
+  - name: Organisation Service
+  - name: Promo Code Service
+  - name: Resource Service
+  - name: Schedule Service
 paths:
   /v1/resources/{resource}:checkAvailability:
     post:
       tags:
-      - Availability Service
+        - Availability Service
       description: Tests whether one exact span is bookable.
       operationId: AvailabilityService_CheckAvailability
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -61,7 +59,7 @@ paths:
               $ref: '#/components/schemas/CheckAvailabilityRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -73,7 +71,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -83,16 +81,16 @@ paths:
   /v1/resources/{resource}:computeAvailability:
     post:
       tags:
-      - Availability Service
+        - Availability Service
       description: Computes availability for a resource over a window.
       operationId: AvailabilityService_ComputeAvailability
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -100,7 +98,7 @@ paths:
               $ref: '#/components/schemas/ComputeAvailabilityRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -112,7 +110,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -122,16 +120,16 @@ paths:
   /v1/resources/{resource}:computeBookableRanges:
     post:
       tags:
-      - Availability Service
+        - Availability Service
       description: Computes contiguous bookable ranges within a window.
       operationId: AvailabilityService_ComputeBookableRanges
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -139,7 +137,7 @@ paths:
               $ref: '#/components/schemas/ComputeBookableRangesRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -151,7 +149,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -161,7 +159,7 @@ paths:
   /v1/resources:batchCompute:
     post:
       tags:
-      - Availability Service
+        - Availability Service
       description: Computes availability for several resources at once.
       operationId: AvailabilityService_BatchComputeAvailability
       requestBody:
@@ -171,7 +169,7 @@ paths:
               $ref: '#/components/schemas/BatchComputeAvailabilityRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -183,7 +181,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -193,7 +191,7 @@ paths:
   /v1/resources:searchAvailability:
     post:
       tags:
-      - Availability Service
+        - Availability Service
       description: Searches the catalog for resources bookable over a period.
       operationId: AvailabilityService_SearchAvailability
       requestBody:
@@ -203,7 +201,7 @@ paths:
               $ref: '#/components/schemas/SearchAvailabilityRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -215,7 +213,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -225,35 +223,35 @@ paths:
   /v1/bookings:
     get:
       tags:
-      - Booking Service
+        - Booking Service
       description: Lists bookings.
       operationId: BookingService_ListBookings
       parameters:
-      - name: pageSize
-        in: query
-        description: Maximum number of bookings to return. The server may cap this.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListBookings call's next_page_token.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: "Filter expression (AIP-160), e.g. `resource = \"resources/42\"\
-          `,\n `customer = \"users/7\"`, `state = CONFIRMED`, or a window overlap\
-          \ predicate."
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "create_time desc" or "window.start_time".
-        schema:
-          type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of bookings to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListBookings call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+             `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "create_time desc" or "window.start_time".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -265,7 +263,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -274,28 +272,29 @@ paths:
       summary: List Bookings
     post:
       tags:
-      - Booking Service
+        - Booking Service
       description: Creates a booking, placing a hold.
       operationId: BookingService_CreateBooking
       parameters:
-      - name: requestId
-        in: query
-        description: "Caller-supplied idempotency key that dedupes retries of this\
-          \ create. Reusing\n an id returns the booking created by the first call."
-        schema:
-          type: string
-      - name: bookingId
-        in: query
-        description: Optional caller-chosen ID for the booking; the server generates
-          one if unset.
-        schema:
-          type: string
-      - name: validateOnly
-        in: query
-        description: "If true, validate the request (availability + policy) and report\
-          \ what would\n happen, but place no hold."
-        schema:
-          type: boolean
+        - name: requestId
+          in: query
+          description: |-
+            Caller-supplied idempotency key that dedupes retries of this create. Reusing
+             an id returns the booking created by the first call.
+          schema:
+            type: string
+        - name: bookingId
+          in: query
+          description: Optional caller-chosen ID for the booking; the server generates one if unset.
+          schema:
+            type: string
+        - name: validateOnly
+          in: query
+          description: |-
+            If true, validate the request (availability + policy) and report what would
+             happen, but place no hold.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -303,7 +302,7 @@ paths:
               $ref: '#/components/schemas/Booking'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -315,7 +314,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -325,18 +324,18 @@ paths:
   /v1/bookings/{booking}:
     get:
       tags:
-      - Booking Service
+        - Booking Service
       description: Gets a single booking.
       operationId: BookingService_GetBooking
       parameters:
-      - name: booking
-        in: path
-        description: The booking id.
-        required: true
-        schema:
-          type: string
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -348,7 +347,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -358,16 +357,16 @@ paths:
   /v1/bookings/{booking}:cancel:
     post:
       tags:
-      - Booking Service
+        - Booking Service
       description: Cancels a booking.
       operationId: BookingService_CancelBooking
       parameters:
-      - name: booking
-        in: path
-        description: The booking id.
-        required: true
-        schema:
-          type: string
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -375,7 +374,7 @@ paths:
               $ref: '#/components/schemas/CancelBookingRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -387,7 +386,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -397,16 +396,16 @@ paths:
   /v1/bookings/{booking}:confirm:
     post:
       tags:
-      - Booking Service
+        - Booking Service
       description: Confirms a held booking.
       operationId: BookingService_ConfirmBooking
       parameters:
-      - name: booking
-        in: path
-        description: The booking id.
-        required: true
-        schema:
-          type: string
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -414,7 +413,7 @@ paths:
               $ref: '#/components/schemas/ConfirmBookingRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -426,7 +425,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -436,16 +435,16 @@ paths:
   /v1/bookings/{booking}:previewCancellation:
     post:
       tags:
-      - Booking Service
+        - Booking Service
       description: Previews the refund a cancellation would yield now, without cancelling.
       operationId: BookingService_PreviewCancellation
       parameters:
-      - name: booking
-        in: path
-        description: The booking id.
-        required: true
-        schema:
-          type: string
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -453,7 +452,7 @@ paths:
               $ref: '#/components/schemas/PreviewCancellationRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -465,7 +464,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -475,16 +474,16 @@ paths:
   /v1/bookings/{booking}:reschedule:
     post:
       tags:
-      - Booking Service
+        - Booking Service
       description: Reschedules a booking to a new span.
       operationId: BookingService_RescheduleBooking
       parameters:
-      - name: booking
-        in: path
-        description: The booking id.
-        required: true
-        schema:
-          type: string
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -492,7 +491,7 @@ paths:
               $ref: '#/components/schemas/RescheduleBookingRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -504,7 +503,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -514,34 +513,35 @@ paths:
   /v1/users:
     get:
       tags:
-      - Identity Service
+        - Identity Service
       description: Lists users sharing an organisation with the caller.
       operationId: IdentityService_ListUsers
       parameters:
-      - name: pageSize
-        in: query
-        description: Maximum number of users to return. The server may cap this.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListUsers call's next_page_token.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: "Filter expression (AIP-160), e.g. `organisation = \"organisations/7\"\
-          ` or a\n match on display_name."
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "display_name" or "create_time desc".
-        schema:
-          type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of users to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListUsers call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
+             match on display_name.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "display_name" or "create_time desc".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -553,7 +553,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -563,18 +563,18 @@ paths:
   /v1/users/{user}:
     get:
       tags:
-      - Identity Service
+        - Identity Service
       description: Returns a user. Use "users/me" for the signed-in caller.
       operationId: IdentityService_GetUser
       parameters:
-      - name: user
-        in: path
-        description: The user id.
-        required: true
-        schema:
-          type: string
+        - name: user
+          in: path
+          description: The user id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -586,7 +586,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -595,22 +595,22 @@ paths:
       summary: Get User
     patch:
       tags:
-      - Identity Service
+        - Identity Service
       description: Updates the signed-in user's profile.
       operationId: IdentityService_UpdateUser
       parameters:
-      - name: user
-        in: path
-        description: The user id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable profile fields.
-        schema:
-          type: string
-          format: field-mask
+        - name: user
+          in: path
+          description: The user id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable profile fields.
+          schema:
+            type: string
+            format: field-mask
       requestBody:
         content:
           application/json:
@@ -618,7 +618,7 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -630,7 +630,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -640,34 +640,35 @@ paths:
   /v1/organisations:
     get:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Lists the organisations the caller belongs to.
       operationId: OrganisationService_ListOrganisations
       parameters:
-      - name: pageSize
-        in: query
-        description: "Maximum number of organisations to return. The server may cap\
-          \ this. Zero lets\n the server pick a default."
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListOrganisations call's next_page_token.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: Filter expression over organisation fields (e.g. display_name).
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "create_time desc".
-        schema:
-          type: string
+        - name: pageSize
+          in: query
+          description: |-
+            Maximum number of organisations to return. The server may cap this. Zero lets
+             the server pick a default.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListOrganisations call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter expression over organisation fields (e.g. display_name).
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "create_time desc".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -679,7 +680,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -688,22 +689,20 @@ paths:
       summary: List Organisations
     post:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Creates an organisation. The caller becomes its first owner.
       operationId: OrganisationService_CreateOrganisation
       parameters:
-      - name: organisationId
-        in: query
-        description: Optional caller-chosen ID for the organisation; the server generates
-          one if unset.
-        schema:
-          type: string
-      - name: requestId
-        in: query
-        description: Caller-supplied idempotency key; identical retries return the
-          first result.
-        schema:
-          type: string
+        - name: organisationId
+          in: query
+          description: Optional caller-chosen ID for the organisation; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -711,7 +710,7 @@ paths:
               $ref: '#/components/schemas/Organisation'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -723,7 +722,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -733,18 +732,18 @@ paths:
   /v1/organisations/{organisation}:
     get:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Gets a single organisation.
       operationId: OrganisationService_GetOrganisation
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -756,7 +755,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -765,24 +764,25 @@ paths:
       summary: Get Organisation
     delete:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Deletes an organisation.
       operationId: OrganisationService_DeleteOrganisation
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
-      - name: force
-        in: query
-        description: "If true, delete the organisation and its members; otherwise\
-          \ the call fails when\n the organisation still has members."
-        schema:
-          type: boolean
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: |-
+            If true, delete the organisation and its members; otherwise the call fails when
+             the organisation still has members.
+          schema:
+            type: boolean
       responses:
-        '200':
+        "200":
           description: OK
           content: {}
         default:
@@ -791,7 +791,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -800,22 +800,22 @@ paths:
       summary: Delete Organisation
     patch:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Updates an organisation.
       operationId: OrganisationService_UpdateOrganisation
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable fields.
-        schema:
-          type: string
-          format: field-mask
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
       requestBody:
         content:
           application/json:
@@ -823,7 +823,7 @@ paths:
               $ref: '#/components/schemas/Organisation'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -835,7 +835,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -845,40 +845,39 @@ paths:
   /v1/organisations/{organisation}/members:
     get:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Lists the members of an organisation.
       operationId: OrganisationService_ListMembers
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
-      - name: pageSize
-        in: query
-        description: Maximum number of members to return. The server may cap this.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListMembers call's next_page_token.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: Filter expression (AIP-160), e.g. `role = ADMIN` or `state =
-          ACTIVE`.
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "create_time desc".
-        schema:
-          type: string
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of members to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListMembers call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter expression (AIP-160), e.g. `role = ADMIN` or `state = ACTIVE`.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "create_time desc".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -890,7 +889,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -900,24 +899,24 @@ paths:
   /v1/organisations/{organisation}/members/{member}:
     get:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Gets a single member.
       operationId: OrganisationService_GetMember
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
-      - name: member
-        in: path
-        description: The member id.
-        required: true
-        schema:
-          type: string
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
+        - name: member
+          in: path
+          description: The member id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -929,7 +928,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -938,24 +937,24 @@ paths:
       summary: Get Member
     delete:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Removes a member from an organisation.
       operationId: OrganisationService_DeleteMember
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
-      - name: member
-        in: path
-        description: The member id.
-        required: true
-        schema:
-          type: string
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
+        - name: member
+          in: path
+          description: The member id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content: {}
         default:
@@ -964,7 +963,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -973,28 +972,28 @@ paths:
       summary: Delete Member
     patch:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Updates a member; the role is the only mutable field.
       operationId: OrganisationService_UpdateMember
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
-      - name: member
-        in: path
-        description: The member id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable fields.
-        schema:
-          type: string
-          format: field-mask
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
+        - name: member
+          in: path
+          description: The member id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
       requestBody:
         content:
           application/json:
@@ -1002,7 +1001,7 @@ paths:
               $ref: '#/components/schemas/Member'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1014,7 +1013,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1024,16 +1023,16 @@ paths:
   /v1/organisations/{organisation}/members:invite:
     post:
       tags:
-      - Organisation Service
+        - Organisation Service
       description: Invites a member to an organisation.
       operationId: OrganisationService_InviteMember
       parameters:
-      - name: organisation
-        in: path
-        description: The organisation id.
-        required: true
-        schema:
-          type: string
+        - name: organisation
+          in: path
+          description: The organisation id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1041,7 +1040,7 @@ paths:
               $ref: '#/components/schemas/InviteMemberRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1053,7 +1052,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1063,34 +1062,35 @@ paths:
   /v1/promoCodes:
     get:
       tags:
-      - Promo Code Service
+        - Promo Code Service
       description: Lists promo codes.
       operationId: PromoCodeService_ListPromoCodes
       parameters:
-      - name: pageSize
-        in: query
-        description: Maximum number of promo codes to return. The server may cap this.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListPromoCodes call's next_page_token.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: "Filter expression over promo code fields, e.g. `state = ACTIVE`\
-          \ or a\n substring match on code/display_name (AIP-160)."
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "code" or "create_time desc".
-        schema:
-          type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of promo codes to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListPromoCodes call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression over promo code fields, e.g. `state = ACTIVE` or a
+             substring match on code/display_name (AIP-160).
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "code" or "create_time desc".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1102,7 +1102,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1111,28 +1111,25 @@ paths:
       summary: List Promo Codes
     post:
       tags:
-      - Promo Code Service
+        - Promo Code Service
       description: Creates a promo code.
       operationId: PromoCodeService_CreatePromoCode
       parameters:
-      - name: promoCodeId
-        in: query
-        description: Optional caller-chosen ID for the promo code; the server generates
-          one if unset.
-        schema:
-          type: string
-      - name: requestId
-        in: query
-        description: Caller-supplied idempotency key; identical retries return the
-          first result.
-        schema:
-          type: string
-      - name: validateOnly
-        in: query
-        description: If true, validate the request and return what would happen, but
-          don't commit.
-        schema:
-          type: boolean
+        - name: promoCodeId
+          in: query
+          description: Optional caller-chosen ID for the promo code; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
+        - name: validateOnly
+          in: query
+          description: If true, validate the request and return what would happen, but don't commit.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -1140,7 +1137,7 @@ paths:
               $ref: '#/components/schemas/PromoCode'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1152,7 +1149,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1162,18 +1159,18 @@ paths:
   /v1/promoCodes/{promoCode}:
     get:
       tags:
-      - Promo Code Service
+        - Promo Code Service
       description: Gets a single promo code.
       operationId: PromoCodeService_GetPromoCode
       parameters:
-      - name: promoCode
-        in: path
-        description: The promoCode id.
-        required: true
-        schema:
-          type: string
+        - name: promoCode
+          in: path
+          description: The promoCode id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1185,7 +1182,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1194,18 +1191,18 @@ paths:
       summary: Get Promo Code
     delete:
       tags:
-      - Promo Code Service
+        - Promo Code Service
       description: Deletes a promo code.
       operationId: PromoCodeService_DeletePromoCode
       parameters:
-      - name: promoCode
-        in: path
-        description: The promoCode id.
-        required: true
-        schema:
-          type: string
+        - name: promoCode
+          in: path
+          description: The promoCode id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content: {}
         default:
@@ -1214,7 +1211,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1223,28 +1220,27 @@ paths:
       summary: Delete Promo Code
     patch:
       tags:
-      - Promo Code Service
+        - Promo Code Service
       description: Updates a promo code.
       operationId: PromoCodeService_UpdatePromoCode
       parameters:
-      - name: promoCode
-        in: path
-        description: The promoCode id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable fields.
-        schema:
-          type: string
-          format: field-mask
-      - name: validateOnly
-        in: query
-        description: If true, validate the request and return what would happen, but
-          don't commit.
-        schema:
-          type: boolean
+        - name: promoCode
+          in: path
+          description: The promoCode id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
+        - name: validateOnly
+          in: query
+          description: If true, validate the request and return what would happen, but don't commit.
+          schema:
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -1252,7 +1248,7 @@ paths:
               $ref: '#/components/schemas/PromoCode'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1264,7 +1260,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1274,9 +1270,8 @@ paths:
   /v1/promoCodes:validatePromoCode:
     post:
       tags:
-      - Promo Code Service
-      description: Validates a code against a prospective booking and returns the
-        discount.
+        - Promo Code Service
+      description: Validates a code against a prospective booking and returns the discount.
       operationId: PromoCodeService_ValidatePromoCode
       requestBody:
         content:
@@ -1285,7 +1280,7 @@ paths:
               $ref: '#/components/schemas/ValidatePromoCodeRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1297,7 +1292,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1307,34 +1302,35 @@ paths:
   /v1/resources:
     get:
       tags:
-      - Resource Service
+        - Resource Service
       description: Lists resources.
       operationId: ResourceService_ListResources
       parameters:
-      - name: pageSize
-        in: query
-        description: Maximum number of resources to return. The server may cap this.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListResources call, for pagination.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: "Filter expression (AIP-160), e.g. `type = RESOURCE_TYPE_ROOM`,\n\
-          \ `state = STATE_ACTIVE`, `tags:\"beachfront\"`, or a match on display_name."
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "display_name" or "create_time desc".
-        schema:
-          type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of resources to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListResources call, for pagination.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `type = RESOURCE_TYPE_ROOM`,
+             `state = STATE_ACTIVE`, `tags:"beachfront"`, or a match on display_name.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "display_name" or "create_time desc".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1346,7 +1342,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1355,22 +1351,20 @@ paths:
       summary: List Resources
     post:
       tags:
-      - Resource Service
+        - Resource Service
       description: Creates a resource.
       operationId: ResourceService_CreateResource
       parameters:
-      - name: resourceId
-        in: query
-        description: Optional caller-chosen ID for the resource; the server generates
-          one if unset.
-        schema:
-          type: string
-      - name: requestId
-        in: query
-        description: Caller-supplied idempotency key; identical retries return the
-          first result.
-        schema:
-          type: string
+        - name: resourceId
+          in: query
+          description: Optional caller-chosen ID for the resource; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1378,7 +1372,7 @@ paths:
               $ref: '#/components/schemas/Resource'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1390,7 +1384,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1400,18 +1394,18 @@ paths:
   /v1/resources/{resource}:
     get:
       tags:
-      - Resource Service
+        - Resource Service
       description: Gets a single resource.
       operationId: ResourceService_GetResource
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1423,7 +1417,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1432,22 +1426,22 @@ paths:
       summary: Get Resource
     patch:
       tags:
-      - Resource Service
+        - Resource Service
       description: Updates a resource.
       operationId: ResourceService_UpdateResource
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable fields.
-        schema:
-          type: string
-          format: field-mask
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
       requestBody:
         content:
           application/json:
@@ -1455,7 +1449,7 @@ paths:
               $ref: '#/components/schemas/Resource'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1467,7 +1461,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1477,39 +1471,39 @@ paths:
   /v1/resources/{resource}/offerings:
     get:
       tags:
-      - Resource Service
+        - Resource Service
       description: Lists the offerings attached to a resource.
       operationId: ResourceService_ListOfferings
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: pageSize
-        in: query
-        description: Maximum number of offerings to return.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Page token from a previous ListOfferings call's next_page_token.
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "display_name" or "create_time desc".
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: Filter expression (AIP-160), e.g. a match on display_name.
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of offerings to return.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListOfferings call's next_page_token.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "display_name" or "create_time desc".
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter expression (AIP-160), e.g. a match on display_name.
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1521,7 +1515,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1530,28 +1524,26 @@ paths:
       summary: List Offerings
     post:
       tags:
-      - Resource Service
+        - Resource Service
       description: Creates an offering on a resource.
       operationId: ResourceService_CreateOffering
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: offeringId
-        in: query
-        description: Optional caller-chosen ID for the offering; the server generates
-          one if unset.
-        schema:
-          type: string
-      - name: requestId
-        in: query
-        description: Caller-supplied idempotency key; identical retries return the
-          first result.
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: offeringId
+          in: query
+          description: Optional caller-chosen ID for the offering; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1559,7 +1551,7 @@ paths:
               $ref: '#/components/schemas/Offering'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1571,7 +1563,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1581,24 +1573,24 @@ paths:
   /v1/resources/{resource}/offerings/{offering}:
     get:
       tags:
-      - Resource Service
+        - Resource Service
       description: Gets a single offering.
       operationId: ResourceService_GetOffering
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: offering
-        in: path
-        description: The offering id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: offering
+          in: path
+          description: The offering id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1610,7 +1602,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1619,24 +1611,24 @@ paths:
       summary: Get Offering
     delete:
       tags:
-      - Resource Service
+        - Resource Service
       description: Deletes an offering.
       operationId: ResourceService_DeleteOffering
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: offering
-        in: path
-        description: The offering id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: offering
+          in: path
+          description: The offering id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content: {}
         default:
@@ -1645,7 +1637,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1654,28 +1646,28 @@ paths:
       summary: Delete Offering
     patch:
       tags:
-      - Resource Service
+        - Resource Service
       description: Updates an offering.
       operationId: ResourceService_UpdateOffering
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: offering
-        in: path
-        description: The offering id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable fields.
-        schema:
-          type: string
-          format: field-mask
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: offering
+          in: path
+          description: The offering id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
       requestBody:
         content:
           application/json:
@@ -1683,7 +1675,7 @@ paths:
               $ref: '#/components/schemas/Offering'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1695,7 +1687,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1705,16 +1697,16 @@ paths:
   /v1/resources/{resource}:archive:
     post:
       tags:
-      - Resource Service
+        - Resource Service
       description: Archives a resource, hiding it from availability and new bookings.
       operationId: ResourceService_ArchiveResource
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1722,7 +1714,7 @@ paths:
               $ref: '#/components/schemas/ArchiveResourceRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1734,7 +1726,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1744,16 +1736,16 @@ paths:
   /v1/resources/{resource}:unarchive:
     post:
       tags:
-      - Resource Service
+        - Resource Service
       description: Unarchives a resource, restoring it to the active state.
       operationId: ResourceService_UnarchiveResource
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1761,7 +1753,7 @@ paths:
               $ref: '#/components/schemas/UnarchiveResourceRequest'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1773,7 +1765,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1783,40 +1775,39 @@ paths:
   /v1/resources/{resource}/availabilityExceptions:
     get:
       tags:
-      - Schedule Service
+        - Schedule Service
       description: Lists the exceptions configured for a resource.
       operationId: ScheduleService_ListAvailabilityExceptions
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: pageSize
-        in: query
-        description: Maximum number of exceptions to return.
-        schema:
-          type: integer
-          format: int32
-      - name: pageToken
-        in: query
-        description: Token for the page of results to return. Empty for the first
-          page.
-        schema:
-          type: string
-      - name: filter
-        in: query
-        description: Filter expression (AIP-160), e.g. `kind = EXCEPTION_KIND_CLOSURE`.
-        schema:
-          type: string
-      - name: orderBy
-        in: query
-        description: Sort order, e.g. "window.start_time" or "create_time desc".
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of exceptions to return.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Token for the page of results to return. Empty for the first page.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter expression (AIP-160), e.g. `kind = EXCEPTION_KIND_CLOSURE`.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "window.start_time" or "create_time desc".
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1828,7 +1819,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1837,28 +1828,26 @@ paths:
       summary: List Availability Exceptions
     post:
       tags:
-      - Schedule Service
+        - Schedule Service
       description: Adds an availability exception to a resource.
       operationId: ScheduleService_CreateAvailabilityException
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: availabilityExceptionId
-        in: query
-        description: Optional caller-chosen ID for the exception; the server generates
-          one if unset.
-        schema:
-          type: string
-      - name: requestId
-        in: query
-        description: Caller-supplied idempotency key; identical retries return the
-          first result.
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: availabilityExceptionId
+          in: query
+          description: Optional caller-chosen ID for the exception; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1866,7 +1855,7 @@ paths:
               $ref: '#/components/schemas/AvailabilityException'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1878,7 +1867,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1888,24 +1877,24 @@ paths:
   /v1/resources/{resource}/availabilityExceptions/{availabilityException}:
     get:
       tags:
-      - Schedule Service
+        - Schedule Service
       description: Gets a single availability exception.
       operationId: ScheduleService_GetAvailabilityException
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: availabilityException
-        in: path
-        description: The availabilityException id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: availabilityException
+          in: path
+          description: The availabilityException id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1917,7 +1906,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1926,24 +1915,24 @@ paths:
       summary: Get Availability Exception
     delete:
       tags:
-      - Schedule Service
+        - Schedule Service
       description: Removes an availability exception.
       operationId: ScheduleService_DeleteAvailabilityException
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: availabilityException
-        in: path
-        description: The availabilityException id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: availabilityException
+          in: path
+          description: The availabilityException id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content: {}
         default:
@@ -1952,7 +1941,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1962,18 +1951,18 @@ paths:
   /v1/resources/{resource}/schedule:
     get:
       tags:
-      - Schedule Service
+        - Schedule Service
       description: Reads the full availability configuration for a resource.
       operationId: ScheduleService_GetSchedule
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1985,7 +1974,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -1994,24 +1983,25 @@ paths:
       summary: Get Schedule
     patch:
       tags:
-      - Schedule Service
-      description: "Updates a resource's availability configuration. Set update_mask\
-        \ to the\n section(s) to replace: recurring_rules, buffers, stay_constraints,\
-        \ and/or\n cancellation_policy."
+        - Schedule Service
+      description: |-
+        Updates a resource's availability configuration. Set update_mask to the
+         section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
+         cancellation_policy.
       operationId: ScheduleService_UpdateSchedule
       parameters:
-      - name: resource
-        in: path
-        description: The resource id.
-        required: true
-        schema:
-          type: string
-      - name: updateMask
-        in: query
-        description: Fields to overwrite. Omit to replace all mutable sections.
-        schema:
-          type: string
-          format: field-mask
+        - name: resource
+          in: path
+          description: The resource id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable sections.
+          schema:
+            type: string
+            format: field-mask
       requestBody:
         content:
           application/json:
@@ -2019,7 +2009,7 @@ paths:
               $ref: '#/components/schemas/Schedule'
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -2031,7 +2021,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -2051,7 +2041,9 @@ components:
       properties:
         resource:
           type: string
-          description: "The matching resource.\n Format: resources/{resource}"
+          description: |-
+            The matching resource.
+             Format: resources/{resource}
         displayName:
           type: string
           description: Cached display name of the resource, for convenience.
@@ -2061,29 +2053,30 @@ components:
           format: enum
         bookable:
           type: boolean
-          description: Whether the resource is bookable for the requested period and
-            units.
+          description: Whether the resource is bookable for the requested period and units.
         price:
           allOf:
-          - $ref: '#/components/schemas/Money'
-          description: "Lead price for the requested period: the stay total for NIGHTLY,\
-            \ or the slot\n price for TIME_SLOT. Used for sorting and display."
-      description: "One resource matched by SearchAvailability, with a lead price\
-        \ for the period.\n Detailed slots/nights are fetched per resource via ComputeAvailability."
+            - $ref: '#/components/schemas/Money'
+          description: |-
+            Lead price for the requested period: the stay total for NIGHTLY, or the slot
+             price for TIME_SLOT. Used for sorting and display.
+      description: |-
+        One resource matched by SearchAvailability, with a lead price for the period.
+         Detailed slots/nights are fetched per resource via ComputeAvailability.
     BatchComputeAvailabilityRequest:
       required:
-      - requests
+        - requests
       type: object
       properties:
         requests:
           type: array
           items:
             $ref: '#/components/schemas/ComputeAvailabilityRequest'
-          description: The individual compute requests. Results are returned in the
-            same order.
-      description: "Request message for BatchComputeAvailability. Each entry is a\
-        \ full\n ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,\n\
-        \ and units all work in batch exactly as they do in the single call."
+          description: The individual compute requests. Results are returned in the same order.
+      description: |-
+        Request message for BatchComputeAvailability. Each entry is a full
+         ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,
+         and units all work in batch exactly as they do in the single call.
     BatchComputeAvailabilityResponse:
       type: object
       properties:
@@ -2098,7 +2091,7 @@ components:
       properties:
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: The bookable span.
         bookable:
           type: boolean
@@ -2106,29 +2099,33 @@ components:
       description: A contiguous span that is bookable end to end.
     CheckAvailabilityRequest:
       required:
-      - resource
+        - resource
       type: object
       properties:
         resource:
           type: string
-          description: "The resource to test.\n Format: resources/{resource}"
+          description: |-
+            The resource to test.
+             Format: resources/{resource}
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: An exact time window, the natural form for TIME_SLOT resources.
         dateRange:
           allOf:
-          - $ref: '#/components/schemas/DateRange'
-          description: "A calendar-date range in the resource's timezone, the natural\
-            \ form for\n NIGHTLY stays; end_date is the check-out date."
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            A calendar-date range in the resource's timezone, the natural form for
+             NIGHTLY stays; end_date is the check-out date.
         units:
           type: integer
           description: Number of units required to be free. Defaults to 1.
           format: int32
         offering:
           type: string
-          description: "Offering whose duration/rules apply, when relevant.\n Format:\
-            \ resources/{resource}/offerings/{offering}"
+          description: |-
+            Offering whose duration/rules apply, when relevant.
+             Format: resources/{resource}/offerings/{offering}
       description: Request message for CheckAvailability.
     CheckAvailabilityResponse:
       type: object
@@ -2148,30 +2145,35 @@ components:
       description: Response message for CheckAvailability.
     ComputeAvailabilityRequest:
       required:
-      - resource
+        - resource
       type: object
       properties:
         resource:
           type: string
-          description: "The resource to compute availability for.\n Format: resources/{resource}"
+          description: |-
+            The resource to compute availability for.
+             Format: resources/{resource}
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: An exact time window, the natural form for TIME_SLOT resources.
         dateRange:
           allOf:
-          - $ref: '#/components/schemas/DateRange'
-          description: "A calendar-date range in the resource's timezone, the natural\
-            \ form for\n NIGHTLY resources; end_date is the check-out date."
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            A calendar-date range in the resource's timezone, the natural form for
+             NIGHTLY resources; end_date is the check-out date.
         duration:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
-          description: "Slot length for TIME_SLOT resources. Ignored when offering\
-            \ is set or for\n NIGHTLY resources."
+          description: |-
+            Slot length for TIME_SLOT resources. Ignored when offering is set or for
+             NIGHTLY resources.
         offering:
           type: string
-          description: "Offering to derive duration and price from. Takes precedence\
-            \ over duration.\n Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            Offering to derive duration and price from. Takes precedence over duration.
+             Format: resources/{resource}/offerings/{offering}
         units:
           type: integer
           description: Number of units required to be free. Defaults to 1.
@@ -2197,28 +2199,33 @@ components:
       description: Response message for ComputeAvailability.
     ComputeBookableRangesRequest:
       required:
-      - resource
+        - resource
       type: object
       properties:
         resource:
           type: string
-          description: "The resource to compute bookable ranges for.\n Format: resources/{resource}"
+          description: |-
+            The resource to compute bookable ranges for.
+             Format: resources/{resource}
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: An exact time window, the natural form for TIME_SLOT resources.
         dateRange:
           allOf:
-          - $ref: '#/components/schemas/DateRange'
-          description: "A calendar-date range in the resource's timezone, the natural\
-            \ form for\n NIGHTLY resources."
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            A calendar-date range in the resource's timezone, the natural form for
+             NIGHTLY resources.
         duration:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
           description: Minimum span length for TIME_SLOT resources.
         offering:
           type: string
-          description: "Offering to derive duration/rules from.\n Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            Offering to derive duration/rules from.
+             Format: resources/{resource}/offerings/{offering}
         units:
           type: integer
           description: Number of units required to be free. Defaults to 1.
@@ -2235,8 +2242,8 @@ components:
       description: Response message for ComputeBookableRanges.
     DateRange:
       required:
-      - startDate
-      - endDate
+        - startDate
+        - endDate
       type: object
       properties:
         startDate:
@@ -2247,10 +2254,10 @@ components:
           type: string
           description: Exclusive end date of the range.
           format: date
-      description: "A half-open range of calendar dates [start_date, end_date), evaluated\
-        \ in the\n resource's local timezone. The natural query and exception shape\
-        \ for NIGHTLY\n resources: end_date is the check-out date and is not itself\
-        \ included."
+      description: |-
+        A half-open range of calendar dates [start_date, end_date), evaluated in the
+         resource's local timezone. The natural query and exception shape for NIGHTLY
+         resources: end_date is the check-out date and is not itself included.
     GoogleProtobufAny:
       type: object
       properties:
@@ -2258,8 +2265,7 @@ components:
           type: string
           description: The type of the serialized message.
       additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that
-        describes the type of the serialized message.
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
     Money:
       type: object
       properties:
@@ -2268,16 +2274,18 @@ components:
           description: The three-letter currency code defined in ISO 4217.
         units:
           type: string
-          description: "The whole units of the amount.\n For example if `currencyCode`\
-            \ is `\"USD\"`, then 1 unit is one US dollar."
+          description: |-
+            The whole units of the amount.
+             For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
         nanos:
           type: integer
-          description: "Number of nano (10^-9) units of the amount.\n The value must\
-            \ be between -999,999,999 and +999,999,999 inclusive.\n If `units` is\
-            \ positive, `nanos` must be positive or zero.\n If `units` is zero, `nanos`\
-            \ can be positive, zero, or negative.\n If `units` is negative, `nanos`\
-            \ must be negative or zero.\n For example $-1.75 is represented as `units`=-1\
-            \ and `nanos`=-750,000,000."
+          description: |-
+            Number of nano (10^-9) units of the amount.
+             The value must be between -999,999,999 and +999,999,999 inclusive.
+             If `units` is positive, `nanos` must be positive or zero.
+             If `units` is zero, `nanos` can be positive, zero, or negative.
+             If `units` is negative, `nanos` must be negative or zero.
+             For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
           format: int32
       description: Represents an amount of money with its currency type.
     NightAvailability:
@@ -2296,7 +2304,7 @@ components:
           description: Whether the resource is closed that night (exception/blackout).
         price:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Nightly price, when an offering was supplied.
       description: Per-night availability, produced for NIGHTLY resources.
     ResourceAvailability:
@@ -2304,7 +2312,9 @@ components:
       properties:
         resource:
           type: string
-          description: "The resource these results are for.\n Format: resources/{resource}"
+          description: |-
+            The resource these results are for.
+             Format: resources/{resource}
         mode:
           type: integer
           description: Which shape is populated, matching the resource's booking_mode.
@@ -2325,26 +2335,28 @@ components:
       properties:
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: An exact time window, the natural form for TIME_SLOT resources.
         dateRange:
           allOf:
-          - $ref: '#/components/schemas/DateRange'
-          description: "A calendar-date range in each resource's timezone, the natural\
-            \ form for\n NIGHTLY resources; end_date is the check-out date."
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            A calendar-date range in each resource's timezone, the natural form for
+             NIGHTLY resources; end_date is the check-out date.
         units:
           type: integer
           description: Number of units / party size required free. Defaults to 1.
           format: int32
         filter:
           type: string
-          description: "Filter (AIP-160) over resource fields to narrow the catalog,\
-            \ e.g.\n `type = RESOURCE_TYPE_ROOM`, `tags:\"beachfront\"`, or a display_name\
-            \ match."
+          description: |-
+            Filter (AIP-160) over resource fields to narrow the catalog, e.g.
+             `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
         orderBy:
           type: string
-          description: "Sort order for matches, e.g. \"price\" or \"price desc\".\
-            \ Defaults to price\n ascending."
+          description: |-
+            Sort order for matches, e.g. "price" or "price desc". Defaults to price
+             ascending.
         pageSize:
           type: integer
           description: Maximum number of matches to return. The server may cap this.
@@ -2354,14 +2366,15 @@ components:
           description: Page token from a previous SearchAvailability call's next_page_token.
         includeUnavailable:
           type: boolean
-          description: "If true, include resources that matched the filter but are\
-            \ not bookable for\n the period (with bookable=false), instead of dropping\
-            \ them."
-      description: "Request message for SearchAvailability. Sweeps the catalog for\
-        \ resources that\n are bookable over a period for a given party size, narrowed\
-        \ by a resource\n filter and sorted for presentation. This is the storefront\
-        \ query: one call\n returns the matching resources with a lead price, rather\
-        \ than the caller\n listing resources and computing availability for each."
+          description: |-
+            If true, include resources that matched the filter but are not bookable for
+             the period (with bookable=false), instead of dropping them.
+      description: |-
+        Request message for SearchAvailability. Sweeps the catalog for resources that
+         are bookable over a period for a given party size, narrowed by a resource
+         filter and sorted for presentation. This is the storefront query: one call
+         returns the matching resources with a lead price, rather than the caller
+         listing resources and computing availability for each.
     SearchAvailabilityResponse:
       type: object
       properties:
@@ -2372,8 +2385,7 @@ components:
           description: The matching resources, ordered per order_by.
         nextPageToken:
           type: string
-          description: Token to pass as page_token to retrieve the next page; empty
-            when no more.
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for SearchAvailability.
     Slot:
       type: object
@@ -2388,15 +2400,14 @@ components:
           format: date-time
         freeCount:
           type: integer
-          description: Number of units free in this slot (capacity minus overlapping
-            bookings).
+          description: Number of units free in this slot (capacity minus overlapping bookings).
           format: int32
         bookable:
           type: boolean
           description: Whether the slot can actually be booked (free and passes policy).
         price:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Price for booking this slot, when an offering was supplied.
       description: A discrete bookable time slot, produced for TIME_SLOT resources.
     Status:
@@ -2408,25 +2419,17 @@ components:
           format: int32
         message:
           type: string
-          description: A developer-facing error message, which should be in English.
-            Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details]
-            field, or localized by the client.
+          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
         details:
           type: array
           items:
             $ref: '#/components/schemas/GoogleProtobufAny'
-          description: A list of messages that carry the error details.  There is
-            a common set of message types for APIs to use.
-      description: 'The `Status` type defines a logical error model that is suitable
-        for different programming environments, including REST APIs and RPC APIs.
-        It is used by [gRPC](https://github.com/grpc). Each `Status` message contains
-        three pieces of data: error code, error message, and error details. You can
-        find out more about this error model and how to work with it in the [API Design
-        Guide](https://cloud.google.com/apis/design/errors).'
+          description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+      description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
     TimeWindow:
       required:
-      - startTime
-      - endTime
+        - startTime
+        - endTime
       type: object
       properties:
         startTime:
@@ -2437,9 +2440,9 @@ components:
           type: string
           description: Exclusive end of the interval.
           format: date-time
-      description: "A half-open time interval [start_time, end_time). Used for query\
-        \ windows and\n for a booking's reserved span in both TIME_SLOT and NIGHTLY\
-        \ modes."
+      description: |-
+        A half-open time interval [start_time, end_time). Used for query windows and
+         for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
     UnbookableReason:
       type: object
       properties:
@@ -2450,47 +2453,54 @@ components:
         message:
           type: string
           description: Human-readable explanation suitable for display, not for parsing.
-      description: "A reason a span is not bookable, as a machine-readable code plus\
-        \ a\n human-readable explanation. Clients should branch on code, never on\
-        \ message."
+      description: |-
+        A reason a span is not bookable, as a machine-readable code plus a
+         human-readable explanation. Clients should branch on code, never on message.
     Booking:
       required:
-      - resource
-      - window
+        - resource
+        - window
       type: object
       properties:
         name:
           type: string
-          description: "The booking name.\n Format: bookings/{booking}"
+          description: |-
+            The booking name.
+             Format: bookings/{booking}
         resource:
           type: string
-          description: "The resource being booked.\n Format: resources/{resource}"
+          description: |-
+            The resource being booked.
+             Format: resources/{resource}
         offering:
           type: string
-          description: "The offering being booked, when applicable.\n Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            The offering being booked, when applicable.
+             Format: resources/{resource}/offerings/{offering}
         customer:
           type: string
-          description: "The user the booking is for.\n Format: users/{user}"
+          description: |-
+            The user the booking is for.
+             Format: users/{user}
         contact:
           allOf:
-          - $ref: '#/components/schemas/Contact'
-          description: "Contact details for the booker. Required when `customer` is\
-            \ unset (a guest /\n walk-in booking); when `customer` is set these supplement\
-            \ or override the\n user's profile contact for this booking."
+            - $ref: '#/components/schemas/Contact'
+          description: |-
+            Contact details for the booker. Required when `customer` is unset (a guest /
+             walk-in booking); when `customer` is set these supplement or override the
+             user's profile contact for this booking.
         units:
           type: integer
           description: Number of units / party size reserved. Defaults to 1.
           format: int32
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
-          description: The reserved span. For NIGHTLY resources this spans check-in
-            to check-out.
+            - $ref: '#/components/schemas/TimeWindow'
+          description: The reserved span. For NIGHTLY resources this spans check-in to check-out.
         assignedUnit:
           readOnly: true
           type: string
-          description: Which specific unit of the pool was assigned (the shell's atomic
-            pick).
+          description: Which specific unit of the pool was assigned (the shell's atomic pick).
         state:
           readOnly: true
           type: integer
@@ -2504,32 +2514,33 @@ components:
         price:
           readOnly: true
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Computed subtotal before discounts.
         promoCode:
           type: string
-          description: "The promo code to apply to this booking, set at creation,\
-            \ if any.\n Format: promoCodes/{promo_code}"
+          description: |-
+            The promo code to apply to this booking, set at creation, if any.
+             Format: promoCodes/{promo_code}
         discount:
           readOnly: true
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Discount applied from the promo code.
         total:
           readOnly: true
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Final total after discounts.
         priceComponents:
           readOnly: true
           type: array
           items:
             $ref: '#/components/schemas/PriceComponent'
-          description: "Itemized breakdown behind the total: the base charge, each\
-            \ fee and tax, and\n each discount, as signed lines. `price` is the TYPE_BASE\
-            \ subtotal and\n `total` is the sum of every component; these lines expose\
-            \ the fees and taxes\n in between. Empty for simple bookings with no fees\
-            \ or taxes configured."
+          description: |-
+            Itemized breakdown behind the total: the base charge, each fee and tax, and
+             each discount, as signed lines. `price` is the TYPE_BASE subtotal and
+             `total` is the sum of every component; these lines expose the fees and taxes
+             in between. Empty for simple bookings with no fees or taxes configured.
         notes:
           type: string
           description: Free-form notes on the booking.
@@ -2564,11 +2575,12 @@ components:
         refundAmount:
           readOnly: true
           allOf:
-          - $ref: '#/components/schemas/Money'
-          description: "Amount refunded on cancellation, computed from the resource's\
-            \ cancellation\n policy and how far ahead of the booking start it was\
-            \ cancelled. Set only\n once the booking is CANCELLED. Use PreviewCancellation\
-            \ to see this before\n committing."
+            - $ref: '#/components/schemas/Money'
+          description: |-
+            Amount refunded on cancellation, computed from the resource's cancellation
+             policy and how far ahead of the booking start it was cancelled. Set only
+             once the booking is CANCELLED. Use PreviewCancellation to see this before
+             committing.
         refundPercent:
           readOnly: true
           type: integer
@@ -2577,24 +2589,27 @@ components:
         holdTtl:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
-          description: "Requested time-to-live of the hold, set at creation. The server\
-            \ caps this\n and reflects the effective expiry in hold_expire_time."
+          description: |-
+            Requested time-to-live of the hold, set at creation. The server caps this
+             and reflects the effective expiry in hold_expire_time.
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update/delete.
-      description: "A reservation against a resource. The hold lifecycle lives here\
-        \ as states\n rather than a separate service: CreateBooking places a PENDING_HOLD,\n\
-        \ confirmation flips it to CONFIRMED, and an internal sweeper expires holds\
-        \ that\n are never confirmed."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A reservation against a resource. The hold lifecycle lives here as states
+         rather than a separate service: CreateBooking places a PENDING_HOLD,
+         confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
+         are never confirmed.
     CancelBookingRequest:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
           type: string
-          description: "The booking to cancel.\n Format: bookings/{booking}"
+          description: |-
+            The booking to cancel.
+             Format: bookings/{booking}
         reason:
           type: integer
           description: Why the booking is being cancelled.
@@ -2604,28 +2619,28 @@ components:
           description: Free-form note explaining the cancellation.
         requestId:
           type: string
-          description: Caller-supplied idempotency key; identical retries return the
-            first result.
+          description: Caller-supplied idempotency key; identical retries return the first result.
       description: Request message for CancelBooking.
     ConfirmBookingRequest:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
           type: string
-          description: "The booking to confirm.\n Format: bookings/{booking}"
+          description: |-
+            The booking to confirm.
+             Format: bookings/{booking}
         paymentRef:
           type: string
-          description: Opaque reference to the payment/settlement that confirmed this
-            booking.
+          description: Opaque reference to the payment/settlement that confirmed this booking.
         requestId:
           type: string
-          description: Caller-supplied idempotency key; identical retries return the
-            first result.
-      description: "Request message for ConfirmBooking. Confirmation normally arrives\
-        \ via the\n payment webhook rather than a direct client call; either way it\
-        \ flips a\n PENDING_HOLD to CONFIRMED."
+          description: Caller-supplied idempotency key; identical retries return the first result.
+      description: |-
+        Request message for ConfirmBooking. Confirmation normally arrives via the
+         payment webhook rather than a direct client call; either way it flips a
+         PENDING_HOLD to CONFIRMED.
     Contact:
       type: object
       properties:
@@ -2638,12 +2653,13 @@ components:
         phoneNumber:
           type: string
           description: Phone number in E.164 form (e.g. "+14155552671").
-      description: "Contact details for the person a booking is for. When a booking\
-        \ carries a\n `customer` (a users/{user} reference) these typically mirror\
-        \ the user's\n profile; for walk-in or email-only bookings made by someone\
-        \ who is not a\n registered user, this is the only contact information captured.\
-        \ The server\n requires at least one reachable channel (email or phone) when\
-        \ no customer is\n set."
+      description: |-
+        Contact details for the person a booking is for. When a booking carries a
+         `customer` (a users/{user} reference) these typically mirror the user's
+         profile; for walk-in or email-only bookings made by someone who is not a
+         registered user, this is the only contact information captured. The server
+         requires at least one reachable channel (email or phone) when no customer is
+         set.
     ListBookingsResponse:
       type: object
       properties:
@@ -2654,20 +2670,22 @@ components:
           description: The page of bookings.
         nextPageToken:
           type: string
-          description: Token to pass as page_token to retrieve the next page; empty
-            when no more.
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for ListBookings.
     PreviewCancellationRequest:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
           type: string
-          description: "The booking to preview a cancellation for.\n Format: bookings/{booking}"
-      description: "Request message for PreviewCancellation. Computes the refund a\
-        \ cancellation\n would yield right now, under the resource's cancellation\
-        \ policy, without\n cancelling the booking."
+          description: |-
+            The booking to preview a cancellation for.
+             Format: bookings/{booking}
+      description: |-
+        Request message for PreviewCancellation. Computes the refund a cancellation
+         would yield right now, under the resource's cancellation policy, without
+         cancelling the booking.
     PreviewCancellationResponse:
       type: object
       properties:
@@ -2680,16 +2698,15 @@ components:
           format: int32
         refundAmount:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Amount that would be refunded now.
         nonRefundableAmount:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Amount that would be retained (total minus refund_amount).
         policySummary:
           type: string
-          description: Human-readable summary of the policy tier that applied, for
-            display.
+          description: Human-readable summary of the policy tier that applied, for display.
       description: Response message for PreviewCancellation.
     PriceComponent:
       type: object
@@ -2700,44 +2717,49 @@ components:
           format: enum
         code:
           type: string
-          description: "Stable machine code for the line, e.g. \"base\", \"cleaning_fee\"\
-            ,\n \"occupancy_tax\", or a promo code. Clients key display and logic\
-            \ off this."
+          description: |-
+            Stable machine code for the line, e.g. "base", "cleaning_fee",
+             "occupancy_tax", or a promo code. Clients key display and logic off this.
         displayName:
           type: string
           description: Human-readable label suitable for display on an itemized receipt.
         amount:
           allOf:
-          - $ref: '#/components/schemas/Money'
-          description: "Signed amount: positive for charges (base, fees, taxes), negative\
-            \ for\n discounts. Summing every component yields the booking total."
-      description: "One line in a price breakdown: a base charge, a fee, a tax, or\
-        \ a discount.\n Clients branch on `type` and `code`; the signed `amount` rolls\
-        \ up to the\n booking total (charges positive, discounts negative)."
+            - $ref: '#/components/schemas/Money'
+          description: |-
+            Signed amount: positive for charges (base, fees, taxes), negative for
+             discounts. Summing every component yields the booking total.
+      description: |-
+        One line in a price breakdown: a base charge, a fee, a tax, or a discount.
+         Clients branch on `type` and `code`; the signed `amount` rolls up to the
+         booking total (charges positive, discounts negative).
     RescheduleBookingRequest:
       required:
-      - name
-      - window
+        - name
+        - window
       type: object
       properties:
         name:
           type: string
-          description: "The booking to reschedule.\n Format: bookings/{booking}"
+          description: |-
+            The booking to reschedule.
+             Format: bookings/{booking}
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: The new reserved span.
         offering:
           type: string
-          description: "The new offering, when changing it as part of the reschedule.\n\
-            \ Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            The new offering, when changing it as part of the reschedule.
+             Format: resources/{resource}/offerings/{offering}
         requestId:
           type: string
-          description: Caller-supplied idempotency key that dedupes retries of this
-            reschedule.
-      description: "Request message for RescheduleBooking. Atomically moves a booking\
-        \ to a new\n span (and optionally offering), re-running availability and the\
-        \ exclusion\n check on the new window."
+          description: Caller-supplied idempotency key that dedupes retries of this reschedule.
+      description: |-
+        Request message for RescheduleBooking. Atomically moves a booking to a new
+         span (and optionally offering), re-running availability and the exclusion
+         check on the new window.
     ListUsersResponse:
       type: object
       properties:
@@ -2748,8 +2770,7 @@ components:
           description: The page of users.
         nextPageToken:
           type: string
-          description: Token to pass as page_token to retrieve the next page; empty
-            when no more.
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for ListUsers.
     MembershipSummary:
       type: object
@@ -2757,7 +2778,9 @@ components:
         organisation:
           readOnly: true
           type: string
-          description: "The organisation.\n Format: organisations/{organisation}"
+          description: |-
+            The organisation.
+             Format: organisations/{organisation}
         orgDisplayName:
           readOnly: true
           type: string
@@ -2765,16 +2788,16 @@ components:
         role:
           readOnly: true
           type: string
-          description: The user's role in the organisation (an OrganisationRole value
-            name).
+          description: The user's role in the organisation (an OrganisationRole value name).
       description: A compact view of an organisation the user belongs to.
     User:
       type: object
       properties:
         name:
           type: string
-          description: "The user name. The alias \"users/me\" resolves to the caller.\n\
-            \ Format: users/{user}"
+          description: |-
+            The user name. The alias "users/me" resolves to the caller.
+             Format: users/{user}
         email:
           readOnly: true
           type: string
@@ -2809,22 +2832,24 @@ components:
           format: date-time
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update.
-      description: "A signed-in person. Identity is deliberately thin: actual login\
-        \ is an OIDC\n redirect flow handled over plain HTTP by the IdP, so most of\
-        \ \"auth\" never\n appears as an RPC. Email and identity come from the IdP\
-        \ and are read-only\n here; only profile preferences are editable."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update.
+      description: |-
+        A signed-in person. Identity is deliberately thin: actual login is an OIDC
+         redirect flow handled over plain HTTP by the IdP, so most of "auth" never
+         appears as an RPC. Email and identity come from the IdP and are read-only
+         here; only profile preferences are editable.
     InviteMemberRequest:
       required:
-      - parent
-      - email
-      - role
+        - parent
+        - email
+        - role
       type: object
       properties:
         parent:
           type: string
-          description: "The organisation to invite the member to.\n Format: organisations/{organisation}"
+          description: |-
+            The organisation to invite the member to.
+             Format: organisations/{organisation}
         email:
           type: string
           description: Email address to invite.
@@ -2834,15 +2859,14 @@ components:
           format: enum
         requestId:
           type: string
-          description: Caller-supplied idempotency key; identical retries return the
-            first result.
+          description: Caller-supplied idempotency key; identical retries return the first result.
       description: Request message for InviteMember.
     InviteMemberResponse:
       type: object
       properties:
         member:
           allOf:
-          - $ref: '#/components/schemas/Member'
+            - $ref: '#/components/schemas/Member'
           description: The created member (in INVITED state).
       description: Response message for InviteMember.
     ListMembersResponse:
@@ -2855,8 +2879,7 @@ components:
           description: The page of members.
         nextPageToken:
           type: string
-          description: Token to pass as page_token to retrieve the next page; empty
-            when no more.
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for ListMembers.
     ListOrganisationsResponse:
       type: object
@@ -2868,22 +2891,25 @@ components:
           description: The page of organisations (those the caller belongs to).
         nextPageToken:
           type: string
-          description: Token to pass as page_token to retrieve the next page; empty
-            when no more.
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for ListOrganisations.
     Member:
       required:
-      - email
-      - role
+        - email
+        - role
       type: object
       properties:
         name:
           type: string
-          description: "The member name.\n Format: organisations/{organisation}/members/{member}"
+          description: |-
+            The member name.
+             Format: organisations/{organisation}/members/{member}
         user:
           readOnly: true
           type: string
-          description: "The user, once the invite is accepted.\n Format: users/{user}"
+          description: |-
+            The user, once the invite is accepted.
+             Format: users/{user}
         email:
           type: string
           description: The invited email address.
@@ -2903,7 +2929,9 @@ components:
         inviter:
           readOnly: true
           type: string
-          description: "The user who issued the invite.\n Format: users/{user}"
+          description: |-
+            The user who issued the invite.
+             Format: users/{user}
         createTime:
           readOnly: true
           type: string
@@ -2916,17 +2944,18 @@ components:
           format: date-time
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update/delete.
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
       description: The membership of a user in an organisation, with their role.
     Organisation:
       required:
-      - displayName
+        - displayName
       type: object
       properties:
         name:
           type: string
-          description: "The organisation name.\n Format: organisations/{organisation}"
+          description: |-
+            The organisation name.
+             Format: organisations/{organisation}
         displayName:
           type: string
           description: Human-friendly organisation name (e.g. "Acme Inc.").
@@ -2960,12 +2989,11 @@ components:
           format: date-time
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update/delete.
-      description: "A tenant. Organisation is the unit of multi-tenancy; the shell\
-        \ enforces isolation\n with row-level security keyed off the caller's organisation,\
-        \ so most resource names\n stay flat and the organisation appears explicitly\
-        \ only here."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation
+         with row-level security keyed off the caller's organisation, so most resource names
+         stay flat and the organisation appears explicitly only here.
     ListPromoCodesResponse:
       type: object
       properties:
@@ -2976,22 +3004,22 @@ components:
           description: The page of promo codes.
         nextPageToken:
           type: string
-          description: Token to pass as page_token to retrieve the next page; empty
-            when no more.
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for ListPromoCodes.
     PromoCode:
       required:
-      - code
-      - discountType
+        - code
+        - discountType
       type: object
       properties:
         name:
           type: string
-          description: "The promo code name.\n Format: promoCodes/{promo_code}"
+          description: |-
+            The promo code name.
+             Format: promoCodes/{promo_code}
         code:
           type: string
-          description: The human-entered code, unique across all promo codes (e.g.
-            "SUMMER25").
+          description: The human-entered code, unique across all promo codes (e.g. "SUMMER25").
         displayName:
           type: string
           description: Internal display name (not shown to customers).
@@ -3008,7 +3036,7 @@ components:
           format: int32
         amountOff:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Fixed amount off, when discount_type is FIXED_AMOUNT.
         redeemStartTime:
           type: string
@@ -3020,28 +3048,29 @@ components:
           format: date-time
         maxRedemptions:
           type: string
-          description: Maximum total redemptions across all customers. Zero means
-            unlimited.
+          description: Maximum total redemptions across all customers. Zero means unlimited.
         perCustomerLimit:
           type: integer
           description: Maximum redemptions per customer. Zero means unlimited.
           format: int32
         minSubtotal:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Minimum subtotal required for the code to apply.
         applicableResources:
           type: array
           items:
             type: string
-          description: "Resources the code applies to. Empty means all resources.\n\
-            \ Format: resources/{resource}"
+          description: |-
+            Resources the code applies to. Empty means all resources.
+             Format: resources/{resource}
         applicableOfferings:
           type: array
           items:
             type: string
-          description: "Offerings the code applies to. Empty means all offerings.\n\
-            \ Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            Offerings the code applies to. Empty means all offerings.
+             Format: resources/{resource}/offerings/{offering}
         redemptionCount:
           readOnly: true
           type: string
@@ -3049,13 +3078,13 @@ components:
         state:
           readOnly: true
           type: integer
-          description: "Derived lifecycle state: ACTIVE, DISABLED (when `disabled`\
-            \ is set), or\n EXPIRED (past the window or out of redemptions)."
+          description: |-
+            Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or
+             EXPIRED (past the window or out of redemptions).
           format: enum
         disabled:
           type: boolean
-          description: If true, the code is manually disabled regardless of its window
-            and caps.
+          description: If true, the code is manually disabled regardless of its window and caps.
         createTime:
           readOnly: true
           type: string
@@ -3068,15 +3097,15 @@ components:
           format: date-time
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update/delete.
-      description: "A redeemable discount applied to a booking's subtotal. Scoped\
-        \ by a redemption\n window, usage caps, a minimum subtotal, and an optional\
-        \ set of resources /\n offerings it applies to."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A redeemable discount applied to a booking's subtotal. Scoped by a redemption
+         window, usage caps, a minimum subtotal, and an optional set of resources /
+         offerings it applies to.
     ValidatePromoCodeRequest:
       required:
-      - code
-      - subtotal
+        - code
+        - subtotal
       type: object
       properties:
         code:
@@ -3084,20 +3113,26 @@ components:
           description: The human-entered code to validate (e.g. "SUMMER25").
         subtotal:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Subtotal the discount would apply to.
         resource:
           type: string
-          description: "Resource being booked, for scope checks.\n Format: resources/{resource}"
+          description: |-
+            Resource being booked, for scope checks.
+             Format: resources/{resource}
         offering:
           type: string
-          description: "Offering being booked, for scope checks.\n Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            Offering being booked, for scope checks.
+             Format: resources/{resource}/offerings/{offering}
         customer:
           type: string
-          description: "Customer redeeming the code, for per-customer limit checks.\n\
-            \ Format: users/{user}"
-      description: "Request message for ValidatePromoCode. Computes the discount a\
-        \ code would\n apply to a prospective booking without redeeming it."
+          description: |-
+            Customer redeeming the code, for per-customer limit checks.
+             Format: users/{user}
+      description: |-
+        Request message for ValidatePromoCode. Computes the discount a code would
+         apply to a prospective booking without redeeming it.
     ValidatePromoCodeResponse:
       type: object
       properties:
@@ -3109,28 +3144,32 @@ components:
           description: Why the code is not valid, when valid is false.
         promoCode:
           type: string
-          description: "The resolved promo code, when valid.\n Format: promoCodes/{promo_code}"
+          description: |-
+            The resolved promo code, when valid.
+             Format: promoCodes/{promo_code}
         discountAmount:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Discount the code applies to the subtotal.
         finalTotal:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Subtotal minus the discount.
       description: Response message for ValidatePromoCode.
     ArchiveResourceRequest:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
           type: string
-          description: "The resource to archive.\n Format: resources/{resource}"
+          description: |-
+            The resource to archive.
+             Format: resources/{resource}
       description: Request message for ArchiveResource.
     Fee:
       required:
-      - code
+        - code
       type: object
       properties:
         code:
@@ -3141,24 +3180,24 @@ components:
           description: Human-readable label for receipts.
         amount:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Fixed fee amount, when charging a flat fee.
         percent:
           type: integer
-          description: Percent of the base subtotal (1-100), when charging a proportional
-            fee.
+          description: Percent of the base subtotal (1-100), when charging a proportional fee.
           format: int32
         pricingUnit:
           type: integer
-          description: "What the fee is charged per (per booking, per night, per person).\
-            \ Defaults\n to per booking."
+          description: |-
+            What the fee is charged per (per booking, per night, per person). Defaults
+             to per booking.
           format: enum
         taxable:
           type: boolean
           description: Whether this fee is included in the taxable base.
-      description: "A fee added on top of an offering's base subtotal. Exactly one\
-        \ of `amount` or\n `percent` is set. Surfaces as a TYPE_FEE line in a booking's\
-        \ price_components."
+      description: |-
+        A fee added on top of an offering's base subtotal. Exactly one of `amount` or
+         `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
     ListOfferingsResponse:
       type: object
       properties:
@@ -3181,12 +3220,11 @@ components:
           description: The page of resources.
         nextPageToken:
           type: string
-          description: Next page token, if more results remain. Omitted if this is
-            the last page.
+          description: Next page token, if more results remain. Omitted if this is the last page.
       description: Response message for ListResources.
     LosDiscount:
       required:
-      - minNights
+        - minNights
       type: object
       properties:
         minNights:
@@ -3199,18 +3237,21 @@ components:
           format: int32
         amountOff:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Fixed amount off the subtotal, when discounting by a flat amount.
-      description: "A discount applied to a NIGHTLY subtotal once the stay reaches\
-        \ a minimum\n length. Exactly one of percent_off or amount_off is set."
+      description: |-
+        A discount applied to a NIGHTLY subtotal once the stay reaches a minimum
+         length. Exactly one of percent_off or amount_off is set.
     Offering:
       required:
-      - displayName
+        - displayName
       type: object
       properties:
         name:
           type: string
-          description: "The offering name.\n Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            The offering name.
+             Format: resources/{resource}/offerings/{offering}
         displayName:
           type: string
           description: Human-friendly name (e.g. "30-min consult").
@@ -3220,11 +3261,10 @@ components:
         duration:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
-          description: Slot length. Required for TIME_SLOT resources; ignored for
-            NIGHTLY.
+          description: Slot length. Required for TIME_SLOT resources; ignored for NIGHTLY.
         price:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: Price charged for the offering, interpreted per pricing_unit.
         pricingUnit:
           type: integer
@@ -3234,30 +3274,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RateOverride'
-          description: "Rate calendar: date- and weekday-scoped overrides of `price`.\
-            \ For NIGHTLY\n resources this is the seasonal/weekend rate calendar;\
-            \ for TIME_SLOT it\n varies slot price by date or day. `price` is the\
-            \ default when no override\n matches. Later-listed overrides win where\
-            \ they overlap."
+          description: |-
+            Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY
+             resources this is the seasonal/weekend rate calendar; for TIME_SLOT it
+             varies slot price by date or day. `price` is the default when no override
+             matches. Later-listed overrides win where they overlap.
         losDiscounts:
           type: array
           items:
             $ref: '#/components/schemas/LosDiscount'
-          description: "Length-of-stay discounts applied to the NIGHTLY subtotal when\
-            \ a stay is at\n least `min_nights` long. The most generous matching discount\
-            \ applies."
+          description: |-
+            Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at
+             least `min_nights` long. The most generous matching discount applies.
         fees:
           type: array
           items:
             $ref: '#/components/schemas/Fee'
-          description: "Fees added on top of the base subtotal (e.g. cleaning, service).\
-            \ Each\n surfaces as a TYPE_FEE line in a booking's price_components."
+          description: |-
+            Fees added on top of the base subtotal (e.g. cleaning, service). Each
+             surfaces as a TYPE_FEE line in a booking's price_components.
         taxes:
           type: array
           items:
             $ref: '#/components/schemas/Tax'
-          description: "Taxes applied to the taxable base (subtotal plus taxable fees).\
-            \ Each\n surfaces as a TYPE_TAX line in a booking's price_components."
+          description: |-
+            Taxes applied to the taxable base (subtotal plus taxable fees). Each
+             surfaces as a TYPE_TAX line in a booking's price_components.
         state:
           readOnly: true
           type: integer
@@ -3275,51 +3317,52 @@ components:
           format: date-time
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update/delete.
-      description: "A specific way a resource can be booked, carrying its duration\
-        \ and price. A\n \"30-min consult\" and a \"60-min session\" are two offerings\
-        \ on the same\n provider. For NIGHTLY resources the duration is unused and\
-        \ price is per-night."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A specific way a resource can be booked, carrying its duration and price. A
+         "30-min consult" and a "60-min session" are two offerings on the same
+         provider. For NIGHTLY resources the duration is unused and price is per-night.
     RateOverride:
       required:
-      - price
+        - price
       type: object
       properties:
         dateRange:
           allOf:
-          - $ref: '#/components/schemas/DateRange'
-          description: "Dates the override applies to, in the resource's timezone.\
-            \ Unset means it\n applies on every date (a pure weekday rule)."
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            Dates the override applies to, in the resource's timezone. Unset means it
+             applies on every date (a pure weekday rule).
         weekdays:
           type: array
           items:
             type: integer
             format: enum
-          description: Weekdays the override applies to. Empty means every day within
-            date_range.
+          description: Weekdays the override applies to. Empty means every day within date_range.
         price:
           allOf:
-          - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/Money'
           description: The price in effect while this override matches.
-      description: "A price override for a span of dates and/or specific weekdays,\
-        \ layered over an\n offering's base `price`. The price is still interpreted\
-        \ per the offering's\n pricing_unit (per night, per booking, per person)."
+      description: |-
+        A price override for a span of dates and/or specific weekdays, layered over an
+         offering's base `price`. The price is still interpreted per the offering's
+         pricing_unit (per night, per booking, per person).
     Resource:
       required:
-      - displayName
-      - type
-      - bookingMode
-      - timeZone
+        - displayName
+        - type
+        - bookingMode
+        - timeZone
       type: object
       properties:
         name:
           type: string
-          description: "The resource name.\n Format: resources/{resource}"
+          description: |-
+            The resource name.
+             Format: resources/{resource}
         displayName:
           type: string
-          description: 'Human-friendly name (e.g. "Dr. Lee", "Deluxe King", "Kayak
-            #3").'
+          description: 'Human-friendly name (e.g. "Dr. Lee", "Deluxe King", "Kayak #3").'
         description:
           type: string
           description: Free-form description.
@@ -3329,19 +3372,20 @@ components:
           format: enum
         bookingMode:
           type: integer
-          description: "How this resource is booked, and therefore the availability\
-            \ shape it\n yields. Immutable: flipping it after bookings exist would\
-            \ invalidate every\n existing booking and availability computation."
+          description: |-
+            How this resource is booked, and therefore the availability shape it
+             yields. Immutable: flipping it after bookings exist would invalidate every
+             existing booking and availability computation.
           format: enum
         capacity:
           type: integer
-          description: Number of interchangeable units in the pool. Defaults to 1
-            when unset.
+          description: Number of interchangeable units in the pool. Defaults to 1 when unset.
           format: int32
         timeZone:
           type: string
-          description: "IANA timezone (e.g. \"America/New_York\") the resource's hours\
-            \ and dates are\n evaluated in. Required so availability is timezone-correct."
+          description: |-
+            IANA timezone (e.g. "America/New_York") the resource's hours and dates are
+             evaluated in. Required so availability is timezone-correct.
         tags:
           type: array
           items:
@@ -3355,9 +3399,10 @@ components:
           type: array
           items:
             type: string
-          description: "Resource names of the offerings attached to this resource\
-            \ (e.g. \"30-min\n consult\"); manage them with the Offering standard\
-            \ methods.\n Format: resources/{resource}/offerings/{offering}"
+          description: |-
+            Resource names of the offerings attached to this resource (e.g. "30-min
+             consult"); manage them with the Offering standard methods.
+             Format: resources/{resource}/offerings/{offering}
         state:
           readOnly: true
           type: integer
@@ -3375,16 +3420,16 @@ components:
           format: date-time
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update/delete.
-      description: "A bookable thing: a provider, room, piece of equipment, or a unit\
-        \ type. A\n resource is a pool of `capacity` interchangeable units; the freebusy\
-        \ engine\n computes how many are free for a given window. Its booking_mode\
-        \ decides\n whether availability is produced as time slots or per-night counts."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A bookable thing: a provider, room, piece of equipment, or a unit type. A
+         resource is a pool of `capacity` interchangeable units; the freebusy engine
+         computes how many are free for a given window. Its booking_mode decides
+         whether availability is produced as time slots or per-night counts.
     Tax:
       required:
-      - code
-      - percent
+        - code
+        - percent
       type: object
       properties:
         code:
@@ -3397,39 +3442,44 @@ components:
           type: number
           description: Tax rate as a percentage, e.g. 8.5 for 8.5%.
           format: double
-      description: "A tax applied to the taxable base (base subtotal plus taxable\
-        \ fees). Surfaces\n as a TYPE_TAX line in a booking's price_components."
+      description: |-
+        A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces
+         as a TYPE_TAX line in a booking's price_components.
     UnarchiveResourceRequest:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
           type: string
-          description: "The resource to restore to the active state.\n Format: resources/{resource}"
+          description: |-
+            The resource to restore to the active state.
+             Format: resources/{resource}
       description: Request message for UnarchiveResource.
     AvailabilityException:
       required:
-      - kind
+        - kind
       type: object
       properties:
         name:
           type: string
-          description: "The exception name.\n Format: resources/{resource}/availabilityExceptions/{availability_exception}"
+          description: |-
+            The exception name.
+             Format: resources/{resource}/availabilityExceptions/{availability_exception}
         kind:
           type: integer
           description: Whether this span closes the resource or adds extra availability.
           format: enum
         window:
           allOf:
-          - $ref: '#/components/schemas/TimeWindow'
+            - $ref: '#/components/schemas/TimeWindow'
           description: An exact time window, the natural form for TIME_SLOT resources.
         dateRange:
           allOf:
-          - $ref: '#/components/schemas/DateRange'
-          description: "A range of whole calendar dates in the resource's timezone,\
-            \ the natural\n form for NIGHTLY blackouts (e.g. \"closed Dec 24 through\
-            \ Dec 26\")."
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            A range of whole calendar dates in the resource's timezone, the natural
+             form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
         reason:
           type: string
           description: Human-readable reason (e.g. "Public holiday").
@@ -3438,8 +3488,9 @@ components:
           type: string
           description: Creation timestamp.
           format: date-time
-      description: "An override of a resource's normal hours on a specific span: a\
-        \ blackout /\n holiday closure, or extra hours beyond the recurring rules."
+      description: |-
+        An override of a resource's normal hours on a specific span: a blackout /
+         holiday closure, or extra hours beyond the recurring rules.
     BufferSettings:
       type: object
       properties:
@@ -3471,12 +3522,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RefundTier'
-          description: "Ordered refund tiers. For a given cancellation the tier with\
-            \ the largest\n `cutoff` that is still satisfied (cancelled at least `cutoff`\
-            \ before the\n booking start) determines the refund. If no tier is satisfied,\
-            \ the booking\n is non-refundable."
-      description: Refund rules graded by how far ahead of a booking's start it is
-        cancelled.
+          description: |-
+            Ordered refund tiers. For a given cancellation the tier with the largest
+             `cutoff` that is still satisfied (cancelled at least `cutoff` before the
+             booking start) determines the refund. If no tier is satisfied, the booking
+             is non-refundable.
+      description: Refund rules graded by how far ahead of a booking's start it is cancelled.
     ListAvailabilityExceptionsResponse:
       type: object
       properties:
@@ -3487,12 +3538,11 @@ components:
           description: The page of exceptions.
         nextPageToken:
           type: string
-          description: Token for the next page of results. Empty if there are no more
-            pages.
+          description: Token for the next page of results. Empty if there are no more pages.
       description: Response message for ListAvailabilityExceptions.
     RecurringRule:
       required:
-      - rrule
+        - rrule
       type: object
       properties:
         rrule:
@@ -3500,38 +3550,43 @@ components:
           description: RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
         opens:
           type: string
-          description: "Local time-of-day the window opens, 24-hour \"HH:MM\" (e.g.\
-            \ \"09:00\").\n Unset (with closes also unset) means open the whole day."
+          description: |-
+            Local time-of-day the window opens, 24-hour "HH:MM" (e.g. "09:00").
+             Unset (with closes also unset) means open the whole day.
         closes:
           type: string
-          description: "Local time-of-day the window closes, 24-hour \"HH:MM\" (e.g.\
-            \ \"17:00\").\n A closes at or before opens means the span crosses midnight\
-            \ into the next\n day (e.g. opens \"22:00\", closes \"02:00\")."
-      description: "A recurring availability window expressed as an RRULE plus a daily\
-        \ open span.\n The freebusy engine expands these against the resource's timezone."
+          description: |-
+            Local time-of-day the window closes, 24-hour "HH:MM" (e.g. "17:00").
+             A closes at or before opens means the span crosses midnight into the next
+             day (e.g. opens "22:00", closes "02:00").
+      description: |-
+        A recurring availability window expressed as an RRULE plus a daily open span.
+         The freebusy engine expands these against the resource's timezone.
     RefundTier:
       required:
-      - cutoff
-      - refundPercent
+        - cutoff
+        - refundPercent
       type: object
       properties:
         cutoff:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
-          description: Minimum lead time before the booking start for this tier to
-            apply (e.g. 48h).
+          description: Minimum lead time before the booking start for this tier to apply (e.g. 48h).
         refundPercent:
           type: integer
           description: Percentage of the booking total refunded at this tier (0-100).
           format: int32
-      description: "One tier of a CancellationPolicy: cancel at least `cutoff` before\
-        \ the booking\n start to receive `refund_percent` of the total back."
+      description: |-
+        One tier of a CancellationPolicy: cancel at least `cutoff` before the booking
+         start to receive `refund_percent` of the total back.
     Schedule:
       type: object
       properties:
         name:
           type: string
-          description: "The schedule name.\n Format: resources/{resource}/schedule"
+          description: |-
+            The schedule name.
+             Format: resources/{resource}/schedule
         recurringRules:
           type: array
           items:
@@ -3539,31 +3594,33 @@ components:
           description: Recurring working hours.
         buffers:
           allOf:
-          - $ref: '#/components/schemas/BufferSettings'
+            - $ref: '#/components/schemas/BufferSettings'
           description: Buffer and notice settings.
         stayConstraints:
           allOf:
-          - $ref: '#/components/schemas/StayConstraints'
+            - $ref: '#/components/schemas/StayConstraints'
           description: Stay rules (NIGHTLY resources).
         exceptions:
           readOnly: true
           type: array
           items:
             type: string
-          description: "Resource names of the active exceptions; manage them with\
-            \ the\n AvailabilityException standard methods.\n Format: resources/{resource}/availabilityExceptions/{availability_exception}"
+          description: |-
+            Resource names of the active exceptions; manage them with the
+             AvailabilityException standard methods.
+             Format: resources/{resource}/availabilityExceptions/{availability_exception}
         cancellationPolicy:
           allOf:
-          - $ref: '#/components/schemas/CancellationPolicy'
-          description: "Refund rules applied when a booking on this resource is cancelled.\
-            \ Unset\n means cancellations are non-refundable by default."
+            - $ref: '#/components/schemas/CancellationPolicy'
+          description: |-
+            Refund rules applied when a booking on this resource is cancelled. Unset
+             means cancellations are non-refundable by default.
         etag:
           type: string
-          description: Opaque version for optimistic concurrency (AIP-154); echo on
-            update.
-      description: "Aggregate read view of a resource's availability configuration:\
-        \ the inputs the\n freebusy engine consumes. Modeled as a singleton resource,\
-        \ one per resource."
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update.
+      description: |-
+        Aggregate read view of a resource's availability configuration: the inputs the
+         freebusy engine consumes. Modeled as a singleton resource, one per resource.
     StayConstraints:
       type: object
       properties:

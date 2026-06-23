@@ -15,9 +15,9 @@ docs:
 orm:
     buf generate --template tools/protobuf/buf/orm.buf.gen.yaml
 
-# Merge the per-service generated OpenAPI specs into a single openapiv3-spec.yaml. Requires PyYAML.
+# Merge the per-service generated OpenAPI specs into a single openapiv3-spec.yaml.
 openapi-merge:
-    python3 tools/protobuf/openapi/main.py
+    go run ./tools/protobuf/openapi
 
 # generated protos for languages. if language is not specified, generates for all supported languages.
 generate language="all" descriptors="true":
@@ -30,7 +30,7 @@ generate language="all" descriptors="true":
         buf generate --template tools/protobuf/buf/go.buf.gen.yaml
         buf generate --template tools/protobuf/buf/openapiv3.buf.gen.yaml
         echo "==> OpenAPI merge..."
-        python3 tools/protobuf/openapi/main.py
+        go run ./tools/protobuf/openapi
         echo "==> ORM generate (prisma + gorm)..."
         buf generate --template tools/protobuf/buf/orm.buf.gen.yaml
         echo "==> Docs generate..."
@@ -42,7 +42,7 @@ generate language="all" descriptors="true":
     elif [ "{{language}}" = "openapiv3" ]; then
         buf generate --template tools/protobuf/buf/openapiv3.buf.gen.yaml
         echo "==> OpenAPI merge..."
-        python3 tools/protobuf/openapi/main.py
+        go run ./tools/protobuf/openapi
     elif [ -f "tools/protobuf/buf/{{language}}.buf.gen.yaml" ]; then
         buf generate --template tools/protobuf/buf/{{language}}.buf.gen.yaml
     else

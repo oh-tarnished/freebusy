@@ -1,0 +1,41 @@
+# Base skeleton for the merged OpenAPI spec: everything that is fixed rather than
+# derived from the per-service specs. Key order here is the output order.
+# Embedded into the openapi tool (see main.go); override with `-base <file>`.
+openapi: 3.0.0
+info:
+  title: FreeBusy API
+  summary: Scheduling, availability, and booking platform API.
+  description: |-
+    FreeBusy is a scheduling platform that exposes resources, schedules, availability windows, bookings, organisations, and promotional codes over a RESTful, OpenAPI-described surface. This document is generated from Protocol Buffer service definitions and merged into a single specification.
+
+    Authentication is performed via bearer tokens unless otherwise noted. All timestamps are RFC 3339 and all monetary amounts follow the associated currency's minor units.
+  version: 1.0.0
+  termsOfService: https://freebusy.oh-tarnished.dev/terms
+  contact:
+    name: FreeBusy API Support
+    url: https://freebusy.oh-tarnished.dev/support
+    email: support@oh-tarnished.dev
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+externalDocs:
+  description: FreeBusy API documentation
+  url: https://freebusy.oh-tarnished.dev/docs
+servers:
+  - url: https://freebusy.oh-tarnished.dev
+    description: Production
+  - url: https://staging.freebusy.oh-tarnished.dev
+    description: Staging
+  - url: http://localhost:8080
+    description: Local development
+security:
+  - bearerAuth: []
+tags: []
+paths: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token authentication using a JWT access token.
