@@ -95,12 +95,12 @@ func writePulseConfig() (string, error) {
 		return "", fmt.Errorf("create temp file: %w", err)
 	}
 	if _, err := f.Write(pulseConfigData); err != nil {
-		f.Close()
-		os.Remove(f.Name())
+		_ = f.Close()
+		_ = os.Remove(f.Name())
 		return "", fmt.Errorf("write pulse config: %w", err)
 	}
 	if err := f.Close(); err != nil {
-		os.Remove(f.Name())
+		_ = os.Remove(f.Name())
 		return "", fmt.Errorf("close temp file: %w", err)
 	}
 	return f.Name(), nil

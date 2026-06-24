@@ -24,14 +24,6 @@ import (
 // become join rows. The join columns store the full API resource name verbatim
 // so the list values round-trip exactly.
 
-// stateToDB maps the protobuf state enum to the string values persisted by GORM
-// (which match the database CHECK constraints).
-var stateToDB = map[promocodepbv1.PromoCodeState]promocode.PromoCodeState{
-	promocodepbv1.PromoCodeState_PROMO_CODE_STATE_ACTIVE:   promocode.PromoCodeStateActive,
-	promocodepbv1.PromoCodeState_PROMO_CODE_STATE_DISABLED: promocode.PromoCodeStateDisabled,
-	promocodepbv1.PromoCodeState_PROMO_CODE_STATE_EXPIRED:  promocode.PromoCodeStateExpired,
-}
-
 func ptr[T any](v T) *T { return &v }
 
 func deref[T any](p *T) T {

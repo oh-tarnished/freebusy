@@ -404,12 +404,18 @@ func loadYAMLFile(path string) (*yaml.Node, error) {
 	return docRoot(&doc), nil
 }
 
-func writeYAML(path string, root *yaml.Node) error {
+func writeYAML(path string, root *yaml.Node) (err error) {
 	f, err := os.Create(path)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	// Surface a close error (e.g. a failed final flush) when the write itself
+	// otherwise succeeded, rather than silently dropping it.
+	defer func() {
+		if cerr := f.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 	enc := yaml.NewEncoder(f)
 	enc.SetIndent(2)
 	if err := enc.Encode(root); err != nil {

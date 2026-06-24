@@ -28,7 +28,7 @@ func InitializeApp() *App {
 	cfg := config.Get()
 
 	if cfg.Meta.Name == "" || cfg.Meta.Version == "" {
-		shared.Pulse.Logger.Error("Invalid configuration: name or version is empty",
+		_ = shared.Pulse.Logger.Error("Invalid configuration: name or version is empty",
 			"name", cfg.Meta.Name,
 			"version", cfg.Meta.Version)
 		panic("cannot initialize app with empty name or version from config")
@@ -57,13 +57,13 @@ func (a *App) Start() string {
 
 	server, err := internal.NewServer(a.Name, a.Version)
 	if err != nil {
-		shared.Pulse.Logger.Error("Failed to create server", "error", err)
+		_ = shared.Pulse.Logger.Error("Failed to create server", "error", err)
 		return fmt.Sprintf("Failed to create server: %v", err)
 	}
 	a.server = server
 
 	if err := a.server.Start(); err != nil {
-		shared.Pulse.Logger.Error("Failed to start server", "error", err)
+		_ = shared.Pulse.Logger.Error("Failed to start server", "error", err)
 		return fmt.Sprintf("Failed to start server: %v", err)
 	}
 
@@ -79,7 +79,7 @@ func (a *App) Stop() error {
 
 	if a.server != nil {
 		if err := a.server.Stop(); err != nil {
-			shared.Pulse.Logger.Error("Error stopping server", "error", err)
+			_ = shared.Pulse.Logger.Error("Error stopping server", "error", err)
 			return fmt.Errorf("failed to stop server: %w", err)
 		}
 	}
@@ -114,7 +114,7 @@ func (a *App) Restart() error {
 	}
 
 	if err := a.server.Restart(); err != nil {
-		shared.Pulse.Logger.Error("Failed to restart server", "error", err)
+		_ = shared.Pulse.Logger.Error("Failed to restart server", "error", err)
 		return fmt.Errorf("failed to restart server: %w", err)
 	}
 

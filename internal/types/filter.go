@@ -101,10 +101,10 @@ func tokenizeFilter(s string) ([]filterToken, error) {
 	i := 0
 	for i < len(s) {
 		c := s[i]
-		switch {
-		case c == ' ' || c == '\t':
+		switch c {
+		case ' ', '\t':
 			i++
-		case c == '"':
+		case '"':
 			j := i + 1
 			var b strings.Builder
 			for j < len(s) && s[j] != '"' {
@@ -116,10 +116,10 @@ func tokenizeFilter(s string) ([]filterToken, error) {
 			}
 			toks = append(toks, filterToken{text: b.String(), quoted: true})
 			i = j + 1
-		case c == '=' || c == ':':
+		case '=', ':':
 			toks = append(toks, filterToken{text: string(c), op: true})
 			i++
-		case c == '!':
+		case '!':
 			if i+1 < len(s) && s[i+1] == '=' {
 				toks = append(toks, filterToken{text: "!=", op: true})
 				i += 2
