@@ -39,7 +39,7 @@ cert_file = ".certs/freebusy-dev+2.pem"
 key_file = ".certs/freebusy-dev+2-key.pem"
 
 [database]
-provider = "gorm"
+provider = "hasura"
 
 [database.postgres]
 host = "127.0.0.1"

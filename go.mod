@@ -6,6 +6,7 @@ replace github.com/oh-tarnished/freebusy/protobuf => ./protobuf
 
 require (
 	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.12.3
 	github.com/machanirobotics/pulse/pulse-go v0.0.0-20260524060824-a62605622128
 	github.com/oh-tarnished/freebusy/protobuf v0.0.0-00010101000000-000000000000
 	github.com/oh-tarnished/generateql v0.3.0
@@ -19,6 +20,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
+	gorm.io/plugin/opentelemetry v0.1.16
 )
 
 require (
@@ -76,7 +78,6 @@ require (
 	github.com/knadh/koanf/providers/rawbytes v1.0.0 // indirect
 	github.com/knadh/koanf/providers/structs v1.0.0 // indirect
 	github.com/knadh/koanf/v2 v2.3.5 // indirect
-	github.com/lib/pq v1.12.3 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.0 // indirect
 	github.com/machanirobotics/grpc-mcp-gateway v1.5.63 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -136,6 +137,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260618152121-87f3d3e198d3 // indirect
 	gorm.io/driver/clickhouse v0.7.0 // indirect
 	gorm.io/driver/mysql v1.5.7 // indirect
-	gorm.io/plugin/opentelemetry v0.1.16 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
