@@ -34,15 +34,17 @@ func NewServer(repo repository.PromoCodeRepository) *Server {
 
 // ListPromoCodes returns a page of promo codes for the given pagination request.
 func (s *Server) ListPromoCodes(ctx context.Context, req *promocodepbv1.ListPromoCodesRequest) (*promocodepbv1.ListPromoCodesResponse, error) {
-	if req.GetFilter() != "" {
-		return nil, status.Error(codes.Unimplemented, "filter is not yet supported")
+	filter, err := types.ParseFilter(req.GetFilter())
+	if err != nil {
+		return nil, toStatusErr(err)
 	}
 	var out *promocodepbv1.ListPromoCodesResponse
-	err := traced(ctx, "ListPromoCodes", func(ctx context.Context) error {
+	err = traced(ctx, "ListPromoCodes", func(ctx context.Context) error {
 		items, next, err := s.repo.List(ctx, types.ListParams{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
+			Filter:    filter,
 		})
 		if err != nil {
 			return toStatusErr(err)
@@ -70,28 +72,38 @@ func (s *Server) GetPromoCode(ctx context.Context, req *promocodepbv1.GetPromoCo
 	return out, err
 }
 
-// CreatePromoCode creates a promo code. A caller-supplied promo_code_id fixes the
-// resource name; validate_only runs request validation without persisting.
+// CreatePromoCode creates a promo code. The code is taken from the request's
+// code_source oneof (a custom value or a generated one); a caller-supplied
+// promo_code_id fixes the resource name; a ttl is folded into the redemption
+// window; validate_only runs request validation without persisting.
 func (s *Server) CreatePromoCode(ctx context.Context, req *promocodepbv1.CreatePromoCodeRequest) (*promocodepbv1.PromoCode, error) {
 	pc := req.GetPromoCode()
 	if pc == nil {
 		return nil, status.Error(codes.InvalidArgument, "promo_code is required")
 	}
-	if pc.GetCode() == "" {
-		return nil, status.Error(codes.InvalidArgument, "promo_code.code is required")
+	// discount is a required oneof: exactly one of amount_off / percent_off must
+	// be set. A percentage must fall in 1..100.
+	if pc.GetDiscount().GetAmount() == nil {
+		return nil, status.Error(codes.InvalidArgument, "promo_code.discount is required: set percent_off or amount_off")
 	}
-	if pc.GetDiscountType() == promocodepbv1.DiscountType_DISCOUNT_TYPE_PERCENTAGE {
-		if p := pc.GetPercentOff(); p < 1 || p > 100 {
-			return nil, status.Error(codes.InvalidArgument, "promo_code.percent_off must be between 1 and 100 for a percentage discount")
+	if pc.GetDiscount().GetAmountOff() == nil {
+		if p := pc.GetDiscount().GetPercentOff(); p < 1 || p > 100 {
+			return nil, status.Error(codes.InvalidArgument, "promo_code.discount.percent_off must be between 1 and 100 for a percentage discount")
 		}
 	}
+	code, err := resolveCode(req)
+	if err != nil {
+		return nil, err
+	}
+	// Clone so the resolved code and caller-chosen name don't mutate the inbound
+	// request proto.
+	pc = proto.Clone(pc).(*promocodepbv1.PromoCode)
+	pc.Code = code
 	if id := req.GetPromoCodeId(); id != "" {
-		name, err := types.PromoCodeName(id)
-		if err != nil {
+		name, nerr := types.PromoCodeName(id)
+		if nerr != nil {
 			return nil, status.Error(codes.InvalidArgument, "invalid promo_code_id")
 		}
-		// Clone so the caller-chosen name doesn't mutate the inbound request proto.
-		pc = proto.Clone(pc).(*promocodepbv1.PromoCode)
 		pc.Name = name
 	}
 	if req.GetValidateOnly() {
@@ -111,7 +123,7 @@ func (s *Server) CreatePromoCode(ctx context.Context, req *promocodepbv1.CreateP
 		return out, err
 	}
 	var out *promocodepbv1.PromoCode
-	err := traced(ctx, "CreatePromoCode", func(ctx context.Context) error {
+	err = traced(ctx, "CreatePromoCode", func(ctx context.Context) error {
 		created, err := s.repo.Create(ctx, pc)
 		if err != nil {
 			return toStatusErr(err)

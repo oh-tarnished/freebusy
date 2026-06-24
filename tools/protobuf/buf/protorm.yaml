@@ -17,6 +17,15 @@ strip_version: true
 dedupe_schema_table: true
 
 datasources:
+  # Shared value objects (imported google.type.* like Money, Date, TimeOfDay)
+  # cannot carry a (protorm.v1.table) annotation, so route them into one shared
+  # "common" schema. Every service that embeds them then references a single
+  # deduped common.<type> table cross-schema instead of materializing a copy in
+  # its own schema. More specific than the freebusy.** rule, so it wins.
+  - match: "google.type"
+    database: freebusy
+    schema: common
+
   - match: "freebusy.**" # every freebusy.<service>.<version> package
     database: freebusy
     schema: "{leaf}" # the service segment: schedule, identity, booking, ...

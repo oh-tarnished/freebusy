@@ -7,11 +7,13 @@
 package promocodepbv1
 
 import (
+	_ "github.com/the-protobuf-project/protorm/plugin/pb/protormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -38,32 +40,23 @@ type PromoCode struct {
 	DisplayName string `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Free-form description.
 	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	// Whether the discount is a percentage or a fixed amount.
-	DiscountType DiscountType `protobuf:"varint,6,opt,name=discount_type,json=discountType,proto3,enum=freebusy.promocode.v1.DiscountType" json:"discount_type,omitempty"`
-	// Percentage off (1-100), when discount_type is PERCENTAGE.
-	PercentOff int32 `protobuf:"varint,7,opt,name=percent_off,json=percentOff,proto3" json:"percent_off,omitempty"`
-	// Fixed amount off, when discount_type is FIXED_AMOUNT.
-	AmountOff *money.Money `protobuf:"bytes,8,opt,name=amount_off,json=amountOff,proto3" json:"amount_off,omitempty"`
-	// Earliest the code can be redeemed. Unset means no lower bound.
-	RedeemStartTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=redeem_start_time,json=redeemStartTime,proto3" json:"redeem_start_time,omitempty"`
-	// Latest the code can be redeemed. Unset means no upper bound.
-	RedeemEndTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=redeem_end_time,json=redeemEndTime,proto3" json:"redeem_end_time,omitempty"`
-	// Maximum total redemptions across all customers. Zero means unlimited.
-	MaxRedemptions int64 `protobuf:"varint,11,opt,name=max_redemptions,json=maxRedemptions,proto3" json:"max_redemptions,omitempty"`
-	// Maximum redemptions per customer. Zero means unlimited.
-	PerCustomerLimit int32 `protobuf:"varint,12,opt,name=per_customer_limit,json=perCustomerLimit,proto3" json:"per_customer_limit,omitempty"`
-	// Minimum subtotal required for the code to apply.
-	MinSubtotal *money.Money `protobuf:"bytes,13,opt,name=min_subtotal,json=minSubtotal,proto3" json:"min_subtotal,omitempty"`
-	// Resources the code applies to. Empty means all resources.
-	// Format: resources/{resource}
-	ApplicableResources []string `protobuf:"bytes,14,rep,name=applicable_resources,json=applicableResources,proto3" json:"applicable_resources,omitempty"`
-	// Offerings the code applies to. Empty means all offerings.
-	// Format: resources/{resource}/offerings/{offering}
-	ApplicableOfferings []string `protobuf:"bytes,15,rep,name=applicable_offerings,json=applicableOfferings,proto3" json:"applicable_offerings,omitempty"`
-	// How many times the code has been redeemed.
+	// How the discount is computed → belongs-to child table promocode.discounts.
+	Discount *Discount `protobuf:"bytes,23,opt,name=discount,proto3" json:"discount,omitempty"`
+	// When the code is redeemable → belongs-to promocode.redemption_windows.
+	Window *RedemptionWindow `protobuf:"bytes,24,opt,name=window,proto3" json:"window,omitempty"`
+	// Redemption caps → belongs-to promocode.usage_limits.
+	Limits *UsageLimits `protobuf:"bytes,25,opt,name=limits,proto3" json:"limits,omitempty"`
+	// What the code applies to (eligibility) → belongs-to promocode.scopes.
+	Scope *Scope `protobuf:"bytes,26,opt,name=scope,proto3" json:"scope,omitempty"`
+	// How many times the code has been redeemed. Cheap summary on the resource;
+	// the individual redemptions are a paginated sub-collection
+	// (promoCodes/{promo_code}/redemptions) listed via ListRedemptions, not inlined
+	// here, so reads stay bounded as redemptions accumulate.
 	RedemptionCount int64 `protobuf:"varint,16,opt,name=redemption_count,json=redemptionCount,proto3" json:"redemption_count,omitempty"`
-	// Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or
-	// EXPIRED (past the window or out of redemptions).
+	// Derived lifecycle state, recomputed on every read/validate (no background
+	// job): DISABLED when `disabled` is set; EXPIRED once now > window.end_time
+	// (the expiry) or the code is out of redemptions; otherwise ACTIVE. This is how
+	// a code auto-disables at its expiry without a stored flag to flip.
 	State PromoCodeState `protobuf:"varint,17,opt,name=state,proto3,enum=freebusy.promocode.v1.PromoCodeState" json:"state,omitempty"`
 	// If true, the code is manually disabled regardless of its window and caps.
 	Disabled bool `protobuf:"varint,20,opt,name=disabled,proto3" json:"disabled,omitempty"`
@@ -135,72 +128,30 @@ func (x *PromoCode) GetDescription() string {
 	return ""
 }
 
-func (x *PromoCode) GetDiscountType() DiscountType {
+func (x *PromoCode) GetDiscount() *Discount {
 	if x != nil {
-		return x.DiscountType
-	}
-	return DiscountType_DISCOUNT_TYPE_UNSPECIFIED
-}
-
-func (x *PromoCode) GetPercentOff() int32 {
-	if x != nil {
-		return x.PercentOff
-	}
-	return 0
-}
-
-func (x *PromoCode) GetAmountOff() *money.Money {
-	if x != nil {
-		return x.AmountOff
+		return x.Discount
 	}
 	return nil
 }
 
-func (x *PromoCode) GetRedeemStartTime() *timestamppb.Timestamp {
+func (x *PromoCode) GetWindow() *RedemptionWindow {
 	if x != nil {
-		return x.RedeemStartTime
+		return x.Window
 	}
 	return nil
 }
 
-func (x *PromoCode) GetRedeemEndTime() *timestamppb.Timestamp {
+func (x *PromoCode) GetLimits() *UsageLimits {
 	if x != nil {
-		return x.RedeemEndTime
+		return x.Limits
 	}
 	return nil
 }
 
-func (x *PromoCode) GetMaxRedemptions() int64 {
+func (x *PromoCode) GetScope() *Scope {
 	if x != nil {
-		return x.MaxRedemptions
-	}
-	return 0
-}
-
-func (x *PromoCode) GetPerCustomerLimit() int32 {
-	if x != nil {
-		return x.PerCustomerLimit
-	}
-	return 0
-}
-
-func (x *PromoCode) GetMinSubtotal() *money.Money {
-	if x != nil {
-		return x.MinSubtotal
-	}
-	return nil
-}
-
-func (x *PromoCode) GetApplicableResources() []string {
-	if x != nil {
-		return x.ApplicableResources
-	}
-	return nil
-}
-
-func (x *PromoCode) GetApplicableOfferings() []string {
-	if x != nil {
-		return x.ApplicableOfferings
+		return x.Scope
 	}
 	return nil
 }
@@ -247,31 +198,385 @@ func (x *PromoCode) GetEtag() string {
 	return ""
 }
 
+// Discount describes how a promo code reduces a subtotal. Nested value object →
+// belongs-to child table promocode.discounts (FK discount_id on promo_codes).
+// Exactly one of percent_off / amount_off is set; the oneof case is the
+// discriminator, so no separate type enum is needed.
+type Discount struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Exactly one arm is set; which one determines whether the discount is a
+	// percentage or a fixed amount.
+	//
+	// Types that are valid to be assigned to Amount:
+	//
+	//	*Discount_PercentOff
+	//	*Discount_AmountOff
+	Amount        isDiscount_Amount `protobuf_oneof:"amount"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Discount) Reset() {
+	*x = Discount{}
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Discount) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Discount) ProtoMessage() {}
+
+func (x *Discount) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Discount.ProtoReflect.Descriptor instead.
+func (*Discount) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Discount) GetAmount() isDiscount_Amount {
+	if x != nil {
+		return x.Amount
+	}
+	return nil
+}
+
+func (x *Discount) GetPercentOff() int32 {
+	if x != nil {
+		if x, ok := x.Amount.(*Discount_PercentOff); ok {
+			return x.PercentOff
+		}
+	}
+	return 0
+}
+
+func (x *Discount) GetAmountOff() *money.Money {
+	if x != nil {
+		if x, ok := x.Amount.(*Discount_AmountOff); ok {
+			return x.AmountOff
+		}
+	}
+	return nil
+}
+
+type isDiscount_Amount interface {
+	isDiscount_Amount()
+}
+
+type Discount_PercentOff struct {
+	// Percentage off the subtotal (1-100).
+	PercentOff int32 `protobuf:"varint,1,opt,name=percent_off,json=percentOff,proto3,oneof"`
+}
+
+type Discount_AmountOff struct {
+	// Fixed amount off the subtotal.
+	// Normalized into the shared common.moneys table (belongs-to via amount_off_id).
+	AmountOff *money.Money `protobuf:"bytes,2,opt,name=amount_off,json=amountOff,proto3,oneof"`
+}
+
+func (*Discount_PercentOff) isDiscount_Amount() {}
+
+func (*Discount_AmountOff) isDiscount_Amount() {}
+
+// RedemptionWindow bounds when a code can be redeemed; an unset bound is
+// open-ended. Nested value object → belongs-to promocode.redemption_windows.
+type RedemptionWindow struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Earliest the code can be redeemed. Unset means no lower bound.
+	StartTime *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	// The code's expiry: the latest moment it can be redeemed. Once now passes
+	// this, the derived PromoCode.state becomes EXPIRED. Unset means never expires.
+	EndTime       *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RedemptionWindow) Reset() {
+	*x = RedemptionWindow{}
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RedemptionWindow) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedemptionWindow) ProtoMessage() {}
+
+func (x *RedemptionWindow) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RedemptionWindow.ProtoReflect.Descriptor instead.
+func (*RedemptionWindow) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RedemptionWindow) GetStartTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartTime
+	}
+	return nil
+}
+
+func (x *RedemptionWindow) GetEndTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.EndTime
+	}
+	return nil
+}
+
+// UsageLimits caps how often a code can be redeemed. Nested value object →
+// belongs-to promocode.usage_limits. The caps are wrapper types so "unset"
+// (unlimited) is distinct from an explicit value, including 0.
+type UsageLimits struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Maximum total redemptions across all customers. Unset means unlimited.
+	MaxRedemptions *wrapperspb.Int64Value `protobuf:"bytes,1,opt,name=max_redemptions,json=maxRedemptions,proto3" json:"max_redemptions,omitempty"`
+	// Maximum redemptions per customer. Unset means unlimited.
+	PerCustomerLimit *wrapperspb.Int32Value `protobuf:"bytes,2,opt,name=per_customer_limit,json=perCustomerLimit,proto3" json:"per_customer_limit,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *UsageLimits) Reset() {
+	*x = UsageLimits{}
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UsageLimits) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UsageLimits) ProtoMessage() {}
+
+func (x *UsageLimits) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UsageLimits.ProtoReflect.Descriptor instead.
+func (*UsageLimits) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UsageLimits) GetMaxRedemptions() *wrapperspb.Int64Value {
+	if x != nil {
+		return x.MaxRedemptions
+	}
+	return nil
+}
+
+func (x *UsageLimits) GetPerCustomerLimit() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.PerCustomerLimit
+	}
+	return nil
+}
+
+// Scope restricts which bookings a code applies to. Nested value object →
+// belongs-to promocode.scopes. Its repeated resource references and Money
+// normalize one level deeper (array columns / common.moneys).
+type Scope struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Minimum subtotal required for the code to apply.
+	// Normalized into the shared common.moneys table (belongs-to via min_subtotal_id).
+	MinSubtotal *money.Money `protobuf:"bytes,1,opt,name=min_subtotal,json=minSubtotal,proto3" json:"min_subtotal,omitempty"`
+	// Resources the code applies to. Empty means all resources.
+	// Format: resources/{resource}
+	ApplicableResources []string `protobuf:"bytes,2,rep,name=applicable_resources,json=applicableResources,proto3" json:"applicable_resources,omitempty"`
+	// Offerings the code applies to. Empty means all offerings.
+	// Format: resources/{resource}/offerings/{offering}
+	ApplicableOfferings []string `protobuf:"bytes,3,rep,name=applicable_offerings,json=applicableOfferings,proto3" json:"applicable_offerings,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *Scope) Reset() {
+	*x = Scope{}
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Scope) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Scope) ProtoMessage() {}
+
+func (x *Scope) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Scope.ProtoReflect.Descriptor instead.
+func (*Scope) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Scope) GetMinSubtotal() *money.Money {
+	if x != nil {
+		return x.MinSubtotal
+	}
+	return nil
+}
+
+func (x *Scope) GetApplicableResources() []string {
+	if x != nil {
+		return x.ApplicableResources
+	}
+	return nil
+}
+
+func (x *Scope) GetApplicableOfferings() []string {
+	if x != nil {
+		return x.ApplicableOfferings
+	}
+	return nil
+}
+
+// Redemption is a single use of a promo code, modeled as a sub-resource of
+// PromoCode rather than an inline list — so it has its own name/lifecycle and is
+// listed with paging (ListRedemptions). The {promo_code} parent segment
+// generates the promo_code_id FK back to the owning code (1:n into
+// promocode.redemptions); amount_applied is the shared google.type.Money in
+// common.moneys. Redemptions are created during CreateBooking, never directly.
+type Redemption struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The redemption resource name.
+	// Format: promoCodes/{promo_code}/redemptions/{redemption}
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The customer who redeemed the code.
+	// Format: users/{user}
+	Customer string `protobuf:"bytes,2,opt,name=customer,proto3" json:"customer,omitempty"`
+	// The booking the code was applied to.
+	// Format: bookings/{booking}
+	Booking string `protobuf:"bytes,3,opt,name=booking,proto3" json:"booking,omitempty"`
+	// When the code was redeemed.
+	RedeemedTime *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=redeemed_time,json=redeemedTime,proto3" json:"redeemed_time,omitempty"`
+	// The discount actually applied at redemption.
+	AmountApplied *money.Money `protobuf:"bytes,5,opt,name=amount_applied,json=amountApplied,proto3" json:"amount_applied,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Redemption) Reset() {
+	*x = Redemption{}
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Redemption) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Redemption) ProtoMessage() {}
+
+func (x *Redemption) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Redemption.ProtoReflect.Descriptor instead.
+func (*Redemption) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Redemption) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Redemption) GetCustomer() string {
+	if x != nil {
+		return x.Customer
+	}
+	return ""
+}
+
+func (x *Redemption) GetBooking() string {
+	if x != nil {
+		return x.Booking
+	}
+	return ""
+}
+
+func (x *Redemption) GetRedeemedTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.RedeemedTime
+	}
+	return nil
+}
+
+func (x *Redemption) GetAmountApplied() *money.Money {
+	if x != nil {
+		return x.AmountApplied
+	}
+	return nil
+}
+
 var File_freebusy_promocode_v1_promocode_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xa7\t\n" +
+	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x1cprotorm/v1/annotations.proto\"\xed\x06\n" +
 	"\tPromoCode\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x17\n" +
-	"\x04code\x18\x03 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
-	"\fdisplay_name\x18\x04 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12%\n" +
-	"\vdescription\x18\x05 \x01(\tB\x03\xe0A\x01R\vdescription\x12M\n" +
-	"\rdiscount_type\x18\x06 \x01(\x0e2#.freebusy.promocode.v1.DiscountTypeB\x03\xe0A\x02R\fdiscountType\x12$\n" +
-	"\vpercent_off\x18\a \x01(\x05B\x03\xe0A\x01R\n" +
-	"percentOff\x126\n" +
-	"\n" +
-	"amount_off\x18\b \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\tamountOff\x12K\n" +
-	"\x11redeem_start_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\x0fredeemStartTime\x12G\n" +
-	"\x0fredeem_end_time\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\rredeemEndTime\x12,\n" +
-	"\x0fmax_redemptions\x18\v \x01(\x03B\x03\xe0A\x01R\x0emaxRedemptions\x121\n" +
-	"\x12per_customer_limit\x18\f \x01(\x05B\x03\xe0A\x01R\x10perCustomerLimit\x12:\n" +
-	"\fmin_subtotal\x18\r \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12X\n" +
-	"\x14applicable_resources\x18\x0e \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/ResourceR\x13applicableResources\x12X\n" +
-	"\x14applicable_offerings\x18\x0f \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/OfferingR\x13applicableOfferings\x12.\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x1d\n" +
+	"\x04code\x18\x03 \x01(\tB\t\xe0A\x02\x92\xb5\x18\x02 \x01R\x04code\x12&\n" +
+	"\fdisplay_name\x18\x04 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12/\n" +
+	"\vdescription\x18\x05 \x01(\tB\r\xe0A\x01\x92\xb5\x18\x06\x12\x04TEXTR\vdescription\x12@\n" +
+	"\bdiscount\x18\x17 \x01(\v2\x1f.freebusy.promocode.v1.DiscountB\x03\xe0A\x02R\bdiscount\x12D\n" +
+	"\x06window\x18\x18 \x01(\v2'.freebusy.promocode.v1.RedemptionWindowB\x03\xe0A\x01R\x06window\x12?\n" +
+	"\x06limits\x18\x19 \x01(\v2\".freebusy.promocode.v1.UsageLimitsB\x03\xe0A\x01R\x06limits\x127\n" +
+	"\x05scope\x18\x1a \x01(\v2\x1c.freebusy.promocode.v1.ScopeB\x03\xe0A\x01R\x05scope\x12.\n" +
 	"\x10redemption_count\x18\x10 \x01(\x03B\x03\xe0A\x03R\x0fredemptionCount\x12@\n" +
 	"\x05state\x18\x11 \x01(\x0e2%.freebusy.promocode.v1.PromoCodeStateB\x03\xe0A\x03R\x05state\x12\x1f\n" +
 	"\bdisabled\x18\x14 \x01(\bB\x03\xe0A\x01R\bdisabled\x12@\n" +
@@ -279,9 +584,42 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x13 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
-	"\x04etag\x18\x15 \x01(\tR\x04etag:T\xeaAQ\n" +
+	"\x04etag\x18\x15 \x01(\tR\x04etag:Z\xeaAQ\n" +
 	"\x1ffreebusy.promocode.v1/PromoCode\x12\x17promoCodes/{promo_code}*\n" +
-	"promoCodes2\tpromoCodeJ\x04\b\x02\x10\x03B\x82\x02\n" +
+	"promoCodes2\tpromoCode\x8a\xb5\x18\x02 \x01J\x04\b\x02\x10\x03J\x04\b\x06\x10\aJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\t\x10\n" +
+	"J\x04\b\n" +
+	"\x10\vJ\x04\b\v\x10\fJ\x04\b\f\x10\rJ\x04\b\r\x10\x0eJ\x04\b\x0e\x10\x0fJ\x04\b\x0f\x10\x10J\x04\b\x16\x10\x17\"l\n" +
+	"\bDiscount\x12!\n" +
+	"\vpercent_off\x18\x01 \x01(\x05H\x00R\n" +
+	"percentOff\x123\n" +
+	"\n" +
+	"amount_off\x18\x02 \x01(\v2\x12.google.type.MoneyH\x00R\tamountOffB\b\n" +
+	"\x06amount\"\x8e\x01\n" +
+	"\x10RedemptionWindow\x12>\n" +
+	"\n" +
+	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\tstartTime\x12:\n" +
+	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\aendTime\"\xa8\x01\n" +
+	"\vUsageLimits\x12I\n" +
+	"\x0fmax_redemptions\x18\x01 \x01(\v2\x1b.google.protobuf.Int64ValueB\x03\xe0A\x01R\x0emaxRedemptions\x12N\n" +
+	"\x12per_customer_limit\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueB\x03\xe0A\x01R\x10perCustomerLimit\"\xf7\x01\n" +
+	"\x05Scope\x12:\n" +
+	"\fmin_subtotal\x18\x01 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12X\n" +
+	"\x14applicable_resources\x18\x02 \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/ResourceR\x13applicableResources\x12X\n" +
+	"\x14applicable_offerings\x18\x03 \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.resource.v1/OfferingR\x13applicableOfferings\"\xa1\x03\n" +
+	"\n" +
+	"Redemption\x12\x17\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12=\n" +
+	"\bcustomer\x18\x02 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/UserR\bcustomer\x12=\n" +
+	"\abooking\x18\x03 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/BookingR\abooking\x12D\n" +
+	"\rredeemed_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\fredeemedTime\x12>\n" +
+	"\x0eamount_applied\x18\x05 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\ramountApplied:v\xeaAm\n" +
+	" freebusy.promocode.v1/Redemption\x120promoCodes/{promo_code}/redemptions/{redemption}*\vredemptions2\n" +
+	"redemption\x8a\xb5\x18\x02 \x01B\xd5\x02\x82\xb5\x18O\n" +
+	"\bfreebusy\x12\tpromocode\x1a.postgresql://user:pass@localhost:5432/freebusy\"\bpostgres\n" +
 	"\x19com.freebusy.promocode.v1B\x0ePromocodeProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
 
 var (
@@ -296,28 +634,41 @@ func file_freebusy_promocode_v1_promocode_proto_rawDescGZIP() []byte {
 	return file_freebusy_promocode_v1_promocode_proto_rawDescData
 }
 
-var file_freebusy_promocode_v1_promocode_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_freebusy_promocode_v1_promocode_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_freebusy_promocode_v1_promocode_proto_goTypes = []any{
 	(*PromoCode)(nil),             // 0: freebusy.promocode.v1.PromoCode
-	(DiscountType)(0),             // 1: freebusy.promocode.v1.DiscountType
-	(*money.Money)(nil),           // 2: google.type.Money
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
-	(PromoCodeState)(0),           // 4: freebusy.promocode.v1.PromoCodeState
+	(*Discount)(nil),              // 1: freebusy.promocode.v1.Discount
+	(*RedemptionWindow)(nil),      // 2: freebusy.promocode.v1.RedemptionWindow
+	(*UsageLimits)(nil),           // 3: freebusy.promocode.v1.UsageLimits
+	(*Scope)(nil),                 // 4: freebusy.promocode.v1.Scope
+	(*Redemption)(nil),            // 5: freebusy.promocode.v1.Redemption
+	(PromoCodeState)(0),           // 6: freebusy.promocode.v1.PromoCodeState
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*money.Money)(nil),           // 8: google.type.Money
+	(*wrapperspb.Int64Value)(nil), // 9: google.protobuf.Int64Value
+	(*wrapperspb.Int32Value)(nil), // 10: google.protobuf.Int32Value
 }
 var file_freebusy_promocode_v1_promocode_proto_depIdxs = []int32{
-	1, // 0: freebusy.promocode.v1.PromoCode.discount_type:type_name -> freebusy.promocode.v1.DiscountType
-	2, // 1: freebusy.promocode.v1.PromoCode.amount_off:type_name -> google.type.Money
-	3, // 2: freebusy.promocode.v1.PromoCode.redeem_start_time:type_name -> google.protobuf.Timestamp
-	3, // 3: freebusy.promocode.v1.PromoCode.redeem_end_time:type_name -> google.protobuf.Timestamp
-	2, // 4: freebusy.promocode.v1.PromoCode.min_subtotal:type_name -> google.type.Money
-	4, // 5: freebusy.promocode.v1.PromoCode.state:type_name -> freebusy.promocode.v1.PromoCodeState
-	3, // 6: freebusy.promocode.v1.PromoCode.create_time:type_name -> google.protobuf.Timestamp
-	3, // 7: freebusy.promocode.v1.PromoCode.update_time:type_name -> google.protobuf.Timestamp
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	1,  // 0: freebusy.promocode.v1.PromoCode.discount:type_name -> freebusy.promocode.v1.Discount
+	2,  // 1: freebusy.promocode.v1.PromoCode.window:type_name -> freebusy.promocode.v1.RedemptionWindow
+	3,  // 2: freebusy.promocode.v1.PromoCode.limits:type_name -> freebusy.promocode.v1.UsageLimits
+	4,  // 3: freebusy.promocode.v1.PromoCode.scope:type_name -> freebusy.promocode.v1.Scope
+	6,  // 4: freebusy.promocode.v1.PromoCode.state:type_name -> freebusy.promocode.v1.PromoCodeState
+	7,  // 5: freebusy.promocode.v1.PromoCode.create_time:type_name -> google.protobuf.Timestamp
+	7,  // 6: freebusy.promocode.v1.PromoCode.update_time:type_name -> google.protobuf.Timestamp
+	8,  // 7: freebusy.promocode.v1.Discount.amount_off:type_name -> google.type.Money
+	7,  // 8: freebusy.promocode.v1.RedemptionWindow.start_time:type_name -> google.protobuf.Timestamp
+	7,  // 9: freebusy.promocode.v1.RedemptionWindow.end_time:type_name -> google.protobuf.Timestamp
+	9,  // 10: freebusy.promocode.v1.UsageLimits.max_redemptions:type_name -> google.protobuf.Int64Value
+	10, // 11: freebusy.promocode.v1.UsageLimits.per_customer_limit:type_name -> google.protobuf.Int32Value
+	8,  // 12: freebusy.promocode.v1.Scope.min_subtotal:type_name -> google.type.Money
+	7,  // 13: freebusy.promocode.v1.Redemption.redeemed_time:type_name -> google.protobuf.Timestamp
+	8,  // 14: freebusy.promocode.v1.Redemption.amount_applied:type_name -> google.type.Money
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_promocode_v1_promocode_proto_init() }
@@ -326,13 +677,17 @@ func file_freebusy_promocode_v1_promocode_proto_init() {
 		return
 	}
 	file_freebusy_promocode_v1_enums_proto_init()
+	file_freebusy_promocode_v1_promocode_proto_msgTypes[1].OneofWrappers = []any{
+		(*Discount_PercentOff)(nil),
+		(*Discount_AmountOff)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_promocode_v1_promocode_proto_rawDesc), len(file_freebusy_promocode_v1_promocode_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

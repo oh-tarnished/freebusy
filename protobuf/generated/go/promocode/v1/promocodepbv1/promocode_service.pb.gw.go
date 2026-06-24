@@ -231,6 +231,8 @@ func local_request_PromoCodeService_UpdatePromoCode_0(ctx context.Context, marsh
 	return msg, metadata, err
 }
 
+var filter_PromoCodeService_DeletePromoCode_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+
 func request_PromoCodeService_DeletePromoCode_0(ctx context.Context, marshaler runtime.Marshaler, client PromoCodeServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq DeletePromoCodeRequest
@@ -247,6 +249,12 @@ func request_PromoCodeService_DeletePromoCode_0(ctx context.Context, marshaler r
 	protoReq.Name, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PromoCodeService_DeletePromoCode_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.DeletePromoCode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -265,6 +273,12 @@ func local_request_PromoCodeService_DeletePromoCode_0(ctx context.Context, marsh
 	protoReq.Name, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PromoCodeService_DeletePromoCode_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.DeletePromoCode(ctx, &protoReq)
 	return msg, metadata, err
@@ -297,6 +311,98 @@ func local_request_PromoCodeService_ValidatePromoCode_0(ctx context.Context, mar
 	return msg, metadata, err
 }
 
+var filter_PromoCodeService_ListRedemptions_0 = &utilities.DoubleArray{Encoding: map[string]int{"parent": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+
+func request_PromoCodeService_ListRedemptions_0(ctx context.Context, marshaler runtime.Marshaler, client PromoCodeServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListRedemptionsRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["parent"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "parent")
+	}
+	protoReq.Parent, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PromoCodeService_ListRedemptions_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.ListRedemptions(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_PromoCodeService_ListRedemptions_0(ctx context.Context, marshaler runtime.Marshaler, server PromoCodeServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListRedemptionsRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["parent"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "parent")
+	}
+	protoReq.Parent, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_PromoCodeService_ListRedemptions_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ListRedemptions(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_PromoCodeService_GetRedemption_0(ctx context.Context, marshaler runtime.Marshaler, client PromoCodeServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetRedemptionRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["name"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+	}
+	protoReq.Name, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+	}
+	msg, err := client.GetRedemption(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_PromoCodeService_GetRedemption_0(ctx context.Context, marshaler runtime.Marshaler, server PromoCodeServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetRedemptionRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["name"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
+	}
+	protoReq.Name, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
+	}
+	msg, err := server.GetRedemption(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterPromoCodeServiceHandlerServer registers the http handlers for service PromoCodeService to "mux".
 // UnaryRPC     :call PromoCodeServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -309,7 +415,7 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ListPromoCodes", runtime.WithHTTPPathPattern("/v1/promoCodes"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ListPromoCodes", runtime.WithHTTPPathPattern("/promocode/v1/promoCodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -329,7 +435,7 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/GetPromoCode", runtime.WithHTTPPathPattern("/v1/{name=promoCodes/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/GetPromoCode", runtime.WithHTTPPathPattern("/promocode/v1/{name=promoCodes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -349,7 +455,7 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/CreatePromoCode", runtime.WithHTTPPathPattern("/v1/promoCodes"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/CreatePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/promoCodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -369,7 +475,7 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/UpdatePromoCode", runtime.WithHTTPPathPattern("/v1/{promo_code.name=promoCodes/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/UpdatePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/{promo_code.name=promoCodes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -389,7 +495,7 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/DeletePromoCode", runtime.WithHTTPPathPattern("/v1/{name=promoCodes/*}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/DeletePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/{name=promoCodes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -409,7 +515,7 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ValidatePromoCode", runtime.WithHTTPPathPattern("/v1/promoCodes:validatePromoCode"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ValidatePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/promoCodes:validatePromoCode"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -422,6 +528,46 @@ func RegisterPromoCodeServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		forward_PromoCodeService_ValidatePromoCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_PromoCodeService_ListRedemptions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ListRedemptions", runtime.WithHTTPPathPattern("/promocode/v1/{parent=promoCodes/*}/redemptions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_PromoCodeService_ListRedemptions_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_PromoCodeService_ListRedemptions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_PromoCodeService_GetRedemption_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/GetRedemption", runtime.WithHTTPPathPattern("/promocode/v1/{name=promoCodes/*/redemptions/*}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_PromoCodeService_GetRedemption_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_PromoCodeService_GetRedemption_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -467,7 +613,7 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ListPromoCodes", runtime.WithHTTPPathPattern("/v1/promoCodes"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ListPromoCodes", runtime.WithHTTPPathPattern("/promocode/v1/promoCodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -484,7 +630,7 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/GetPromoCode", runtime.WithHTTPPathPattern("/v1/{name=promoCodes/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/GetPromoCode", runtime.WithHTTPPathPattern("/promocode/v1/{name=promoCodes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -501,7 +647,7 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/CreatePromoCode", runtime.WithHTTPPathPattern("/v1/promoCodes"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/CreatePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/promoCodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -518,7 +664,7 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/UpdatePromoCode", runtime.WithHTTPPathPattern("/v1/{promo_code.name=promoCodes/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/UpdatePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/{promo_code.name=promoCodes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -535,7 +681,7 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/DeletePromoCode", runtime.WithHTTPPathPattern("/v1/{name=promoCodes/*}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/DeletePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/{name=promoCodes/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -552,7 +698,7 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ValidatePromoCode", runtime.WithHTTPPathPattern("/v1/promoCodes:validatePromoCode"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ValidatePromoCode", runtime.WithHTTPPathPattern("/promocode/v1/promoCodes:validatePromoCode"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -565,16 +711,52 @@ func RegisterPromoCodeServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 		forward_PromoCodeService_ValidatePromoCode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_PromoCodeService_ListRedemptions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/ListRedemptions", runtime.WithHTTPPathPattern("/promocode/v1/{parent=promoCodes/*}/redemptions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_PromoCodeService_ListRedemptions_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_PromoCodeService_ListRedemptions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_PromoCodeService_GetRedemption_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.promocode.v1.PromoCodeService/GetRedemption", runtime.WithHTTPPathPattern("/promocode/v1/{name=promoCodes/*/redemptions/*}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_PromoCodeService_GetRedemption_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_PromoCodeService_GetRedemption_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_PromoCodeService_ListPromoCodes_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "promoCodes"}, ""))
-	pattern_PromoCodeService_GetPromoCode_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "promoCodes", "name"}, ""))
-	pattern_PromoCodeService_CreatePromoCode_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "promoCodes"}, ""))
-	pattern_PromoCodeService_UpdatePromoCode_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "promoCodes", "promo_code.name"}, ""))
-	pattern_PromoCodeService_DeletePromoCode_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "promoCodes", "name"}, ""))
-	pattern_PromoCodeService_ValidatePromoCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "promoCodes"}, "validatePromoCode"))
+	pattern_PromoCodeService_ListPromoCodes_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"promocode", "v1", "promoCodes"}, ""))
+	pattern_PromoCodeService_GetPromoCode_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 2, 5, 3}, []string{"promocode", "v1", "promoCodes", "name"}, ""))
+	pattern_PromoCodeService_CreatePromoCode_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"promocode", "v1", "promoCodes"}, ""))
+	pattern_PromoCodeService_UpdatePromoCode_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 2, 5, 3}, []string{"promocode", "v1", "promoCodes", "promo_code.name"}, ""))
+	pattern_PromoCodeService_DeletePromoCode_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 2, 5, 3}, []string{"promocode", "v1", "promoCodes", "name"}, ""))
+	pattern_PromoCodeService_ValidatePromoCode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"promocode", "v1", "promoCodes"}, "validatePromoCode"))
+	pattern_PromoCodeService_ListRedemptions_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 2, 5, 3, 2, 4}, []string{"promocode", "v1", "promoCodes", "parent", "redemptions"}, ""))
+	pattern_PromoCodeService_GetRedemption_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 2, 3, 1, 0, 4, 4, 5, 4}, []string{"promocode", "v1", "promoCodes", "redemptions", "name"}, ""))
 )
 
 var (
@@ -584,4 +766,6 @@ var (
 	forward_PromoCodeService_UpdatePromoCode_0   = runtime.ForwardResponseMessage
 	forward_PromoCodeService_DeletePromoCode_0   = runtime.ForwardResponseMessage
 	forward_PromoCodeService_ValidatePromoCode_0 = runtime.ForwardResponseMessage
+	forward_PromoCodeService_ListRedemptions_0   = runtime.ForwardResponseMessage
+	forward_PromoCodeService_GetRedemption_0     = runtime.ForwardResponseMessage
 )

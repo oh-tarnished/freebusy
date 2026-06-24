@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 28 | 15 |
+| 33 | 15 |
 
 ## Entity relationships
 
@@ -45,6 +45,10 @@ erDiagram
     }
     DateRange {
         string id PK
+    }
+    Discount {
+        string id PK
+        string amount_off_id FK
     }
     Fee {
         string id PK
@@ -85,18 +89,10 @@ erDiagram
     }
     PromoCode {
         string id PK
-        string amount_off_id FK
-        string min_subtotal_id FK
-    }
-    PromoCodeApplicableOfferings {
-        string id PK
-        string promo_code_id FK
-        string offering_id FK
-    }
-    PromoCodeApplicableResources {
-        string id PK
-        string promo_code_id FK
-        string resource_id FK
+        string discount_id FK
+        string window_id FK
+        string limits_id FK
+        string scope_id FK
     }
     RateOverride {
         string id PK
@@ -107,6 +103,16 @@ erDiagram
     RecurringRule {
         string id PK
         string schedule_id FK
+    }
+    Redemption {
+        string id PK
+        string customer FK
+        string booking FK
+        string promo_code_id FK
+        string amount_applied_id FK
+    }
+    RedemptionWindow {
+        string id PK
     }
     RefundTier {
         string id PK
@@ -131,6 +137,20 @@ erDiagram
         string schedule_id FK
         string availability_exception_id FK
     }
+    Scope {
+        string id PK
+        string min_subtotal_id FK
+    }
+    ScopeApplicableOfferings {
+        string id PK
+        string scope_id FK
+        string offering_id FK
+    }
+    ScopeApplicableResources {
+        string id PK
+        string scope_id FK
+        string resource_id FK
+    }
     StayConstraints {
         string id PK
     }
@@ -139,6 +159,9 @@ erDiagram
         string offering_id FK
     }
     TimeWindow {
+        string id PK
+    }
+    UsageLimits {
         string id PK
     }
     User {
@@ -157,6 +180,7 @@ erDiagram
     Booking }o--|| Money : "discount_id"
     Booking }o--|| Money : "total_id"
     Booking }o--|| Money : "refund_amount_id"
+    Discount }o--|| Money : "amount_off_id"
     Fee }o--|| Offering : "offering_id"
     Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Offering : "offering_id"
@@ -170,16 +194,18 @@ erDiagram
     Offering }o--|| Money : "price_id"
     PriceComponent }o--|| Booking : "booking_id"
     PriceComponent }o--|| Money : "amount_id"
-    PromoCode }o--|| Money : "amount_off_id"
-    PromoCode }o--|| Money : "min_subtotal_id"
-    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
-    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableResources }o--|| Resource : "resource_id"
+    PromoCode }o--|| Discount : "discount_id"
+    PromoCode }o--|| RedemptionWindow : "window_id"
+    PromoCode }o--|| UsageLimits : "limits_id"
+    PromoCode }o--|| Scope : "scope_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RateOverride }o--|| Money : "price_id"
     RecurringRule }o--|| Schedule : "schedule_id"
+    Redemption }o--|| User : "customer"
+    Redemption }o--|| Booking : "booking"
+    Redemption }o--|| PromoCode : "promo_code_id"
+    Redemption }o--|| Money : "amount_applied_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
     ResourceOfferings }o--|| Resource : "resource_id"
     ResourceOfferings }o--|| Offering : "offering_id"
@@ -188,6 +214,11 @@ erDiagram
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
     ScheduleExceptions }o--|| Schedule : "schedule_id"
     ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
+    Scope }o--|| Money : "min_subtotal_id"
+    ScopeApplicableOfferings }o--|| Scope : "scope_id"
+    ScopeApplicableOfferings }o--|| Offering : "offering_id"
+    ScopeApplicableResources }o--|| Scope : "scope_id"
+    ScopeApplicableResources }o--|| Resource : "resource_id"
     Tax }o--|| Offering : "offering_id"
 ```
 
@@ -236,56 +267,10 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `total_id` | `CHAR(26)` | nullable |
 | `refund_amount_id` | `CHAR(26)` | nullable |
 
-### `Contact` → `contacts`
-
-Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `display_name` | `VARCHAR(255)` | nullable |
-| `email` | `VARCHAR(255)` | nullable |
-| `phone_number` | `VARCHAR(255)` | nullable |
-
-### `TimeWindow` → `time_windows`
-
-A half-open time interval [start_time, end_time). Used for query windows and for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `start_time` | `TIMESTAMPTZ` | not null |
-| `end_time` | `TIMESTAMPTZ` | not null |
-
-### `Money` → `moneys`
-
-Represents an amount of money with its currency type.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `currency_code` | `VARCHAR(255)` | nullable |
-| `units` | `BIGINT` | nullable |
-| `nanos` | `INTEGER` | nullable |
-
-### `PriceComponent` → `price_components`
-
-One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `type` | `Type` | nullable |
-| `code` | `VARCHAR(255)` | nullable |
-| `display_name` | `VARCHAR(255)` | nullable |
-| `booking_id` | `CHAR(26)` | not null |
-| `amount_id` | `CHAR(26)` | nullable |
-
 ### Enums
 
 - `BookingState`: PENDING_HOLD, CONFIRMED, CANCELLED, EXPIRED, COMPLETED, NO_SHOW
 - `CancelReason`: REQUESTED_BY_CUSTOMER, REQUESTED_BY_OPERATOR, PAYMENT_FAILED, NO_SHOW, OTHER
-- `Type`: BASE, FEE, TAX, DISCOUNT
 
 ## Schema `identity`
 
@@ -375,47 +360,97 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `name` | `VARCHAR(255)` | not null |
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
-| `description` | `VARCHAR(255)` | nullable |
-| `discount_type` | `DiscountType` | not null |
-| `percent_off` | `INTEGER` | nullable |
-| `redeem_start_time` | `TIMESTAMPTZ` | nullable |
-| `redeem_end_time` | `TIMESTAMPTZ` | nullable |
-| `max_redemptions` | `BIGINT` | nullable |
-| `per_customer_limit` | `INTEGER` | nullable |
+| `description` | `TEXT` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `PromoCodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `discount_id` | `CHAR(26)` | not null |
+| `window_id` | `CHAR(26)` | nullable |
+| `limits_id` | `CHAR(26)` | nullable |
+| `scope_id` | `CHAR(26)` | nullable |
+
+### `Redemption` → `redemptions`
+
+Redemption is a single use of a promo code, modeled as a sub-resource of PromoCode rather than an inline list — so it has its own name/lifecycle and is listed with paging (ListRedemptions). The {promo_code} parent segment generates the promo_code_id FK back to the owning code (1:n into promocode.redemptions); amount_applied is the shared google.type.Money in common.moneys. Redemptions are created during CreateBooking, never directly.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `customer` | `CHAR(26)` | not null |
+| `booking` | `CHAR(26)` | not null |
+| `redeemed_time` | `TIMESTAMPTZ` | nullable |
+| `promo_code_id` | `CHAR(26)` | not null |
+| `amount_applied_id` | `CHAR(26)` | nullable |
+
+### `Discount` → `discounts`
+
+Discount describes how a promo code reduces a subtotal. Nested value object → belongs-to child table promocode.discounts (FK discount_id on promo_codes). Exactly one of percent_off / amount_off is set; the oneof case is the discriminator, so no separate type enum is needed.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `percent_off` | `INTEGER` | nullable |
+| `amount_case` | `DiscountAmountCase` | nullable |
 | `amount_off_id` | `CHAR(26)` | nullable |
+
+### `RedemptionWindow` → `redemption_windows`
+
+RedemptionWindow bounds when a code can be redeemed; an unset bound is open-ended. Nested value object → belongs-to promocode.redemption_windows.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `start_time` | `TIMESTAMPTZ` | nullable |
+| `end_time` | `TIMESTAMPTZ` | nullable |
+
+### `UsageLimits` → `usage_limits`
+
+UsageLimits caps how often a code can be redeemed. Nested value object → belongs-to promocode.usage_limits. The caps are wrapper types so "unset" (unlimited) is distinct from an explicit value, including 0.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `max_redemptions` | `BIGINT` | nullable |
+| `per_customer_limit` | `INTEGER` | nullable |
+
+### `Scope` → `scopes`
+
+Scope restricts which bookings a code applies to. Nested value object → belongs-to promocode.scopes. Its repeated resource references and Money normalize one level deeper (array columns / common.moneys).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
 | `min_subtotal_id` | `CHAR(26)` | nullable |
 
-### `PromoCodeApplicableResources` → `applicable_resources`
+### `ScopeApplicableResources` → `scope_applicable_resources`
 
-Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
+Join table for the many-to-many relation Scope.applicable_resources ↔ Resource.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
-| `promo_code_id` | `CHAR(26)` | not null |
+| `scope_id` | `CHAR(26)` | not null |
 | `resource_id` | `CHAR(26)` | not null |
 
-### `PromoCodeApplicableOfferings` → `applicable_offerings`
+### `ScopeApplicableOfferings` → `scope_applicable_offerings`
 
-Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
+Join table for the many-to-many relation Scope.applicable_offerings ↔ Offering.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
-| `promo_code_id` | `CHAR(26)` | not null |
+| `scope_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 | `offering_name` | `TEXT` | not null |
 
 ### Enums
 
-- `DiscountType`: PERCENTAGE, FIXED_AMOUNT
 - `PromoCodeState`: ACTIVE, DISABLED, EXPIRED
+- `DiscountAmountCase`: PERCENT_OFF, AMOUNT_OFF
 
 ## Schema `resource`
 
@@ -560,16 +595,6 @@ Aggregate read view of a resource's availability configuration: the inputs the f
 | `stay_constraints_id` | `CHAR(26)` | nullable |
 | `cancellation_policy_id` | `CHAR(26)` | nullable |
 
-### `DateRange` → `date_ranges`
-
-A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `start_date` | `DATE` | not null |
-| `end_date` | `DATE` | not null |
-
 ### `RecurringRule` → `recurring_rules`
 
 A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
@@ -643,3 +668,66 @@ Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityExc
 
 - `ExceptionKind`: CLOSURE, EXTRA_HOURS
 - `AvailabilityExceptionSpanCase`: WINDOW, DATE_RANGE
+
+## Schema `shared`
+
+### `Contact` → `contacts`
+
+Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `display_name` | `VARCHAR(255)` | nullable |
+| `email` | `VARCHAR(255)` | nullable |
+| `phone_number` | `VARCHAR(255)` | nullable |
+
+### `TimeWindow` → `time_windows`
+
+A half-open time interval [start_time, end_time). Used for query windows and for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `start_time` | `TIMESTAMPTZ` | not null |
+| `end_time` | `TIMESTAMPTZ` | not null |
+
+### `PriceComponent` → `price_components`
+
+One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `type` | `Type` | nullable |
+| `code` | `VARCHAR(255)` | nullable |
+| `display_name` | `VARCHAR(255)` | nullable |
+| `booking_id` | `CHAR(26)` | not null |
+| `amount_id` | `CHAR(26)` | nullable |
+
+### `DateRange` → `date_ranges`
+
+A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `start_date` | `DATE` | not null |
+| `end_date` | `DATE` | not null |
+
+### Enums
+
+- `Type`: BASE, FEE, TAX, DISCOUNT
+
+## Schema `common`
+
+### `Money` → `moneys`
+
+Represents an amount of money with its currency type.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `currency_code` | `VARCHAR(255)` | nullable |
+| `units` | `BIGINT` | nullable |
+| `nanos` | `INTEGER` | nullable |

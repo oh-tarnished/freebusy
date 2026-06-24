@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 28 | 15 |
+| 33 | 15 |
 
 ## Entity relationships
 
@@ -43,6 +43,10 @@ erDiagram
     }
     DateRange {
         string id PK
+    }
+    Discount {
+        string id PK
+        string amount_off_id FK
     }
     Fee {
         string id PK
@@ -83,18 +87,10 @@ erDiagram
     }
     PromoCode {
         string id PK
-        string amount_off_id FK
-        string min_subtotal_id FK
-    }
-    PromoCodeApplicableOfferings {
-        string id PK
-        string promo_code_id FK
-        string offering_id FK
-    }
-    PromoCodeApplicableResources {
-        string id PK
-        string promo_code_id FK
-        string resource_id FK
+        string discount_id FK
+        string window_id FK
+        string limits_id FK
+        string scope_id FK
     }
     RateOverride {
         string id PK
@@ -105,6 +101,16 @@ erDiagram
     RecurringRule {
         string id PK
         string schedule_id FK
+    }
+    Redemption {
+        string id PK
+        string customer FK
+        string booking FK
+        string promo_code_id FK
+        string amount_applied_id FK
+    }
+    RedemptionWindow {
+        string id PK
     }
     RefundTier {
         string id PK
@@ -129,6 +135,20 @@ erDiagram
         string schedule_id FK
         string availability_exception_id FK
     }
+    Scope {
+        string id PK
+        string min_subtotal_id FK
+    }
+    ScopeApplicableOfferings {
+        string id PK
+        string scope_id FK
+        string offering_id FK
+    }
+    ScopeApplicableResources {
+        string id PK
+        string scope_id FK
+        string resource_id FK
+    }
     StayConstraints {
         string id PK
     }
@@ -137,6 +157,9 @@ erDiagram
         string offering_id FK
     }
     TimeWindow {
+        string id PK
+    }
+    UsageLimits {
         string id PK
     }
     User {
@@ -155,6 +178,7 @@ erDiagram
     Booking }o--|| Money : "discount_id"
     Booking }o--|| Money : "total_id"
     Booking }o--|| Money : "refund_amount_id"
+    Discount }o--|| Money : "amount_off_id"
     Fee }o--|| Offering : "offering_id"
     Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Offering : "offering_id"
@@ -168,16 +192,18 @@ erDiagram
     Offering }o--|| Money : "price_id"
     PriceComponent }o--|| Booking : "booking_id"
     PriceComponent }o--|| Money : "amount_id"
-    PromoCode }o--|| Money : "amount_off_id"
-    PromoCode }o--|| Money : "min_subtotal_id"
-    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
-    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableResources }o--|| Resource : "resource_id"
+    PromoCode }o--|| Discount : "discount_id"
+    PromoCode }o--|| RedemptionWindow : "window_id"
+    PromoCode }o--|| UsageLimits : "limits_id"
+    PromoCode }o--|| Scope : "scope_id"
     RateOverride }o--|| Offering : "offering_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RateOverride }o--|| Money : "price_id"
     RecurringRule }o--|| Schedule : "schedule_id"
+    Redemption }o--|| User : "customer"
+    Redemption }o--|| Booking : "booking"
+    Redemption }o--|| PromoCode : "promo_code_id"
+    Redemption }o--|| Money : "amount_applied_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
     ResourceOfferings }o--|| Resource : "resource_id"
     ResourceOfferings }o--|| Offering : "offering_id"
@@ -186,6 +212,11 @@ erDiagram
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
     ScheduleExceptions }o--|| Schedule : "schedule_id"
     ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
+    Scope }o--|| Money : "min_subtotal_id"
+    ScopeApplicableOfferings }o--|| Scope : "scope_id"
+    ScopeApplicableOfferings }o--|| Offering : "offering_id"
+    ScopeApplicableResources }o--|| Scope : "scope_id"
+    ScopeApplicableResources }o--|| Resource : "resource_id"
     Tax }o--|| Offering : "offering_id"
 ```
 

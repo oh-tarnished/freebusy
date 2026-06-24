@@ -6,27 +6,53 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 3 | 2 |
+| 8 | 2 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
-    PromoCode {
+    Discount {
         string id PK
         string amount_off_id FK
+    }
+    PromoCode {
+        string id PK
+        string discount_id FK
+        string window_id FK
+        string limits_id FK
+        string scope_id FK
+    }
+    Redemption {
+        string id PK
+        string customer FK
+        string booking FK
+        string promo_code_id FK
+        string amount_applied_id FK
+    }
+    RedemptionWindow {
+        string id PK
+    }
+    Scope {
+        string id PK
         string min_subtotal_id FK
     }
-    PromoCodeApplicableOfferings {
+    ScopeApplicableOfferings {
         string id PK
-        string promo_code_id FK
+        string scope_id FK
         string offering_id FK
     }
-    PromoCodeApplicableResources {
+    ScopeApplicableResources {
         string id PK
-        string promo_code_id FK
+        string scope_id FK
         string resource_id FK
+    }
+    UsageLimits {
+        string id PK
+    }
+    Booking {
+        string externalStub PK
     }
     Money {
         string externalStub PK
@@ -37,12 +63,23 @@ erDiagram
     Resource {
         string externalStub PK
     }
-    PromoCode }o--|| Money : "amount_off_id"
-    PromoCode }o--|| Money : "min_subtotal_id"
-    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
-    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableResources }o--|| Resource : "resource_id"
+    User {
+        string externalStub PK
+    }
+    Discount }o--|| Money : "amount_off_id"
+    PromoCode }o--|| Discount : "discount_id"
+    PromoCode }o--|| RedemptionWindow : "window_id"
+    PromoCode }o--|| UsageLimits : "limits_id"
+    PromoCode }o--|| Scope : "scope_id"
+    Redemption }o--|| User : "customer"
+    Redemption }o--|| Booking : "booking"
+    Redemption }o--|| PromoCode : "promo_code_id"
+    Redemption }o--|| Money : "amount_applied_id"
+    Scope }o--|| Money : "min_subtotal_id"
+    ScopeApplicableOfferings }o--|| Scope : "scope_id"
+    ScopeApplicableOfferings }o--|| Offering : "offering_id"
+    ScopeApplicableResources }o--|| Scope : "scope_id"
+    ScopeApplicableResources }o--|| Resource : "resource_id"
 ```
 
 ## Subfolders

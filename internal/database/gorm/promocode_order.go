@@ -11,12 +11,11 @@ import (
 // mapped to safe physical column names. Restricting to this closed set is what
 // prevents the user-supplied order_by from injecting SQL into the ORDER BY clause.
 var promoSortColumns = map[string]string{
-	"name":          "name",
-	"code":          "code",
-	"state":         "state",
-	"discount_type": "discount_type",
-	"create_time":   "create_time",
-	"update_time":   "update_time",
+	"name":        "name",
+	"code":        "code",
+	"state":       "state",
+	"create_time": "create_time",
+	"update_time": "update_time",
 }
 
 // orderClause turns an AIP-132 order_by string into a safe "col DIR, ..." clause.

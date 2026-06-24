@@ -62,7 +62,7 @@ type Booking struct {
 	// Computed subtotal before discounts.
 	Price *money.Money `protobuf:"bytes,11,opt,name=price,proto3" json:"price,omitempty"`
 	// The promo code to apply to this booking, set at creation, if any.
-	// Format: promoCodes/{promo_code}
+	// Format: promo-codes/{promo_code}
 	PromoCode string `protobuf:"bytes,12,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
 	// Discount applied from the promo code.
 	Discount *money.Money `protobuf:"bytes,13,opt,name=discount,proto3" json:"discount,omitempty"`
@@ -319,7 +319,7 @@ var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\x95\f\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\x90\f\n" +
 	"\aBooking\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12A\n" +
 	"\bresource\x18\x03 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
@@ -335,10 +335,10 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\x05state\x18\t \x01(\x0e2!.freebusy.booking.v1.BookingStateB\x03\xe0A\x03R\x05state\x12I\n" +
 	"\x10hold_expire_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\x0eholdExpireTime\x12-\n" +
-	"\x05price\x18\v \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05price\x12F\n" +
+	"\x05price\x18\v \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05price\x12A\n" +
 	"\n" +
-	"promo_code\x18\f \x01(\tB'\xe0A\x05\xfaA!\n" +
-	"\x1ffreebusy.promocode.v1/PromoCodeR\tpromoCode\x123\n" +
+	"promo_code\x18\f \x01(\tB\"\xe0A\x05\xfaA\x1c\n" +
+	"\x1aoh-tarnished.dev/PromoCodeR\tpromoCode\x123\n" +
 	"\bdiscount\x18\r \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\bdiscount\x12-\n" +
 	"\x05total\x18\x0e \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05total\x12R\n" +
 	"\x10price_components\x18\x19 \x03(\v2\".freebusy.shared.v1.PriceComponentB\x03\xe0A\x03R\x0fpriceComponents\x12\x19\n" +

@@ -1,62 +1,60 @@
 package gorm
 
 import (
+	"strings"
+
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
 )
 
 // inMask aliases the shared field-mask predicate so update semantics stay
 // identical across the gorm and hasura adapters.
 var inMask = types.InMask
 
-// applyMask copies the masked scalar/enum fields from pc onto the existing model.
-// Identity, timestamps, and etag are managed by the repository, and the Money and
-// join fields are handled separately in Update.
-func applyMask(m *promocode.PromoCode, pc *promocodepbv1.PromoCode, paths []string) {
+// groupTouched reports whether an update mask selects a nested message group,
+// matching the group itself ("discount") or any field beneath it
+// ("discount.percent_off"). An empty mask selects every group (replace-all).
+func groupTouched(paths []string, group string) bool {
+	if len(paths) == 0 {
+		return true
+	}
+	prefix := group + "."
+	for _, p := range paths {
+		if p == group || strings.HasPrefix(p, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// applyMask merges the masked fields of pc onto merged (a proto built from the
+// stored record). Scalars are copied field-by-field; the nested discount, window,
+// limits, and scope are replaced wholesale when their group is selected, so the
+// repository can re-materialize each child table from the merged proto. Identity,
+// timestamps, derived state, and etag are managed by the repository.
+func applyMask(merged, pc *promocodepbv1.PromoCode, paths []string) {
 	if inMask(paths, "code") {
-		m.Code = pc.GetCode()
+		merged.Code = pc.GetCode()
 	}
 	if inMask(paths, "display_name") {
-		m.DisplayName = strOrNil(pc.GetDisplayName())
+		merged.DisplayName = pc.GetDisplayName()
 	}
 	if inMask(paths, "description") {
-		m.Description = strOrNil(pc.GetDescription())
-	}
-	if inMask(paths, "discount_type") {
-		if dt, ok := discountTypeToDB[pc.GetDiscountType()]; ok {
-			m.DiscountType = dt
-		}
-	}
-	if inMask(paths, "percent_off") {
-		m.PercentOff = ptr(pc.GetPercentOff())
-	}
-	if inMask(paths, "redeem_start_time") {
-		m.RedeemStartTime = tsToTime(pc.GetRedeemStartTime())
-	}
-	if inMask(paths, "redeem_end_time") {
-		m.RedeemEndTime = tsToTime(pc.GetRedeemEndTime())
-	}
-	if inMask(paths, "max_redemptions") {
-		m.MaxRedemptions = ptr(pc.GetMaxRedemptions())
-	}
-	if inMask(paths, "per_customer_limit") {
-		m.PerCustomerLimit = ptr(pc.GetPerCustomerLimit())
-	}
-	if inMask(paths, "redemption_count") {
-		m.RedemptionCount = ptr(pc.GetRedemptionCount())
+		merged.Description = pc.GetDescription()
 	}
 	if inMask(paths, "disabled") {
-		m.Disabled = ptr(pc.GetDisabled())
-		state := promocode.PromoCodeStateActive
-		if pc.GetDisabled() {
-			state = promocode.PromoCodeStateDisabled
-		}
-		m.State = &state
+		merged.Disabled = pc.GetDisabled()
 	}
-	if inMask(paths, "state") {
-		if s, ok := stateToDB[pc.GetState()]; ok {
-			m.State = &s
-		}
+	if groupTouched(paths, "discount") {
+		merged.Discount = pc.GetDiscount()
+	}
+	if groupTouched(paths, "window") {
+		merged.Window = pc.GetWindow()
+	}
+	if groupTouched(paths, "limits") {
+		merged.Limits = pc.GetLimits()
+	}
+	if groupTouched(paths, "scope") {
+		merged.Scope = pc.GetScope()
 	}
 }

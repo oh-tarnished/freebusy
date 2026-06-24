@@ -5,37 +5,65 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/common"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-// roundTrip mirrors what the repository does around the pure converters: map the
-// proto onto a model, set the identity/foreign keys it owns, then read it back.
+// roundTrip mirrors what the repository does around the pure converters: build
+// the normalized row graph from the proto, set the identity the repository owns,
+// wire the associations in memory the way a preloaded read would, then convert
+// the model back to a proto.
 func roundTrip(in *promocodepbv1.PromoCode) *promocodepbv1.PromoCode {
-	m := toPromoModel(in)
-	m.ID = "ID123"
-	m.Name = in.GetName()
-	amount := moneyToModel(in.GetAmountOff())
-	minSub := moneyToModel(in.GetMinSubtotal())
-	return fromPromoModel(m, amount, minSub, in.GetApplicableResources(), in.GetApplicableOfferings())
+	g := buildGraph(in)
+	g.promo.ID = "ID123"
+	g.promo.Name = in.GetName()
+
+	moneyByID := map[string]*common.Money{}
+	for _, m := range g.moneys {
+		moneyByID[m.ID] = m
+	}
+
+	g.promo.Discount = g.discount
+	if g.discount.AmountOffID != nil {
+		g.discount.AmountOff = moneyByID[*g.discount.AmountOffID]
+	}
+	g.promo.Window = g.window
+	g.promo.Limits = g.limits
+	if g.scope != nil {
+		g.promo.Scope = g.scope
+		if g.scope.MinSubtotalID != nil {
+			g.scope.MinSubtotal = moneyByID[*g.scope.MinSubtotalID]
+		}
+		for _, row := range g.resources {
+			g.scope.ScopeApplicableResources = append(g.scope.ScopeApplicableResources, *row)
+		}
+		for _, row := range g.offerings {
+			g.scope.ScopeApplicableOfferings = append(g.scope.ScopeApplicableOfferings, *row)
+		}
+	}
+	return fromModel(g.promo)
 }
 
 func TestPromoConvertPercentageRoundTrip(t *testing.T) {
 	start := time.Date(2026, 6, 1, 0, 0, 0, 0, time.UTC)
 	in := &promocodepbv1.PromoCode{
-		Name:                "promoCodes/ID123",
-		Code:                "SUMMER25",
-		DisplayName:         "Summer Sale",
-		Description:         "25% off everything",
-		DiscountType:        promocodepbv1.DiscountType_DISCOUNT_TYPE_PERCENTAGE,
-		PercentOff:          25,
-		MaxRedemptions:      100,
-		PerCustomerLimit:    2,
-		RedemptionCount:     5,
-		MinSubtotal:         &money.Money{CurrencyCode: "USD", Units: 50},
-		ApplicableResources: []string{"resources/room-1"},
-		ApplicableOfferings: []string{"resources/room-1/offerings/night"},
-		RedeemStartTime:     timestamppb.New(start),
+		Name:        "promoCodes/ID123",
+		Code:        "SUMMER25",
+		DisplayName: "Summer Sale",
+		Description: "25% off everything",
+		Discount:    &promocodepbv1.Discount{Amount: &promocodepbv1.Discount_PercentOff{PercentOff: 25}},
+		Window:      &promocodepbv1.RedemptionWindow{StartTime: timestamppb.New(start)},
+		Limits: &promocodepbv1.UsageLimits{
+			MaxRedemptions:   wrapperspb.Int64(100),
+			PerCustomerLimit: wrapperspb.Int32(2),
+		},
+		Scope: &promocodepbv1.Scope{
+			MinSubtotal:         &money.Money{CurrencyCode: "USD", Units: 50},
+			ApplicableResources: []string{"resources/room-1"},
+			ApplicableOfferings: []string{"resources/room-1/offerings/night"},
+		},
 	}
 
 	out := roundTrip(in)
@@ -43,23 +71,23 @@ func TestPromoConvertPercentageRoundTrip(t *testing.T) {
 	if out.GetCode() != "SUMMER25" || out.GetDisplayName() != "Summer Sale" || out.GetDescription() != "25% off everything" {
 		t.Fatalf("scalar fields not preserved: %+v", out)
 	}
-	if out.GetDiscountType() != promocodepbv1.DiscountType_DISCOUNT_TYPE_PERCENTAGE {
-		t.Fatalf("discount type = %v", out.GetDiscountType())
+	if out.GetDiscount().GetAmountOff() != nil || out.GetDiscount().GetPercentOff() != 25 {
+		t.Fatalf("discount not preserved as 25%% percentage: %+v", out.GetDiscount())
 	}
-	if out.GetPercentOff() != 25 || out.GetMaxRedemptions() != 100 || out.GetPerCustomerLimit() != 2 || out.GetRedemptionCount() != 5 {
-		t.Fatalf("numeric fields not preserved: %+v", out)
+	if out.GetLimits().GetMaxRedemptions().GetValue() != 100 || out.GetLimits().GetPerCustomerLimit().GetValue() != 2 {
+		t.Fatalf("usage limits not preserved: %+v", out.GetLimits())
 	}
-	if out.GetMinSubtotal().GetUnits() != 50 || out.GetMinSubtotal().GetCurrencyCode() != "USD" {
-		t.Fatalf("min subtotal not preserved: %+v", out.GetMinSubtotal())
+	if out.GetScope().GetMinSubtotal().GetUnits() != 50 || out.GetScope().GetMinSubtotal().GetCurrencyCode() != "USD" {
+		t.Fatalf("min subtotal not preserved: %+v", out.GetScope().GetMinSubtotal())
 	}
-	if got := out.GetApplicableResources(); len(got) != 1 || got[0] != "resources/room-1" {
+	if got := out.GetScope().GetApplicableResources(); len(got) != 1 || got[0] != "resources/room-1" {
 		t.Fatalf("applicable resources = %v", got)
 	}
-	if got := out.GetApplicableOfferings(); len(got) != 1 || got[0] != "resources/room-1/offerings/night" {
+	if got := out.GetScope().GetApplicableOfferings(); len(got) != 1 || got[0] != "resources/room-1/offerings/night" {
 		t.Fatalf("applicable offerings = %v", got)
 	}
-	if !out.GetRedeemStartTime().AsTime().Equal(start) {
-		t.Fatalf("redeem start = %v, want %v", out.GetRedeemStartTime().AsTime(), start)
+	if !out.GetWindow().GetStartTime().AsTime().Equal(start) {
+		t.Fatalf("window start = %v, want %v", out.GetWindow().GetStartTime().AsTime(), start)
 	}
 	if out.GetState() != promocodepbv1.PromoCodeState_PROMO_CODE_STATE_ACTIVE {
 		t.Fatalf("state = %v, want ACTIVE", out.GetState())
@@ -71,19 +99,19 @@ func TestPromoConvertPercentageRoundTrip(t *testing.T) {
 
 func TestPromoConvertFixedAmountDisabled(t *testing.T) {
 	in := &promocodepbv1.PromoCode{
-		Code:         "FLAT10",
-		DiscountType: promocodepbv1.DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT,
-		AmountOff:    &money.Money{CurrencyCode: "EUR", Units: 10, Nanos: 990000000},
-		Disabled:     true,
+		Code:     "FLAT10",
+		Discount: &promocodepbv1.Discount{Amount: &promocodepbv1.Discount_AmountOff{AmountOff: &money.Money{CurrencyCode: "EUR", Units: 10, Nanos: 990000000}}},
+		Disabled: true,
 	}
 
 	out := roundTrip(in)
 
-	if out.GetDiscountType() != promocodepbv1.DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT {
-		t.Fatalf("discount type = %v", out.GetDiscountType())
+	amt := out.GetDiscount().GetAmountOff()
+	if amt == nil {
+		t.Fatalf("expected fixed-amount discount, got %+v", out.GetDiscount())
 	}
-	if out.GetAmountOff().GetUnits() != 10 || out.GetAmountOff().GetNanos() != 990000000 || out.GetAmountOff().GetCurrencyCode() != "EUR" {
-		t.Fatalf("amount off not preserved: %+v", out.GetAmountOff())
+	if amt.GetUnits() != 10 || amt.GetNanos() != 990000000 || amt.GetCurrencyCode() != "EUR" {
+		t.Fatalf("amount off not preserved: %+v", amt)
 	}
 	if !out.GetDisabled() {
 		t.Fatal("disabled flag not preserved")
@@ -91,8 +119,8 @@ func TestPromoConvertFixedAmountDisabled(t *testing.T) {
 	if out.GetState() != promocodepbv1.PromoCodeState_PROMO_CODE_STATE_DISABLED {
 		t.Fatalf("state = %v, want DISABLED", out.GetState())
 	}
-	// Unset optional money should stay nil.
-	if out.GetMinSubtotal() != nil {
-		t.Fatalf("expected nil min subtotal, got %+v", out.GetMinSubtotal())
+	// No scope was set, so there should be no min subtotal.
+	if out.GetScope().GetMinSubtotal() != nil {
+		t.Fatalf("expected nil min subtotal, got %+v", out.GetScope().GetMinSubtotal())
 	}
 }

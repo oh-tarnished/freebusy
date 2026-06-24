@@ -11,7 +11,7 @@ info:
 servers:
     - url: https://freebusy.ohtarnished.dev
 paths:
-    /v1/promoCodes:
+    /promocode/v1/promoCodes:
         get:
             tags:
                 - PromoCodeService
@@ -60,6 +60,18 @@ paths:
             description: Creates a promo code.
             operationId: PromoCodeService_CreatePromoCode
             parameters:
+                - name: codeGeneration
+                  in: query
+                  description: |-
+                    Whether the human-facing code is supplied by the caller (MANUAL) or minted
+                     by the server (AUTO). Unset defaults to MANUAL. When AUTO, promo_code.code
+                     is ignored and the server returns the generated code on the created resource.
+                     (-- api-linter: core::0133::request-unknown-fields=disabled
+                         aip.dev/not-precedent: Code generation mode is intrinsic to creating a
+                         promo code and has no standard AIP-133 equivalent. --)
+                  schema:
+                    type: integer
+                    format: enum
                 - name: promoCodeId
                   in: query
                   description: Optional caller-chosen ID for the promo code; the server generates one if unset.
@@ -94,7 +106,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/promoCodes/{promoCode}:
+    /promocode/v1/promoCodes/{promoCode}:
         get:
             tags:
                 - PromoCodeService
@@ -132,6 +144,20 @@ paths:
                   required: true
                   schema:
                     type: string
+                - name: etag
+                  in: query
+                  description: |-
+                    Optional optimistic-concurrency guard: if set, the delete fails unless it
+                     matches the current PromoCode.etag (AIP-154). Echo the etag you last read.
+                  schema:
+                    type: string
+                - name: force
+                  in: query
+                  description: |-
+                    If true, delete the promo code along with its redemptions; otherwise the
+                     delete fails when redemptions exist.
+                  schema:
+                    type: boolean
             responses:
                 "200":
                     description: OK
@@ -156,7 +182,9 @@ paths:
                     type: string
                 - name: updateMask
                   in: query
-                  description: Fields to overwrite. Omit to replace all mutable fields.
+                  description: |-
+                    Fields to overwrite. Omit to replace all mutable fields. Nested fields use
+                     dotted paths, e.g. "discount.amount_off", "window.end_time", "scope.min_subtotal".
                   schema:
                     type: string
                     format: field-mask
@@ -184,7 +212,88 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/promoCodes:validatePromoCode:
+    /promocode/v1/promoCodes/{promoCode}/redemptions:
+        get:
+            tags:
+                - PromoCodeService
+            description: |-
+                Lists redemptions of a promo code (paged). Redemptions are created during
+                 CreateBooking, so this service exposes read-only access to them.
+            operationId: PromoCodeService_ListRedemptions
+            parameters:
+                - name: promoCode
+                  in: path
+                  description: The promoCode id.
+                  required: true
+                  schema:
+                    type: string
+                - name: pageSize
+                  in: query
+                  description: Maximum number of redemptions to return. The server may cap this.
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageToken
+                  in: query
+                  description: Page token from a previous ListRedemptions call's next_page_token.
+                  schema:
+                    type: string
+                - name: filter
+                  in: query
+                  description: Filter expression over redemption fields, e.g. `customer = "users/123"` (AIP-160).
+                  schema:
+                    type: string
+                - name: orderBy
+                  in: query
+                  description: Sort order, e.g. "redeemed_time desc".
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRedemptionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /promocode/v1/promoCodes/{promoCode}/redemptions/{redemption}:
+        get:
+            tags:
+                - PromoCodeService
+            description: Gets a single redemption by resource name.
+            operationId: PromoCodeService_GetRedemption
+            parameters:
+                - name: promoCode
+                  in: path
+                  description: The promoCode id.
+                  required: true
+                  schema:
+                    type: string
+                - name: redemption
+                  in: path
+                  description: The redemption id.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Redemption'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /promocode/v1/promoCodes:validatePromoCode:
         post:
             tags:
                 - PromoCodeService
@@ -211,6 +320,24 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        Discount:
+            type: object
+            properties:
+                percentOff:
+                    type: integer
+                    description: Percentage off the subtotal (1-100).
+                    format: int32
+                amountOff:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: |-
+                        Fixed amount off the subtotal.
+                         Normalized into the shared common.moneys table (belongs-to via amount_off_id).
+            description: |-
+                Discount describes how a promo code reduces a subtotal. Nested value object →
+                 belongs-to child table promocode.discounts (FK discount_id on promo_codes).
+                 Exactly one of percent_off / amount_off is set; the oneof case is the
+                 discriminator, so no separate type enum is needed.
         GoogleProtobufAny:
             type: object
             properties:
@@ -230,7 +357,31 @@ components:
                 nextPageToken:
                     type: string
                     description: Token to pass as page_token to retrieve the next page; empty when no more.
+                totalSize:
+                    type: integer
+                    description: |-
+                        Total number of promo codes matching the filter across all pages, when the
+                         server computes it; 0 if unknown. Useful for rendering page counts (AIP-132).
+                    format: int32
             description: Response message for ListPromoCodes.
+        ListRedemptionsResponse:
+            type: object
+            properties:
+                redemptions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Redemption'
+                    description: The page of redemptions, newest first by default.
+                nextPageToken:
+                    type: string
+                    description: Token to pass as page_token to retrieve the next page; empty when no more.
+                totalSize:
+                    type: integer
+                    description: |-
+                        Total number of redemptions for the promo code, when the server computes it;
+                         0 if unknown.
+                    format: int32
+            description: Response message for ListRedemptions.
         Money:
             type: object
             properties:
@@ -256,7 +407,7 @@ components:
         PromoCode:
             required:
                 - code
-                - discountType
+                - discount
             type: object
             properties:
                 name:
@@ -273,61 +424,38 @@ components:
                 description:
                     type: string
                     description: Free-form description.
-                discountType:
-                    type: integer
-                    description: Whether the discount is a percentage or a fixed amount.
-                    format: enum
-                percentOff:
-                    type: integer
-                    description: Percentage off (1-100), when discount_type is PERCENTAGE.
-                    format: int32
-                amountOff:
+                discount:
                     allOf:
-                        - $ref: '#/components/schemas/Money'
-                    description: Fixed amount off, when discount_type is FIXED_AMOUNT.
-                redeemStartTime:
-                    type: string
-                    description: Earliest the code can be redeemed. Unset means no lower bound.
-                    format: date-time
-                redeemEndTime:
-                    type: string
-                    description: Latest the code can be redeemed. Unset means no upper bound.
-                    format: date-time
-                maxRedemptions:
-                    type: string
-                    description: Maximum total redemptions across all customers. Zero means unlimited.
-                perCustomerLimit:
-                    type: integer
-                    description: Maximum redemptions per customer. Zero means unlimited.
-                    format: int32
-                minSubtotal:
+                        - $ref: '#/components/schemas/Discount'
+                    description: How the discount is computed → belongs-to child table promocode.discounts.
+                window:
                     allOf:
-                        - $ref: '#/components/schemas/Money'
-                    description: Minimum subtotal required for the code to apply.
-                applicableResources:
-                    type: array
-                    items:
-                        type: string
-                    description: |-
-                        Resources the code applies to. Empty means all resources.
-                         Format: resources/{resource}
-                applicableOfferings:
-                    type: array
-                    items:
-                        type: string
-                    description: |-
-                        Offerings the code applies to. Empty means all offerings.
-                         Format: resources/{resource}/offerings/{offering}
+                        - $ref: '#/components/schemas/RedemptionWindow'
+                    description: When the code is redeemable → belongs-to promocode.redemption_windows.
+                limits:
+                    allOf:
+                        - $ref: '#/components/schemas/UsageLimits'
+                    description: Redemption caps → belongs-to promocode.usage_limits.
+                scope:
+                    allOf:
+                        - $ref: '#/components/schemas/Scope'
+                    description: What the code applies to (eligibility) → belongs-to promocode.scopes.
                 redemptionCount:
                     readOnly: true
                     type: string
-                    description: How many times the code has been redeemed.
+                    description: |-
+                        How many times the code has been redeemed. Cheap summary on the resource;
+                         the individual redemptions are a paginated sub-collection
+                         (promoCodes/{promo_code}/redemptions) listed via ListRedemptions, not inlined
+                         here, so reads stay bounded as redemptions accumulate.
                 state:
                     readOnly: true
                     type: integer
                     description: |-
-                        Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or
-                         EXPIRED (past the window or out of redemptions).
+                        Derived lifecycle state, recomputed on every read/validate (no background
+                         job): DISABLED when `disabled` is set; EXPIRED once now > window.end_time
+                         (the expiry) or the code is out of redemptions; otherwise ACTIVE. This is how
+                         a code auto-disables at its expiry without a stored flag to flip.
                     format: enum
                 disabled:
                     type: boolean
@@ -349,6 +477,87 @@ components:
                 A redeemable discount applied to a booking's subtotal. Scoped by a redemption
                  window, usage caps, a minimum subtotal, and an optional set of resources /
                  offerings it applies to.
+        Redemption:
+            required:
+                - customer
+                - booking
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: |-
+                        The redemption resource name.
+                         Format: promoCodes/{promo_code}/redemptions/{redemption}
+                customer:
+                    type: string
+                    description: |-
+                        The customer who redeemed the code.
+                         Format: users/{user}
+                booking:
+                    type: string
+                    description: |-
+                        The booking the code was applied to.
+                         Format: bookings/{booking}
+                redeemedTime:
+                    readOnly: true
+                    type: string
+                    description: When the code was redeemed.
+                    format: date-time
+                amountApplied:
+                    readOnly: true
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: The discount actually applied at redemption.
+            description: |-
+                Redemption is a single use of a promo code, modeled as a sub-resource of
+                 PromoCode rather than an inline list — so it has its own name/lifecycle and is
+                 listed with paging (ListRedemptions). The {promo_code} parent segment
+                 generates the promo_code_id FK back to the owning code (1:n into
+                 promocode.redemptions); amount_applied is the shared google.type.Money in
+                 common.moneys. Redemptions are created during CreateBooking, never directly.
+        RedemptionWindow:
+            type: object
+            properties:
+                startTime:
+                    type: string
+                    description: Earliest the code can be redeemed. Unset means no lower bound.
+                    format: date-time
+                endTime:
+                    type: string
+                    description: |-
+                        The code's expiry: the latest moment it can be redeemed. Once now passes
+                         this, the derived PromoCode.state becomes EXPIRED. Unset means never expires.
+                    format: date-time
+            description: |-
+                RedemptionWindow bounds when a code can be redeemed; an unset bound is
+                 open-ended. Nested value object → belongs-to promocode.redemption_windows.
+        Scope:
+            type: object
+            properties:
+                minSubtotal:
+                    allOf:
+                        - $ref: '#/components/schemas/Money'
+                    description: |-
+                        Minimum subtotal required for the code to apply.
+                         Normalized into the shared common.moneys table (belongs-to via min_subtotal_id).
+                applicableResources:
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        Resources the code applies to. Empty means all resources.
+                         Format: resources/{resource}
+                applicableOfferings:
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        Offerings the code applies to. Empty means all offerings.
+                         Format: resources/{resource}/offerings/{offering}
+            description: |-
+                Scope restricts which bookings a code applies to. Nested value object →
+                 belongs-to promocode.scopes. Its repeated resource references and Money
+                 normalize one level deeper (array columns / common.moneys).
         Status:
             type: object
             properties:
@@ -365,6 +574,20 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UsageLimits:
+            type: object
+            properties:
+                maxRedemptions:
+                    type: string
+                    description: Maximum total redemptions across all customers. Unset means unlimited.
+                perCustomerLimit:
+                    type: integer
+                    description: Maximum redemptions per customer. Unset means unlimited.
+                    format: int32
+            description: |-
+                UsageLimits caps how often a code can be redeemed. Nested value object →
+                 belongs-to promocode.usage_limits. The caps are wrapper types so "unset"
+                 (unlimited) is distinct from an explicit value, including 0.
         ValidatePromoCodeRequest:
             required:
                 - code
@@ -402,9 +625,17 @@ components:
                 valid:
                     type: boolean
                     description: Whether the code is valid and applicable to the given context.
+                invalidReason:
+                    type: integer
+                    description: |-
+                        Structured reason the code is not valid, when valid is false; branch on this
+                         rather than parsing `reason`. UNSPECIFIED when valid is true.
+                    format: enum
                 reason:
                     type: string
-                    description: Why the code is not valid, when valid is false.
+                    description: |-
+                        Human-readable detail for invalid_reason, suitable for display
+                         (e.g. "Minimum subtotal of $50 not met"). Empty when valid is true.
                 promoCode:
                     type: string
                     description: |-

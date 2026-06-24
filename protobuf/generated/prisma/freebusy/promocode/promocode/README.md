@@ -6,27 +6,53 @@ Generated from Protobuf by protoc-gen-protorm. Source of truth is the `.proto` f
 
 | Models | Enums |
 | ---: | ---: |
-| 3 | 0 |
+| 8 | 1 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
-    PromoCode {
+    Discount {
         string id PK
         string amount_off_id FK
+    }
+    PromoCode {
+        string id PK
+        string discount_id FK
+        string window_id FK
+        string limits_id FK
+        string scope_id FK
+    }
+    Redemption {
+        string id PK
+        string customer FK
+        string booking FK
+        string promo_code_id FK
+        string amount_applied_id FK
+    }
+    RedemptionWindow {
+        string id PK
+    }
+    Scope {
+        string id PK
         string min_subtotal_id FK
     }
-    PromoCodeApplicableOfferings {
+    ScopeApplicableOfferings {
         string id PK
-        string promo_code_id FK
+        string scope_id FK
         string offering_id FK
     }
-    PromoCodeApplicableResources {
+    ScopeApplicableResources {
         string id PK
-        string promo_code_id FK
+        string scope_id FK
         string resource_id FK
+    }
+    UsageLimits {
+        string id PK
+    }
+    Booking {
+        string externalStub PK
     }
     Money {
         string externalStub PK
@@ -37,12 +63,23 @@ erDiagram
     Resource {
         string externalStub PK
     }
-    PromoCode }o--|| Money : "amount_off_id"
-    PromoCode }o--|| Money : "min_subtotal_id"
-    PromoCodeApplicableOfferings }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableOfferings }o--|| Offering : "offering_id"
-    PromoCodeApplicableResources }o--|| PromoCode : "promo_code_id"
-    PromoCodeApplicableResources }o--|| Resource : "resource_id"
+    User {
+        string externalStub PK
+    }
+    Discount }o--|| Money : "amount_off_id"
+    PromoCode }o--|| Discount : "discount_id"
+    PromoCode }o--|| RedemptionWindow : "window_id"
+    PromoCode }o--|| UsageLimits : "limits_id"
+    PromoCode }o--|| Scope : "scope_id"
+    Redemption }o--|| User : "customer"
+    Redemption }o--|| Booking : "booking"
+    Redemption }o--|| PromoCode : "promo_code_id"
+    Redemption }o--|| Money : "amount_applied_id"
+    Scope }o--|| Money : "min_subtotal_id"
+    ScopeApplicableOfferings }o--|| Scope : "scope_id"
+    ScopeApplicableOfferings }o--|| Offering : "offering_id"
+    ScopeApplicableResources }o--|| Scope : "scope_id"
+    ScopeApplicableResources }o--|| Resource : "resource_id"
 ```
 
 Schema file: [`promocode.postgres.prisma`](./promocode.postgres.prisma)
@@ -57,39 +94,93 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `name` | `VARCHAR(255)` | not null |
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
-| `description` | `VARCHAR(255)` | nullable |
-| `discount_type` | `DiscountType` | not null |
-| `percent_off` | `INTEGER` | nullable |
-| `redeem_start_time` | `TIMESTAMPTZ` | nullable |
-| `redeem_end_time` | `TIMESTAMPTZ` | nullable |
-| `max_redemptions` | `BIGINT` | nullable |
-| `per_customer_limit` | `INTEGER` | nullable |
+| `description` | `TEXT` | nullable |
 | `redemption_count` | `BIGINT` | nullable |
 | `state` | `PromoCodeState` | nullable |
 | `disabled` | `BOOLEAN` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `discount_id` | `CHAR(26)` | not null |
+| `window_id` | `CHAR(26)` | nullable |
+| `limits_id` | `CHAR(26)` | nullable |
+| `scope_id` | `CHAR(26)` | nullable |
+
+### `Redemption` → `redemptions`
+
+Redemption is a single use of a promo code, modeled as a sub-resource of PromoCode rather than an inline list — so it has its own name/lifecycle and is listed with paging (ListRedemptions). The {promo_code} parent segment generates the promo_code_id FK back to the owning code (1:n into promocode.redemptions); amount_applied is the shared google.type.Money in common.moneys. Redemptions are created during CreateBooking, never directly.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `customer` | `CHAR(26)` | not null |
+| `booking` | `CHAR(26)` | not null |
+| `redeemed_time` | `TIMESTAMPTZ` | nullable |
+| `promo_code_id` | `CHAR(26)` | not null |
+| `amount_applied_id` | `CHAR(26)` | nullable |
+
+### `Discount` → `discounts`
+
+Discount describes how a promo code reduces a subtotal. Nested value object → belongs-to child table promocode.discounts (FK discount_id on promo_codes). Exactly one of percent_off / amount_off is set; the oneof case is the discriminator, so no separate type enum is needed.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `percent_off` | `INTEGER` | nullable |
+| `amount_case` | `DiscountAmountCase` | nullable |
 | `amount_off_id` | `CHAR(26)` | nullable |
+
+### `RedemptionWindow` → `redemption_windows`
+
+RedemptionWindow bounds when a code can be redeemed; an unset bound is open-ended. Nested value object → belongs-to promocode.redemption_windows.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `start_time` | `TIMESTAMPTZ` | nullable |
+| `end_time` | `TIMESTAMPTZ` | nullable |
+
+### `UsageLimits` → `usage_limits`
+
+UsageLimits caps how often a code can be redeemed. Nested value object → belongs-to promocode.usage_limits. The caps are wrapper types so "unset" (unlimited) is distinct from an explicit value, including 0.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `max_redemptions` | `BIGINT` | nullable |
+| `per_customer_limit` | `INTEGER` | nullable |
+
+### `Scope` → `scopes`
+
+Scope restricts which bookings a code applies to. Nested value object → belongs-to promocode.scopes. Its repeated resource references and Money normalize one level deeper (array columns / common.moneys).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
 | `min_subtotal_id` | `CHAR(26)` | nullable |
 
-### `PromoCodeApplicableResources` → `applicable_resources`
+### `ScopeApplicableResources` → `scope_applicable_resources`
 
-Join table for the many-to-many relation PromoCode.applicable_resources ↔ Resource.
+Join table for the many-to-many relation Scope.applicable_resources ↔ Resource.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
-| `promo_code_id` | `CHAR(26)` | not null |
+| `scope_id` | `CHAR(26)` | not null |
 | `resource_id` | `CHAR(26)` | not null |
 
-### `PromoCodeApplicableOfferings` → `applicable_offerings`
+### `ScopeApplicableOfferings` → `scope_applicable_offerings`
 
-Join table for the many-to-many relation PromoCode.applicable_offerings ↔ Offering.
+Join table for the many-to-many relation Scope.applicable_offerings ↔ Offering.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
-| `promo_code_id` | `CHAR(26)` | not null |
+| `scope_id` | `CHAR(26)` | not null |
 | `offering_id` | `CHAR(26)` | not null |
 | `offering_name` | `TEXT` | not null |
+
+### Enums
+
+- `DiscountAmountCase`: PERCENT_OFF, AMOUNT_OFF

@@ -78,57 +78,136 @@ func (PromoCodeState) EnumDescriptor() ([]byte, []int) {
 	return file_freebusy_promocode_v1_enums_proto_rawDescGZIP(), []int{0}
 }
 
-// How a promo code's discount is computed.
-type DiscountType int32
+// Why a promo code failed validation, returned on ValidatePromoCodeResponse.
+// Each value maps to one of the code's nested rules (window / limits / scope) or
+// its lifecycle, so a client can branch without parsing the human-readable reason.
+type PromoCodeInvalidReason int32
 
 const (
-	// Unset.
-	DiscountType_DISCOUNT_TYPE_UNSPECIFIED DiscountType = 0
-	// A percentage off the subtotal (percent_off).
-	DiscountType_DISCOUNT_TYPE_PERCENTAGE DiscountType = 1
-	// A fixed amount off the subtotal (amount_off).
-	DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT DiscountType = 2
+	// The code is valid, or no specific reason applies.
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_UNSPECIFIED PromoCodeInvalidReason = 0
+	// No promo code matches the supplied code string.
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_NOT_FOUND PromoCodeInvalidReason = 1
+	// The code is manually disabled (`disabled` is set).
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_DISABLED PromoCodeInvalidReason = 2
+	// Now is before window.start_time; the code isn't redeemable yet.
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_NOT_STARTED PromoCodeInvalidReason = 3
+	// Now is after window.end_time; the code has expired.
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_EXPIRED PromoCodeInvalidReason = 4
+	// The code hit its total redemption cap (limits.max_redemptions).
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_OUT_OF_REDEMPTIONS PromoCodeInvalidReason = 5
+	// The customer hit their per-customer cap (limits.per_customer_limit).
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED PromoCodeInvalidReason = 6
+	// The subtotal is below scope.min_subtotal.
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL PromoCodeInvalidReason = 7
+	// The booked resource/offering is outside scope.applicable_resources/offerings.
+	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE PromoCodeInvalidReason = 8
 )
 
-// Enum value maps for DiscountType.
+// Enum value maps for PromoCodeInvalidReason.
 var (
-	DiscountType_name = map[int32]string{
-		0: "DISCOUNT_TYPE_UNSPECIFIED",
-		1: "DISCOUNT_TYPE_PERCENTAGE",
-		2: "DISCOUNT_TYPE_FIXED_AMOUNT",
+	PromoCodeInvalidReason_name = map[int32]string{
+		0: "PROMO_CODE_INVALID_REASON_UNSPECIFIED",
+		1: "PROMO_CODE_INVALID_REASON_NOT_FOUND",
+		2: "PROMO_CODE_INVALID_REASON_DISABLED",
+		3: "PROMO_CODE_INVALID_REASON_NOT_STARTED",
+		4: "PROMO_CODE_INVALID_REASON_EXPIRED",
+		5: "PROMO_CODE_INVALID_REASON_OUT_OF_REDEMPTIONS",
+		6: "PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED",
+		7: "PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL",
+		8: "PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE",
 	}
-	DiscountType_value = map[string]int32{
-		"DISCOUNT_TYPE_UNSPECIFIED":  0,
-		"DISCOUNT_TYPE_PERCENTAGE":   1,
-		"DISCOUNT_TYPE_FIXED_AMOUNT": 2,
+	PromoCodeInvalidReason_value = map[string]int32{
+		"PROMO_CODE_INVALID_REASON_UNSPECIFIED":                0,
+		"PROMO_CODE_INVALID_REASON_NOT_FOUND":                  1,
+		"PROMO_CODE_INVALID_REASON_DISABLED":                   2,
+		"PROMO_CODE_INVALID_REASON_NOT_STARTED":                3,
+		"PROMO_CODE_INVALID_REASON_EXPIRED":                    4,
+		"PROMO_CODE_INVALID_REASON_OUT_OF_REDEMPTIONS":         5,
+		"PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED": 6,
+		"PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL":         7,
+		"PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE":               8,
 	}
 )
 
-func (x DiscountType) Enum() *DiscountType {
-	p := new(DiscountType)
+func (x PromoCodeInvalidReason) Enum() *PromoCodeInvalidReason {
+	p := new(PromoCodeInvalidReason)
 	*p = x
 	return p
 }
 
-func (x DiscountType) String() string {
+func (x PromoCodeInvalidReason) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (DiscountType) Descriptor() protoreflect.EnumDescriptor {
+func (PromoCodeInvalidReason) Descriptor() protoreflect.EnumDescriptor {
 	return file_freebusy_promocode_v1_enums_proto_enumTypes[1].Descriptor()
 }
 
-func (DiscountType) Type() protoreflect.EnumType {
+func (PromoCodeInvalidReason) Type() protoreflect.EnumType {
 	return &file_freebusy_promocode_v1_enums_proto_enumTypes[1]
 }
 
-func (x DiscountType) Number() protoreflect.EnumNumber {
+func (x PromoCodeInvalidReason) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use DiscountType.Descriptor instead.
-func (DiscountType) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use PromoCodeInvalidReason.Descriptor instead.
+func (PromoCodeInvalidReason) EnumDescriptor() ([]byte, []int) {
 	return file_freebusy_promocode_v1_enums_proto_rawDescGZIP(), []int{1}
+}
+
+// How the human-facing code string is chosen when creating a promo code.
+type CodeGeneration int32
+
+const (
+	// Unset; treated as MANUAL (use the caller-provided code).
+	CodeGeneration_CODE_GENERATION_UNSPECIFIED CodeGeneration = 0
+	// The caller provides the code in promo_code.code; the server uses it verbatim.
+	CodeGeneration_CODE_GENERATION_MANUAL CodeGeneration = 1
+	// The server generates a unique code; any code in promo_code.code is ignored.
+	CodeGeneration_CODE_GENERATION_AUTO CodeGeneration = 2
+)
+
+// Enum value maps for CodeGeneration.
+var (
+	CodeGeneration_name = map[int32]string{
+		0: "CODE_GENERATION_UNSPECIFIED",
+		1: "CODE_GENERATION_MANUAL",
+		2: "CODE_GENERATION_AUTO",
+	}
+	CodeGeneration_value = map[string]int32{
+		"CODE_GENERATION_UNSPECIFIED": 0,
+		"CODE_GENERATION_MANUAL":      1,
+		"CODE_GENERATION_AUTO":        2,
+	}
+)
+
+func (x CodeGeneration) Enum() *CodeGeneration {
+	p := new(CodeGeneration)
+	*p = x
+	return p
+}
+
+func (x CodeGeneration) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CodeGeneration) Descriptor() protoreflect.EnumDescriptor {
+	return file_freebusy_promocode_v1_enums_proto_enumTypes[2].Descriptor()
+}
+
+func (CodeGeneration) Type() protoreflect.EnumType {
+	return &file_freebusy_promocode_v1_enums_proto_enumTypes[2]
+}
+
+func (x CodeGeneration) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CodeGeneration.Descriptor instead.
+func (CodeGeneration) EnumDescriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_enums_proto_rawDescGZIP(), []int{2}
 }
 
 var File_freebusy_promocode_v1_enums_proto protoreflect.FileDescriptor
@@ -140,11 +219,21 @@ const file_freebusy_promocode_v1_enums_proto_rawDesc = "" +
 	"\x1cPROMO_CODE_STATE_UNSPECIFIED\x10\x00\x12\x1b\n" +
 	"\x17PROMO_CODE_STATE_ACTIVE\x10\x01\x12\x1d\n" +
 	"\x19PROMO_CODE_STATE_DISABLED\x10\x02\x12\x1c\n" +
-	"\x18PROMO_CODE_STATE_EXPIRED\x10\x03*k\n" +
-	"\fDiscountType\x12\x1d\n" +
-	"\x19DISCOUNT_TYPE_UNSPECIFIED\x10\x00\x12\x1c\n" +
-	"\x18DISCOUNT_TYPE_PERCENTAGE\x10\x01\x12\x1e\n" +
-	"\x1aDISCOUNT_TYPE_FIXED_AMOUNT\x10\x02B\xfe\x01\n" +
+	"\x18PROMO_CODE_STATE_EXPIRED\x10\x03*\xb0\x03\n" +
+	"\x16PromoCodeInvalidReason\x12)\n" +
+	"%PROMO_CODE_INVALID_REASON_UNSPECIFIED\x10\x00\x12'\n" +
+	"#PROMO_CODE_INVALID_REASON_NOT_FOUND\x10\x01\x12&\n" +
+	"\"PROMO_CODE_INVALID_REASON_DISABLED\x10\x02\x12)\n" +
+	"%PROMO_CODE_INVALID_REASON_NOT_STARTED\x10\x03\x12%\n" +
+	"!PROMO_CODE_INVALID_REASON_EXPIRED\x10\x04\x120\n" +
+	",PROMO_CODE_INVALID_REASON_OUT_OF_REDEMPTIONS\x10\x05\x128\n" +
+	"4PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED\x10\x06\x120\n" +
+	",PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL\x10\a\x12*\n" +
+	"&PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE\x10\b*g\n" +
+	"\x0eCodeGeneration\x12\x1f\n" +
+	"\x1bCODE_GENERATION_UNSPECIFIED\x10\x00\x12\x1a\n" +
+	"\x16CODE_GENERATION_MANUAL\x10\x01\x12\x18\n" +
+	"\x14CODE_GENERATION_AUTO\x10\x02B\xfe\x01\n" +
 	"\x19com.freebusy.promocode.v1B\n" +
 	"EnumsProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
 
@@ -160,10 +249,11 @@ func file_freebusy_promocode_v1_enums_proto_rawDescGZIP() []byte {
 	return file_freebusy_promocode_v1_enums_proto_rawDescData
 }
 
-var file_freebusy_promocode_v1_enums_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_freebusy_promocode_v1_enums_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_freebusy_promocode_v1_enums_proto_goTypes = []any{
-	(PromoCodeState)(0), // 0: freebusy.promocode.v1.PromoCodeState
-	(DiscountType)(0),   // 1: freebusy.promocode.v1.DiscountType
+	(PromoCodeState)(0),         // 0: freebusy.promocode.v1.PromoCodeState
+	(PromoCodeInvalidReason)(0), // 1: freebusy.promocode.v1.PromoCodeInvalidReason
+	(CodeGeneration)(0),         // 2: freebusy.promocode.v1.CodeGeneration
 }
 var file_freebusy_promocode_v1_enums_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -183,7 +273,7 @@ func file_freebusy_promocode_v1_enums_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_promocode_v1_enums_proto_rawDesc), len(file_freebusy_promocode_v1_enums_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      3,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,

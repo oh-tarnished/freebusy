@@ -184,7 +184,7 @@ components:
               type: array
             promoCode:
               description: 'The promo code to apply to this booking, set at creation,
-                if any. Format: promoCodes/{promo_code}'
+                if any. Format: promo-codes/{promo_code}'
               type: string
             refundAmount:
               description: Amount refunded on cancellation, computed from the resource's
@@ -497,7 +497,7 @@ components:
                 type: array
               promoCode:
                 description: 'The promo code to apply to this booking, set at creation,
-                  if any. Format: promoCodes/{promo_code}'
+                  if any. Format: promo-codes/{promo_code}'
                 type: string
               refundAmount:
                 description: Amount refunded on cancellation, computed from the resource's

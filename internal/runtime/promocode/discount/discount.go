@@ -97,19 +97,19 @@ func redeemable(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, of
 	if pc.GetState() == promocodepbv1.PromoCodeState_PROMO_CODE_STATE_EXPIRED {
 		return ReasonExpired
 	}
-	if start := pc.GetRedeemStartTime(); start != nil && now.Before(start.AsTime()) {
+	if start := pc.GetWindow().GetStartTime(); start != nil && now.Before(start.AsTime()) {
 		return ReasonNotYetRedeemable
 	}
-	if end := pc.GetRedeemEndTime(); end != nil && now.After(end.AsTime()) {
+	if end := pc.GetWindow().GetEndTime(); end != nil && now.After(end.AsTime()) {
 		return ReasonExpired
 	}
-	if max := pc.GetMaxRedemptions(); max > 0 && pc.GetRedemptionCount() >= max {
+	if max := pc.GetLimits().GetMaxRedemptions(); max != nil && pc.GetRedemptionCount() >= max.GetValue() {
 		return ReasonLimitReached
 	}
 	// Money amounts are only comparable within the same currency; a mismatch
 	// between the booking subtotal and the code's thresholds/amounts is treated as
 	// not-applicable rather than silently computed across currencies.
-	if min := pc.GetMinSubtotal(); min != nil {
+	if min := pc.GetScope().GetMinSubtotal(); min != nil {
 		if !sameCurrency(min, subtotal) {
 			return ReasonCurrencyMismatch
 		}
@@ -117,15 +117,13 @@ func redeemable(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, of
 			return ReasonBelowMinimum
 		}
 	}
-	if pc.GetDiscountType() == promocodepbv1.DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT {
-		if amt := pc.GetAmountOff(); amt != nil && !sameCurrency(amt, subtotal) {
-			return ReasonCurrencyMismatch
-		}
+	if amt := pc.GetDiscount().GetAmountOff(); amt != nil && !sameCurrency(amt, subtotal) {
+		return ReasonCurrencyMismatch
 	}
-	if res := pc.GetApplicableResources(); len(res) > 0 && !contains(res, resource) {
+	if res := pc.GetScope().GetApplicableResources(); len(res) > 0 && !contains(res, resource) {
 		return ReasonNotApplicableResource
 	}
-	if off := pc.GetApplicableOfferings(); len(off) > 0 && !contains(off, offering) {
+	if off := pc.GetScope().GetApplicableOfferings(); len(off) > 0 && !contains(off, offering) {
 		return ReasonNotApplicableOffering
 	}
 	return ReasonNone
@@ -136,15 +134,17 @@ func redeemable(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, of
 func computeDiscount(pc *promocodepbv1.PromoCode, subtotal *money.Money) *money.Money {
 	sub := toNanos(subtotal)
 	var d int64
-	switch pc.GetDiscountType() {
-	case promocodepbv1.DiscountType_DISCOUNT_TYPE_PERCENTAGE:
+	// The discount is a oneof: a fixed amount_off (Money) or a percent_off. A
+	// non-nil amount_off means the fixed arm is set; otherwise treat it as a
+	// percentage.
+	if amt := pc.GetDiscount().GetAmountOff(); amt != nil {
+		d = toNanos(amt)
+	} else {
 		// Split the multiply to avoid int64 overflow on very large subtotals:
 		// percent_off <= 100, so (sub%100)*percent can't overflow and the result
 		// never exceeds sub.
-		pct := int64(pc.GetPercentOff())
+		pct := int64(pc.GetDiscount().GetPercentOff())
 		d = sub/100*pct + sub%100*pct/100
-	case promocodepbv1.DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT:
-		d = toNanos(pc.GetAmountOff())
 	}
 	if d > sub {
 		d = sub
@@ -201,10 +201,10 @@ func EffectiveState(pc *promocodepbv1.PromoCode, now time.Time) promocodepbv1.Pr
 	if pc.GetDisabled() {
 		return promocodepbv1.PromoCodeState_PROMO_CODE_STATE_DISABLED
 	}
-	if end := pc.GetRedeemEndTime(); end != nil && now.After(end.AsTime()) {
+	if end := pc.GetWindow().GetEndTime(); end != nil && now.After(end.AsTime()) {
 		return promocodepbv1.PromoCodeState_PROMO_CODE_STATE_EXPIRED
 	}
-	if max := pc.GetMaxRedemptions(); max > 0 && pc.GetRedemptionCount() >= max {
+	if max := pc.GetLimits().GetMaxRedemptions(); max != nil && pc.GetRedemptionCount() >= max.GetValue() {
 		return promocodepbv1.PromoCodeState_PROMO_CODE_STATE_EXPIRED
 	}
 	return promocodepbv1.PromoCodeState_PROMO_CODE_STATE_ACTIVE

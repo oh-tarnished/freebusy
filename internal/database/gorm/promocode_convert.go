@@ -1,42 +1,36 @@
 package gorm
 
 import (
+	"strings"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/runtime/promocode/discount"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // This file holds the pure (side-effect-free) conversions between the protobuf
-// PromoCode and the GORM storage models. The protobuf API embeds Money value
-// objects and string lists; the schema normalizes those into a separate Money
-// table (booking schema) and into applicable-resources / applicable-offerings
-// join rows. The join columns store the full API resource name verbatim so the
-// list values round-trip exactly (the schema has no column for an offering's
-// parent resource).
+// PromoCode and the normalized GORM storage models. The protobuf API nests the
+// discount, redemption window, usage limits, and scope as sub-messages; the
+// schema stores each as its own belongs-to child table (promocode.discounts,
+// promocode.redemption_windows, promocode.usage_limits, promocode.scopes) with a
+// foreign key on promocode.resource. Money value-objects normalize into the
+// shared common.moneys table, and a scope's applicable resources / offerings
+// become join rows. The join columns store the full API resource name verbatim
+// so the list values round-trip exactly.
 
-// Enum maps translate between the protobuf int32 enums and the string values
-// persisted by GORM (which match the database CHECK constraints).
-var (
-	discountTypeToDB = map[promocodepbv1.DiscountType]promocode.DiscountType{
-		promocodepbv1.DiscountType_DISCOUNT_TYPE_PERCENTAGE:   promocode.DiscountTypePercentage,
-		promocodepbv1.DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT: promocode.DiscountTypeFixedAmount,
-	}
-	discountTypeFromDB = map[promocode.DiscountType]promocodepbv1.DiscountType{
-		promocode.DiscountTypePercentage:  promocodepbv1.DiscountType_DISCOUNT_TYPE_PERCENTAGE,
-		promocode.DiscountTypeFixedAmount: promocodepbv1.DiscountType_DISCOUNT_TYPE_FIXED_AMOUNT,
-	}
-	stateToDB = map[promocodepbv1.PromoCodeState]promocode.PromoCodeState{
-		promocodepbv1.PromoCodeState_PROMO_CODE_STATE_ACTIVE:   promocode.PromoCodeStateActive,
-		promocodepbv1.PromoCodeState_PROMO_CODE_STATE_DISABLED: promocode.PromoCodeStateDisabled,
-		promocodepbv1.PromoCodeState_PROMO_CODE_STATE_EXPIRED:  promocode.PromoCodeStateExpired,
-	}
-)
+// stateToDB maps the protobuf state enum to the string values persisted by GORM
+// (which match the database CHECK constraints).
+var stateToDB = map[promocodepbv1.PromoCodeState]promocode.PromoCodeState{
+	promocodepbv1.PromoCodeState_PROMO_CODE_STATE_ACTIVE:   promocode.PromoCodeStateActive,
+	promocodepbv1.PromoCodeState_PROMO_CODE_STATE_DISABLED: promocode.PromoCodeStateDisabled,
+	promocodepbv1.PromoCodeState_PROMO_CODE_STATE_EXPIRED:  promocode.PromoCodeStateExpired,
+}
 
 func ptr[T any](v T) *T { return &v }
 
@@ -72,13 +66,23 @@ func timeToTS(t *time.Time) *timestamppb.Timestamp {
 	return timestamppb.New(*t)
 }
 
+// lastSegment returns the final path component of an AIP resource name
+// ("resources/r1/offerings/o1" -> "o1"), used to populate the join row's id
+// column while the full name round-trips via a separate column.
+func lastSegment(name string) string {
+	if i := strings.LastIndex(name, "/"); i >= 0 {
+		return name[i+1:]
+	}
+	return name
+}
+
 // moneyToModel builds a new Money row (with a fresh ULID id) from a proto Money,
 // or returns nil when m is nil.
-func moneyToModel(m *money.Money) *booking.Money {
+func moneyToModel(m *money.Money) *common.Money {
 	if m == nil {
 		return nil
 	}
-	return &booking.Money{
+	return &common.Money{
 		ID:           ulid.GenerateString(),
 		CurrencyCode: strOrNil(m.GetCurrencyCode()),
 		Units:        ptr(m.GetUnits()),
@@ -86,7 +90,7 @@ func moneyToModel(m *money.Money) *booking.Money {
 	}
 }
 
-func moneyFromModel(m *booking.Money) *money.Money {
+func moneyFromModel(m *common.Money) *money.Money {
 	if m == nil {
 		return nil
 	}
@@ -97,58 +101,131 @@ func moneyFromModel(m *booking.Money) *money.Money {
 	}
 }
 
-// toPromoModel maps the scalar, enum, and timestamp fields of a proto PromoCode
-// onto a fresh GORM model. Identity (ID/Name), Money foreign keys, etag, and the
-// join rows are set by the repository, which owns id generation and the
-// transaction.
-func toPromoModel(pc *promocodepbv1.PromoCode) *promocode.PromoCode {
-	dt, ok := discountTypeToDB[pc.GetDiscountType()]
-	if !ok {
-		dt = promocode.DiscountTypePercentage // not-null column default
+func int64Wrapper(w *wrapperspb.Int64Value) *int64 {
+	if w == nil {
+		return nil
 	}
+	return ptr(w.GetValue())
+}
+
+func int32Wrapper(w *wrapperspb.Int32Value) *int32 {
+	if w == nil {
+		return nil
+	}
+	return ptr(w.GetValue())
+}
+
+// promoGraph is the full set of rows a single PromoCode materializes into: the
+// resource row plus its belongs-to children, the Money rows they reference, and
+// the scope's applicable-resources / -offerings join rows. The repository
+// persists it in one transaction (moneys and children before the resource that
+// references them; join rows after the scope they belong to).
+type promoGraph struct {
+	promo     *promocode.PromoCode
+	discount  *promocode.Discount
+	window    *promocode.RedemptionWindow
+	limits    *promocode.UsageLimits
+	scope     *promocode.Scope
+	moneys    []*common.Money
+	resources []*promocode.ScopeApplicableResources
+	offerings []*promocode.ScopeApplicableOfferings
+}
+
+// buildGraph turns a proto PromoCode into the row graph that backs it, minting a
+// fresh ULID for every row and wiring the foreign keys. Identity (ID/Name/Etag)
+// of the resource row is left to the caller, which owns id assignment and the
+// transaction.
+func buildGraph(pc *promocodepbv1.PromoCode) *promoGraph {
+	g := &promoGraph{}
+
 	state := promocode.PromoCodeStateActive
 	if pc.GetDisabled() {
 		state = promocode.PromoCodeStateDisabled
 	}
-	return &promocode.PromoCode{
-		Code:             pc.GetCode(),
-		DisplayName:      strOrNil(pc.GetDisplayName()),
-		Description:      strOrNil(pc.GetDescription()),
-		DiscountType:     dt,
-		PercentOff:       ptr(pc.GetPercentOff()),
-		RedeemStartTime:  tsToTime(pc.GetRedeemStartTime()),
-		RedeemEndTime:    tsToTime(pc.GetRedeemEndTime()),
-		MaxRedemptions:   ptr(pc.GetMaxRedemptions()),
-		PerCustomerLimit: ptr(pc.GetPerCustomerLimit()),
-		RedemptionCount:  ptr(pc.GetRedemptionCount()),
-		State:            &state,
-		Disabled:         ptr(pc.GetDisabled()),
+	g.promo = &promocode.PromoCode{
+		Code:        pc.GetCode(),
+		DisplayName: strOrNil(pc.GetDisplayName()),
+		Description: strOrNil(pc.GetDescription()),
+		State:       &state,
+		Disabled:    ptr(pc.GetDisabled()),
 	}
+
+	// Discount is required: always materialize a row. A non-nil amount_off is the
+	// fixed-amount arm; otherwise it's the percentage arm.
+	g.discount = &promocode.Discount{ID: ulid.GenerateString()}
+	if amt := moneyToModel(pc.GetDiscount().GetAmountOff()); amt != nil {
+		g.moneys = append(g.moneys, amt)
+		g.discount.AmountOffID = &amt.ID
+		g.discount.AmountCase = ptr(promocode.DiscountAmountCaseAmountOff)
+	} else {
+		g.discount.PercentOff = ptr(pc.GetDiscount().GetPercentOff())
+		g.discount.AmountCase = ptr(promocode.DiscountAmountCasePercentOff)
+	}
+	g.promo.DiscountID = g.discount.ID
+
+	if w := pc.GetWindow(); w != nil {
+		g.window = &promocode.RedemptionWindow{
+			ID:        ulid.GenerateString(),
+			StartTime: tsToTime(w.GetStartTime()),
+			EndTime:   tsToTime(w.GetEndTime()),
+		}
+		g.promo.WindowID = &g.window.ID
+	}
+
+	if l := pc.GetLimits(); l != nil {
+		g.limits = &promocode.UsageLimits{
+			ID:               ulid.GenerateString(),
+			MaxRedemptions:   int64Wrapper(l.GetMaxRedemptions()),
+			PerCustomerLimit: int32Wrapper(l.GetPerCustomerLimit()),
+		}
+		g.promo.LimitsID = &g.limits.ID
+	}
+
+	if sc := pc.GetScope(); sc != nil {
+		g.scope = &promocode.Scope{ID: ulid.GenerateString()}
+		if min := moneyToModel(sc.GetMinSubtotal()); min != nil {
+			g.moneys = append(g.moneys, min)
+			g.scope.MinSubtotalID = &min.ID
+		}
+		for _, name := range sc.GetApplicableResources() {
+			g.resources = append(g.resources, &promocode.ScopeApplicableResources{
+				ID:         ulid.GenerateString(),
+				ScopeID:    g.scope.ID,
+				ResourceID: name,
+			})
+		}
+		for _, name := range sc.GetApplicableOfferings() {
+			g.offerings = append(g.offerings, &promocode.ScopeApplicableOfferings{
+				ID:           ulid.GenerateString(),
+				ScopeID:      g.scope.ID,
+				OfferingID:   lastSegment(name),
+				OfferingName: name,
+			})
+		}
+		g.promo.ScopeID = &g.scope.ID
+	}
+
+	return g
 }
 
-// fromPromoModel assembles the protobuf PromoCode from the stored model, its
-// resolved Money value-objects, and the applicable-resources / -offerings names.
-func fromPromoModel(m *promocode.PromoCode, amount, minSub *booking.Money, resNames, offNames []string) *promocodepbv1.PromoCode {
+// fromModel assembles the protobuf PromoCode from a stored resource row and its
+// preloaded associations (discount + amount money, window, limits, scope + min
+// money + applicable join rows).
+func fromModel(m *promocode.PromoCode) *promocodepbv1.PromoCode {
 	pc := &promocodepbv1.PromoCode{
-		Name:                m.Name,
-		Code:                m.Code,
-		DisplayName:         deref(m.DisplayName),
-		Description:         deref(m.Description),
-		DiscountType:        discountTypeFromDB[m.DiscountType],
-		PercentOff:          deref(m.PercentOff),
-		AmountOff:           moneyFromModel(amount),
-		RedeemStartTime:     timeToTS(m.RedeemStartTime),
-		RedeemEndTime:       timeToTS(m.RedeemEndTime),
-		MaxRedemptions:      deref(m.MaxRedemptions),
-		PerCustomerLimit:    deref(m.PerCustomerLimit),
-		MinSubtotal:         moneyFromModel(minSub),
-		ApplicableResources: resNames,
-		ApplicableOfferings: offNames,
-		RedemptionCount:     deref(m.RedemptionCount),
-		Disabled:            deref(m.Disabled),
-		CreateTime:          timeToTS(&m.CreateTime),
-		UpdateTime:          timeToTS(&m.UpdateTime),
-		Etag:                deref(m.Etag),
+		Name:            m.Name,
+		Code:            m.Code,
+		DisplayName:     deref(m.DisplayName),
+		Description:     deref(m.Description),
+		Discount:        discountFromModel(m.Discount),
+		Window:          windowFromModel(m.Window),
+		Limits:          limitsFromModel(m.Limits),
+		Scope:           scopeFromModel(m.Scope),
+		RedemptionCount: deref(m.RedemptionCount),
+		Disabled:        deref(m.Disabled),
+		CreateTime:      timeToTS(&m.CreateTime),
+		UpdateTime:      timeToTS(&m.UpdateTime),
+		Etag:            deref(m.Etag),
 	}
 	// Derive the lifecycle state from the window/flags rather than trusting the
 	// possibly-stale stored value (a code becomes EXPIRED purely with time).
@@ -156,29 +233,53 @@ func fromPromoModel(m *promocode.PromoCode, amount, minSub *booking.Money, resNa
 	return pc
 }
 
-// buildApplicableResources / buildApplicableOfferings turn the proto name lists
-// into join rows (each with a fresh ULID id) pointing back at promoID. The full
-// API name is stored verbatim in the foreign-key column so reads round-trip.
-func buildApplicableResources(promoID string, names []string) []*promocode.PromoCodeApplicableResources {
-	rows := make([]*promocode.PromoCodeApplicableResources, 0, len(names))
-	for _, name := range names {
-		rows = append(rows, &promocode.PromoCodeApplicableResources{
-			ID:          ulid.GenerateString(),
-			PromoCodeID: promoID,
-			ResourceID:  name,
-		})
+func discountFromModel(d *promocode.Discount) *promocodepbv1.Discount {
+	if d == nil {
+		return nil
 	}
-	return rows
+	out := &promocodepbv1.Discount{}
+	if d.AmountCase != nil && *d.AmountCase == promocode.DiscountAmountCaseAmountOff {
+		out.Amount = &promocodepbv1.Discount_AmountOff{AmountOff: moneyFromModel(d.AmountOff)}
+	} else {
+		out.Amount = &promocodepbv1.Discount_PercentOff{PercentOff: deref(d.PercentOff)}
+	}
+	return out
 }
 
-func buildApplicableOfferings(promoID string, names []string) []*promocode.PromoCodeApplicableOfferings {
-	rows := make([]*promocode.PromoCodeApplicableOfferings, 0, len(names))
-	for _, name := range names {
-		rows = append(rows, &promocode.PromoCodeApplicableOfferings{
-			ID:          ulid.GenerateString(),
-			PromoCodeID: promoID,
-			OfferingID:  name,
-		})
+func windowFromModel(w *promocode.RedemptionWindow) *promocodepbv1.RedemptionWindow {
+	if w == nil {
+		return nil
 	}
-	return rows
+	return &promocodepbv1.RedemptionWindow{
+		StartTime: timeToTS(w.StartTime),
+		EndTime:   timeToTS(w.EndTime),
+	}
+}
+
+func limitsFromModel(l *promocode.UsageLimits) *promocodepbv1.UsageLimits {
+	if l == nil {
+		return nil
+	}
+	out := &promocodepbv1.UsageLimits{}
+	if l.MaxRedemptions != nil {
+		out.MaxRedemptions = wrapperspb.Int64(*l.MaxRedemptions)
+	}
+	if l.PerCustomerLimit != nil {
+		out.PerCustomerLimit = wrapperspb.Int32(*l.PerCustomerLimit)
+	}
+	return out
+}
+
+func scopeFromModel(s *promocode.Scope) *promocodepbv1.Scope {
+	if s == nil {
+		return nil
+	}
+	out := &promocodepbv1.Scope{MinSubtotal: moneyFromModel(s.MinSubtotal)}
+	for i := range s.ScopeApplicableResources {
+		out.ApplicableResources = append(out.ApplicableResources, s.ScopeApplicableResources[i].ResourceID)
+	}
+	for i := range s.ScopeApplicableOfferings {
+		out.ApplicableOfferings = append(out.ApplicableOfferings, s.ScopeApplicableOfferings[i].OfferingName)
+	}
+	return out
 }

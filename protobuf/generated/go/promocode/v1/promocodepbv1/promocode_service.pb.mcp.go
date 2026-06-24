@@ -13,15 +13,17 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/the-protobuf-project/grpc-mcp-gateway/runtime"
+	"github.com/machanirobotics/grpc-mcp-gateway/runtime"
 )
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.
-var PromoCodeService_CreatePromoCodeSchemaJSON = `{"description":"Create a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope.","properties":{"promo_code":{"properties":{"amount_off":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"applicable_offerings":{"items":{"type":"string"},"type":"array"},"applicable_resources":{"items":{"type":"string"},"type":"array"},"code":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"disabled":{"type":"boolean"},"discount_type":{"enum":["DISCOUNT_TYPE_UNSPECIFIED","DISCOUNT_TYPE_PERCENTAGE","DISCOUNT_TYPE_FIXED_AMOUNT"],"type":"string"},"display_name":{"type":"string"},"etag":{"type":"string"},"max_redemptions":{"type":"string"},"min_subtotal":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"name":{"type":"string"},"per_customer_limit":{"type":"integer"},"percent_off":{"type":"integer"},"redeem_end_time":{"format":"date-time","type":["string","null"]},"redeem_start_time":{"format":"date-time","type":["string","null"]},"redemption_count":{"type":"string"},"state":{"enum":["PROMO_CODE_STATE_UNSPECIFIED","PROMO_CODE_STATE_ACTIVE","PROMO_CODE_STATE_DISABLED","PROMO_CODE_STATE_EXPIRED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["code","discount_type"],"type":"object"},"promo_code_id":{"type":"string"},"request_id":{"type":"string"},"validate_only":{"type":"boolean"}},"required":["promo_code"],"type":"object"}`
-var PromoCodeService_DeletePromoCodeSchemaJSON = `{"description":"Delete a promo code by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var PromoCodeService_CreatePromoCodeSchemaJSON = `{"description":"Create a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope.","properties":{"code_generation":{"enum":["CODE_GENERATION_UNSPECIFIED","CODE_GENERATION_MANUAL","CODE_GENERATION_AUTO"],"type":"string"},"promo_code":{"properties":{"code":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"disabled":{"type":"boolean"},"discount":{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"percent_off":{"type":"integer"}},"required":["percent_off"]},{"properties":{"amount_off":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"}},"required":["amount_off"]}]}],"properties":{},"required":[],"type":"object"},"display_name":{"type":"string"},"etag":{"type":"string"},"limits":{"properties":{"max_redemptions":{"nullable":true,"type":"string"},"per_customer_limit":{"nullable":true,"type":"number"}},"required":[],"type":"object"},"name":{"type":"string"},"redemption_count":{"type":"string"},"scope":{"properties":{"applicable_offerings":{"items":{"type":"string"},"type":"array"},"applicable_resources":{"items":{"type":"string"},"type":"array"},"min_subtotal":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"}},"required":[],"type":"object"},"state":{"enum":["PROMO_CODE_STATE_UNSPECIFIED","PROMO_CODE_STATE_ACTIVE","PROMO_CODE_STATE_DISABLED","PROMO_CODE_STATE_EXPIRED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":[],"type":"object"}},"required":["code","discount"],"type":"object"},"promo_code_id":{"type":"string"},"request_id":{"type":"string"},"validate_only":{"type":"boolean"}},"required":["promo_code"],"type":"object"}`
+var PromoCodeService_DeletePromoCodeSchemaJSON = `{"description":"Delete a promo code by resource name.","properties":{"etag":{"type":"string"},"force":{"type":"boolean"},"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var PromoCodeService_GetPromoCodeSchemaJSON = `{"description":"Get a single promo code by resource name, including its caps and redemption count.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var PromoCodeService_GetRedemptionSchemaJSON = `{"description":"Get a single promo code redemption by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var PromoCodeService_ListPromoCodesSchemaJSON = `{"description":"List promo codes. Filter by status, search by code, and paginate.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
-var PromoCodeService_UpdatePromoCodeSchemaJSON = `{"description":"Update a promo code's discount, window, caps, scope, or status.","properties":{"promo_code":{"properties":{"amount_off":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"applicable_offerings":{"items":{"type":"string"},"type":"array"},"applicable_resources":{"items":{"type":"string"},"type":"array"},"code":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"disabled":{"type":"boolean"},"discount_type":{"enum":["DISCOUNT_TYPE_UNSPECIFIED","DISCOUNT_TYPE_PERCENTAGE","DISCOUNT_TYPE_FIXED_AMOUNT"],"type":"string"},"display_name":{"type":"string"},"etag":{"type":"string"},"max_redemptions":{"type":"string"},"min_subtotal":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"},"name":{"type":"string"},"per_customer_limit":{"type":"integer"},"percent_off":{"type":"integer"},"redeem_end_time":{"format":"date-time","type":["string","null"]},"redeem_start_time":{"format":"date-time","type":["string","null"]},"redemption_count":{"type":"string"},"state":{"enum":["PROMO_CODE_STATE_UNSPECIFIED","PROMO_CODE_STATE_ACTIVE","PROMO_CODE_STATE_DISABLED","PROMO_CODE_STATE_EXPIRED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":["code","discount_type"],"type":"object"},"update_mask":{"type":"string"},"validate_only":{"type":"boolean"}},"required":["promo_code"],"type":"object"}`
+var PromoCodeService_ListRedemptionsSchemaJSON = `{"description":"List the redemptions of a promo code, paginated and filterable by customer or time.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"parent":{"type":"string"}},"required":["parent"],"type":"object"}`
+var PromoCodeService_UpdatePromoCodeSchemaJSON = `{"description":"Update a promo code's discount, window, caps, scope, or status.","properties":{"promo_code":{"properties":{"code":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"description":{"type":"string"},"disabled":{"type":"boolean"},"discount":{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"percent_off":{"type":"integer"}},"required":["percent_off"]},{"properties":{"amount_off":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"}},"required":["amount_off"]}]}],"properties":{},"required":[],"type":"object"},"display_name":{"type":"string"},"etag":{"type":"string"},"limits":{"properties":{"max_redemptions":{"nullable":true,"type":"string"},"per_customer_limit":{"nullable":true,"type":"number"}},"required":[],"type":"object"},"name":{"type":"string"},"redemption_count":{"type":"string"},"scope":{"properties":{"applicable_offerings":{"items":{"type":"string"},"type":"array"},"applicable_resources":{"items":{"type":"string"},"type":"array"},"min_subtotal":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"}},"required":[],"type":"object"},"state":{"enum":["PROMO_CODE_STATE_UNSPECIFIED","PROMO_CODE_STATE_ACTIVE","PROMO_CODE_STATE_DISABLED","PROMO_CODE_STATE_EXPIRED"],"type":"string"},"update_time":{"format":"date-time","type":["string","null"]},"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":[],"type":"object"}},"required":["code","discount"],"type":"object"},"update_mask":{"type":"string"},"validate_only":{"type":"boolean"}},"required":["promo_code"],"type":"object"}`
 var PromoCodeService_ValidatePromoCodeSchemaJSON = `{"description":"Check whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.","properties":{"code":{"type":"string"},"customer":{"type":"string"},"offering":{"type":"string"},"resource":{"type":"string"},"subtotal":{"properties":{"currency_code":{"type":"string"},"nanos":{"type":"integer"},"units":{"type":"string"}},"required":[],"type":"object"}},"required":["code","subtotal"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
@@ -30,7 +32,9 @@ var (
 	PromoCodeService_CreatePromoCodeTool   = runtime.MustCreateTool("promo_code_service-create_promo_code_v1", `Create a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope.`, PromoCodeService_CreatePromoCodeSchemaJSON)
 	PromoCodeService_DeletePromoCodeTool   = runtime.MustCreateTool("promo_code_service-delete_promo_code_v1", `Delete a promo code by resource name.`, PromoCodeService_DeletePromoCodeSchemaJSON)
 	PromoCodeService_GetPromoCodeTool      = runtime.MustCreateTool("promo_code_service-get_promo_code_v1", `Get a single promo code by resource name, including its caps and redemption count.`, PromoCodeService_GetPromoCodeSchemaJSON)
+	PromoCodeService_GetRedemptionTool     = runtime.MustCreateTool("promo_code_service-get_redemption_v1", `Get a single promo code redemption by resource name.`, PromoCodeService_GetRedemptionSchemaJSON)
 	PromoCodeService_ListPromoCodesTool    = runtime.MustCreateTool("promo_code_service-list_promo_codes_v1", `List promo codes. Filter by status, search by code, and paginate.`, PromoCodeService_ListPromoCodesSchemaJSON)
+	PromoCodeService_ListRedemptionsTool   = runtime.MustCreateTool("promo_code_service-list_redemptions_v1", `List the redemptions of a promo code, paginated and filterable by customer or time.`, PromoCodeService_ListRedemptionsSchemaJSON)
 	PromoCodeService_UpdatePromoCodeTool   = runtime.MustCreateTool("promo_code_service-update_promo_code_v1", `Update a promo code's discount, window, caps, scope, or status.`, PromoCodeService_UpdatePromoCodeSchemaJSON)
 	PromoCodeService_ValidatePromoCodeTool = runtime.MustCreateTool("promo_code_service-validate_promo_code_v1", `Check whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.`, PromoCodeService_ValidatePromoCodeSchemaJSON)
 )
@@ -44,7 +48,9 @@ type PromoCodeServiceMCPServer interface {
 	CreatePromoCode(ctx context.Context, req *CreatePromoCodeRequest) (*PromoCode, error)
 	DeletePromoCode(ctx context.Context, req *DeletePromoCodeRequest) (*emptypb.Empty, error)
 	GetPromoCode(ctx context.Context, req *GetPromoCodeRequest) (*PromoCode, error)
+	GetRedemption(ctx context.Context, req *GetRedemptionRequest) (*Redemption, error)
 	ListPromoCodes(ctx context.Context, req *ListPromoCodesRequest) (*ListPromoCodesResponse, error)
+	ListRedemptions(ctx context.Context, req *ListRedemptionsRequest) (*ListRedemptionsResponse, error)
 	UpdatePromoCode(ctx context.Context, req *UpdatePromoCodeRequest) (*PromoCode, error)
 	ValidatePromoCode(ctx context.Context, req *ValidatePromoCodeRequest) (*ValidatePromoCodeResponse, error)
 }
@@ -55,7 +61,9 @@ type PromoCodeServiceMCPClient interface {
 	CreatePromoCode(ctx context.Context, req *CreatePromoCodeRequest, opts ...grpc.CallOption) (*PromoCode, error)
 	DeletePromoCode(ctx context.Context, req *DeletePromoCodeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetPromoCode(ctx context.Context, req *GetPromoCodeRequest, opts ...grpc.CallOption) (*PromoCode, error)
+	GetRedemption(ctx context.Context, req *GetRedemptionRequest, opts ...grpc.CallOption) (*Redemption, error)
 	ListPromoCodes(ctx context.Context, req *ListPromoCodesRequest, opts ...grpc.CallOption) (*ListPromoCodesResponse, error)
+	ListRedemptions(ctx context.Context, req *ListRedemptionsRequest, opts ...grpc.CallOption) (*ListRedemptionsResponse, error)
 	UpdatePromoCode(ctx context.Context, req *UpdatePromoCodeRequest, opts ...grpc.CallOption) (*PromoCode, error)
 	ValidatePromoCode(ctx context.Context, req *ValidatePromoCodeRequest, opts ...grpc.CallOption) (*ValidatePromoCodeResponse, error)
 }
@@ -127,6 +135,26 @@ func RegisterPromoCodeServiceMCPHandler(s *mcp.Server, srv PromoCodeServiceMCPSe
 		})
 	}
 	{
+		tool := runtime.PrepareToolWithExtras(PromoCodeService_GetRedemptionTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq GetRedemptionRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			resp, err := srv.GetRedemption(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
 		tool := runtime.PrepareToolWithExtras(PromoCodeService_ListPromoCodesTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -136,6 +164,26 @@ func RegisterPromoCodeServiceMCPHandler(s *mcp.Server, srv PromoCodeServiceMCPSe
 				return nil, err
 			}
 			resp, err := srv.ListPromoCodes(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(PromoCodeService_ListRedemptionsTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq ListRedemptionsRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			resp, err := srv.ListRedemptions(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -190,6 +238,12 @@ func RegisterPromoCodeServiceMCPHandler(s *mcp.Server, srv PromoCodeServiceMCPSe
 		URITemplate: "promoCode://promoCodes/{promo_code}",
 		Name:        "PromoCode",
 		Description: "PromoCode resource (promoCodes/{promo_code})",
+		MIMEType:    "application/json",
+	}, runtime.DefaultResourceHandler())
+	s.AddResourceTemplate(&mcp.ResourceTemplate{
+		URITemplate: "redemption://promoCodes/{promo_code}/redemptions/{redemption}",
+		Name:        "Redemption",
+		Description: "Redemption resource (promoCodes/{promo_code}/redemptions/{redemption})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 
@@ -303,6 +357,27 @@ func ForwardToPromoCodeServiceMCPClient(s *mcp.Server, client PromoCodeServiceMC
 		})
 	}
 	{
+		tool := runtime.PrepareToolWithExtras(PromoCodeService_GetRedemptionTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq GetRedemptionRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			ctx = runtime.ForwardMetadata(ctx)
+			resp, err := client.GetRedemption(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
 		tool := runtime.PrepareToolWithExtras(PromoCodeService_ListPromoCodesTool, cfg.ExtraProperties)
 		tool = runtime.SetToolAppMeta(tool, appResourceURI)
 		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -313,6 +388,27 @@ func ForwardToPromoCodeServiceMCPClient(s *mcp.Server, client PromoCodeServiceMC
 			}
 			ctx = runtime.ForwardMetadata(ctx)
 			resp, err := client.ListPromoCodes(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(PromoCodeService_ListRedemptionsTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq ListRedemptionsRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			ctx = runtime.ForwardMetadata(ctx)
+			resp, err := client.ListRedemptions(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -369,6 +465,12 @@ func ForwardToPromoCodeServiceMCPClient(s *mcp.Server, client PromoCodeServiceMC
 		URITemplate: "promoCode://promoCodes/{promo_code}",
 		Name:        "PromoCode",
 		Description: "PromoCode resource (promoCodes/{promo_code})",
+		MIMEType:    "application/json",
+	}, runtime.DefaultResourceHandler())
+	s.AddResourceTemplate(&mcp.ResourceTemplate{
+		URITemplate: "redemption://promoCodes/{promo_code}/redemptions/{redemption}",
+		Name:        "Redemption",
+		Description: "Redemption resource (promoCodes/{promo_code}/redemptions/{redemption})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 

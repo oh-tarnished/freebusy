@@ -22,6 +22,10 @@ type ListParams struct {
 	PageSize  int32
 	PageToken string
 	OrderBy   string
+	// Filter is the parsed, AND-combined set of filter conditions (AIP-160).
+	// Empty means no filtering. Adapters validate each condition's Field against
+	// the columns they can filter and translate the rest to their backend query.
+	Filter []FilterCondition
 }
 
 // OrderTerm is a validated sort instruction: a backend-neutral field name plus

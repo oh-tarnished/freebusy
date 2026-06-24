@@ -1,12 +1,14 @@
 components:
   schemas:
-    freebusy.promocode.v1.PromoCode:
-      description: A redeemable discount applied to a booking's subtotal. Scoped by
-        a redemption window, usage caps, a minimum subtotal, and an optional set of
-        resources / offerings it applies to.
+    freebusy.promocode.v1.Discount:
+      description: Discount describes how a promo code reduces a subtotal. Nested
+        value object → belongs-to child table promocode.discounts (FK discount_id
+        on promo_codes). Exactly one of percent_off / amount_off is set; the oneof
+        case is the discriminator, so no separate type enum is needed.
       properties:
         amountOff:
-          description: Fixed amount off, when discount_type is FIXED_AMOUNT.
+          description: Fixed amount off the subtotal. Normalized into the shared common.moneys
+            table (belongs-to via amount_off_id).
           properties:
             currencyCode:
               description: The three-letter currency code defined in ISO 4217.
@@ -27,18 +29,16 @@ components:
               type: integer
               x-kubernetes-int-or-string: true
           type: object
-        applicableOfferings:
-          description: 'Offerings the code applies to. Empty means all offerings.
-            Format: resources/{resource}/offerings/{offering}'
-          items:
-            type: string
-          type: array
-        applicableResources:
-          description: 'Resources the code applies to. Empty means all resources.
-            Format: resources/{resource}'
-          items:
-            type: string
-          type: array
+        percentOff:
+          description: Percentage off the subtotal (1-100).
+          format: int32
+          type: integer
+      type: object
+    freebusy.promocode.v1.PromoCode:
+      description: A redeemable discount applied to a booking's subtotal. Scoped by
+        a redemption window, usage caps, a minimum subtotal, and an optional set of
+        resources / offerings it applies to.
+      properties:
         code:
           description: The human-entered code, unique across all promo codes (e.g.
             "SUMMER25").
@@ -54,13 +54,37 @@ components:
           description: If true, the code is manually disabled regardless of its window
             and caps.
           type: boolean
-        discountType:
-          description: Whether the discount is a percentage or a fixed amount.
-          enum:
-          - DISCOUNT_TYPE_UNSPECIFIED
-          - DISCOUNT_TYPE_PERCENTAGE
-          - DISCOUNT_TYPE_FIXED_AMOUNT
-          type: string
+        discount:
+          description: How the discount is computed → belongs-to child table promocode.discounts.
+          properties:
+            amountOff:
+              description: Fixed amount off the subtotal. Normalized into the shared
+                common.moneys table (belongs-to via amount_off_id).
+              properties:
+                currencyCode:
+                  description: The three-letter currency code defined in ISO 4217.
+                  type: string
+                nanos:
+                  description: Number of nano (10^-9) units of the amount. The value
+                    must be between -999,999,999 and +999,999,999 inclusive. If `units`
+                    is positive, `nanos` must be positive or zero. If `units` is zero,
+                    `nanos` can be positive, zero, or negative. If `units` is negative,
+                    `nanos` must be negative or zero. For example $-1.75 is represented
+                    as `units`=-1 and `nanos`=-750,000,000.
+                  format: int32
+                  type: integer
+                units:
+                  description: The whole units of the amount. For example if `currencyCode`
+                    is `"USD"`, then 1 unit is one US dollar.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+              type: object
+            percentOff:
+              description: Percentage off the subtotal (1-100).
+              format: int32
+              type: integer
+          type: object
         displayName:
           description: Internal display name (not shown to customers).
           type: string
@@ -68,14 +92,115 @@ components:
           description: Opaque version for optimistic concurrency (AIP-154); echo on
             update/delete.
           type: string
-        maxRedemptions:
-          description: Maximum total redemptions across all customers. Zero means
-            unlimited.
+        limits:
+          description: Redemption caps → belongs-to promocode.usage_limits.
+          properties:
+            maxRedemptions:
+              description: Maximum total redemptions across all customers. Unset means
+                unlimited.
+              maximum: 9223372036854776000
+              minimum: -9.223372036854776e+18
+              nullable: true
+              type: integer
+            perCustomerLimit:
+              description: Maximum redemptions per customer. Unset means unlimited.
+              maximum: 2147483647
+              minimum: -2147483648
+              nullable: true
+              type: integer
+          type: object
+        name:
+          description: 'The promo code name. Format: promoCodes/{promo_code}'
+          type: string
+        redemptionCount:
+          description: How many times the code has been redeemed. Cheap summary on
+            the resource; the individual redemptions are a paginated sub-collection
+            (promoCodes/{promo_code}/redemptions) listed via ListRedemptions, not
+            inlined here, so reads stay bounded as redemptions accumulate.
           format: int64
           type: integer
           x-kubernetes-int-or-string: true
-        minSubtotal:
-          description: Minimum subtotal required for the code to apply.
+        scope:
+          description: What the code applies to (eligibility) → belongs-to promocode.scopes.
+          properties:
+            applicableOfferings:
+              description: 'Offerings the code applies to. Empty means all offerings.
+                Format: resources/{resource}/offerings/{offering}'
+              items:
+                type: string
+              type: array
+            applicableResources:
+              description: 'Resources the code applies to. Empty means all resources.
+                Format: resources/{resource}'
+              items:
+                type: string
+              type: array
+            minSubtotal:
+              description: Minimum subtotal required for the code to apply. Normalized
+                into the shared common.moneys table (belongs-to via min_subtotal_id).
+              properties:
+                currencyCode:
+                  description: The three-letter currency code defined in ISO 4217.
+                  type: string
+                nanos:
+                  description: Number of nano (10^-9) units of the amount. The value
+                    must be between -999,999,999 and +999,999,999 inclusive. If `units`
+                    is positive, `nanos` must be positive or zero. If `units` is zero,
+                    `nanos` can be positive, zero, or negative. If `units` is negative,
+                    `nanos` must be negative or zero. For example $-1.75 is represented
+                    as `units`=-1 and `nanos`=-750,000,000.
+                  format: int32
+                  type: integer
+                units:
+                  description: The whole units of the amount. For example if `currencyCode`
+                    is `"USD"`, then 1 unit is one US dollar.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+              type: object
+          type: object
+        state:
+          description: 'Derived lifecycle state, recomputed on every read/validate
+            (no background job): DISABLED when `disabled` is set; EXPIRED once now
+            > window.end_time (the expiry) or the code is out of redemptions; otherwise
+            ACTIVE. This is how a code auto-disables at its expiry without a stored
+            flag to flip.'
+          enum:
+          - PROMO_CODE_STATE_UNSPECIFIED
+          - PROMO_CODE_STATE_ACTIVE
+          - PROMO_CODE_STATE_DISABLED
+          - PROMO_CODE_STATE_EXPIRED
+          type: string
+        updateTime:
+          description: Last-modification timestamp.
+          format: date-time
+          type: string
+        window:
+          description: When the code is redeemable → belongs-to promocode.redemption_windows.
+          properties:
+            endTime:
+              description: 'The code''s expiry: the latest moment it can be redeemed.
+                Once now passes this, the derived PromoCode.state becomes EXPIRED.
+                Unset means never expires.'
+              format: date-time
+              type: string
+            startTime:
+              description: Earliest the code can be redeemed. Unset means no lower
+                bound.
+              format: date-time
+              type: string
+          type: object
+      type: object
+    freebusy.promocode.v1.Redemption:
+      description: Redemption is a single use of a promo code, modeled as a sub-resource
+        of PromoCode rather than an inline list — so it has its own name/lifecycle
+        and is listed with paging (ListRedemptions). The {promo_code} parent segment
+        generates the promo_code_id FK back to the owning code (1:n into promocode.redemptions);
+        amount_applied is the shared google.type.Money in common.moneys. Redemptions
+        are created during CreateBooking, never directly.
+      properties:
+        amountApplied:
+          description: The discount actually applied at redemption.
           properties:
             currencyCode:
               description: The three-letter currency code defined in ISO 4217.
@@ -96,43 +221,94 @@ components:
               type: integer
               x-kubernetes-int-or-string: true
           type: object
-        name:
-          description: 'The promo code name. Format: promoCodes/{promo_code}'
+        booking:
+          description: 'The booking the code was applied to. Format: bookings/{booking}'
           type: string
-        perCustomerLimit:
-          description: Maximum redemptions per customer. Zero means unlimited.
-          format: int32
-          type: integer
-        percentOff:
-          description: Percentage off (1-100), when discount_type is PERCENTAGE.
-          format: int32
-          type: integer
-        redeemEndTime:
-          description: Latest the code can be redeemed. Unset means no upper bound.
+        customer:
+          description: 'The customer who redeemed the code. Format: users/{user}'
+          type: string
+        name:
+          description: 'The redemption resource name. Format: promoCodes/{promo_code}/redemptions/{redemption}'
+          type: string
+        redeemedTime:
+          description: When the code was redeemed.
           format: date-time
           type: string
-        redeemStartTime:
+      type: object
+    freebusy.promocode.v1.RedemptionWindow:
+      description: RedemptionWindow bounds when a code can be redeemed; an unset bound
+        is open-ended. Nested value object → belongs-to promocode.redemption_windows.
+      properties:
+        endTime:
+          description: 'The code''s expiry: the latest moment it can be redeemed.
+            Once now passes this, the derived PromoCode.state becomes EXPIRED. Unset
+            means never expires.'
+          format: date-time
+          type: string
+        startTime:
           description: Earliest the code can be redeemed. Unset means no lower bound.
           format: date-time
           type: string
-        redemptionCount:
-          description: How many times the code has been redeemed.
-          format: int64
+      type: object
+    freebusy.promocode.v1.Scope:
+      description: Scope restricts which bookings a code applies to. Nested value
+        object → belongs-to promocode.scopes. Its repeated resource references and
+        Money normalize one level deeper (array columns / common.moneys).
+      properties:
+        applicableOfferings:
+          description: 'Offerings the code applies to. Empty means all offerings.
+            Format: resources/{resource}/offerings/{offering}'
+          items:
+            type: string
+          type: array
+        applicableResources:
+          description: 'Resources the code applies to. Empty means all resources.
+            Format: resources/{resource}'
+          items:
+            type: string
+          type: array
+        minSubtotal:
+          description: Minimum subtotal required for the code to apply. Normalized
+            into the shared common.moneys table (belongs-to via min_subtotal_id).
+          properties:
+            currencyCode:
+              description: The three-letter currency code defined in ISO 4217.
+              type: string
+            nanos:
+              description: Number of nano (10^-9) units of the amount. The value must
+                be between -999,999,999 and +999,999,999 inclusive. If `units` is
+                positive, `nanos` must be positive or zero. If `units` is zero, `nanos`
+                can be positive, zero, or negative. If `units` is negative, `nanos`
+                must be negative or zero. For example $-1.75 is represented as `units`=-1
+                and `nanos`=-750,000,000.
+              format: int32
+              type: integer
+            units:
+              description: The whole units of the amount. For example if `currencyCode`
+                is `"USD"`, then 1 unit is one US dollar.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+          type: object
+      type: object
+    freebusy.promocode.v1.UsageLimits:
+      description: UsageLimits caps how often a code can be redeemed. Nested value
+        object → belongs-to promocode.usage_limits. The caps are wrapper types so
+        "unset" (unlimited) is distinct from an explicit value, including 0.
+      properties:
+        maxRedemptions:
+          description: Maximum total redemptions across all customers. Unset means
+            unlimited.
+          maximum: 9223372036854776000
+          minimum: -9.223372036854776e+18
+          nullable: true
           type: integer
-          x-kubernetes-int-or-string: true
-        state:
-          description: 'Derived lifecycle state: ACTIVE, DISABLED (when `disabled`
-            is set), or EXPIRED (past the window or out of redemptions).'
-          enum:
-          - PROMO_CODE_STATE_UNSPECIFIED
-          - PROMO_CODE_STATE_ACTIVE
-          - PROMO_CODE_STATE_DISABLED
-          - PROMO_CODE_STATE_EXPIRED
-          type: string
-        updateTime:
-          description: Last-modification timestamp.
-          format: date-time
-          type: string
+        perCustomerLimit:
+          description: Maximum redemptions per customer. Unset means unlimited.
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          type: integer
       type: object
 info:
   title: OpenAPI Spec for Solo APIs.

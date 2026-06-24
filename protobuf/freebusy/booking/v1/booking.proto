@@ -83,10 +83,10 @@ message Booking {
   google.type.Money price = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // The promo code to apply to this booking, set at creation, if any.
-  // Format: promoCodes/{promo_code}
+  // Format: promo-codes/{promo_code}
   string promo_code = 12 [
     (google.api.field_behavior) = IMMUTABLE,
-    (google.api.resource_reference) = {type: "freebusy.promocode.v1/PromoCode"}
+    (google.api.resource_reference) = {type: "oh-tarnished.dev/PromoCode"}
   ];
 
   // Discount applied from the promo code.

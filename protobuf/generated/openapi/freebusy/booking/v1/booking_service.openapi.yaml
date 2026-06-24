@@ -322,7 +322,7 @@ components:
                     type: string
                     description: |-
                         The promo code to apply to this booking, set at creation, if any.
-                         Format: promoCodes/{promo_code}
+                         Format: promo-codes/{promo_code}
                 discount:
                     readOnly: true
                     allOf:

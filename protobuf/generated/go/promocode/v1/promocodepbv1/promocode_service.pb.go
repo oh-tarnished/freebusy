@@ -27,16 +27,18 @@ var File_freebusy_promocode_v1_promocode_service_proto protoreflect.FileDescript
 
 const file_freebusy_promocode_v1_promocode_service_proto_rawDesc = "" +
 	"\n" +
-	"-freebusy/promocode/v1/promocode_service.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a.freebusy/promocode/v1/promocode_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xa2\f\n" +
-	"\x10PromoCodeService\x12\xcc\x01\n" +
-	"\x0eListPromoCodes\x12,.freebusy.promocode.v1.ListPromoCodesRequest\x1a-.freebusy.promocode.v1.ListPromoCodesResponse\"]\xca\xf3\x18C\x12AList promo codes. Filter by status, search by code, and paginate.\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/promoCodes\x12\xdc\x01\n" +
-	"\fGetPromoCode\x12*.freebusy.promocode.v1.GetPromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"~\xdaA\x04name\xca\xf3\x18T\x12RGet a single promo code by resource name, including its caps and redemption count.\x82\xd3\xe4\x93\x02\x19\x12\x17/v1/{name=promoCodes/*}\x12\x8c\x02\n" +
-	"\x0fCreatePromoCode\x12-.freebusy.promocode.v1.CreatePromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\xa7\x01\xdaA\x18promo_code,promo_code_id\xca\xf3\x18f\x12dCreate a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope.\x82\xd3\xe4\x93\x02\x1c:\n" +
-	"promo_code\"\x0e/v1/promoCodes\x12\xf9\x01\n" +
-	"\x0fUpdatePromoCode\x12-.freebusy.promocode.v1.UpdatePromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\x94\x01\xdaA\x16promo_code,update_mask\xca\xf3\x18A\x12?Update a promo code's discount, window, caps, scope, or status.\x82\xd3\xe4\x93\x020:\n" +
-	"promo_code2\"/v1/{promo_code.name=promoCodes/*}\x12\xab\x01\n" +
-	"\x0fDeletePromoCode\x12-.freebusy.promocode.v1.DeletePromoCodeRequest\x1a\x16.google.protobuf.Empty\"Q\xdaA\x04name\xca\xf3\x18'\x12%Delete a promo code by resource name.\x82\xd3\xe4\x93\x02\x19*\x17/v1/{name=promoCodes/*}\x12\xb3\x02\n" +
-	"\x11ValidatePromoCode\x12/.freebusy.promocode.v1.ValidatePromoCodeRequest\x1a0.freebusy.promocode.v1.ValidatePromoCodeResponse\"\xba\x01\xdaA\rcode,subtotal\xca\xf3\x18{\x12yCheck whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.\x82\xd3\xe4\x93\x02%:\x01*\" /v1/promoCodes:validatePromoCode\x1aq\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18R\n" +
+	"-freebusy/promocode/v1/promocode_service.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a.freebusy/promocode/v1/promocode_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xca\x10\n" +
+	"\x10PromoCodeService\x12\xd6\x01\n" +
+	"\x0eListPromoCodes\x12,.freebusy.promocode.v1.ListPromoCodesRequest\x1a-.freebusy.promocode.v1.ListPromoCodesResponse\"g\xca\xf3\x18C\x12AList promo codes. Filter by status, search by code, and paginate.\x82\xd3\xe4\x93\x02\x1a\x12\x18/promocode/v1/promoCodes\x12\xe7\x01\n" +
+	"\fGetPromoCode\x12*.freebusy.promocode.v1.GetPromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\x88\x01\xdaA\x04name\xca\xf3\x18T\x12RGet a single promo code by resource name, including its caps and redemption count.\x82\xd3\xe4\x93\x02#\x12!/promocode/v1/{name=promoCodes/*}\x12\x96\x02\n" +
+	"\x0fCreatePromoCode\x12-.freebusy.promocode.v1.CreatePromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\xb1\x01\xdaA\x18promo_code,promo_code_id\xca\xf3\x18f\x12dCreate a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope.\x82\xd3\xe4\x93\x02&:\n" +
+	"promo_code\"\x18/promocode/v1/promoCodes\x12\x83\x02\n" +
+	"\x0fUpdatePromoCode\x12-.freebusy.promocode.v1.UpdatePromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\x9e\x01\xdaA\x16promo_code,update_mask\xca\xf3\x18A\x12?Update a promo code's discount, window, caps, scope, or status.\x82\xd3\xe4\x93\x02::\n" +
+	"promo_code2,/promocode/v1/{promo_code.name=promoCodes/*}\x12\xb5\x01\n" +
+	"\x0fDeletePromoCode\x12-.freebusy.promocode.v1.DeletePromoCodeRequest\x1a\x16.google.protobuf.Empty\"[\xdaA\x04name\xca\xf3\x18'\x12%Delete a promo code by resource name.\x82\xd3\xe4\x93\x02#*!/promocode/v1/{name=promoCodes/*}\x12\xbd\x02\n" +
+	"\x11ValidatePromoCode\x12/.freebusy.promocode.v1.ValidatePromoCodeRequest\x1a0.freebusy.promocode.v1.ValidatePromoCodeResponse\"\xc4\x01\xdaA\rcode,subtotal\xca\xf3\x18{\x12yCheck whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.\x82\xd3\xe4\x93\x02/:\x01*\"*/promocode/v1/promoCodes:validatePromoCode\x12\x8c\x02\n" +
+	"\x0fListRedemptions\x12-.freebusy.promocode.v1.ListRedemptionsRequest\x1a..freebusy.promocode.v1.ListRedemptionsResponse\"\x99\x01\xdaA\x06parent\xca\xf3\x18U\x12SList the redemptions of a promo code, paginated and filterable by customer or time.\x82\xd3\xe4\x93\x021\x12//promocode/v1/{parent=promoCodes/*}/redemptions\x12\xd9\x01\n" +
+	"\rGetRedemption\x12+.freebusy.promocode.v1.GetRedemptionRequest\x1a!.freebusy.promocode.v1.Redemption\"x\xdaA\x04name\xca\xf3\x186\x124Get a single promo code redemption by resource name.\x82\xd3\xe4\x93\x021\x12//promocode/v1/{name=promoCodes/*/redemptions/*}\x1aq\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18R\n" +
 	"P\n" +
 	"\vPromo Codes\x12\x051.0.0\x1a:Manage discount codes and validate them against a booking.B\x89\x02\n" +
 	"\x19com.freebusy.promocode.v1B\x15PromocodeServiceProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
@@ -48,29 +50,37 @@ var file_freebusy_promocode_v1_promocode_service_proto_goTypes = []any{
 	(*UpdatePromoCodeRequest)(nil),    // 3: freebusy.promocode.v1.UpdatePromoCodeRequest
 	(*DeletePromoCodeRequest)(nil),    // 4: freebusy.promocode.v1.DeletePromoCodeRequest
 	(*ValidatePromoCodeRequest)(nil),  // 5: freebusy.promocode.v1.ValidatePromoCodeRequest
-	(*ListPromoCodesResponse)(nil),    // 6: freebusy.promocode.v1.ListPromoCodesResponse
-	(*PromoCode)(nil),                 // 7: freebusy.promocode.v1.PromoCode
-	(*emptypb.Empty)(nil),             // 8: google.protobuf.Empty
-	(*ValidatePromoCodeResponse)(nil), // 9: freebusy.promocode.v1.ValidatePromoCodeResponse
+	(*ListRedemptionsRequest)(nil),    // 6: freebusy.promocode.v1.ListRedemptionsRequest
+	(*GetRedemptionRequest)(nil),      // 7: freebusy.promocode.v1.GetRedemptionRequest
+	(*ListPromoCodesResponse)(nil),    // 8: freebusy.promocode.v1.ListPromoCodesResponse
+	(*PromoCode)(nil),                 // 9: freebusy.promocode.v1.PromoCode
+	(*emptypb.Empty)(nil),             // 10: google.protobuf.Empty
+	(*ValidatePromoCodeResponse)(nil), // 11: freebusy.promocode.v1.ValidatePromoCodeResponse
+	(*ListRedemptionsResponse)(nil),   // 12: freebusy.promocode.v1.ListRedemptionsResponse
+	(*Redemption)(nil),                // 13: freebusy.promocode.v1.Redemption
 }
 var file_freebusy_promocode_v1_promocode_service_proto_depIdxs = []int32{
-	0, // 0: freebusy.promocode.v1.PromoCodeService.ListPromoCodes:input_type -> freebusy.promocode.v1.ListPromoCodesRequest
-	1, // 1: freebusy.promocode.v1.PromoCodeService.GetPromoCode:input_type -> freebusy.promocode.v1.GetPromoCodeRequest
-	2, // 2: freebusy.promocode.v1.PromoCodeService.CreatePromoCode:input_type -> freebusy.promocode.v1.CreatePromoCodeRequest
-	3, // 3: freebusy.promocode.v1.PromoCodeService.UpdatePromoCode:input_type -> freebusy.promocode.v1.UpdatePromoCodeRequest
-	4, // 4: freebusy.promocode.v1.PromoCodeService.DeletePromoCode:input_type -> freebusy.promocode.v1.DeletePromoCodeRequest
-	5, // 5: freebusy.promocode.v1.PromoCodeService.ValidatePromoCode:input_type -> freebusy.promocode.v1.ValidatePromoCodeRequest
-	6, // 6: freebusy.promocode.v1.PromoCodeService.ListPromoCodes:output_type -> freebusy.promocode.v1.ListPromoCodesResponse
-	7, // 7: freebusy.promocode.v1.PromoCodeService.GetPromoCode:output_type -> freebusy.promocode.v1.PromoCode
-	7, // 8: freebusy.promocode.v1.PromoCodeService.CreatePromoCode:output_type -> freebusy.promocode.v1.PromoCode
-	7, // 9: freebusy.promocode.v1.PromoCodeService.UpdatePromoCode:output_type -> freebusy.promocode.v1.PromoCode
-	8, // 10: freebusy.promocode.v1.PromoCodeService.DeletePromoCode:output_type -> google.protobuf.Empty
-	9, // 11: freebusy.promocode.v1.PromoCodeService.ValidatePromoCode:output_type -> freebusy.promocode.v1.ValidatePromoCodeResponse
-	6, // [6:12] is the sub-list for method output_type
-	0, // [0:6] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: freebusy.promocode.v1.PromoCodeService.ListPromoCodes:input_type -> freebusy.promocode.v1.ListPromoCodesRequest
+	1,  // 1: freebusy.promocode.v1.PromoCodeService.GetPromoCode:input_type -> freebusy.promocode.v1.GetPromoCodeRequest
+	2,  // 2: freebusy.promocode.v1.PromoCodeService.CreatePromoCode:input_type -> freebusy.promocode.v1.CreatePromoCodeRequest
+	3,  // 3: freebusy.promocode.v1.PromoCodeService.UpdatePromoCode:input_type -> freebusy.promocode.v1.UpdatePromoCodeRequest
+	4,  // 4: freebusy.promocode.v1.PromoCodeService.DeletePromoCode:input_type -> freebusy.promocode.v1.DeletePromoCodeRequest
+	5,  // 5: freebusy.promocode.v1.PromoCodeService.ValidatePromoCode:input_type -> freebusy.promocode.v1.ValidatePromoCodeRequest
+	6,  // 6: freebusy.promocode.v1.PromoCodeService.ListRedemptions:input_type -> freebusy.promocode.v1.ListRedemptionsRequest
+	7,  // 7: freebusy.promocode.v1.PromoCodeService.GetRedemption:input_type -> freebusy.promocode.v1.GetRedemptionRequest
+	8,  // 8: freebusy.promocode.v1.PromoCodeService.ListPromoCodes:output_type -> freebusy.promocode.v1.ListPromoCodesResponse
+	9,  // 9: freebusy.promocode.v1.PromoCodeService.GetPromoCode:output_type -> freebusy.promocode.v1.PromoCode
+	9,  // 10: freebusy.promocode.v1.PromoCodeService.CreatePromoCode:output_type -> freebusy.promocode.v1.PromoCode
+	9,  // 11: freebusy.promocode.v1.PromoCodeService.UpdatePromoCode:output_type -> freebusy.promocode.v1.PromoCode
+	10, // 12: freebusy.promocode.v1.PromoCodeService.DeletePromoCode:output_type -> google.protobuf.Empty
+	11, // 13: freebusy.promocode.v1.PromoCodeService.ValidatePromoCode:output_type -> freebusy.promocode.v1.ValidatePromoCodeResponse
+	12, // 14: freebusy.promocode.v1.PromoCodeService.ListRedemptions:output_type -> freebusy.promocode.v1.ListRedemptionsResponse
+	13, // 15: freebusy.promocode.v1.PromoCodeService.GetRedemption:output_type -> freebusy.promocode.v1.Redemption
+	8,  // [8:16] is the sub-list for method output_type
+	0,  // [0:8] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_promocode_v1_promocode_service_proto_init() }

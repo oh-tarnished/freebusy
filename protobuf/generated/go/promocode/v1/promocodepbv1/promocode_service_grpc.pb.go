@@ -26,6 +26,8 @@ const (
 	PromoCodeService_UpdatePromoCode_FullMethodName   = "/freebusy.promocode.v1.PromoCodeService/UpdatePromoCode"
 	PromoCodeService_DeletePromoCode_FullMethodName   = "/freebusy.promocode.v1.PromoCodeService/DeletePromoCode"
 	PromoCodeService_ValidatePromoCode_FullMethodName = "/freebusy.promocode.v1.PromoCodeService/ValidatePromoCode"
+	PromoCodeService_ListRedemptions_FullMethodName   = "/freebusy.promocode.v1.PromoCodeService/ListRedemptions"
+	PromoCodeService_GetRedemption_FullMethodName     = "/freebusy.promocode.v1.PromoCodeService/GetRedemption"
 )
 
 // PromoCodeServiceClient is the client API for PromoCodeService service.
@@ -47,6 +49,11 @@ type PromoCodeServiceClient interface {
 	DeletePromoCode(ctx context.Context, in *DeletePromoCodeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Validates a code against a prospective booking and returns the discount.
 	ValidatePromoCode(ctx context.Context, in *ValidatePromoCodeRequest, opts ...grpc.CallOption) (*ValidatePromoCodeResponse, error)
+	// Lists redemptions of a promo code (paged). Redemptions are created during
+	// CreateBooking, so this service exposes read-only access to them.
+	ListRedemptions(ctx context.Context, in *ListRedemptionsRequest, opts ...grpc.CallOption) (*ListRedemptionsResponse, error)
+	// Gets a single redemption by resource name.
+	GetRedemption(ctx context.Context, in *GetRedemptionRequest, opts ...grpc.CallOption) (*Redemption, error)
 }
 
 type promoCodeServiceClient struct {
@@ -117,6 +124,26 @@ func (c *promoCodeServiceClient) ValidatePromoCode(ctx context.Context, in *Vali
 	return out, nil
 }
 
+func (c *promoCodeServiceClient) ListRedemptions(ctx context.Context, in *ListRedemptionsRequest, opts ...grpc.CallOption) (*ListRedemptionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListRedemptionsResponse)
+	err := c.cc.Invoke(ctx, PromoCodeService_ListRedemptions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *promoCodeServiceClient) GetRedemption(ctx context.Context, in *GetRedemptionRequest, opts ...grpc.CallOption) (*Redemption, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Redemption)
+	err := c.cc.Invoke(ctx, PromoCodeService_GetRedemption_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PromoCodeServiceServer is the server API for PromoCodeService service.
 // All implementations must embed UnimplementedPromoCodeServiceServer
 // for forward compatibility.
@@ -136,6 +163,11 @@ type PromoCodeServiceServer interface {
 	DeletePromoCode(context.Context, *DeletePromoCodeRequest) (*emptypb.Empty, error)
 	// Validates a code against a prospective booking and returns the discount.
 	ValidatePromoCode(context.Context, *ValidatePromoCodeRequest) (*ValidatePromoCodeResponse, error)
+	// Lists redemptions of a promo code (paged). Redemptions are created during
+	// CreateBooking, so this service exposes read-only access to them.
+	ListRedemptions(context.Context, *ListRedemptionsRequest) (*ListRedemptionsResponse, error)
+	// Gets a single redemption by resource name.
+	GetRedemption(context.Context, *GetRedemptionRequest) (*Redemption, error)
 	mustEmbedUnimplementedPromoCodeServiceServer()
 }
 
@@ -163,6 +195,12 @@ func (UnimplementedPromoCodeServiceServer) DeletePromoCode(context.Context, *Del
 }
 func (UnimplementedPromoCodeServiceServer) ValidatePromoCode(context.Context, *ValidatePromoCodeRequest) (*ValidatePromoCodeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ValidatePromoCode not implemented")
+}
+func (UnimplementedPromoCodeServiceServer) ListRedemptions(context.Context, *ListRedemptionsRequest) (*ListRedemptionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListRedemptions not implemented")
+}
+func (UnimplementedPromoCodeServiceServer) GetRedemption(context.Context, *GetRedemptionRequest) (*Redemption, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRedemption not implemented")
 }
 func (UnimplementedPromoCodeServiceServer) mustEmbedUnimplementedPromoCodeServiceServer() {}
 func (UnimplementedPromoCodeServiceServer) testEmbeddedByValue()                          {}
@@ -293,6 +331,42 @@ func _PromoCodeService_ValidatePromoCode_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PromoCodeService_ListRedemptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRedemptionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PromoCodeServiceServer).ListRedemptions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PromoCodeService_ListRedemptions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PromoCodeServiceServer).ListRedemptions(ctx, req.(*ListRedemptionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PromoCodeService_GetRedemption_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRedemptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PromoCodeServiceServer).GetRedemption(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PromoCodeService_GetRedemption_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PromoCodeServiceServer).GetRedemption(ctx, req.(*GetRedemptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PromoCodeService_ServiceDesc is the grpc.ServiceDesc for PromoCodeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -323,6 +397,14 @@ var PromoCodeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ValidatePromoCode",
 			Handler:    _PromoCodeService_ValidatePromoCode_Handler,
+		},
+		{
+			MethodName: "ListRedemptions",
+			Handler:    _PromoCodeService_ListRedemptions_Handler,
+		},
+		{
+			MethodName: "GetRedemption",
+			Handler:    _PromoCodeService_GetRedemption_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -40,7 +40,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `state` | `BookingState` | `OUTPUT_ONLY` | Current lifecycle state. |
 | `hold_expire_time` | `Timestamp` | `OUTPUT_ONLY` | When the pending hold lapses, if not confirmed first. |
 | `price` | `Money` | `OUTPUT_ONLY` | Computed subtotal before discounts. |
-| `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promoCodes/{promo_code} |
+| `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promo-codes/{promo_code} |
 | `discount` | `Money` | `OUTPUT_ONLY` | Discount applied from the promo code. |
 | `total` | `Money` | `OUTPUT_ONLY` | Final total after discounts. |
 | `price_components` | `repeated PriceComponent` | `OUTPUT_ONLY` | Itemized breakdown behind the total: the base charge, each fee and tax, and each discount, as signed lines. `price` is the TYPE_BASE subtotal and `total` is the sum of every component; these lines expose the fees and taxes in between. Empty for simple bookings with no fees or taxes configured. |

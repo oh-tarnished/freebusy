@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/the-protobuf-project/grpc-mcp-gateway/runtime"
+	"github.com/machanirobotics/grpc-mcp-gateway/runtime"
 )
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.

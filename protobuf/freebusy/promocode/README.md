@@ -18,6 +18,8 @@ PromoCodeService manages redeemable discount codes and validates them against a 
 | `CreatePromoCode` | `CreatePromoCodeRequest` | `PromoCode` | Creates a promo code. |
 | `UpdatePromoCode` | `UpdatePromoCodeRequest` | `PromoCode` | Updates a promo code. |
 | `ValidatePromoCode` | `ValidatePromoCodeRequest` | `ValidatePromoCodeResponse` | Validates a code against a prospective booking and returns the discount. |
+| `ListRedemptions` | `ListRedemptionsRequest` | `ListRedemptionsResponse` | Lists redemptions of a promo code (paged). Redemptions are created during CreateBooking, so this service exposes read-only access to them. |
+| `GetRedemption` | `GetRedemptionRequest` | `Redemption` | Gets a single redemption by resource name. |
 
 ## Messages
 
@@ -31,22 +33,65 @@ A redeemable discount applied to a booking's subtotal. Scoped by a redemption wi
 | `code` | `string` | `REQUIRED` | The human-entered code, unique across all promo codes (e.g. "SUMMER25"). |
 | `display_name` | `string` | `OPTIONAL` | Internal display name (not shown to customers). |
 | `description` | `string` | `OPTIONAL` | Free-form description. |
-| `discount_type` | `DiscountType` | `REQUIRED` | Whether the discount is a percentage or a fixed amount. |
-| `percent_off` | `int32` | `OPTIONAL` | Percentage off (1-100), when discount_type is PERCENTAGE. |
-| `amount_off` | `Money` | `OPTIONAL` | Fixed amount off, when discount_type is FIXED_AMOUNT. |
-| `redeem_start_time` | `Timestamp` | `OPTIONAL` | Earliest the code can be redeemed. Unset means no lower bound. |
-| `redeem_end_time` | `Timestamp` | `OPTIONAL` | Latest the code can be redeemed. Unset means no upper bound. |
-| `max_redemptions` | `int64` | `OPTIONAL` | Maximum total redemptions across all customers. Zero means unlimited. |
-| `per_customer_limit` | `int32` | `OPTIONAL` | Maximum redemptions per customer. Zero means unlimited. |
-| `min_subtotal` | `Money` | `OPTIONAL` | Minimum subtotal required for the code to apply. |
-| `applicable_resources` | `repeated string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
-| `applicable_offerings` | `repeated string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
-| `redemption_count` | `int64` | `OUTPUT_ONLY` | How many times the code has been redeemed. |
-| `state` | `PromoCodeState` | `OUTPUT_ONLY` | Derived lifecycle state: ACTIVE, DISABLED (when `disabled` is set), or EXPIRED (past the window or out of redemptions). |
+| `discount` | `Discount` | `REQUIRED` | How the discount is computed → belongs-to child table promocode.discounts. |
+| `window` | `RedemptionWindow` | `OPTIONAL` | When the code is redeemable → belongs-to promocode.redemption_windows. |
+| `limits` | `UsageLimits` | `OPTIONAL` | Redemption caps → belongs-to promocode.usage_limits. |
+| `scope` | `Scope` | `OPTIONAL` | What the code applies to (eligibility) → belongs-to promocode.scopes. |
+| `redemption_count` | `int64` | `OUTPUT_ONLY` | How many times the code has been redeemed. Cheap summary on the resource; the individual redemptions are a paginated sub-collection (promoCodes/{promo_code}/redemptions) listed via ListRedemptions, not inlined here, so reads stay bounded as redemptions accumulate. |
+| `state` | `PromoCodeState` | `OUTPUT_ONLY` | Derived lifecycle state, recomputed on every read/validate (no background job): DISABLED when `disabled` is set; EXPIRED once now > window.end_time (the expiry) or the code is out of redemptions; otherwise ACTIVE. This is how a code auto-disables at its expiry without a stored flag to flip. |
 | `disabled` | `bool` | `OPTIONAL` | If true, the code is manually disabled regardless of its window and caps. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
+
+### Discount
+
+Discount describes how a promo code reduces a subtotal. Nested value object → belongs-to child table promocode.discounts (FK discount_id on promo_codes). Exactly one of percent_off / amount_off is set; the oneof case is the discriminator, so no separate type enum is needed.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `percent_off` | `int32` | - | Percentage off the subtotal (1-100). |
+| `amount_off` | `Money` | - | Fixed amount off the subtotal. Normalized into the shared common.moneys table (belongs-to via amount_off_id). |
+
+### RedemptionWindow
+
+RedemptionWindow bounds when a code can be redeemed; an unset bound is open-ended. Nested value object → belongs-to promocode.redemption_windows.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `start_time` | `Timestamp` | `OPTIONAL` | Earliest the code can be redeemed. Unset means no lower bound. |
+| `end_time` | `Timestamp` | `OPTIONAL` | The code's expiry: the latest moment it can be redeemed. Once now passes this, the derived PromoCode.state becomes EXPIRED. Unset means never expires. |
+
+### UsageLimits
+
+UsageLimits caps how often a code can be redeemed. Nested value object → belongs-to promocode.usage_limits. The caps are wrapper types so "unset" (unlimited) is distinct from an explicit value, including 0.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `max_redemptions` | `Int64Value` | `OPTIONAL` | Maximum total redemptions across all customers. Unset means unlimited. |
+| `per_customer_limit` | `Int32Value` | `OPTIONAL` | Maximum redemptions per customer. Unset means unlimited. |
+
+### Scope
+
+Scope restricts which bookings a code applies to. Nested value object → belongs-to promocode.scopes. Its repeated resource references and Money normalize one level deeper (array columns / common.moneys).
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `min_subtotal` | `Money` | `OPTIONAL` | Minimum subtotal required for the code to apply. Normalized into the shared common.moneys table (belongs-to via min_subtotal_id). |
+| `applicable_resources` | `repeated string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
+| `applicable_offerings` | `repeated string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
+
+### Redemption
+
+Redemption is a single use of a promo code, modeled as a sub-resource of PromoCode rather than an inline list — so it has its own name/lifecycle and is listed with paging (ListRedemptions). The {promo_code} parent segment generates the promo_code_id FK back to the owning code (1:n into promocode.redemptions); amount_applied is the shared google.type.Money in common.moneys. Redemptions are created during CreateBooking, never directly.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The redemption resource name. Format: promoCodes/{promo_code}/redemptions/{redemption} |
+| `customer` | `string` | `REQUIRED` | The customer who redeemed the code. Format: users/{user} |
+| `booking` | `string` | `REQUIRED` | The booking the code was applied to. Format: bookings/{booking} |
+| `redeemed_time` | `Timestamp` | `OUTPUT_ONLY` | When the code was redeemed. |
+| `amount_applied` | `Money` | `OUTPUT_ONLY` | The discount actually applied at redemption. |
 
 ### ListPromoCodesRequest
 
@@ -67,6 +112,7 @@ Response message for ListPromoCodes.
 | --- | --- | --- | --- |
 | `promo_codes` | `repeated PromoCode` | - | The page of promo codes. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
+| `total_size` | `int32` | - | Total number of promo codes matching the filter across all pages, when the server computes it; 0 if unknown. Useful for rendering page counts (AIP-132). |
 
 ### GetPromoCodeRequest
 
@@ -82,7 +128,8 @@ Request message for CreatePromoCode.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `promo_code` | `PromoCode` | `REQUIRED` | The promo code to create. The name and redemption_count fields are ignored. |
+| `promo_code` | `PromoCode` | `REQUIRED` | The promo code to create. Server-assigned fields are ignored on input: name, state, redemption_count, redemptions, create_time, update_time, etag. promo_code.code is honored only when code_generation is MANUAL (or unset). |
+| `code_generation` | `CodeGeneration` | `OPTIONAL` | Whether the human-facing code is supplied by the caller (MANUAL) or minted by the server (AUTO). Unset defaults to MANUAL. When AUTO, promo_code.code is ignored and the server returns the generated code on the created resource. (-- api-linter: core::0133::request-unknown-fields=disabled     aip.dev/not-precedent: Code generation mode is intrinsic to creating a     promo code and has no standard AIP-133 equivalent. --) |
 | `promo_code_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the promo code; the server generates one if unset. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
 | `validate_only` | `bool` | `OPTIONAL` | If true, validate the request and return what would happen, but don't commit. |
@@ -93,8 +140,8 @@ Request message for UpdatePromoCode.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `promo_code` | `PromoCode` | `REQUIRED` | The promo code to update; its name identifies the target. |
-| `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable fields. |
+| `promo_code` | `PromoCode` | `REQUIRED` | The promo code to update; its name identifies the target. For optimistic concurrency, echo the etag you last read (AIP-154); the update fails if it no longer matches. |
+| `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable fields. Nested fields use dotted paths, e.g. "discount.amount_off", "window.end_time", "scope.min_subtotal". |
 | `validate_only` | `bool` | `OPTIONAL` | If true, validate the request and return what would happen, but don't commit. |
 
 ### DeletePromoCodeRequest
@@ -104,6 +151,8 @@ Request message for DeletePromoCode.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The promo code to delete. Format: promoCodes/{promo_code} |
+| `etag` | `string` | `OPTIONAL` | Optional optimistic-concurrency guard: if set, the delete fails unless it matches the current PromoCode.etag (AIP-154). Echo the etag you last read. |
+| `force` | `bool` | `OPTIONAL` | If true, delete the promo code along with its redemptions; otherwise the delete fails when redemptions exist. |
 
 ### ValidatePromoCodeRequest
 
@@ -124,10 +173,41 @@ Response message for ValidatePromoCode.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `valid` | `bool` | - | Whether the code is valid and applicable to the given context. |
-| `reason` | `string` | - | Why the code is not valid, when valid is false. |
+| `invalid_reason` | `PromoCodeInvalidReason` | - | Structured reason the code is not valid, when valid is false; branch on this rather than parsing `reason`. UNSPECIFIED when valid is true. |
+| `reason` | `string` | - | Human-readable detail for invalid_reason, suitable for display (e.g. "Minimum subtotal of $50 not met"). Empty when valid is true. |
 | `promo_code` | `string` | - | The resolved promo code, when valid. Format: promoCodes/{promo_code} |
 | `discount_amount` | `Money` | - | Discount the code applies to the subtotal. |
 | `final_total` | `Money` | - | Subtotal minus the discount. |
+
+### GetRedemptionRequest
+
+Request message for GetRedemption.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The redemption to retrieve. Format: promoCodes/{promo_code}/redemptions/{redemption} |
+
+### ListRedemptionsRequest
+
+Request message for ListRedemptions.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `parent` | `string` | `REQUIRED` | The promo code whose redemptions to list. Format: promoCodes/{promo_code} |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of redemptions to return. The server may cap this. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListRedemptions call's next_page_token. |
+| `filter` | `string` | `OPTIONAL` | Filter expression over redemption fields, e.g. `customer = "users/123"` (AIP-160). |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "redeemed_time desc". |
+
+### ListRedemptionsResponse
+
+Response message for ListRedemptions.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `redemptions` | `repeated Redemption` | - | The page of redemptions, newest first by default. |
+| `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
+| `total_size` | `int32` | - | Total number of redemptions for the promo code, when the server computes it; 0 if unknown. |
 
 ## Enums
 
@@ -142,15 +222,31 @@ Lifecycle state of a promo code.
 | `PROMO_CODE_STATE_DISABLED` | 2 | Manually disabled. |
 | `PROMO_CODE_STATE_EXPIRED` | 3 | Past its redemption window or out of redemptions. |
 
-### DiscountType
+### PromoCodeInvalidReason
 
-How a promo code's discount is computed.
+Why a promo code failed validation, returned on ValidatePromoCodeResponse. Each value maps to one of the code's nested rules (window / limits / scope) or its lifecycle, so a client can branch without parsing the human-readable reason.
 
 | Value | Number | Description |
 | --- | --- | --- |
-| `DISCOUNT_TYPE_UNSPECIFIED` | 0 | Unset. |
-| `DISCOUNT_TYPE_PERCENTAGE` | 1 | A percentage off the subtotal (percent_off). |
-| `DISCOUNT_TYPE_FIXED_AMOUNT` | 2 | A fixed amount off the subtotal (amount_off). |
+| `PROMO_CODE_INVALID_REASON_UNSPECIFIED` | 0 | The code is valid, or no specific reason applies. |
+| `PROMO_CODE_INVALID_REASON_NOT_FOUND` | 1 | No promo code matches the supplied code string. |
+| `PROMO_CODE_INVALID_REASON_DISABLED` | 2 | The code is manually disabled (`disabled` is set). |
+| `PROMO_CODE_INVALID_REASON_NOT_STARTED` | 3 | Now is before window.start_time; the code isn't redeemable yet. |
+| `PROMO_CODE_INVALID_REASON_EXPIRED` | 4 | Now is after window.end_time; the code has expired. |
+| `PROMO_CODE_INVALID_REASON_OUT_OF_REDEMPTIONS` | 5 | The code hit its total redemption cap (limits.max_redemptions). |
+| `PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED` | 6 | The customer hit their per-customer cap (limits.per_customer_limit). |
+| `PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL` | 7 | The subtotal is below scope.min_subtotal. |
+| `PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE` | 8 | The booked resource/offering is outside scope.applicable_resources/offerings. |
+
+### CodeGeneration
+
+How the human-facing code string is chosen when creating a promo code.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `CODE_GENERATION_UNSPECIFIED` | 0 | Unset; treated as MANUAL (use the caller-provided code). |
+| `CODE_GENERATION_MANUAL` | 1 | The caller provides the code in promo_code.code; the server uses it verbatim. |
+| `CODE_GENERATION_AUTO` | 2 | The server generates a unique code; any code in promo_code.code is ignored. |
 
 ---
 

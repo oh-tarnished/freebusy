@@ -5,18 +5,18 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/runtime-go/ulid"
-	"google.golang.org/genproto/googleapis/type/money"
 	"gorm.io/gorm"
 )
 
 // Update applies the masked fields of pc to the stored record and returns the
-// result. An empty paths slice replaces every mutable field. pc.Etag, when set,
-// guards against concurrent writes (types.ErrConflict on mismatch). The
-// whole update — scalars, Money value-objects, and join rows — runs in one
-// transaction.
+// result. An empty paths slice replaces every mutable field; pc.Etag, when set,
+// guards against concurrent writes (types.ErrConflict on mismatch). The whole
+// update runs in one transaction: the merged proto is re-materialized into a
+// fresh child graph, the resource row is repointed at it, and the superseded
+// child / Money rows are deleted only after the resource no longer references them.
 func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.PromoCode, paths []string) (*promocodepbv1.PromoCode, error) {
 	id, err := types.PromoCodeID(pc.GetName())
 	if err != nil {
@@ -24,56 +24,43 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 	}
 
 	err = r.db.Transaction(func(tx *gorm.DB) error {
-		store := promocode.NewPromoCodeStore(tx)
-		existing, e := store.GetByID(ctx, id)
-		if e != nil {
+		var existing promocode.PromoCode
+		if e := preloadGraph(tx.WithContext(ctx)).First(&existing, "id = ?", id).Error; e != nil {
 			return e
 		}
 		if pc.GetEtag() != "" && existing.Etag != nil && pc.GetEtag() != *existing.Etag {
 			return types.ErrConflict
 		}
+		old := collectRefs(&existing)
 
-		applyMask(existing, pc, paths)
-		existing.Etag = ptr(ulid.GenerateString())
-
-		var staleMoney []string
-		if inMask(paths, "amount_off") {
-			stale, e := replaceMoney(ctx, tx, &existing.AmountOffID, pc.GetAmountOff())
-			if e != nil {
-				return e
-			}
-			if stale != "" {
-				staleMoney = append(staleMoney, stale)
-			}
-		}
-		if inMask(paths, "min_subtotal") {
-			stale, e := replaceMoney(ctx, tx, &existing.MinSubtotalID, pc.GetMinSubtotal())
-			if e != nil {
-				return e
-			}
-			if stale != "" {
-				staleMoney = append(staleMoney, stale)
-			}
-		}
-		if e := store.Update(ctx, existing); e != nil {
+		// Merge the masked fields onto a proto built from the stored record, then
+		// rebuild the whole child graph from the result.
+		merged := fromModel(&existing)
+		applyMask(merged, pc, paths)
+		g := buildGraph(merged)
+		if e := g.persistChildren(ctx, tx); e != nil {
 			return e
 		}
-		// Delete superseded Money rows only now that the promo no longer points at them.
-		stales := booking.NewMoneyStore(tx)
-		for _, mid := range staleMoney {
-			_ = stales.DeleteByID(ctx, mid)
+
+		// Repoint the resource row at the new children and bump the etag. The
+		// association pointers are cleared so GORM's Save only rewrites the FK
+		// columns instead of re-upserting the old children.
+		existing.Code = g.promo.Code
+		existing.DisplayName = g.promo.DisplayName
+		existing.Description = g.promo.Description
+		existing.State = g.promo.State
+		existing.Disabled = g.promo.Disabled
+		existing.DiscountID = g.promo.DiscountID
+		existing.WindowID = g.promo.WindowID
+		existing.LimitsID = g.promo.LimitsID
+		existing.ScopeID = g.promo.ScopeID
+		existing.Etag = ptr(ulid.GenerateString())
+		existing.Discount, existing.Window, existing.Limits, existing.Scope = nil, nil, nil, nil
+		existing.Redemptions = nil
+		if e := promocode.NewPromoCodeStore(tx).Update(ctx, &existing); e != nil {
+			return e
 		}
-		if inMask(paths, "applicable_resources") {
-			if e := replaceApplicableResources(ctx, tx, id, pc.GetApplicableResources()); e != nil {
-				return e
-			}
-		}
-		if inMask(paths, "applicable_offerings") {
-			if e := replaceApplicableOfferings(ctx, tx, id, pc.GetApplicableOfferings()); e != nil {
-				return e
-			}
-		}
-		return nil
+		return deleteChildren(ctx, tx, old)
 	})
 	if err != nil {
 		return nil, mapGormErr(err)
@@ -81,83 +68,88 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 	return r.Get(ctx, pc.GetName())
 }
 
-// Delete removes the promo code, its join rows, and its Money value-objects.
+// Delete removes the promo code, its belongs-to children, their Money
+// value-objects, and the scope's join rows.
 func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 	id, err := types.PromoCodeID(name)
 	if err != nil {
 		return err
 	}
 	err = r.db.Transaction(func(tx *gorm.DB) error {
-		store := promocode.NewPromoCodeStore(tx)
-		existing, e := store.GetByID(ctx, id)
-		if e != nil {
+		var existing promocode.PromoCode
+		if e := preloadGraph(tx.WithContext(ctx)).First(&existing, "id = ?", id).Error; e != nil {
 			return e
 		}
-		if e := replaceApplicableResources(ctx, tx, id, nil); e != nil {
+		refs := collectRefs(&existing)
+		// Delete the resource row first (cascading to its redemptions), then the
+		// now-unreferenced children and Money rows.
+		if e := promocode.NewPromoCodeStore(tx).DeleteByID(ctx, id); e != nil {
 			return e
 		}
-		if e := replaceApplicableOfferings(ctx, tx, id, nil); e != nil {
-			return e
-		}
-		if e := store.DeleteByID(ctx, id); e != nil {
-			return e
-		}
-		ms := booking.NewMoneyStore(tx)
-		if existing.AmountOffID != nil {
-			_ = ms.DeleteByID(ctx, *existing.AmountOffID)
-		}
-		if existing.MinSubtotalID != nil {
-			_ = ms.DeleteByID(ctx, *existing.MinSubtotalID)
-		}
-		return nil
+		return deleteChildren(ctx, tx, refs)
 	})
 	return mapGormErr(err)
 }
 
-// replaceMoney inserts a new Money row for m (when non-nil) and repoints *fk at
-// it, returning the id of the now-superseded row ("" when there was none). The
-// caller deletes stale rows only AFTER the new foreign key is persisted, so the
-// promo never references a deleted row — safe even if FK constraints are enabled.
-func replaceMoney(ctx context.Context, tx *gorm.DB, fk **string, m *money.Money) (stale string, err error) {
-	if *fk != nil {
-		stale = **fk
-	}
-	row := moneyToModel(m)
-	if row == nil {
-		*fk = nil
-		return stale, nil
-	}
-	if e := booking.NewMoneyStore(tx).Create(ctx, row); e != nil {
-		return "", e
-	}
-	*fk = &row.ID
-	return stale, nil
+// promoRefs captures the ids of a promo code's child rows and Money rows so they
+// can be deleted once the resource row no longer references them.
+type promoRefs struct {
+	discountID string
+	windowID   *string
+	limitsID   *string
+	scopeID    *string
+	moneyIDs   []string
 }
 
-// replaceApplicableResources deletes the promo code's resource join rows and
-// recreates them from names (nil clears them).
-func replaceApplicableResources(ctx context.Context, tx *gorm.DB, promoID string, names []string) error {
-	if e := tx.WithContext(ctx).Where("promo_code_id = ?", promoID).Delete(&promocode.PromoCodeApplicableResources{}).Error; e != nil {
-		return e
+func collectRefs(m *promocode.PromoCode) promoRefs {
+	refs := promoRefs{
+		discountID: m.DiscountID,
+		windowID:   m.WindowID,
+		limitsID:   m.LimitsID,
+		scopeID:    m.ScopeID,
 	}
-	store := promocode.NewPromoCodeApplicableResourcesStore(tx)
-	for _, row := range buildApplicableResources(promoID, names) {
-		if e := store.Create(ctx, row); e != nil {
+	if m.Discount != nil && m.Discount.AmountOffID != nil {
+		refs.moneyIDs = append(refs.moneyIDs, *m.Discount.AmountOffID)
+	}
+	if m.Scope != nil && m.Scope.MinSubtotalID != nil {
+		refs.moneyIDs = append(refs.moneyIDs, *m.Scope.MinSubtotalID)
+	}
+	return refs
+}
+
+// deleteChildren removes a promo code's child rows in foreign-key order: the
+// scope's join rows and the scope, then the window / limits / discount, then the
+// Money rows those children referenced.
+func deleteChildren(ctx context.Context, tx *gorm.DB, refs promoRefs) error {
+	if refs.scopeID != nil {
+		if e := tx.WithContext(ctx).Where("scope_id = ?", *refs.scopeID).Delete(&promocode.ScopeApplicableResources{}).Error; e != nil {
+			return e
+		}
+		if e := tx.WithContext(ctx).Where("scope_id = ?", *refs.scopeID).Delete(&promocode.ScopeApplicableOfferings{}).Error; e != nil {
+			return e
+		}
+		if e := promocode.NewScopeStore(tx).DeleteByID(ctx, *refs.scopeID); e != nil {
 			return e
 		}
 	}
-	return nil
-}
-
-// replaceApplicableOfferings deletes the promo code's offering join rows and
-// recreates them from names (nil clears them).
-func replaceApplicableOfferings(ctx context.Context, tx *gorm.DB, promoID string, names []string) error {
-	if e := tx.WithContext(ctx).Where("promo_code_id = ?", promoID).Delete(&promocode.PromoCodeApplicableOfferings{}).Error; e != nil {
-		return e
+	if refs.windowID != nil {
+		if e := promocode.NewRedemptionWindowStore(tx).DeleteByID(ctx, *refs.windowID); e != nil {
+			return e
+		}
 	}
-	store := promocode.NewPromoCodeApplicableOfferingsStore(tx)
-	for _, row := range buildApplicableOfferings(promoID, names) {
-		if e := store.Create(ctx, row); e != nil {
+	if refs.limitsID != nil {
+		if e := promocode.NewUsageLimitsStore(tx).DeleteByID(ctx, *refs.limitsID); e != nil {
+			return e
+		}
+	}
+	if refs.discountID != "" {
+		if e := promocode.NewDiscountStore(tx).DeleteByID(ctx, refs.discountID); e != nil {
+			return e
+		}
+	}
+	moneys := common.NewMoneyStore(tx)
+	for _, mid := range refs.moneyIDs {
+		if e := moneys.DeleteByID(ctx, mid); e != nil {
 			return e
 		}
 	}

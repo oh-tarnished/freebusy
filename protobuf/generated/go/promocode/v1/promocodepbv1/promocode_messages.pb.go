@@ -105,6 +105,9 @@ type ListPromoCodesResponse struct {
 	PromoCodes []*PromoCode `protobuf:"bytes,1,rep,name=promo_codes,json=promoCodes,proto3" json:"promo_codes,omitempty"`
 	// Token to pass as page_token to retrieve the next page; empty when no more.
 	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	// Total number of promo codes matching the filter across all pages, when the
+	// server computes it; 0 if unknown. Useful for rendering page counts (AIP-132).
+	TotalSize     int32 `protobuf:"varint,3,opt,name=total_size,json=totalSize,proto3" json:"total_size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,6 +154,13 @@ func (x *ListPromoCodesResponse) GetNextPageToken() string {
 		return x.NextPageToken
 	}
 	return ""
+}
+
+func (x *ListPromoCodesResponse) GetTotalSize() int32 {
+	if x != nil {
+		return x.TotalSize
+	}
+	return 0
 }
 
 // Request message for GetPromoCode.
@@ -203,8 +213,18 @@ func (x *GetPromoCodeRequest) GetName() string {
 // Request message for CreatePromoCode.
 type CreatePromoCodeRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The promo code to create. The name and redemption_count fields are ignored.
+	// The promo code to create. Server-assigned fields are ignored on input:
+	// name, state, redemption_count, redemptions, create_time, update_time, etag.
+	// promo_code.code is honored only when code_generation is MANUAL (or unset).
 	PromoCode *PromoCode `protobuf:"bytes,1,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
+	// Whether the human-facing code is supplied by the caller (MANUAL) or minted
+	// by the server (AUTO). Unset defaults to MANUAL. When AUTO, promo_code.code
+	// is ignored and the server returns the generated code on the created resource.
+	// (-- api-linter: core::0133::request-unknown-fields=disabled
+	//
+	//	aip.dev/not-precedent: Code generation mode is intrinsic to creating a
+	//	promo code and has no standard AIP-133 equivalent. --)
+	CodeGeneration CodeGeneration `protobuf:"varint,5,opt,name=code_generation,json=codeGeneration,proto3,enum=freebusy.promocode.v1.CodeGeneration" json:"code_generation,omitempty"`
 	// Optional caller-chosen ID for the promo code; the server generates one if unset.
 	PromoCodeId string `protobuf:"bytes,2,opt,name=promo_code_id,json=promoCodeId,proto3" json:"promo_code_id,omitempty"`
 	// Caller-supplied idempotency key; identical retries return the first result.
@@ -252,6 +272,13 @@ func (x *CreatePromoCodeRequest) GetPromoCode() *PromoCode {
 	return nil
 }
 
+func (x *CreatePromoCodeRequest) GetCodeGeneration() CodeGeneration {
+	if x != nil {
+		return x.CodeGeneration
+	}
+	return CodeGeneration_CODE_GENERATION_UNSPECIFIED
+}
+
 func (x *CreatePromoCodeRequest) GetPromoCodeId() string {
 	if x != nil {
 		return x.PromoCodeId
@@ -276,9 +303,12 @@ func (x *CreatePromoCodeRequest) GetValidateOnly() bool {
 // Request message for UpdatePromoCode.
 type UpdatePromoCodeRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The promo code to update; its name identifies the target.
+	// The promo code to update; its name identifies the target. For optimistic
+	// concurrency, echo the etag you last read (AIP-154); the update fails if it
+	// no longer matches.
 	PromoCode *PromoCode `protobuf:"bytes,1,opt,name=promo_code,json=promoCode,proto3" json:"promo_code,omitempty"`
-	// Fields to overwrite. Omit to replace all mutable fields.
+	// Fields to overwrite. Omit to replace all mutable fields. Nested fields use
+	// dotted paths, e.g. "discount.amount_off", "window.end_time", "scope.min_subtotal".
 	UpdateMask *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	// If true, validate the request and return what would happen, but don't commit.
 	ValidateOnly  bool `protobuf:"varint,3,opt,name=validate_only,json=validateOnly,proto3" json:"validate_only,omitempty"`
@@ -342,7 +372,13 @@ type DeletePromoCodeRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The promo code to delete.
 	// Format: promoCodes/{promo_code}
-	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Optional optimistic-concurrency guard: if set, the delete fails unless it
+	// matches the current PromoCode.etag (AIP-154). Echo the etag you last read.
+	Etag string `protobuf:"bytes,2,opt,name=etag,proto3" json:"etag,omitempty"`
+	// If true, delete the promo code along with its redemptions; otherwise the
+	// delete fails when redemptions exist.
+	Force         bool `protobuf:"varint,3,opt,name=force,proto3" json:"force,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -382,6 +418,20 @@ func (x *DeletePromoCodeRequest) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+func (x *DeletePromoCodeRequest) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
+func (x *DeletePromoCodeRequest) GetForce() bool {
+	if x != nil {
+		return x.Force
+	}
+	return false
 }
 
 // Request message for ValidatePromoCode. Computes the discount a code would
@@ -475,7 +525,11 @@ type ValidatePromoCodeResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether the code is valid and applicable to the given context.
 	Valid bool `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
-	// Why the code is not valid, when valid is false.
+	// Structured reason the code is not valid, when valid is false; branch on this
+	// rather than parsing `reason`. UNSPECIFIED when valid is true.
+	InvalidReason PromoCodeInvalidReason `protobuf:"varint,6,opt,name=invalid_reason,json=invalidReason,proto3,enum=freebusy.promocode.v1.PromoCodeInvalidReason" json:"invalid_reason,omitempty"`
+	// Human-readable detail for invalid_reason, suitable for display
+	// (e.g. "Minimum subtotal of $50 not met"). Empty when valid is true.
 	Reason string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
 	// The resolved promo code, when valid.
 	// Format: promoCodes/{promo_code}
@@ -525,6 +579,13 @@ func (x *ValidatePromoCodeResponse) GetValid() bool {
 	return false
 }
 
+func (x *ValidatePromoCodeResponse) GetInvalidReason() PromoCodeInvalidReason {
+	if x != nil {
+		return x.InvalidReason
+	}
+	return PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_UNSPECIFIED
+}
+
 func (x *ValidatePromoCodeResponse) GetReason() string {
 	if x != nil {
 		return x.Reason
@@ -553,6 +614,201 @@ func (x *ValidatePromoCodeResponse) GetFinalTotal() *money.Money {
 	return nil
 }
 
+// Request message for GetRedemption.
+type GetRedemptionRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The redemption to retrieve.
+	// Format: promoCodes/{promo_code}/redemptions/{redemption}
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRedemptionRequest) Reset() {
+	*x = GetRedemptionRequest{}
+	mi := &file_freebusy_promocode_v1_promocode_messages_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRedemptionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRedemptionRequest) ProtoMessage() {}
+
+func (x *GetRedemptionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_messages_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRedemptionRequest.ProtoReflect.Descriptor instead.
+func (*GetRedemptionRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_messages_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetRedemptionRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+// Request message for ListRedemptions.
+type ListRedemptionsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The promo code whose redemptions to list.
+	// Format: promoCodes/{promo_code}
+	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
+	// Maximum number of redemptions to return. The server may cap this.
+	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// Page token from a previous ListRedemptions call's next_page_token.
+	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	// Filter expression over redemption fields, e.g. `customer = "users/123"` (AIP-160).
+	Filter string `protobuf:"bytes,4,opt,name=filter,proto3" json:"filter,omitempty"`
+	// Sort order, e.g. "redeemed_time desc".
+	OrderBy       string `protobuf:"bytes,5,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRedemptionsRequest) Reset() {
+	*x = ListRedemptionsRequest{}
+	mi := &file_freebusy_promocode_v1_promocode_messages_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRedemptionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRedemptionsRequest) ProtoMessage() {}
+
+func (x *ListRedemptionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_messages_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRedemptionsRequest.ProtoReflect.Descriptor instead.
+func (*ListRedemptionsRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_messages_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListRedemptionsRequest) GetParent() string {
+	if x != nil {
+		return x.Parent
+	}
+	return ""
+}
+
+func (x *ListRedemptionsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListRedemptionsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListRedemptionsRequest) GetFilter() string {
+	if x != nil {
+		return x.Filter
+	}
+	return ""
+}
+
+func (x *ListRedemptionsRequest) GetOrderBy() string {
+	if x != nil {
+		return x.OrderBy
+	}
+	return ""
+}
+
+// Response message for ListRedemptions.
+type ListRedemptionsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The page of redemptions, newest first by default.
+	Redemptions []*Redemption `protobuf:"bytes,1,rep,name=redemptions,proto3" json:"redemptions,omitempty"`
+	// Token to pass as page_token to retrieve the next page; empty when no more.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	// Total number of redemptions for the promo code, when the server computes it;
+	// 0 if unknown.
+	TotalSize     int32 `protobuf:"varint,3,opt,name=total_size,json=totalSize,proto3" json:"total_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRedemptionsResponse) Reset() {
+	*x = ListRedemptionsResponse{}
+	mi := &file_freebusy_promocode_v1_promocode_messages_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRedemptionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRedemptionsResponse) ProtoMessage() {}
+
+func (x *ListRedemptionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_promocode_v1_promocode_messages_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRedemptionsResponse.ProtoReflect.Descriptor instead.
+func (*ListRedemptionsResponse) Descriptor() ([]byte, []int) {
+	return file_freebusy_promocode_v1_promocode_messages_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ListRedemptionsResponse) GetRedemptions() []*Redemption {
+	if x != nil {
+		return x.Redemptions
+	}
+	return nil
+}
+
+func (x *ListRedemptionsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+func (x *ListRedemptionsResponse) GetTotalSize() int32 {
+	if x != nil {
+		return x.TotalSize
+	}
+	return 0
+}
+
 var File_freebusy_promocode_v1_promocode_messages_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
@@ -563,17 +819,20 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
-	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"\x83\x01\n" +
+	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"\xa2\x01\n" +
 	"\x16ListPromoCodesResponse\x12A\n" +
 	"\vpromo_codes\x18\x01 \x03(\v2 .freebusy.promocode.v1.PromoCodeR\n" +
 	"promoCodes\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"R\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1d\n" +
+	"\n" +
+	"total_size\x18\x03 \x01(\x05R\ttotalSize\"R\n" +
 	"\x13GetPromoCodeRequest\x12;\n" +
 	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\"\xdd\x01\n" +
+	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\"\xb2\x02\n" +
 	"\x16CreatePromoCodeRequest\x12D\n" +
 	"\n" +
-	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12'\n" +
+	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12S\n" +
+	"\x0fcode_generation\x18\x05 \x01(\x0e2%.freebusy.promocode.v1.CodeGenerationB\x03\xe0A\x01R\x0ecodeGeneration\x12'\n" +
 	"\rpromo_code_id\x18\x02 \x01(\tB\x03\xe0A\x01R\vpromoCodeId\x12*\n" +
 	"\n" +
 	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12(\n" +
@@ -583,10 +842,12 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
 	"updateMask\x12(\n" +
-	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"U\n" +
+	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"\x89\x01\n" +
 	"\x16DeletePromoCodeRequest\x12;\n" +
 	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\"\xad\x02\n" +
+	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\x12\x17\n" +
+	"\x04etag\x18\x02 \x01(\tB\x03\xe0A\x01R\x04etag\x12\x19\n" +
+	"\x05force\x18\x03 \x01(\bB\x03\xe0A\x01R\x05force\"\xad\x02\n" +
 	"\x18ValidatePromoCodeRequest\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x123\n" +
 	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\bsubtotal\x12A\n" +
@@ -595,16 +856,32 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
 	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12=\n" +
 	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
-	"\x19freebusy.identity.v1/UserR\bcustomer\"\x80\x02\n" +
+	"\x19freebusy.identity.v1/UserR\bcustomer\"\xd6\x02\n" +
 	"\x19ValidatePromoCodeResponse\x12\x14\n" +
-	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x16\n" +
+	"\x05valid\x18\x01 \x01(\bR\x05valid\x12T\n" +
+	"\x0einvalid_reason\x18\x06 \x01(\x0e2-.freebusy.promocode.v1.PromoCodeInvalidReasonR\rinvalidReason\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\x12C\n" +
 	"\n" +
 	"promo_code\x18\x03 \x01(\tB$\xfaA!\n" +
 	"\x1ffreebusy.promocode.v1/PromoCodeR\tpromoCode\x12;\n" +
 	"\x0fdiscount_amount\x18\x04 \x01(\v2\x12.google.type.MoneyR\x0ediscountAmount\x123\n" +
 	"\vfinal_total\x18\x05 \x01(\v2\x12.google.type.MoneyR\n" +
-	"finalTotalB\x8a\x02\n" +
+	"finalTotal\"T\n" +
+	"\x14GetRedemptionRequest\x12<\n" +
+	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
+	" freebusy.promocode.v1/RedemptionR\x04name\"\xdd\x01\n" +
+	"\x16ListRedemptionsRequest\x12@\n" +
+	"\x06parent\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\x12 freebusy.promocode.v1/RedemptionR\x06parent\x12 \n" +
+	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"\n" +
+	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
+	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
+	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\"\xa5\x01\n" +
+	"\x17ListRedemptionsResponse\x12C\n" +
+	"\vredemptions\x18\x01 \x03(\v2!.freebusy.promocode.v1.RedemptionR\vredemptions\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1d\n" +
+	"\n" +
+	"total_size\x18\x03 \x01(\x05R\ttotalSizeB\x8a\x02\n" +
 	"\x19com.freebusy.promocode.v1B\x16PromocodeMessagesProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
 
 var (
@@ -619,7 +896,7 @@ func file_freebusy_promocode_v1_promocode_messages_proto_rawDescGZIP() []byte {
 	return file_freebusy_promocode_v1_promocode_messages_proto_rawDescData
 }
 
-var file_freebusy_promocode_v1_promocode_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_freebusy_promocode_v1_promocode_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_freebusy_promocode_v1_promocode_messages_proto_goTypes = []any{
 	(*ListPromoCodesRequest)(nil),     // 0: freebusy.promocode.v1.ListPromoCodesRequest
 	(*ListPromoCodesResponse)(nil),    // 1: freebusy.promocode.v1.ListPromoCodesResponse
@@ -629,23 +906,32 @@ var file_freebusy_promocode_v1_promocode_messages_proto_goTypes = []any{
 	(*DeletePromoCodeRequest)(nil),    // 5: freebusy.promocode.v1.DeletePromoCodeRequest
 	(*ValidatePromoCodeRequest)(nil),  // 6: freebusy.promocode.v1.ValidatePromoCodeRequest
 	(*ValidatePromoCodeResponse)(nil), // 7: freebusy.promocode.v1.ValidatePromoCodeResponse
-	(*PromoCode)(nil),                 // 8: freebusy.promocode.v1.PromoCode
-	(*fieldmaskpb.FieldMask)(nil),     // 9: google.protobuf.FieldMask
-	(*money.Money)(nil),               // 10: google.type.Money
+	(*GetRedemptionRequest)(nil),      // 8: freebusy.promocode.v1.GetRedemptionRequest
+	(*ListRedemptionsRequest)(nil),    // 9: freebusy.promocode.v1.ListRedemptionsRequest
+	(*ListRedemptionsResponse)(nil),   // 10: freebusy.promocode.v1.ListRedemptionsResponse
+	(*PromoCode)(nil),                 // 11: freebusy.promocode.v1.PromoCode
+	(CodeGeneration)(0),               // 12: freebusy.promocode.v1.CodeGeneration
+	(*fieldmaskpb.FieldMask)(nil),     // 13: google.protobuf.FieldMask
+	(*money.Money)(nil),               // 14: google.type.Money
+	(PromoCodeInvalidReason)(0),       // 15: freebusy.promocode.v1.PromoCodeInvalidReason
+	(*Redemption)(nil),                // 16: freebusy.promocode.v1.Redemption
 }
 var file_freebusy_promocode_v1_promocode_messages_proto_depIdxs = []int32{
-	8,  // 0: freebusy.promocode.v1.ListPromoCodesResponse.promo_codes:type_name -> freebusy.promocode.v1.PromoCode
-	8,  // 1: freebusy.promocode.v1.CreatePromoCodeRequest.promo_code:type_name -> freebusy.promocode.v1.PromoCode
-	8,  // 2: freebusy.promocode.v1.UpdatePromoCodeRequest.promo_code:type_name -> freebusy.promocode.v1.PromoCode
-	9,  // 3: freebusy.promocode.v1.UpdatePromoCodeRequest.update_mask:type_name -> google.protobuf.FieldMask
-	10, // 4: freebusy.promocode.v1.ValidatePromoCodeRequest.subtotal:type_name -> google.type.Money
-	10, // 5: freebusy.promocode.v1.ValidatePromoCodeResponse.discount_amount:type_name -> google.type.Money
-	10, // 6: freebusy.promocode.v1.ValidatePromoCodeResponse.final_total:type_name -> google.type.Money
-	7,  // [7:7] is the sub-list for method output_type
-	7,  // [7:7] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	11, // 0: freebusy.promocode.v1.ListPromoCodesResponse.promo_codes:type_name -> freebusy.promocode.v1.PromoCode
+	11, // 1: freebusy.promocode.v1.CreatePromoCodeRequest.promo_code:type_name -> freebusy.promocode.v1.PromoCode
+	12, // 2: freebusy.promocode.v1.CreatePromoCodeRequest.code_generation:type_name -> freebusy.promocode.v1.CodeGeneration
+	11, // 3: freebusy.promocode.v1.UpdatePromoCodeRequest.promo_code:type_name -> freebusy.promocode.v1.PromoCode
+	13, // 4: freebusy.promocode.v1.UpdatePromoCodeRequest.update_mask:type_name -> google.protobuf.FieldMask
+	14, // 5: freebusy.promocode.v1.ValidatePromoCodeRequest.subtotal:type_name -> google.type.Money
+	15, // 6: freebusy.promocode.v1.ValidatePromoCodeResponse.invalid_reason:type_name -> freebusy.promocode.v1.PromoCodeInvalidReason
+	14, // 7: freebusy.promocode.v1.ValidatePromoCodeResponse.discount_amount:type_name -> google.type.Money
+	14, // 8: freebusy.promocode.v1.ValidatePromoCodeResponse.final_total:type_name -> google.type.Money
+	16, // 9: freebusy.promocode.v1.ListRedemptionsResponse.redemptions:type_name -> freebusy.promocode.v1.Redemption
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_promocode_v1_promocode_messages_proto_init() }
@@ -661,7 +947,7 @@ func file_freebusy_promocode_v1_promocode_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_promocode_v1_promocode_messages_proto_rawDesc), len(file_freebusy_promocode_v1_promocode_messages_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
