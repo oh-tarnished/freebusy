@@ -6,7 +6,6 @@ import (
 
 	"github.com/oh-tarnished/freebusy/config"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -16,7 +15,7 @@ import (
 // passes the Connection to NewFactory.
 func Open() (*Connection, error) {
 	switch providerFromConfig() {
-	case repository.ProviderHasura:
+	case ProviderHasura:
 		return openHasura()
 	default:
 		return openGorm()

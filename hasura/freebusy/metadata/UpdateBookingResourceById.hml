@@ -102,7 +102,7 @@ definition:
   description: Update the 'cancel_time' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Timestamp
+      type: Timestamptz
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnBookingResourceCancelTime
@@ -134,7 +134,7 @@ definition:
   description: Update the 'confirm_time' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Timestamp
+      type: Timestamptz
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnBookingResourceConfirmTime
@@ -198,7 +198,7 @@ definition:
   description: Update the 'create_time' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Timestamp!
+      type: Timestamptz!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnBookingResourceCreateTime
@@ -326,7 +326,7 @@ definition:
   description: Update the 'hold_expire_time' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Timestamp
+      type: Timestamptz
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnBookingResourceHoldExpireTime
@@ -774,7 +774,7 @@ definition:
   description: Update the 'update_time' column in the 'booking_resource' collection
   fields:
     - name: set
-      type: Timestamp!
+      type: Timestamptz!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnBookingResourceUpdateTime

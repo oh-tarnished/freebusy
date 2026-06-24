@@ -21,6 +21,12 @@ type ResourceOfferingsLinkAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"offeringId"`
+	OfferingName struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"offeringName"`
 	ResourceId struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`

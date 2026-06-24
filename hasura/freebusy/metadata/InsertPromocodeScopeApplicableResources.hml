@@ -1,0 +1,115 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertPromocodeScopeApplicableResourcesObject
+  fields:
+    - name: id
+      type: String_1!
+    - name: resourceId
+      type: String_1!
+    - name: scopeId
+      type: String_1!
+  graphql:
+    typeName: InsertPromocodeScopeApplicableResourcesObject
+    inputTypeName: InsertPromocodeScopeApplicableResourcesObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_promocode_scope_applicable_resources_object
+      fieldMapping:
+        id:
+          column:
+            name: id
+        resourceId:
+          column:
+            name: resource_id
+        scopeId:
+          column:
+            name: scope_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertPromocodeScopeApplicableResourcesObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - resourceId
+          - scopeId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertPromocodeScopeApplicableResourcesResponse
+  description: Responses from the 'insert_promocode_scope_applicable_resources' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[PromocodeScopeApplicableResources!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertPromocodeScopeApplicableResourcesResponse
+    inputTypeName: InsertPromocodeScopeApplicableResourcesResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_promocode_scope_applicable_resources_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertPromocodeScopeApplicableResourcesResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertPromocodeScopeApplicableResources
+  outputType: InsertPromocodeScopeApplicableResourcesResponse!
+  arguments:
+    - name: objects
+      type: "[InsertPromocodeScopeApplicableResourcesObject!]!"
+    - name: postCheck
+      type: PromocodeScopeApplicableResourcesBoolExp
+      description: Insert permission predicate over the
+        'promocode_scope_applicable_resources' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_promocode_scope_applicable_resources
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertPromocodeScopeApplicableResources
+    rootFieldKind: Mutation
+  description: Insert into the promocode_scope_applicable_resources table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertPromocodeScopeApplicableResources
+  permissions:
+    - role: admin
+      allowExecution: true
+

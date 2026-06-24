@@ -95,172 +95,6 @@
         "foreignRelations": {},
         "description": null
       },
-      "booking_contacts": {
-        "schemaName": "booking",
-        "tableName": "contacts",
-        "columns": {
-          "display_name": {
-            "name": "display_name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "email": {
-            "name": "email",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "phone_number": {
-            "name": "phone_number",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "contacts_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "booking_moneys": {
-        "schemaName": "booking",
-        "tableName": "moneys",
-        "columns": {
-          "currency_code": {
-            "name": "currency_code",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "nanos": {
-            "name": "nanos",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "units": {
-            "name": "units",
-            "type": {
-              "scalarType": "int8"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "moneys_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
-      "booking_price_components": {
-        "schemaName": "booking",
-        "tableName": "price_components",
-        "columns": {
-          "amount_id": {
-            "name": "amount_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "booking_id": {
-            "name": "booking_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "code": {
-            "name": "code",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "display_name": {
-            "name": "display_name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "booking_type"
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "price_components_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "price_components_amount_id_fkey": {
-            "foreignSchema": "booking",
-            "foreignTable": "moneys",
-            "columnMapping": {
-              "amount_id": "id"
-            }
-          },
-          "price_components_booking_id_fkey": {
-            "foreignSchema": "booking",
-            "foreignTable": "resource",
-            "columnMapping": {
-              "booking_id": "id"
-            }
-          }
-        },
-        "description": null
-      },
       "booking_resource": {
         "schemaName": "booking",
         "tableName": "resource",
@@ -292,7 +126,7 @@
           "cancel_time": {
             "name": "cancel_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": null
@@ -300,7 +134,7 @@
           "confirm_time": {
             "name": "confirm_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": null
@@ -316,7 +150,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -349,7 +183,7 @@
           "hold_expire_time": {
             "name": "hold_expire_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nullable",
             "description": null
@@ -461,7 +295,7 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": null
@@ -482,7 +316,7 @@
         },
         "foreignRelations": {
           "resource_contact_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "shared",
             "foreignTable": "contacts",
             "columnMapping": {
               "contact_id": "id"
@@ -496,7 +330,7 @@
             }
           },
           "resource_discount_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "discount_id": "id"
@@ -510,7 +344,7 @@
             }
           },
           "resource_price_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "price_id": "id"
@@ -524,7 +358,7 @@
             }
           },
           "resource_refund_amount_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "refund_amount_id": "id"
@@ -538,14 +372,14 @@
             }
           },
           "resource_total_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "total_id": "id"
             }
           },
           "resource_window_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "shared",
             "foreignTable": "time_windows",
             "columnMapping": {
               "window_id": "id"
@@ -554,16 +388,16 @@
         },
         "description": null
       },
-      "booking_time_windows": {
-        "schemaName": "booking",
-        "tableName": "time_windows",
+      "common_moneys": {
+        "schemaName": "common",
+        "tableName": "moneys",
         "columns": {
-          "end_time": {
-            "name": "end_time",
+          "currency_code": {
+            "name": "currency_code",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "text"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": null
           },
           "id": {
@@ -574,17 +408,25 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "start_time": {
-            "name": "start_time",
+          "nanos": {
+            "name": "nanos",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "int4"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
+            "description": null
+          },
+          "units": {
+            "name": "units",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
             "description": null
           }
         },
         "uniquenessConstraints": {
-          "time_windows_pkey": [
+          "moneys_pkey": [
             "id"
           ]
         },
@@ -674,7 +516,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -739,7 +581,7 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": null
@@ -760,7 +602,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -842,7 +684,7 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": null
@@ -901,7 +743,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -974,7 +816,7 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": null
@@ -988,10 +830,26 @@
         "foreignRelations": {},
         "description": null
       },
-      "promocode_applicable_offerings": {
+      "promocode_discounts": {
         "schemaName": "promocode",
-        "tableName": "applicable_offerings",
+        "tableName": "discounts",
         "columns": {
+          "amount_case": {
+            "name": "amount_case",
+            "type": {
+              "scalarType": "promocode_discount_amount_case"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "amount_off_id": {
+            "name": "amount_off_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "id": {
             "name": "id",
             "type": {
@@ -1000,52 +858,106 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "offering_id": {
-            "name": "offering_id",
+          "percent_off": {
+            "name": "percent_off",
             "type": {
-              "scalarType": "text"
+              "scalarType": "int4"
             },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "promo_code_id": {
-            "name": "promo_code_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": null
           }
         },
         "uniquenessConstraints": {
-          "applicable_offerings_pkey": [
+          "discounts_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "applicable_offerings_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
+          "discounts_amount_off_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "moneys",
             "columnMapping": {
-              "offering_id": "id"
-            }
-          },
-          "applicable_offerings_promo_code_id_fkey": {
-            "foreignSchema": "promocode",
-            "foreignTable": "resource",
-            "columnMapping": {
-              "promo_code_id": "id"
+              "amount_off_id": "id"
             }
           }
         },
         "description": null
       },
-      "promocode_applicable_resources": {
+      "promocode_redemption_windows": {
         "schemaName": "promocode",
-        "tableName": "applicable_resources",
+        "tableName": "redemption_windows",
         "columns": {
+          "end_time": {
+            "name": "end_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "id": {
             "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "start_time": {
+            "name": "start_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "redemption_windows_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "promocode_redemptions": {
+        "schemaName": "promocode",
+        "tableName": "redemptions",
+        "columns": {
+          "amount_applied_id": {
+            "name": "amount_applied_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "booking": {
+            "name": "booking",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "customer": {
+            "name": "customer",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
             "type": {
               "scalarType": "text"
             },
@@ -1060,33 +972,47 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "resource_id": {
-            "name": "resource_id",
+          "redeemed_time": {
+            "name": "redeemed_time",
             "type": {
-              "scalarType": "text"
+              "scalarType": "timestamptz"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
             "description": null
           }
         },
         "uniquenessConstraints": {
-          "applicable_resources_pkey": [
+          "redemptions_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "applicable_resources_promo_code_id_fkey": {
+          "redemptions_amount_applied_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_applied_id": "id"
+            }
+          },
+          "redemptions_booking_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "booking": "id"
+            }
+          },
+          "redemptions_customer_fkey": {
+            "foreignSchema": "identity",
+            "foreignTable": "users",
+            "columnMapping": {
+              "customer": "id"
+            }
+          },
+          "redemptions_promo_code_id_fkey": {
             "foreignSchema": "promocode",
             "foreignTable": "resource",
             "columnMapping": {
               "promo_code_id": "id"
-            }
-          },
-          "applicable_resources_resource_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "entity",
-            "columnMapping": {
-              "resource_id": "id"
             }
           }
         },
@@ -1096,14 +1022,6 @@
         "schemaName": "promocode",
         "tableName": "resource",
         "columns": {
-          "amount_off_id": {
-            "name": "amount_off_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
           "code": {
             "name": "code",
             "type": {
@@ -1115,7 +1033,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -1137,13 +1055,12 @@
             "nullable": "nullable",
             "description": null
           },
-          "discount_type": {
-            "name": "discount_type",
+          "discount_id": {
+            "name": "discount_id",
             "type": {
-              "scalarType": "promocode_discount_type"
+              "scalarType": "text"
             },
             "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
             "description": null
           },
           "display_name": {
@@ -1170,16 +1087,8 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "max_redemptions": {
-            "name": "max_redemptions",
-            "type": {
-              "scalarType": "int8"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "min_subtotal_id": {
-            "name": "min_subtotal_id",
+          "limits_id": {
+            "name": "limits_id",
             "type": {
               "scalarType": "text"
             },
@@ -1194,42 +1103,18 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "per_customer_limit": {
-            "name": "per_customer_limit",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "percent_off": {
-            "name": "percent_off",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "redeem_end_time": {
-            "name": "redeem_end_time",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "redeem_start_time": {
-            "name": "redeem_start_time",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
           "redemption_count": {
             "name": "redemption_count",
             "type": {
               "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "scope_id": {
+            "name": "scope_id",
+            "type": {
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -1245,9 +1130,17 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
+            "description": null
+          },
+          "window_id": {
+            "name": "window_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
             "description": null
           }
         },
@@ -1257,21 +1150,221 @@
           ]
         },
         "foreignRelations": {
-          "resource_amount_off_id_fkey": {
-            "foreignSchema": "booking",
-            "foreignTable": "moneys",
+          "resource_discount_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "discounts",
             "columnMapping": {
-              "amount_off_id": "id"
+              "discount_id": "id"
             }
           },
-          "resource_min_subtotal_id_fkey": {
-            "foreignSchema": "booking",
+          "resource_limits_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "usage_limits",
+            "columnMapping": {
+              "limits_id": "id"
+            }
+          },
+          "resource_scope_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "scopes",
+            "columnMapping": {
+              "scope_id": "id"
+            }
+          },
+          "resource_window_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "redemption_windows",
+            "columnMapping": {
+              "window_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "promocode_scope_applicable_offerings": {
+        "schemaName": "promocode",
+        "tableName": "scope_applicable_offerings",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "offering_id": {
+            "name": "offering_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "offering_name": {
+            "name": "offering_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "scope_id": {
+            "name": "scope_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "scope_applicable_offerings_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "scope_applicable_offerings_offering_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "offerings",
+            "columnMapping": {
+              "offering_id": "id"
+            }
+          },
+          "scope_applicable_offerings_scope_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "scopes",
+            "columnMapping": {
+              "scope_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "promocode_scope_applicable_resources": {
+        "schemaName": "promocode",
+        "tableName": "scope_applicable_resources",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "resource_id": {
+            "name": "resource_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "scope_id": {
+            "name": "scope_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "scope_applicable_resources_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "scope_applicable_resources_resource_id_fkey": {
+            "foreignSchema": "resource",
+            "foreignTable": "entity",
+            "columnMapping": {
+              "resource_id": "id"
+            }
+          },
+          "scope_applicable_resources_scope_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "scopes",
+            "columnMapping": {
+              "scope_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "promocode_scopes": {
+        "schemaName": "promocode",
+        "tableName": "scopes",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "min_subtotal_id": {
+            "name": "min_subtotal_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "scopes_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "scopes_min_subtotal_id_fkey": {
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "min_subtotal_id": "id"
             }
           }
         },
+        "description": null
+      },
+      "promocode_usage_limits": {
+        "schemaName": "promocode",
+        "tableName": "usage_limits",
+        "columns": {
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "max_redemptions": {
+            "name": "max_redemptions",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "per_customer_limit": {
+            "name": "per_customer_limit",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "usage_limits_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
         "description": null
       },
       "resource_entity": {
@@ -1306,7 +1399,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -1390,7 +1483,7 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": null
@@ -1480,7 +1573,7 @@
         },
         "foreignRelations": {
           "fees_amount_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "amount_id": "id"
@@ -1548,7 +1641,7 @@
         },
         "foreignRelations": {
           "los_discounts_amount_off_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "amount_off_id": "id"
@@ -1571,7 +1664,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -1660,7 +1753,7 @@
           "update_time": {
             "name": "update_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "description": null
@@ -1673,7 +1766,7 @@
         },
         "foreignRelations": {
           "offerings_price_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "price_id": "id"
@@ -1703,6 +1796,14 @@
           },
           "offering_id": {
             "name": "offering_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "offering_name": {
+            "name": "offering_name",
             "type": {
               "scalarType": "text"
             },
@@ -1795,7 +1896,7 @@
         },
         "foreignRelations": {
           "rate_overrides_date_range_id_fkey": {
-            "foreignSchema": "schedule",
+            "foreignSchema": "shared",
             "foreignTable": "date_ranges",
             "columnMapping": {
               "date_range_id": "id"
@@ -1809,7 +1910,7 @@
             }
           },
           "rate_overrides_price_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "price_id": "id"
@@ -1886,7 +1987,7 @@
           "create_time": {
             "name": "create_time",
             "type": {
-              "scalarType": "timestamp"
+              "scalarType": "timestamptz"
             },
             "nullable": "nonNullable",
             "hasDefault": "hasDefault",
@@ -1965,7 +2066,7 @@
         },
         "foreignRelations": {
           "availability_exceptions_date_range_id_fkey": {
-            "foreignSchema": "schedule",
+            "foreignSchema": "shared",
             "foreignTable": "date_ranges",
             "columnMapping": {
               "date_range_id": "id"
@@ -1979,7 +2080,7 @@
             }
           },
           "availability_exceptions_window_id_fkey": {
-            "foreignSchema": "booking",
+            "foreignSchema": "shared",
             "foreignTable": "time_windows",
             "columnMapping": {
               "window_id": "id"
@@ -2070,49 +2171,20 @@
         "foreignRelations": {},
         "description": null
       },
-      "schedule_date_ranges": {
-        "schemaName": "schedule",
-        "tableName": "date_ranges",
-        "columns": {
-          "end_date": {
-            "name": "end_date",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "start_date": {
-            "name": "start_date",
-            "type": {
-              "scalarType": "timestamp"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "date_ranges_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {},
-        "description": null
-      },
       "schedule_exceptions": {
         "schemaName": "schedule",
         "tableName": "exceptions",
         "columns": {
           "availability_exception_id": {
             "name": "availability_exception_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "availability_exception_name": {
+            "name": "availability_exception_name",
             "type": {
               "scalarType": "text"
             },
@@ -2428,6 +2500,201 @@
         },
         "foreignRelations": {},
         "description": null
+      },
+      "shared_contacts": {
+        "schemaName": "shared",
+        "tableName": "contacts",
+        "columns": {
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "email": {
+            "name": "email",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "phone_number": {
+            "name": "phone_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "contacts_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "shared_date_ranges": {
+        "schemaName": "shared",
+        "tableName": "date_ranges",
+        "columns": {
+          "end_date": {
+            "name": "end_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "start_date": {
+            "name": "start_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "date_ranges_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "shared_price_components": {
+        "schemaName": "shared",
+        "tableName": "price_components",
+        "columns": {
+          "amount_id": {
+            "name": "amount_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "booking_id": {
+            "name": "booking_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "code": {
+            "name": "code",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "shared_type"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "price_components_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "price_components_amount_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_id": "id"
+            }
+          },
+          "price_components_booking_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "booking_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "shared_time_windows": {
+        "schemaName": "shared",
+        "tableName": "time_windows",
+        "columns": {
+          "end_time": {
+            "name": "end_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "start_time": {
+            "name": "start_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "time_windows_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
       }
     },
     "types": {
@@ -2565,71 +2832,6 @@
             ]
           }
         },
-        "booking_type": {
-          "typeName": "type",
-          "schemaName": "booking",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "booking_type"
-            },
-            "min": {
-              "returnType": "booking_type"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "booking_type",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "greaterThan",
-              "argumentType": "booking_type",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "greaterThanOrEqual",
-              "argumentType": "booking_type",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "booking_type",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "lessThan",
-              "argumentType": "booking_type",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "lessThanOrEqual",
-              "argumentType": "booking_type",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "!=",
-              "operatorKind": "custom",
-              "argumentType": "booking_type",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": {
-            "enum": [
-              "BASE",
-              "FEE",
-              "TAX",
-              "DISCOUNT"
-            ]
-          }
-        },
         "bool": {
           "typeName": "bool",
           "schemaName": "pg_catalog",
@@ -2690,6 +2892,64 @@
             }
           },
           "typeRepresentation": "boolean"
+        },
+        "date": {
+          "typeName": "date",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "date"
+            },
+            "min": {
+              "returnType": "date"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "date",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "date",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "date"
         },
         "float8": {
           "typeName": "float8",
@@ -3298,66 +3558,66 @@
             ]
           }
         },
-        "promocode_discount_type": {
-          "typeName": "discount_type",
+        "promocode_discount_amount_case": {
+          "typeName": "discount_amount_case",
           "schemaName": "promocode",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "promocode_discount_type"
+              "returnType": "promocode_discount_amount_case"
             },
             "min": {
-              "returnType": "promocode_discount_type"
+              "returnType": "promocode_discount_amount_case"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "greaterThan",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "greaterThanOrEqual",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "lessThan",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "lessThanOrEqual",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             },
             "_neq": {
               "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "promocode_discount_type",
+              "argumentType": "promocode_discount_amount_case",
               "isInfix": true
             }
           },
           "typeRepresentation": {
             "enum": [
-              "PERCENTAGE",
-              "FIXED_AMOUNT"
+              "PERCENT_OFF",
+              "AMOUNT_OFF"
             ]
           }
         },
@@ -3870,6 +4130,71 @@
             ]
           }
         },
+        "shared_type": {
+          "typeName": "type",
+          "schemaName": "shared",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "shared_type"
+            },
+            "min": {
+              "returnType": "shared_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "shared_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "shared_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "shared_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "shared_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "shared_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "shared_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "shared_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "BASE",
+              "FEE",
+              "TAX",
+              "DISCOUNT"
+            ]
+          }
+        },
         "text": {
           "typeName": "text",
           "schemaName": "pg_catalog",
@@ -3987,64 +4312,6 @@
             }
           },
           "typeRepresentation": "string"
-        },
-        "timestamp": {
-          "typeName": "timestamp",
-          "schemaName": "pg_catalog",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "timestamp"
-            },
-            "min": {
-              "returnType": "timestamp"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "greaterThan",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "greaterThanOrEqual",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "lessThan",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "lessThanOrEqual",
-              "argumentType": "timestamp",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "<>",
-              "operatorKind": "custom",
-              "argumentType": "timestamp",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": "timestamp"
         },
         "timestamptz": {
           "typeName": "timestamptz",

@@ -6,7 +6,6 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/buffersettingsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/cancellationpoliciesql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/daterangesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/exceptionsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
@@ -20,7 +19,6 @@ import (
 type DeleteScheduleAvailabilityExceptionsByIdResponse = schemaql.DeleteScheduleAvailabilityExceptionsByIdResponse
 type DeleteScheduleBufferSettingsByIdResponse = schemaql.DeleteScheduleBufferSettingsByIdResponse
 type DeleteScheduleCancellationPoliciesByIdResponse = schemaql.DeleteScheduleCancellationPoliciesByIdResponse
-type DeleteScheduleDateRangesByIdResponse = schemaql.DeleteScheduleDateRangesByIdResponse
 type DeleteScheduleExceptionsByIdResponse = schemaql.DeleteScheduleExceptionsByIdResponse
 type DeleteScheduleRecurringRulesByIdResponse = schemaql.DeleteScheduleRecurringRulesByIdResponse
 type DeleteScheduleRefundTiersByIdResponse = schemaql.DeleteScheduleRefundTiersByIdResponse
@@ -29,7 +27,6 @@ type DeleteScheduleStayConstraintsByIdResponse = schemaql.DeleteScheduleStayCons
 type InsertScheduleAvailabilityExceptionsResponse = schemaql.InsertScheduleAvailabilityExceptionsResponse
 type InsertScheduleBufferSettingsResponse = schemaql.InsertScheduleBufferSettingsResponse
 type InsertScheduleCancellationPoliciesResponse = schemaql.InsertScheduleCancellationPoliciesResponse
-type InsertScheduleDateRangesResponse = schemaql.InsertScheduleDateRangesResponse
 type InsertScheduleExceptionsResponse = schemaql.InsertScheduleExceptionsResponse
 type InsertScheduleRecurringRulesResponse = schemaql.InsertScheduleRecurringRulesResponse
 type InsertScheduleRefundTiersResponse = schemaql.InsertScheduleRefundTiersResponse
@@ -41,8 +38,6 @@ type ScheduleBufferSettings = schemaql.ScheduleBufferSettings
 type ScheduleBufferSettingsAggExp = schemaql.ScheduleBufferSettingsAggExp
 type ScheduleCancellationPolicies = schemaql.ScheduleCancellationPolicies
 type ScheduleCancellationPoliciesAggExp = schemaql.ScheduleCancellationPoliciesAggExp
-type ScheduleDateRanges = schemaql.ScheduleDateRanges
-type ScheduleDateRangesAggExp = schemaql.ScheduleDateRangesAggExp
 type ScheduleExceptions = schemaql.ScheduleExceptions
 type ScheduleExceptionsAggExp = schemaql.ScheduleExceptionsAggExp
 type ScheduleRecurringRules = schemaql.ScheduleRecurringRules
@@ -56,7 +51,6 @@ type ScheduleStayConstraintsAggExp = schemaql.ScheduleStayConstraintsAggExp
 type UpdateScheduleAvailabilityExceptionsByIdResponse = schemaql.UpdateScheduleAvailabilityExceptionsByIdResponse
 type UpdateScheduleBufferSettingsByIdResponse = schemaql.UpdateScheduleBufferSettingsByIdResponse
 type UpdateScheduleCancellationPoliciesByIdResponse = schemaql.UpdateScheduleCancellationPoliciesByIdResponse
-type UpdateScheduleDateRangesByIdResponse = schemaql.UpdateScheduleDateRangesByIdResponse
 type UpdateScheduleExceptionsByIdResponse = schemaql.UpdateScheduleExceptionsByIdResponse
 type UpdateScheduleRecurringRulesByIdResponse = schemaql.UpdateScheduleRecurringRulesByIdResponse
 type UpdateScheduleRefundTiersByIdResponse = schemaql.UpdateScheduleRefundTiersByIdResponse
@@ -68,7 +62,6 @@ type QueryHandler struct {
 	AvailabilityExceptions availabilityexceptionsql.QueryHandler
 	BufferSettings         buffersettingsql.QueryHandler
 	CancellationPolicies   cancellationpoliciesql.QueryHandler
-	DateRanges             daterangesql.QueryHandler
 	Exceptions             exceptionsql.QueryHandler
 	RecurringRules         recurringrulesql.QueryHandler
 	RefundTiers            refundtiersql.QueryHandler
@@ -82,7 +75,6 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 		AvailabilityExceptions: availabilityexceptionsql.NewQuery(gql),
 		BufferSettings:         buffersettingsql.NewQuery(gql),
 		CancellationPolicies:   cancellationpoliciesql.NewQuery(gql),
-		DateRanges:             daterangesql.NewQuery(gql),
 		Exceptions:             exceptionsql.NewQuery(gql),
 		RecurringRules:         recurringrulesql.NewQuery(gql),
 		RefundTiers:            refundtiersql.NewQuery(gql),
@@ -96,7 +88,6 @@ type MutationHandler struct {
 	AvailabilityExceptions availabilityexceptionsql.MutationHandler
 	BufferSettings         buffersettingsql.MutationHandler
 	CancellationPolicies   cancellationpoliciesql.MutationHandler
-	DateRanges             daterangesql.MutationHandler
 	Exceptions             exceptionsql.MutationHandler
 	RecurringRules         recurringrulesql.MutationHandler
 	RefundTiers            refundtiersql.MutationHandler
@@ -110,7 +101,6 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 		AvailabilityExceptions: availabilityexceptionsql.NewMutation(gql),
 		BufferSettings:         buffersettingsql.NewMutation(gql),
 		CancellationPolicies:   cancellationpoliciesql.NewMutation(gql),
-		DateRanges:             daterangesql.NewMutation(gql),
 		Exceptions:             exceptionsql.NewMutation(gql),
 		RecurringRules:         recurringrulesql.NewMutation(gql),
 		RefundTiers:            refundtiersql.NewMutation(gql),
@@ -124,7 +114,6 @@ type SubscriptionHandler struct {
 	AvailabilityExceptions availabilityexceptionsql.SubscriptionHandler
 	BufferSettings         buffersettingsql.SubscriptionHandler
 	CancellationPolicies   cancellationpoliciesql.SubscriptionHandler
-	DateRanges             daterangesql.SubscriptionHandler
 	Exceptions             exceptionsql.SubscriptionHandler
 	RecurringRules         recurringrulesql.SubscriptionHandler
 	RefundTiers            refundtiersql.SubscriptionHandler
@@ -138,7 +127,6 @@ func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 		AvailabilityExceptions: availabilityexceptionsql.NewSubscription(gql),
 		BufferSettings:         buffersettingsql.NewSubscription(gql),
 		CancellationPolicies:   cancellationpoliciesql.NewSubscription(gql),
-		DateRanges:             daterangesql.NewSubscription(gql),
 		Exceptions:             exceptionsql.NewSubscription(gql),
 		RecurringRules:         recurringrulesql.NewSubscription(gql),
 		RefundTiers:            refundtiersql.NewSubscription(gql),

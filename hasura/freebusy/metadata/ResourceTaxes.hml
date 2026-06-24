@@ -71,8 +71,7 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: percent
           booleanExpressionType: Float8BoolExp
-      comparableRelationships:
-        - relationshipName: resourceOffering
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -124,8 +123,7 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: percent
           orderByExpression: Float64OrderByExp
-      orderableRelationships:
-        - relationshipName: resourceOffering
+      orderableRelationships: []
   graphql:
     expressionTypeName: ResourceTaxesOrderByExp
 
@@ -168,22 +166,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceOffering
-  sourceType: ResourceTaxes
-  target:
-    model:
-      name: ResourceOfferings
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: offeringId
-      target:
-        modelField:
-          - fieldName: id
 

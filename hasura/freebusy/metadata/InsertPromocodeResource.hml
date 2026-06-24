@@ -4,44 +4,36 @@ version: v1
 definition:
   name: InsertPromocodeResourceObject
   fields:
-    - name: amountOffId
-      type: String_1
     - name: code
       type: String_1!
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: description
       type: String_1
     - name: disabled
       type: Boolean_1
-    - name: discountType
-      type: Enum
+    - name: discountId
+      type: String_1!
     - name: displayName
       type: String_1
     - name: etag
       type: String_1
     - name: id
       type: String_1!
-    - name: maxRedemptions
-      type: Int64
-    - name: minSubtotalId
+    - name: limitsId
       type: String_1
     - name: name
       type: String_1!
-    - name: perCustomerLimit
-      type: Int32
-    - name: percentOff
-      type: Int32
-    - name: redeemEndTime
-      type: Timestamp
-    - name: redeemStartTime
-      type: Timestamp
     - name: redemptionCount
       type: Int64
+    - name: scopeId
+      type: String_1
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
+    - name: windowId
+      type: String_1
   graphql:
     typeName: InsertPromocodeResourceObject
     inputTypeName: InsertPromocodeResourceObjectInput
@@ -49,9 +41,6 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: insert_promocode_resource_object
       fieldMapping:
-        amountOffId:
-          column:
-            name: amount_off_id
         code:
           column:
             name: code
@@ -64,9 +53,9 @@ definition:
         disabled:
           column:
             name: disabled
-        discountType:
+        discountId:
           column:
-            name: discount_type
+            name: discount_id
         displayName:
           column:
             name: display_name
@@ -76,36 +65,27 @@ definition:
         id:
           column:
             name: id
-        maxRedemptions:
+        limitsId:
           column:
-            name: max_redemptions
-        minSubtotalId:
-          column:
-            name: min_subtotal_id
+            name: limits_id
         name:
           column:
             name: name
-        perCustomerLimit:
-          column:
-            name: per_customer_limit
-        percentOff:
-          column:
-            name: percent_off
-        redeemEndTime:
-          column:
-            name: redeem_end_time
-        redeemStartTime:
-          column:
-            name: redeem_start_time
         redemptionCount:
           column:
             name: redemption_count
+        scopeId:
+          column:
+            name: scope_id
         state:
           column:
             name: state
         updateTime:
           column:
             name: update_time
+        windowId:
+          column:
+            name: window_id
 
 ---
 kind: TypePermissions
@@ -116,25 +96,21 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOffId
           - code
           - createTime
           - description
           - disabled
-          - discountType
+          - discountId
           - displayName
           - etag
           - id
-          - maxRedemptions
-          - minSubtotalId
+          - limitsId
           - name
-          - perCustomerLimit
-          - percentOff
-          - redeemEndTime
-          - redeemStartTime
           - redemptionCount
+          - scopeId
           - state
           - updateTime
+          - windowId
 
 ---
 kind: ObjectType

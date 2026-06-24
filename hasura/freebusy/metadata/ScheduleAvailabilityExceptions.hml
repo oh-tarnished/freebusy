@@ -5,7 +5,7 @@ definition:
   name: ScheduleAvailabilityExceptions
   fields:
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: dateRangeId
       type: String_1
     - name: id
@@ -86,7 +86,7 @@ definition:
       type: ScheduleAvailabilityExceptions
       comparableFields:
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: dateRangeId
           booleanExpressionType: TextBoolExp
         - fieldName: id
@@ -103,11 +103,7 @@ definition:
           booleanExpressionType: ScheduleAvailabilityExceptionSpanCaseBoolExp
         - fieldName: windowId
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: scheduleDateRange
-        - relationshipName: resourceEntity
-        - relationshipName: bookingTimeWindow
-        - relationshipName: scheduleExceptions
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -125,7 +121,7 @@ definition:
       aggregatedType: ScheduleAvailabilityExceptions
       aggregatableFields:
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: dateRangeId
           aggregateExpression: TextAggExp
         - fieldName: id
@@ -158,7 +154,7 @@ definition:
       orderedType: ScheduleAvailabilityExceptions
       orderableFields:
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: dateRangeId
           orderByExpression: String1OrderByExp
         - fieldName: id
@@ -175,10 +171,7 @@ definition:
           orderByExpression: EnumOrderByExp
         - fieldName: windowId
           orderByExpression: String1OrderByExp
-      orderableRelationships:
-        - relationshipName: scheduleDateRange
-        - relationshipName: resourceEntity
-        - relationshipName: bookingTimeWindow
+      orderableRelationships: []
   graphql:
     expressionTypeName: ScheduleAvailabilityExceptionsOrderByExp
 
@@ -221,80 +214,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleDateRange
-  sourceType: ScheduleAvailabilityExceptions
-  target:
-    model:
-      name: ScheduleDateRanges
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: dateRangeId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceEntity
-  sourceType: ScheduleAvailabilityExceptions
-  target:
-    model:
-      name: ResourceEntity
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: resourceId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingTimeWindow
-  sourceType: ScheduleAvailabilityExceptions
-  target:
-    model:
-      name: BookingTimeWindows
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: windowId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleExceptions
-  sourceType: ScheduleAvailabilityExceptions
-  target:
-    model:
-      name: ScheduleExceptions
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleExceptionsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: availabilityExceptionId
-  graphql:
-    aggregateFieldName: scheduleExceptionsAggregate
 

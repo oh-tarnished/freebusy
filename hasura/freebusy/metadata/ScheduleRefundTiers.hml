@@ -63,8 +63,7 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: refundPercent
           booleanExpressionType: Int4BoolExp
-      comparableRelationships:
-        - relationshipName: scheduleCancellationPolicy
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -112,8 +111,7 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: refundPercent
           orderByExpression: Int32OrderByExp
-      orderableRelationships:
-        - relationshipName: scheduleCancellationPolicy
+      orderableRelationships: []
   graphql:
     expressionTypeName: ScheduleRefundTiersOrderByExp
 
@@ -156,22 +154,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleCancellationPolicy
-  sourceType: ScheduleRefundTiers
-  target:
-    model:
-      name: ScheduleCancellationPolicies
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: cancellationPolicyId
-      target:
-        modelField:
-          - fieldName: id
 

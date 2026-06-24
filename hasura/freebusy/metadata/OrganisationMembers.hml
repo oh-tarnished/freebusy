@@ -5,7 +5,7 @@ definition:
   name: OrganisationMembers
   fields:
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: displayName
       type: String_1
     - name: email
@@ -25,7 +25,7 @@ definition:
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: user
       type: String_1
   graphql:
@@ -104,7 +104,7 @@ definition:
       type: OrganisationMembers
       comparableFields:
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: displayName
           booleanExpressionType: TextBoolExp
         - fieldName: email
@@ -124,13 +124,10 @@ definition:
         - fieldName: state
           booleanExpressionType: OrganisationMemberStateBoolExp
         - fieldName: updateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: user
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: identityUser
-        - relationshipName: organisationResource
-        - relationshipName: identityUserByUser
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -148,7 +145,7 @@ definition:
       aggregatedType: OrganisationMembers
       aggregatableFields:
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: displayName
           aggregateExpression: TextAggExp
         - fieldName: email
@@ -168,7 +165,7 @@ definition:
         - fieldName: state
           aggregateExpression: OrganisationMemberStateAggExp
         - fieldName: updateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: user
           aggregateExpression: TextAggExp
   count:
@@ -187,7 +184,7 @@ definition:
       orderedType: OrganisationMembers
       orderableFields:
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: displayName
           orderByExpression: String1OrderByExp
         - fieldName: email
@@ -207,13 +204,10 @@ definition:
         - fieldName: state
           orderByExpression: EnumOrderByExp
         - fieldName: updateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: user
           orderByExpression: String1OrderByExp
-      orderableRelationships:
-        - relationshipName: identityUser
-        - relationshipName: organisationResource
-        - relationshipName: identityUserByUser
+      orderableRelationships: []
   graphql:
     expressionTypeName: OrganisationMembersOrderByExp
 
@@ -256,58 +250,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: identityUser
-  sourceType: OrganisationMembers
-  target:
-    model:
-      name: IdentityUsers
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: inviter
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: organisationResource
-  sourceType: OrganisationMembers
-  target:
-    model:
-      name: OrganisationResource
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: organisationId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: identityUserByUser
-  sourceType: OrganisationMembers
-  target:
-    model:
-      name: IdentityUsers
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: user
-      target:
-        modelField:
-          - fieldName: id
 

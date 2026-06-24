@@ -1,19 +1,27 @@
-// Package database owns the database connection and the provider factory: it
-// holds the live backend handles (GORM and/or Hasura) and builds the
-// provider-agnostic repositories the service layer depends on. The provider is
-// selected once from the loaded config ([database].provider; GORM by default,
-// Hasura opt-in), so swapping backends is a configuration change, not a code
-// change.
+// Package database owns the database connection plumbing: it opens the configured
+// backend and holds the live handles (GORM and/or Hasura), and it selects the
+// provider once from the loaded config ([database].provider; GORM by default,
+// Hasura opt-in). It is domain-agnostic — each service builds its own
+// provider-specific repositories from a Connection (see
+// internal/service/<svc>/db), so swapping backends is a configuration change.
 package database
 
 import (
 	"strings"
 
 	"github.com/oh-tarnished/freebusy/config"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	"gorm.io/gorm"
+)
+
+// Provider identifies a database backend implementation.
+type Provider string
+
+const (
+	// ProviderGorm is the default backend: GORM over the relational database.
+	ProviderGorm Provider = "gorm"
+	// ProviderHasura is the opt-in backend: Hasura GraphQL.
+	ProviderHasura Provider = "hasura"
 )
 
 // Connection carries the live backend handles. Only the handle for the selected
@@ -23,42 +31,18 @@ type Connection struct {
 	Hasura    *freebusyql.Service
 }
 
-// Factory builds provider-agnostic repositories over a Connection. The backend is
-// resolved once, at construction, from [database].provider in config. Callers
-// depend only on the repository interfaces.
-type Factory struct {
-	conn     *Connection
-	provider repository.Provider
-}
-
-// NewFactory returns a Factory bound to conn, resolving the provider from config.
-func NewFactory(conn *Connection) *Factory {
-	return &Factory{conn: conn, provider: providerFromConfig()}
-}
-
-// Provider reports the backend this factory builds repositories for.
-func (f *Factory) Provider() repository.Provider { return f.provider }
-
-// PromoCodes returns the PromoCodeRepository for the selected provider.
-func (f *Factory) PromoCodes() repository.PromoCodeRepository {
-	if f.provider == repository.ProviderHasura {
-		return hasura.NewPromoCodeRepository(f.conn.Hasura)
-	}
-	return gorm.NewPromoCodeRepository(f.conn.PgSQLConn)
-}
-
 // ProviderFromConfig reports the provider selected by [database].provider in the
-// loaded config. The bootstrap uses it to decide which backend connection to
-// open before constructing the factory.
-func ProviderFromConfig() repository.Provider { return providerFromConfig() }
+// loaded config. Service db factories use it to pick which handle to build their
+// repository over; the bootstrap uses it to decide which backend to open.
+func ProviderFromConfig() Provider { return providerFromConfig() }
 
 // providerFromConfig resolves the configured provider, defaulting to GORM for an
 // empty or unrecognized value.
-func providerFromConfig() repository.Provider {
+func providerFromConfig() Provider {
 	switch strings.ToLower(strings.TrimSpace(config.Get().Database.Provider)) {
-	case string(repository.ProviderHasura):
-		return repository.ProviderHasura
+	case string(ProviderHasura):
+		return ProviderHasura
 	default:
-		return repository.ProviderGorm
+		return ProviderGorm
 	}
 }

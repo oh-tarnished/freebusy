@@ -6,8 +6,9 @@ package schemaql
 type UpdateScheduleExceptionsByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
-		AvailabilityExceptionId string `graphql:"availabilityExceptionId"`
-		Id                      string `graphql:"id"`
-		ScheduleId              string `graphql:"scheduleId"`
+		AvailabilityExceptionId   string `graphql:"availabilityExceptionId"`
+		AvailabilityExceptionName string `graphql:"availabilityExceptionName"`
+		Id                        string `graphql:"id"`
+		ScheduleId                string `graphql:"scheduleId"`
 	} `graphql:"returning"`
 }

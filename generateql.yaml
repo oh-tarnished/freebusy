@@ -11,7 +11,7 @@ go-module: github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql
 out: ./internal/database/hasura
 max-depth: 1
 
-# dump-schema: true   # also write the introspection schema to freebusyql/schema.json
+dump-schema: true   # also write the introspection schema to freebusyql/schema.json
 
 # headers:
 #   - "Authorization: Bearer <token>"

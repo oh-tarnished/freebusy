@@ -38,7 +38,7 @@ definition:
   description: Update the 'create_time' column in the 'identity_users' collection
   fields:
     - name: set
-      type: Timestamp!
+      type: Timestamptz!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnIdentityUsersCreateTime
@@ -294,7 +294,7 @@ definition:
   description: Update the 'update_time' column in the 'identity_users' collection
   fields:
     - name: set
-      type: Timestamp!
+      type: Timestamptz!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnIdentityUsersUpdateTime

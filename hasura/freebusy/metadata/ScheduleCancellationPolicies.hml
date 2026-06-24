@@ -35,9 +35,7 @@ definition:
       comparableFields:
         - fieldName: id
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: scheduleRefundTiers
-        - relationshipName: scheduleResources
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -116,48 +114,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleRefundTiers
-  sourceType: ScheduleCancellationPolicies
-  target:
-    model:
-      name: ScheduleRefundTiers
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleRefundTiersAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: cancellationPolicyId
-  graphql:
-    aggregateFieldName: scheduleRefundTiersAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleResources
-  sourceType: ScheduleCancellationPolicies
-  target:
-    model:
-      name: ScheduleResource
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleResourceAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: cancellationPolicyId
-  graphql:
-    aggregateFieldName: scheduleResourcesAggregate
 

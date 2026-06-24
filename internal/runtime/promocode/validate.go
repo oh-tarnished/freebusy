@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/oh-tarnished/freebusy/internal/runtime/promocode/discount"
+	"github.com/oh-tarnished/freebusy/internal/service/promocode/discount"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"google.golang.org/grpc/codes"

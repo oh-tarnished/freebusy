@@ -7,7 +7,7 @@ definition:
     - name: avatarUrl
       type: String_1
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: displayName
       type: String_1
     - name: email
@@ -23,7 +23,7 @@ definition:
     - name: timeZone
       type: String_1
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: IdentityUsers
     inputTypeName: IdentityUsersInput
@@ -94,7 +94,7 @@ definition:
         - fieldName: avatarUrl
           booleanExpressionType: TextBoolExp
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: displayName
           booleanExpressionType: TextBoolExp
         - fieldName: email
@@ -110,12 +110,8 @@ definition:
         - fieldName: timeZone
           booleanExpressionType: TextBoolExp
         - fieldName: updateTime
-          booleanExpressionType: TimestampBoolExp
-      comparableRelationships:
-        - relationshipName: bookingResources
-        - relationshipName: identityMembershipSummaries
-        - relationshipName: organisationMembers
-        - relationshipName: organisationMembersByUser
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -135,7 +131,7 @@ definition:
         - fieldName: avatarUrl
           aggregateExpression: TextAggExp
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: displayName
           aggregateExpression: TextAggExp
         - fieldName: email
@@ -151,7 +147,7 @@ definition:
         - fieldName: timeZone
           aggregateExpression: TextAggExp
         - fieldName: updateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
     returnType: Int64
@@ -170,7 +166,7 @@ definition:
         - fieldName: avatarUrl
           orderByExpression: String1OrderByExp
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: displayName
           orderByExpression: String1OrderByExp
         - fieldName: email
@@ -186,7 +182,7 @@ definition:
         - fieldName: timeZone
           orderByExpression: String1OrderByExp
         - fieldName: updateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: IdentityUsersOrderByExp
@@ -230,92 +226,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingResources
-  sourceType: IdentityUsers
-  target:
-    model:
-      name: BookingResource
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingResourceAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: customer
-  graphql:
-    aggregateFieldName: bookingResourcesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: identityMembershipSummaries
-  sourceType: IdentityUsers
-  target:
-    model:
-      name: IdentityMembershipSummaries
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: IdentityMembershipSummariesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: userId
-  graphql:
-    aggregateFieldName: identityMembershipSummariesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: organisationMembers
-  sourceType: IdentityUsers
-  target:
-    model:
-      name: OrganisationMembers
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: OrganisationMembersAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: inviter
-  graphql:
-    aggregateFieldName: organisationMembersAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: organisationMembersByUser
-  sourceType: IdentityUsers
-  target:
-    model:
-      name: OrganisationMembers
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: OrganisationMembersAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: user
-  graphql:
-    aggregateFieldName: organisationMembersByUserAggregate
 

@@ -11,7 +11,7 @@ definition:
     - name: capacity
       type: Int32
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: description
       type: String_1
     - name: displayName
@@ -31,7 +31,7 @@ definition:
     - name: type
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: InsertResourceEntityObject
     inputTypeName: InsertResourceEntityObjectInput

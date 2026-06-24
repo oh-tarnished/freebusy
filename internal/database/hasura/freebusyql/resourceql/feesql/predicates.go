@@ -19,14 +19,6 @@ var (
 	Taxable     = graphql.BoolField{Col: "taxable"}
 )
 
-// BookingMoney filters by the bookingMoney relation, taking a predicate from that resource.
-func BookingMoney(p graphql.Predicate) graphql.Predicate { return graphql.Relation("bookingMoney", p) }
-
-// ResourceOffering filters by the resourceOffering relation, taking a predicate from that resource.
-func ResourceOffering(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceOffering", p)
-}
-
 // And matches rows satisfying every predicate.
 func And(p ...graphql.Predicate) graphql.Predicate { return graphql.And(p...) }
 

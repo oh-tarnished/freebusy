@@ -2,15 +2,15 @@
 // implements promocodepbv1.PromoCodeServiceServer, owning request validation,
 // observability, and the mapping of repository errors to gRPC status codes. All
 // protobuf concerns live here; persistence stays behind the provider-agnostic
-// repository.PromoCodeRepository, so the database layer is agnostic to protobuf
-// and gRPC.
+// db.PromoCodeRepository, so the database layer is agnostic to protobuf and gRPC.
 package promocode
 
 import (
 	"context"
 	"errors"
 
-	"github.com/oh-tarnished/freebusy/internal/database/repository"
+	promocodesvc "github.com/oh-tarnished/freebusy/internal/service/promocode"
+	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"google.golang.org/grpc/codes"
@@ -20,15 +20,15 @@ import (
 )
 
 // Server implements promocodepbv1.PromoCodeServiceServer on top of a
-// provider-agnostic repository.PromoCodeRepository, which is selected (GORM or
-// Hasura) by the database factory.
+// provider-agnostic db.PromoCodeRepository, which is selected (GORM or Hasura) by
+// the promocode db factory.
 type Server struct {
 	promocodepbv1.UnimplementedPromoCodeServiceServer
-	repo repository.PromoCodeRepository
+	repo promocodedb.PromoCodeRepository
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo repository.PromoCodeRepository) *Server {
+func NewServer(repo promocodedb.PromoCodeRepository) *Server {
 	return &Server{repo: repo}
 }
 
@@ -91,7 +91,7 @@ func (s *Server) CreatePromoCode(ctx context.Context, req *promocodepbv1.CreateP
 			return nil, status.Error(codes.InvalidArgument, "promo_code.discount.percent_off must be between 1 and 100 for a percentage discount")
 		}
 	}
-	code, err := resolveCode(req)
+	code, err := promocodesvc.ResolveCode(req)
 	if err != nil {
 		return nil, err
 	}

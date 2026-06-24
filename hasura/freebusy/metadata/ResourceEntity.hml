@@ -11,7 +11,7 @@ definition:
     - name: capacity
       type: Int32
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: description
       type: String_1
     - name: displayName
@@ -31,7 +31,7 @@ definition:
     - name: type
       type: Enum!
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: ResourceEntity
     inputTypeName: ResourceEntityInput
@@ -122,7 +122,7 @@ definition:
         - fieldName: capacity
           booleanExpressionType: Int4BoolExp
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: description
           booleanExpressionType: TextBoolExp
         - fieldName: displayName
@@ -140,13 +140,8 @@ definition:
         - fieldName: type
           booleanExpressionType: ResourceResourceTypeBoolExp
         - fieldName: updateTime
-          booleanExpressionType: TimestampBoolExp
-      comparableRelationships:
-        - relationshipName: bookingResources
-        - relationshipName: promocodeApplicableResources
-        - relationshipName: resourceOfferings
-        - relationshipName: resourceOfferingsLinks
-        - relationshipName: scheduleAvailabilityExceptions
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -170,7 +165,7 @@ definition:
         - fieldName: capacity
           aggregateExpression: Int4AggExp
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: description
           aggregateExpression: TextAggExp
         - fieldName: displayName
@@ -188,7 +183,7 @@ definition:
         - fieldName: type
           aggregateExpression: ResourceResourceTypeAggExp
         - fieldName: updateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
     returnType: Int64
@@ -211,7 +206,7 @@ definition:
         - fieldName: capacity
           orderByExpression: Int32OrderByExp
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: description
           orderByExpression: String1OrderByExp
         - fieldName: displayName
@@ -229,7 +224,7 @@ definition:
         - fieldName: type
           orderByExpression: EnumOrderByExp
         - fieldName: updateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: ResourceEntityOrderByExp
@@ -273,114 +268,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingResources
-  sourceType: ResourceEntity
-  target:
-    model:
-      name: BookingResource
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingResourceAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resource
-  graphql:
-    aggregateFieldName: bookingResourcesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: promocodeApplicableResources
-  sourceType: ResourceEntity
-  target:
-    model:
-      name: PromocodeApplicableResources
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: PromocodeApplicableResourcesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resourceId
-  graphql:
-    aggregateFieldName: promocodeApplicableResourcesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceOfferings
-  sourceType: ResourceEntity
-  target:
-    model:
-      name: ResourceOfferings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceOfferingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resourceId
-  graphql:
-    aggregateFieldName: resourceOfferingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceOfferingsLinks
-  sourceType: ResourceEntity
-  target:
-    model:
-      name: ResourceOfferingsLink
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ResourceOfferingsLinkAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resourceId
-  graphql:
-    aggregateFieldName: resourceOfferingsLinksAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleAvailabilityExceptions
-  sourceType: ResourceEntity
-  target:
-    model:
-      name: ScheduleAvailabilityExceptions
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleAvailabilityExceptionsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: resourceId
-  graphql:
-    aggregateFieldName: scheduleAvailabilityExceptionsAggregate
 

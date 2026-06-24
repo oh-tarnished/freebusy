@@ -4,11 +4,8 @@ package schemaql
 
 // ScheduleRefundTiers is the ScheduleRefundTiers model.
 type ScheduleRefundTiers struct {
-	CancellationPolicyId       string `graphql:"cancellationPolicyId"`
-	Cutoff                     string `graphql:"cutoff"`
-	Id                         string `graphql:"id"`
-	RefundPercent              int32  `graphql:"refundPercent"`
-	ScheduleCancellationPolicy struct {
-		Id string `graphql:"id"`
-	} `graphql:"scheduleCancellationPolicy"`
+	CancellationPolicyId string `graphql:"cancellationPolicyId"`
+	Cutoff               string `graphql:"cutoff"`
+	Id                   string `graphql:"id"`
+	RefundPercent        int32  `graphql:"refundPercent"`
 }

@@ -11,13 +11,13 @@ definition:
     - name: cancelReason
       type: Enum
     - name: cancelTime
-      type: Timestamp
+      type: Timestamptz
     - name: confirmTime
-      type: Timestamp
+      type: Timestamptz
     - name: contactId
       type: String_1
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: customer
       type: String_1
     - name: discountId
@@ -25,7 +25,7 @@ definition:
     - name: etag
       type: String_1
     - name: holdExpireTime
-      type: Timestamp
+      type: Timestamptz
     - name: holdTtl
       type: String_1
     - name: id
@@ -53,7 +53,7 @@ definition:
     - name: units
       type: Int32
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: windowId
       type: String_1!
   graphql:

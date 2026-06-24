@@ -95,9 +95,7 @@ definition:
           booleanExpressionType: ResourcePricingUnitBoolExp
         - fieldName: taxable
           booleanExpressionType: BoolBoolExp
-      comparableRelationships:
-        - relationshipName: bookingMoney
-        - relationshipName: resourceOffering
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -161,9 +159,7 @@ definition:
           orderByExpression: EnumOrderByExp
         - fieldName: taxable
           orderByExpression: Boolean1OrderByExp
-      orderableRelationships:
-        - relationshipName: bookingMoney
-        - relationshipName: resourceOffering
+      orderableRelationships: []
   graphql:
     expressionTypeName: ResourceFeesOrderByExp
 
@@ -206,40 +202,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoney
-  sourceType: ResourceFees
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: amountId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceOffering
-  sourceType: ResourceFees
-  target:
-    model:
-      name: ResourceOfferings
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: offeringId
-      target:
-        modelField:
-          - fieldName: id
 

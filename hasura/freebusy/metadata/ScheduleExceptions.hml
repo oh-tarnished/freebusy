@@ -6,6 +6,8 @@ definition:
   fields:
     - name: availabilityExceptionId
       type: String_1!
+    - name: availabilityExceptionName
+      type: String_1!
     - name: id
       type: String_1!
     - name: scheduleId
@@ -20,6 +22,9 @@ definition:
         availabilityExceptionId:
           column:
             name: availability_exception_id
+        availabilityExceptionName:
+          column:
+            name: availability_exception_name
         id:
           column:
             name: id
@@ -37,6 +42,7 @@ definition:
       output:
         allowedFields:
           - availabilityExceptionId
+          - availabilityExceptionName
           - id
           - scheduleId
 
@@ -51,13 +57,13 @@ definition:
       comparableFields:
         - fieldName: availabilityExceptionId
           booleanExpressionType: TextBoolExp
+        - fieldName: availabilityExceptionName
+          booleanExpressionType: TextBoolExp
         - fieldName: id
           booleanExpressionType: TextBoolExp
         - fieldName: scheduleId
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: scheduleAvailabilityException
-        - relationshipName: scheduleResource
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -75,6 +81,8 @@ definition:
       aggregatedType: ScheduleExceptions
       aggregatableFields:
         - fieldName: availabilityExceptionId
+          aggregateExpression: TextAggExp
+        - fieldName: availabilityExceptionName
           aggregateExpression: TextAggExp
         - fieldName: id
           aggregateExpression: TextAggExp
@@ -97,13 +105,13 @@ definition:
       orderableFields:
         - fieldName: availabilityExceptionId
           orderByExpression: String1OrderByExp
+        - fieldName: availabilityExceptionName
+          orderByExpression: String1OrderByExp
         - fieldName: id
           orderByExpression: String1OrderByExp
         - fieldName: scheduleId
           orderByExpression: String1OrderByExp
-      orderableRelationships:
-        - relationshipName: scheduleAvailabilityException
-        - relationshipName: scheduleResource
+      orderableRelationships: []
   graphql:
     expressionTypeName: ScheduleExceptionsOrderByExp
 
@@ -146,40 +154,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleAvailabilityException
-  sourceType: ScheduleExceptions
-  target:
-    model:
-      name: ScheduleAvailabilityExceptions
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: availabilityExceptionId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleResource
-  sourceType: ScheduleExceptions
-  target:
-    model:
-      name: ScheduleResource
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: scheduleId
-      target:
-        modelField:
-          - fieldName: id
 

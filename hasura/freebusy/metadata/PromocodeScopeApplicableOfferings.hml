@@ -1,0 +1,157 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: PromocodeScopeApplicableOfferings
+  fields:
+    - name: id
+      type: String_1!
+    - name: offeringId
+      type: String_1!
+    - name: offeringName
+      type: String_1!
+    - name: scopeId
+      type: String_1!
+  graphql:
+    typeName: PromocodeScopeApplicableOfferings
+    inputTypeName: PromocodeScopeApplicableOfferingsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: promocode_scope_applicable_offerings
+      fieldMapping:
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        offeringName:
+          column:
+            name: offering_name
+        scopeId:
+          column:
+            name: scope_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: PromocodeScopeApplicableOfferings
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - offeringId
+          - offeringName
+          - scopeId
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: PromocodeScopeApplicableOfferingsBoolExp
+  operand:
+    object:
+      type: PromocodeScopeApplicableOfferings
+      comparableFields:
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: offeringId
+          booleanExpressionType: TextBoolExp
+        - fieldName: offeringName
+          booleanExpressionType: TextBoolExp
+        - fieldName: scopeId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PromocodeScopeApplicableOfferingsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PromocodeScopeApplicableOfferingsAggExp
+  operand:
+    object:
+      aggregatedType: PromocodeScopeApplicableOfferings
+      aggregatableFields:
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: offeringId
+          aggregateExpression: TextAggExp
+        - fieldName: offeringName
+          aggregateExpression: TextAggExp
+        - fieldName: scopeId
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: PromocodeScopeApplicableOfferingsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: PromocodeScopeApplicableOfferingsOrderByExp
+  operand:
+    object:
+      orderedType: PromocodeScopeApplicableOfferings
+      orderableFields:
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: offeringId
+          orderByExpression: String1OrderByExp
+        - fieldName: offeringName
+          orderByExpression: String1OrderByExp
+        - fieldName: scopeId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: PromocodeScopeApplicableOfferingsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: PromocodeScopeApplicableOfferings
+  objectType: PromocodeScopeApplicableOfferings
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: promocode_scope_applicable_offerings
+  filterExpressionType: PromocodeScopeApplicableOfferingsBoolExp
+  aggregateExpression: PromocodeScopeApplicableOfferingsAggExp
+  orderByExpression: PromocodeScopeApplicableOfferingsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: promocodeScopeApplicableOfferings
+      subscription:
+        rootField: promocodeScopeApplicableOfferings
+    selectUniques:
+      - queryRootField: promocodeScopeApplicableOfferingsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: promocodeScopeApplicableOfferingsById
+    filterInputTypeName: PromocodeScopeApplicableOfferingsFilterInput
+    aggregate:
+      queryRootField: promocodeScopeApplicableOfferingsAggregate
+      subscription:
+        rootField: promocodeScopeApplicableOfferingsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: PromocodeScopeApplicableOfferings
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

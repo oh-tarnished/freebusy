@@ -1,0 +1,272 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeScopeApplicableOfferingsId
+  description: Update the 'id' column in the
+    'promocode_scope_applicable_offerings' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeScopeApplicableOfferingsId
+    inputTypeName: UpdateColumnPromocodeScopeApplicableOfferingsIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_scope_applicable_offerings_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeScopeApplicableOfferingsId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeScopeApplicableOfferingsOfferingId
+  description: Update the 'offering_id' column in the
+    'promocode_scope_applicable_offerings' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeScopeApplicableOfferingsOfferingId
+    inputTypeName: UpdateColumnPromocodeScopeApplicableOfferingsOfferingIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_scope_applicable_offerings_offering_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeScopeApplicableOfferingsOfferingId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeScopeApplicableOfferingsOfferingName
+  description: Update the 'offering_name' column in the
+    'promocode_scope_applicable_offerings' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeScopeApplicableOfferingsOfferingName
+    inputTypeName: UpdateColumnPromocodeScopeApplicableOfferingsOfferingNameInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_scope_applicable_offerings_offering_name
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeScopeApplicableOfferingsOfferingName
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPromocodeScopeApplicableOfferingsScopeId
+  description: Update the 'scope_id' column in the
+    'promocode_scope_applicable_offerings' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPromocodeScopeApplicableOfferingsScopeId
+    inputTypeName: UpdateColumnPromocodeScopeApplicableOfferingsScopeIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_promocode_scope_applicable_offerings_scope_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPromocodeScopeApplicableOfferingsScopeId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdatePromocodeScopeApplicableOfferingsByIdUpdateColumns
+  description: Update the columns of the 'promocode_scope_applicable_offerings' collection
+  fields:
+    - name: id
+      type: UpdateColumnPromocodeScopeApplicableOfferingsId
+      description: Update the 'id' column in the
+        'promocode_scope_applicable_offerings' collection.
+    - name: offeringId
+      type: UpdateColumnPromocodeScopeApplicableOfferingsOfferingId
+      description: Update the 'offering_id' column in the
+        'promocode_scope_applicable_offerings' collection.
+    - name: offeringName
+      type: UpdateColumnPromocodeScopeApplicableOfferingsOfferingName
+      description: Update the 'offering_name' column in the
+        'promocode_scope_applicable_offerings' collection.
+    - name: scopeId
+      type: UpdateColumnPromocodeScopeApplicableOfferingsScopeId
+      description: Update the 'scope_id' column in the
+        'promocode_scope_applicable_offerings' collection.
+  graphql:
+    typeName: UpdatePromocodeScopeApplicableOfferingsByIdUpdateColumns
+    inputTypeName: UpdatePromocodeScopeApplicableOfferingsByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_promocode_scope_applicable_offerings_by_id_update_columns
+      fieldMapping:
+        id:
+          column:
+            name: id
+        offeringId:
+          column:
+            name: offering_id
+        offeringName:
+          column:
+            name: offering_name
+        scopeId:
+          column:
+            name: scope_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdatePromocodeScopeApplicableOfferingsByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - offeringId
+          - offeringName
+          - scopeId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdatePromocodeScopeApplicableOfferingsByIdResponse
+  description: Responses from the
+    'update_promocode_scope_applicable_offerings_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[PromocodeScopeApplicableOfferings!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdatePromocodeScopeApplicableOfferingsByIdResponse
+    inputTypeName: UpdatePromocodeScopeApplicableOfferingsByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_promocode_scope_applicable_offerings_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdatePromocodeScopeApplicableOfferingsByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdatePromocodeScopeApplicableOfferingsById
+  outputType: UpdatePromocodeScopeApplicableOfferingsByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: PromocodeScopeApplicableOfferingsBoolExp
+      description: Update permission post-condition predicate over the
+        'promocode_scope_applicable_offerings' collection
+    - name: preCheck
+      type: PromocodeScopeApplicableOfferingsBoolExp
+      description: Update permission pre-condition predicate over the
+        'promocode_scope_applicable_offerings' collection
+    - name: updateColumns
+      type: UpdatePromocodeScopeApplicableOfferingsByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_promocode_scope_applicable_offerings_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updatePromocodeScopeApplicableOfferingsById
+    rootFieldKind: Mutation
+  description: Update any row on the 'promocode_scope_applicable_offerings'
+    collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdatePromocodeScopeApplicableOfferingsById
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -79,8 +79,7 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: startDelta
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: scheduleResources
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -179,26 +178,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleResources
-  sourceType: ScheduleBufferSettings
-  target:
-    model:
-      name: ScheduleResource
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleResourceAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: buffersId
-  graphql:
-    aggregateFieldName: scheduleResourcesAggregate
 

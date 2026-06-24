@@ -19,15 +19,15 @@ plugins:
       - target=prisma
       - config=tools/protobuf/buf/protorm.yaml
   - local: protoc-gen-protorm
-    out: protobuf/generated/gorm
+    out: ./internal/database/gorm
     strategy: all
     opt:
       - target=gorm
       - stores=true
       # Import path of the gorm output dir (module path + out). The generated
       # stores import the shared gormx runtime package by this path, so it MUST
-      # match the `out` dir above (protobuf/generated/gorm) — otherwise the
+      # match the `out` dir above (internal/database/) — otherwise the
       # stores import gormx/common/shared paths that don't exist on disk.
-      - go_module=github.com/oh-tarnished/freebusy/protobuf/generated/gorm
+      - go_module=github.com/oh-tarnished/freebusy/internal/database/gorm
       - config=tools/protobuf/buf/protorm.yaml
       - otel=true

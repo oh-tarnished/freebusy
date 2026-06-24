@@ -9,20 +9,11 @@ import (
 // Filter fields for ResourceOfferingsLink. Build predicates like Id.Eq(v) and combine
 // them with And/Or/Not.
 var (
-	Id         = graphql.StringField{Col: "id"}
-	OfferingId = graphql.StringField{Col: "offeringId"}
-	ResourceId = graphql.StringField{Col: "resourceId"}
+	Id           = graphql.StringField{Col: "id"}
+	OfferingId   = graphql.StringField{Col: "offeringId"}
+	OfferingName = graphql.StringField{Col: "offeringName"}
+	ResourceId   = graphql.StringField{Col: "resourceId"}
 )
-
-// ResourceEntity filters by the resourceEntity relation, taking a predicate from that resource.
-func ResourceEntity(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceEntity", p)
-}
-
-// ResourceOffering filters by the resourceOffering relation, taking a predicate from that resource.
-func ResourceOffering(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceOffering", p)
-}
 
 // And matches rows satisfying every predicate.
 func And(p ...graphql.Predicate) graphql.Predicate { return graphql.And(p...) }

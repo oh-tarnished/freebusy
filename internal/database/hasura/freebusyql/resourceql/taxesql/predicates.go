@@ -16,11 +16,6 @@ var (
 	Percent     = graphql.FloatField{Col: "percent"}
 )
 
-// ResourceOffering filters by the resourceOffering relation, taking a predicate from that resource.
-func ResourceOffering(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceOffering", p)
-}
-
 // And matches rows satisfying every predicate.
 func And(p ...graphql.Predicate) graphql.Predicate { return graphql.And(p...) }
 

@@ -6,6 +6,8 @@ definition:
   fields:
     - name: availabilityExceptionId
       type: String_1!
+    - name: availabilityExceptionName
+      type: String_1!
     - name: id
       type: String_1!
     - name: scheduleId
@@ -20,6 +22,9 @@ definition:
         availabilityExceptionId:
           column:
             name: availability_exception_id
+        availabilityExceptionName:
+          column:
+            name: availability_exception_name
         id:
           column:
             name: id
@@ -37,6 +42,7 @@ definition:
       output:
         allowedFields:
           - availabilityExceptionId
+          - availabilityExceptionName
           - id
           - scheduleId
 

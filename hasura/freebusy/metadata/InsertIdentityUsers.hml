@@ -7,7 +7,7 @@ definition:
     - name: avatarUrl
       type: String_1
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: displayName
       type: String_1
     - name: email
@@ -23,7 +23,7 @@ definition:
     - name: timeZone
       type: String_1
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: InsertIdentityUsersObject
     inputTypeName: InsertIdentityUsersObjectInput

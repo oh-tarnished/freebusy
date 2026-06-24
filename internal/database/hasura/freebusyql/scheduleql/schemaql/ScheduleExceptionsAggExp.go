@@ -15,6 +15,12 @@ type ScheduleExceptionsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"availabilityExceptionId"`
+	AvailabilityExceptionName struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"availabilityExceptionName"`
 	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`

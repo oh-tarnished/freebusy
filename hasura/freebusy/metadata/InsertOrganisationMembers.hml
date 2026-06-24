@@ -5,7 +5,7 @@ definition:
   name: InsertOrganisationMembersObject
   fields:
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: displayName
       type: String_1
     - name: email
@@ -25,7 +25,7 @@ definition:
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: user
       type: String_1
   graphql:

@@ -6,7 +6,7 @@ definition:
   description: Update the 'create_time' column in the 'resource_offerings' collection
   fields:
     - name: set
-      type: Timestamp!
+      type: Timestamptz!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnResourceOfferingsCreateTime
@@ -358,7 +358,7 @@ definition:
   description: Update the 'update_time' column in the 'resource_offerings' collection
   fields:
     - name: set
-      type: Timestamp!
+      type: Timestamptz!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnResourceOfferingsUpdateTime

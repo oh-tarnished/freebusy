@@ -5,7 +5,7 @@ definition:
   name: InsertScheduleAvailabilityExceptionsObject
   fields:
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: dateRangeId
       type: String_1
     - name: id

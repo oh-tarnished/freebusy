@@ -11,13 +11,13 @@ definition:
     - name: cancelReason
       type: Enum
     - name: cancelTime
-      type: Timestamp
+      type: Timestamptz
     - name: confirmTime
-      type: Timestamp
+      type: Timestamptz
     - name: contactId
       type: String_1
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: customer
       type: String_1
     - name: discountId
@@ -25,7 +25,7 @@ definition:
     - name: etag
       type: String_1
     - name: holdExpireTime
-      type: Timestamp
+      type: Timestamptz
     - name: holdTtl
       type: String_1
     - name: id
@@ -53,7 +53,7 @@ definition:
     - name: units
       type: Int32
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: windowId
       type: String_1!
   graphql:
@@ -194,13 +194,13 @@ definition:
         - fieldName: cancelReason
           booleanExpressionType: BookingCancelReasonBoolExp
         - fieldName: cancelTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: confirmTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: contactId
           booleanExpressionType: TextBoolExp
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: customer
           booleanExpressionType: TextBoolExp
         - fieldName: discountId
@@ -208,7 +208,7 @@ definition:
         - fieldName: etag
           booleanExpressionType: TextBoolExp
         - fieldName: holdExpireTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: holdTtl
           booleanExpressionType: TextBoolExp
         - fieldName: id
@@ -236,21 +236,10 @@ definition:
         - fieldName: units
           booleanExpressionType: Int4BoolExp
         - fieldName: updateTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: windowId
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: bookingPriceComponents
-        - relationshipName: bookingContact
-        - relationshipName: identityUser
-        - relationshipName: bookingMoney
-        - relationshipName: resourceOffering
-        - relationshipName: bookingMoneyByPriceId
-        - relationshipName: promocodeResource
-        - relationshipName: bookingMoneyByRefundAmountId
-        - relationshipName: resourceEntity
-        - relationshipName: bookingMoneyByTotalId
-        - relationshipName: bookingTimeWindow
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -274,13 +263,13 @@ definition:
         - fieldName: cancelReason
           aggregateExpression: BookingCancelReasonAggExp
         - fieldName: cancelTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: confirmTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: contactId
           aggregateExpression: TextAggExp
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: customer
           aggregateExpression: TextAggExp
         - fieldName: discountId
@@ -288,7 +277,7 @@ definition:
         - fieldName: etag
           aggregateExpression: TextAggExp
         - fieldName: holdExpireTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: holdTtl
           aggregateExpression: TextAggExp
         - fieldName: id
@@ -316,7 +305,7 @@ definition:
         - fieldName: units
           aggregateExpression: Int4AggExp
         - fieldName: updateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: windowId
           aggregateExpression: TextAggExp
   count:
@@ -341,13 +330,13 @@ definition:
         - fieldName: cancelReason
           orderByExpression: EnumOrderByExp
         - fieldName: cancelTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: confirmTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: contactId
           orderByExpression: String1OrderByExp
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: customer
           orderByExpression: String1OrderByExp
         - fieldName: discountId
@@ -355,7 +344,7 @@ definition:
         - fieldName: etag
           orderByExpression: String1OrderByExp
         - fieldName: holdExpireTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: holdTtl
           orderByExpression: String1OrderByExp
         - fieldName: id
@@ -383,20 +372,10 @@ definition:
         - fieldName: units
           orderByExpression: Int32OrderByExp
         - fieldName: updateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: windowId
           orderByExpression: String1OrderByExp
-      orderableRelationships:
-        - relationshipName: bookingContact
-        - relationshipName: identityUser
-        - relationshipName: bookingMoney
-        - relationshipName: resourceOffering
-        - relationshipName: bookingMoneyByPriceId
-        - relationshipName: promocodeResource
-        - relationshipName: bookingMoneyByRefundAmountId
-        - relationshipName: resourceEntity
-        - relationshipName: bookingMoneyByTotalId
-        - relationshipName: bookingTimeWindow
+      orderableRelationships: []
   graphql:
     expressionTypeName: BookingResourceOrderByExp
 
@@ -439,206 +418,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingPriceComponents
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingPriceComponents
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingPriceComponentsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: bookingId
-  graphql:
-    aggregateFieldName: bookingPriceComponentsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingContact
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingContacts
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: contactId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: identityUser
-  sourceType: BookingResource
-  target:
-    model:
-      name: IdentityUsers
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: customer
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoney
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: discountId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceOffering
-  sourceType: BookingResource
-  target:
-    model:
-      name: ResourceOfferings
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: offering
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoneyByPriceId
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: priceId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: promocodeResource
-  sourceType: BookingResource
-  target:
-    model:
-      name: PromocodeResource
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: promoCode
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoneyByRefundAmountId
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: refundAmountId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceEntity
-  sourceType: BookingResource
-  target:
-    model:
-      name: ResourceEntity
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: resource
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoneyByTotalId
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: totalId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingTimeWindow
-  sourceType: BookingResource
-  target:
-    model:
-      name: BookingTimeWindows
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: windowId
-      target:
-        modelField:
-          - fieldName: id
 

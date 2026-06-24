@@ -6,8 +6,9 @@ package schemaql
 type UpdateResourceOfferingsLinkByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
-		Id         string `graphql:"id"`
-		OfferingId string `graphql:"offeringId"`
-		ResourceId string `graphql:"resourceId"`
+		Id           string `graphql:"id"`
+		OfferingId   string `graphql:"offeringId"`
+		OfferingName string `graphql:"offeringName"`
+		ResourceId   string `graphql:"resourceId"`
 	} `graphql:"returning"`
 }

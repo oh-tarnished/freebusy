@@ -8,6 +8,8 @@ definition:
       type: String_1!
     - name: offeringId
       type: String_1!
+    - name: offeringName
+      type: String_1!
     - name: resourceId
       type: String_1!
   graphql:
@@ -23,6 +25,9 @@ definition:
         offeringId:
           column:
             name: offering_id
+        offeringName:
+          column:
+            name: offering_name
         resourceId:
           column:
             name: resource_id
@@ -38,6 +43,7 @@ definition:
         allowedFields:
           - id
           - offeringId
+          - offeringName
           - resourceId
 
 ---
@@ -53,11 +59,11 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: offeringId
           booleanExpressionType: TextBoolExp
+        - fieldName: offeringName
+          booleanExpressionType: TextBoolExp
         - fieldName: resourceId
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: resourceOffering
-        - relationshipName: resourceEntity
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -77,6 +83,8 @@ definition:
         - fieldName: id
           aggregateExpression: TextAggExp
         - fieldName: offeringId
+          aggregateExpression: TextAggExp
+        - fieldName: offeringName
           aggregateExpression: TextAggExp
         - fieldName: resourceId
           aggregateExpression: TextAggExp
@@ -99,11 +107,11 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: offeringId
           orderByExpression: String1OrderByExp
+        - fieldName: offeringName
+          orderByExpression: String1OrderByExp
         - fieldName: resourceId
           orderByExpression: String1OrderByExp
-      orderableRelationships:
-        - relationshipName: resourceOffering
-        - relationshipName: resourceEntity
+      orderableRelationships: []
   graphql:
     expressionTypeName: ResourceOfferingsLinkOrderByExp
 
@@ -146,40 +154,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceOffering
-  sourceType: ResourceOfferingsLink
-  target:
-    model:
-      name: ResourceOfferings
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: offeringId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: resourceEntity
-  sourceType: ResourceOfferingsLink
-  target:
-    model:
-      name: ResourceEntity
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: resourceId
-      target:
-        modelField:
-          - fieldName: id
 

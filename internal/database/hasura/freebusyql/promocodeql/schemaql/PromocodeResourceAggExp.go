@@ -8,14 +8,8 @@ import (
 
 // PromocodeResourceAggExp is the PromocodeResourceAggExp model.
 type PromocodeResourceAggExp struct {
-	Count       graphql.Int64 `graphql:"_count"`
-	AmountOffId struct {
-		Count         graphql.Int64 `graphql:"_count"`
-		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
-		Max           *string       `graphql:"max"`
-		Min           *string       `graphql:"min"`
-	} `graphql:"amountOffId"`
-	Code struct {
+	Count graphql.Int64 `graphql:"_count"`
+	Code  struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -40,12 +34,12 @@ type PromocodeResourceAggExp struct {
 		BoolOr        *bool         `graphql:"bool_or"`
 		Every         *bool         `graphql:"every"`
 	} `graphql:"disabled"`
-	DiscountType struct {
+	DiscountId struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
-	} `graphql:"discountType"`
+	} `graphql:"discountId"`
 	DisplayName struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
@@ -64,81 +58,18 @@ type PromocodeResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"id"`
-	MaxRedemptions struct {
-		Count         graphql.Int64       `graphql:"_count"`
-		CountDistinct graphql.Int64       `graphql:"_count_distinct"`
-		Avg           *graphql.Bigdecimal `graphql:"avg"`
-		BitAnd        *graphql.Int64      `graphql:"bit_and"`
-		BitOr         *graphql.Int64      `graphql:"bit_or"`
-		BitXor        *graphql.Int64      `graphql:"bit_xor"`
-		Max           *graphql.Int64      `graphql:"max"`
-		Min           *graphql.Int64      `graphql:"min"`
-		Stddev        *graphql.Bigdecimal `graphql:"stddev"`
-		StddevPop     *graphql.Bigdecimal `graphql:"stddev_pop"`
-		StddevSamp    *graphql.Bigdecimal `graphql:"stddev_samp"`
-		Sum           *graphql.Bigdecimal `graphql:"sum"`
-		VarPop        *graphql.Bigdecimal `graphql:"var_pop"`
-		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
-		Variance      *graphql.Bigdecimal `graphql:"variance"`
-	} `graphql:"maxRedemptions"`
-	MinSubtotalId struct {
+	LimitsId struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
-	} `graphql:"minSubtotalId"`
+	} `graphql:"limitsId"`
 	Name struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"name"`
-	PerCustomerLimit struct {
-		Count         graphql.Int64       `graphql:"_count"`
-		CountDistinct graphql.Int64       `graphql:"_count_distinct"`
-		Avg           *graphql.Bigdecimal `graphql:"avg"`
-		BitAnd        *int32              `graphql:"bit_and"`
-		BitOr         *int32              `graphql:"bit_or"`
-		BitXor        *int32              `graphql:"bit_xor"`
-		Max           *int32              `graphql:"max"`
-		Min           *int32              `graphql:"min"`
-		Stddev        *graphql.Bigdecimal `graphql:"stddev"`
-		StddevPop     *graphql.Bigdecimal `graphql:"stddev_pop"`
-		StddevSamp    *graphql.Bigdecimal `graphql:"stddev_samp"`
-		Sum           *graphql.Int64      `graphql:"sum"`
-		VarPop        *graphql.Bigdecimal `graphql:"var_pop"`
-		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
-		Variance      *graphql.Bigdecimal `graphql:"variance"`
-	} `graphql:"perCustomerLimit"`
-	PercentOff struct {
-		Count         graphql.Int64       `graphql:"_count"`
-		CountDistinct graphql.Int64       `graphql:"_count_distinct"`
-		Avg           *graphql.Bigdecimal `graphql:"avg"`
-		BitAnd        *int32              `graphql:"bit_and"`
-		BitOr         *int32              `graphql:"bit_or"`
-		BitXor        *int32              `graphql:"bit_xor"`
-		Max           *int32              `graphql:"max"`
-		Min           *int32              `graphql:"min"`
-		Stddev        *graphql.Bigdecimal `graphql:"stddev"`
-		StddevPop     *graphql.Bigdecimal `graphql:"stddev_pop"`
-		StddevSamp    *graphql.Bigdecimal `graphql:"stddev_samp"`
-		Sum           *graphql.Int64      `graphql:"sum"`
-		VarPop        *graphql.Bigdecimal `graphql:"var_pop"`
-		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
-		Variance      *graphql.Bigdecimal `graphql:"variance"`
-	} `graphql:"percentOff"`
-	RedeemEndTime struct {
-		Count         graphql.Int64 `graphql:"_count"`
-		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
-		Max           *string       `graphql:"max"`
-		Min           *string       `graphql:"min"`
-	} `graphql:"redeemEndTime"`
-	RedeemStartTime struct {
-		Count         graphql.Int64 `graphql:"_count"`
-		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
-		Max           *string       `graphql:"max"`
-		Min           *string       `graphql:"min"`
-	} `graphql:"redeemStartTime"`
 	RedemptionCount struct {
 		Count         graphql.Int64       `graphql:"_count"`
 		CountDistinct graphql.Int64       `graphql:"_count_distinct"`
@@ -156,6 +87,12 @@ type PromocodeResourceAggExp struct {
 		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
 		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"redemptionCount"`
+	ScopeId struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"scopeId"`
 	State struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
@@ -168,4 +105,10 @@ type PromocodeResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"updateTime"`
+	WindowId struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"windowId"`
 }

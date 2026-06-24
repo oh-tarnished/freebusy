@@ -7,7 +7,7 @@ definition:
     - name: billingEmail
       type: String_1
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: displayName
       type: String_1!
     - name: etag
@@ -25,7 +25,7 @@ definition:
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: InsertOrganisationResourceObject
     inputTypeName: InsertOrganisationResourceObjectInput

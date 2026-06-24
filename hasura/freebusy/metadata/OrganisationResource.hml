@@ -7,7 +7,7 @@ definition:
     - name: billingEmail
       type: String_1
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: displayName
       type: String_1!
     - name: etag
@@ -25,7 +25,7 @@ definition:
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: OrganisationResource
     inputTypeName: OrganisationResourceInput
@@ -100,7 +100,7 @@ definition:
         - fieldName: billingEmail
           booleanExpressionType: TextBoolExp
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: displayName
           booleanExpressionType: TextBoolExp
         - fieldName: etag
@@ -118,10 +118,8 @@ definition:
         - fieldName: state
           booleanExpressionType: OrganisationOrganisationStateBoolExp
         - fieldName: updateTime
-          booleanExpressionType: TimestampBoolExp
-      comparableRelationships:
-        - relationshipName: identityMembershipSummaries
-        - relationshipName: organisationMembers
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -141,7 +139,7 @@ definition:
         - fieldName: billingEmail
           aggregateExpression: TextAggExp
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: displayName
           aggregateExpression: TextAggExp
         - fieldName: etag
@@ -159,7 +157,7 @@ definition:
         - fieldName: state
           aggregateExpression: OrganisationOrganisationStateAggExp
         - fieldName: updateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
   count:
     enable: true
     returnType: Int64
@@ -178,7 +176,7 @@ definition:
         - fieldName: billingEmail
           orderByExpression: String1OrderByExp
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: displayName
           orderByExpression: String1OrderByExp
         - fieldName: etag
@@ -196,7 +194,7 @@ definition:
         - fieldName: state
           orderByExpression: EnumOrderByExp
         - fieldName: updateTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []
   graphql:
     expressionTypeName: OrganisationResourceOrderByExp
@@ -240,48 +238,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: identityMembershipSummaries
-  sourceType: OrganisationResource
-  target:
-    model:
-      name: IdentityMembershipSummaries
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: IdentityMembershipSummariesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: organisation
-  graphql:
-    aggregateFieldName: identityMembershipSummariesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: organisationMembers
-  sourceType: OrganisationResource
-  target:
-    model:
-      name: OrganisationMembers
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: OrganisationMembersAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: organisationId
-  graphql:
-    aggregateFieldName: organisationMembersAggregate
 

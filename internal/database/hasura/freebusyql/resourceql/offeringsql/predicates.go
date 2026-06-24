@@ -23,47 +23,6 @@ var (
 	UpdateTime  = graphql.StringField{Col: "updateTime"}
 )
 
-// BookingMoney filters by the bookingMoney relation, taking a predicate from that resource.
-func BookingMoney(p graphql.Predicate) graphql.Predicate { return graphql.Relation("bookingMoney", p) }
-
-// BookingResources filters by the bookingResources relation, taking a predicate from that resource.
-func BookingResources(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("bookingResources", p)
-}
-
-// PromocodeApplicableOfferings filters by the promocodeApplicableOfferings relation, taking a predicate from that resource.
-func PromocodeApplicableOfferings(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("promocodeApplicableOfferings", p)
-}
-
-// ResourceEntity filters by the resourceEntity relation, taking a predicate from that resource.
-func ResourceEntity(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceEntity", p)
-}
-
-// ResourceFees filters by the resourceFees relation, taking a predicate from that resource.
-func ResourceFees(p graphql.Predicate) graphql.Predicate { return graphql.Relation("resourceFees", p) }
-
-// ResourceLosDiscounts filters by the resourceLosDiscounts relation, taking a predicate from that resource.
-func ResourceLosDiscounts(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceLosDiscounts", p)
-}
-
-// ResourceOfferingsLinks filters by the resourceOfferingsLinks relation, taking a predicate from that resource.
-func ResourceOfferingsLinks(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceOfferingsLinks", p)
-}
-
-// ResourceRateOverrides filters by the resourceRateOverrides relation, taking a predicate from that resource.
-func ResourceRateOverrides(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceRateOverrides", p)
-}
-
-// ResourceTaxes filters by the resourceTaxes relation, taking a predicate from that resource.
-func ResourceTaxes(p graphql.Predicate) graphql.Predicate {
-	return graphql.Relation("resourceTaxes", p)
-}
-
 // And matches rows satisfying every predicate.
 func And(p ...graphql.Predicate) graphql.Predicate { return graphql.And(p...) }
 

@@ -4,44 +4,36 @@ version: v1
 definition:
   name: PromocodeResource
   fields:
-    - name: amountOffId
-      type: String_1
     - name: code
       type: String_1!
     - name: createTime
-      type: Timestamp!
+      type: Timestamptz!
     - name: description
       type: String_1
     - name: disabled
       type: Boolean_1
-    - name: discountType
-      type: Enum!
+    - name: discountId
+      type: String_1!
     - name: displayName
       type: String_1
     - name: etag
       type: String_1
     - name: id
       type: String_1!
-    - name: maxRedemptions
-      type: Int64
-    - name: minSubtotalId
+    - name: limitsId
       type: String_1
     - name: name
       type: String_1!
-    - name: perCustomerLimit
-      type: Int32
-    - name: percentOff
-      type: Int32
-    - name: redeemEndTime
-      type: Timestamp
-    - name: redeemStartTime
-      type: Timestamp
     - name: redemptionCount
       type: Int64
+    - name: scopeId
+      type: String_1
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
+    - name: windowId
+      type: String_1
   graphql:
     typeName: PromocodeResource
     inputTypeName: PromocodeResourceInput
@@ -49,9 +41,6 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: promocode_resource
       fieldMapping:
-        amountOffId:
-          column:
-            name: amount_off_id
         code:
           column:
             name: code
@@ -64,9 +53,9 @@ definition:
         disabled:
           column:
             name: disabled
-        discountType:
+        discountId:
           column:
-            name: discount_type
+            name: discount_id
         displayName:
           column:
             name: display_name
@@ -76,36 +65,27 @@ definition:
         id:
           column:
             name: id
-        maxRedemptions:
+        limitsId:
           column:
-            name: max_redemptions
-        minSubtotalId:
-          column:
-            name: min_subtotal_id
+            name: limits_id
         name:
           column:
             name: name
-        perCustomerLimit:
-          column:
-            name: per_customer_limit
-        percentOff:
-          column:
-            name: percent_off
-        redeemEndTime:
-          column:
-            name: redeem_end_time
-        redeemStartTime:
-          column:
-            name: redeem_start_time
         redemptionCount:
           column:
             name: redemption_count
+        scopeId:
+          column:
+            name: scope_id
         state:
           column:
             name: state
         updateTime:
           column:
             name: update_time
+        windowId:
+          column:
+            name: window_id
 
 ---
 kind: TypePermissions
@@ -116,25 +96,21 @@ definition:
     - role: admin
       output:
         allowedFields:
-          - amountOffId
           - code
           - createTime
           - description
           - disabled
-          - discountType
+          - discountId
           - displayName
           - etag
           - id
-          - maxRedemptions
-          - minSubtotalId
+          - limitsId
           - name
-          - perCustomerLimit
-          - percentOff
-          - redeemEndTime
-          - redeemStartTime
           - redemptionCount
+          - scopeId
           - state
           - updateTime
+          - windowId
 
 ---
 kind: BooleanExpressionType
@@ -145,50 +121,37 @@ definition:
     object:
       type: PromocodeResource
       comparableFields:
-        - fieldName: amountOffId
-          booleanExpressionType: TextBoolExp
         - fieldName: code
           booleanExpressionType: TextBoolExp
         - fieldName: createTime
-          booleanExpressionType: TimestampBoolExp
+          booleanExpressionType: TimestamptzBoolExp
         - fieldName: description
           booleanExpressionType: TextBoolExp
         - fieldName: disabled
           booleanExpressionType: BoolBoolExp
-        - fieldName: discountType
-          booleanExpressionType: PromocodeDiscountTypeBoolExp
+        - fieldName: discountId
+          booleanExpressionType: TextBoolExp
         - fieldName: displayName
           booleanExpressionType: TextBoolExp
         - fieldName: etag
           booleanExpressionType: TextBoolExp
         - fieldName: id
           booleanExpressionType: TextBoolExp
-        - fieldName: maxRedemptions
-          booleanExpressionType: Int8BoolExp
-        - fieldName: minSubtotalId
+        - fieldName: limitsId
           booleanExpressionType: TextBoolExp
         - fieldName: name
           booleanExpressionType: TextBoolExp
-        - fieldName: perCustomerLimit
-          booleanExpressionType: Int4BoolExp
-        - fieldName: percentOff
-          booleanExpressionType: Int4BoolExp
-        - fieldName: redeemEndTime
-          booleanExpressionType: TimestampBoolExp
-        - fieldName: redeemStartTime
-          booleanExpressionType: TimestampBoolExp
         - fieldName: redemptionCount
           booleanExpressionType: Int8BoolExp
+        - fieldName: scopeId
+          booleanExpressionType: TextBoolExp
         - fieldName: state
           booleanExpressionType: PromocodePromoCodeStateBoolExp
         - fieldName: updateTime
-          booleanExpressionType: TimestampBoolExp
-      comparableRelationships:
-        - relationshipName: bookingResources
-        - relationshipName: promocodeApplicableOfferings
-        - relationshipName: promocodeApplicableResources
-        - relationshipName: bookingMoney
-        - relationshipName: bookingMoneyByMinSubtotalId
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: windowId
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -205,44 +168,36 @@ definition:
     object:
       aggregatedType: PromocodeResource
       aggregatableFields:
-        - fieldName: amountOffId
-          aggregateExpression: TextAggExp
         - fieldName: code
           aggregateExpression: TextAggExp
         - fieldName: createTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
         - fieldName: description
           aggregateExpression: TextAggExp
         - fieldName: disabled
           aggregateExpression: BoolAggExp
-        - fieldName: discountType
-          aggregateExpression: PromocodeDiscountTypeAggExp
+        - fieldName: discountId
+          aggregateExpression: TextAggExp
         - fieldName: displayName
           aggregateExpression: TextAggExp
         - fieldName: etag
           aggregateExpression: TextAggExp
         - fieldName: id
           aggregateExpression: TextAggExp
-        - fieldName: maxRedemptions
-          aggregateExpression: Int8AggExp
-        - fieldName: minSubtotalId
+        - fieldName: limitsId
           aggregateExpression: TextAggExp
         - fieldName: name
           aggregateExpression: TextAggExp
-        - fieldName: perCustomerLimit
-          aggregateExpression: Int4AggExp
-        - fieldName: percentOff
-          aggregateExpression: Int4AggExp
-        - fieldName: redeemEndTime
-          aggregateExpression: TimestampAggExp
-        - fieldName: redeemStartTime
-          aggregateExpression: TimestampAggExp
         - fieldName: redemptionCount
           aggregateExpression: Int8AggExp
+        - fieldName: scopeId
+          aggregateExpression: TextAggExp
         - fieldName: state
           aggregateExpression: PromocodePromoCodeStateAggExp
         - fieldName: updateTime
-          aggregateExpression: TimestampAggExp
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: windowId
+          aggregateExpression: TextAggExp
   count:
     enable: true
     returnType: Int64
@@ -258,47 +213,37 @@ definition:
     object:
       orderedType: PromocodeResource
       orderableFields:
-        - fieldName: amountOffId
-          orderByExpression: String1OrderByExp
         - fieldName: code
           orderByExpression: String1OrderByExp
         - fieldName: createTime
-          orderByExpression: TimestampOrderByExp
+          orderByExpression: TimestamptzOrderByExp
         - fieldName: description
           orderByExpression: String1OrderByExp
         - fieldName: disabled
           orderByExpression: Boolean1OrderByExp
-        - fieldName: discountType
-          orderByExpression: EnumOrderByExp
+        - fieldName: discountId
+          orderByExpression: String1OrderByExp
         - fieldName: displayName
           orderByExpression: String1OrderByExp
         - fieldName: etag
           orderByExpression: String1OrderByExp
         - fieldName: id
           orderByExpression: String1OrderByExp
-        - fieldName: maxRedemptions
-          orderByExpression: Int64OrderByExp
-        - fieldName: minSubtotalId
+        - fieldName: limitsId
           orderByExpression: String1OrderByExp
         - fieldName: name
           orderByExpression: String1OrderByExp
-        - fieldName: perCustomerLimit
-          orderByExpression: Int32OrderByExp
-        - fieldName: percentOff
-          orderByExpression: Int32OrderByExp
-        - fieldName: redeemEndTime
-          orderByExpression: TimestampOrderByExp
-        - fieldName: redeemStartTime
-          orderByExpression: TimestampOrderByExp
         - fieldName: redemptionCount
           orderByExpression: Int64OrderByExp
+        - fieldName: scopeId
+          orderByExpression: String1OrderByExp
         - fieldName: state
           orderByExpression: EnumOrderByExp
         - fieldName: updateTime
-          orderByExpression: TimestampOrderByExp
-      orderableRelationships:
-        - relationshipName: bookingMoney
-        - relationshipName: bookingMoneyByMinSubtotalId
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: windowId
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
   graphql:
     expressionTypeName: PromocodeResourceOrderByExp
 
@@ -341,106 +286,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingResources
-  sourceType: PromocodeResource
-  target:
-    model:
-      name: BookingResource
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: BookingResourceAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: promoCode
-  graphql:
-    aggregateFieldName: bookingResourcesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: promocodeApplicableOfferings
-  sourceType: PromocodeResource
-  target:
-    model:
-      name: PromocodeApplicableOfferings
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: PromocodeApplicableOfferingsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: promoCodeId
-  graphql:
-    aggregateFieldName: promocodeApplicableOfferingsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: promocodeApplicableResources
-  sourceType: PromocodeResource
-  target:
-    model:
-      name: PromocodeApplicableResources
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: PromocodeApplicableResourcesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: promoCodeId
-  graphql:
-    aggregateFieldName: promocodeApplicableResourcesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoney
-  sourceType: PromocodeResource
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: amountOffId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: bookingMoneyByMinSubtotalId
-  sourceType: PromocodeResource
-  target:
-    model:
-      name: BookingMoneys
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: minSubtotalId
-      target:
-        modelField:
-          - fieldName: id
 

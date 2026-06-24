@@ -79,12 +79,7 @@ definition:
           booleanExpressionType: TextBoolExp
         - fieldName: stayConstraintsId
           booleanExpressionType: TextBoolExp
-      comparableRelationships:
-        - relationshipName: scheduleExceptions
-        - relationshipName: scheduleRecurringRules
-        - relationshipName: scheduleBufferSetting
-        - relationshipName: scheduleCancellationPolicy
-        - relationshipName: scheduleStayConstraint
+      comparableRelationships: []
   logicalOperators:
     enable: true
   isNull:
@@ -140,10 +135,7 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: stayConstraintsId
           orderByExpression: String1OrderByExp
-      orderableRelationships:
-        - relationshipName: scheduleBufferSetting
-        - relationshipName: scheduleCancellationPolicy
-        - relationshipName: scheduleStayConstraint
+      orderableRelationships: []
   graphql:
     expressionTypeName: ScheduleResourceOrderByExp
 
@@ -186,102 +178,4 @@ definition:
       select:
         filter: null
         allowSubscriptions: true
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleExceptions
-  sourceType: ScheduleResource
-  target:
-    model:
-      name: ScheduleExceptions
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleExceptionsAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: scheduleId
-  graphql:
-    aggregateFieldName: scheduleExceptionsAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleRecurringRules
-  sourceType: ScheduleResource
-  target:
-    model:
-      name: ScheduleRecurringRules
-      relationshipType: Array
-      aggregate:
-        aggregateExpression: ScheduleRecurringRulesAggExp
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: id
-      target:
-        modelField:
-          - fieldName: scheduleId
-  graphql:
-    aggregateFieldName: scheduleRecurringRulesAggregate
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleBufferSetting
-  sourceType: ScheduleResource
-  target:
-    model:
-      name: ScheduleBufferSettings
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: buffersId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleCancellationPolicy
-  sourceType: ScheduleResource
-  target:
-    model:
-      name: ScheduleCancellationPolicies
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: cancellationPolicyId
-      target:
-        modelField:
-          - fieldName: id
-
----
-kind: Relationship
-version: v1
-definition:
-  name: scheduleStayConstraint
-  sourceType: ScheduleResource
-  target:
-    model:
-      name: ScheduleStayConstraints
-      relationshipType: Object
-  mapping:
-    - source:
-        fieldPath:
-          - fieldName: stayConstraintsId
-      target:
-        modelField:
-          - fieldName: id
 

@@ -8,6 +8,8 @@ definition:
       type: String_1!
     - name: offeringId
       type: String_1!
+    - name: offeringName
+      type: String_1!
     - name: resourceId
       type: String_1!
   graphql:
@@ -23,6 +25,9 @@ definition:
         offeringId:
           column:
             name: offering_id
+        offeringName:
+          column:
+            name: offering_name
         resourceId:
           column:
             name: resource_id
@@ -38,6 +43,7 @@ definition:
         allowedFields:
           - id
           - offeringId
+          - offeringName
           - resourceId
 
 ---

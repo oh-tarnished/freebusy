@@ -19,6 +19,12 @@ orm:
 openapi-merge:
     go run ./tools/protobuf/openapi
 
+# Regenerate Hasura DDN metadata after a DB schema change (introspect connector,
+# rebuild supergraph, restart engine, refresh generateql client). Pass a domain
+# to drop+regenerate its changed models, e.g. `just hasura-regen promocode`.
+hasura-regen domain="":
+    tools/db/hasura/regen.sh {{ domain }}
+
 # generated protos for languages. if language is not specified, generates for all supported languages.
 generate language="all" descriptors="true":
     #!/usr/bin/env sh

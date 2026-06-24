@@ -5,7 +5,7 @@ definition:
   name: InsertResourceOfferingsObject
   fields:
     - name: createTime
-      type: Timestamp
+      type: Timestamptz
     - name: description
       type: String_1
     - name: displayName
@@ -27,7 +27,7 @@ definition:
     - name: state
       type: Enum
     - name: updateTime
-      type: Timestamp!
+      type: Timestamptz!
   graphql:
     typeName: InsertResourceOfferingsObject
     inputTypeName: InsertResourceOfferingsObjectInput

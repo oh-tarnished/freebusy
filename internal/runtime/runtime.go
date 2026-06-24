@@ -8,6 +8,7 @@ package runtime
 import (
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/runtime/promocode"
+	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 )
 
@@ -18,5 +19,7 @@ func NewPromoCodeServer() (promocodepbv1.PromoCodeServiceServer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return promocode.NewServer(database.NewFactory(conn).PromoCodes()), nil
+	return promocode.NewServer(promocodedb.New(conn)), nil
 }
+
+// Other Services can be added here in the future, following the same pattern: open the database connection, build the repository, and return the service implementation.
