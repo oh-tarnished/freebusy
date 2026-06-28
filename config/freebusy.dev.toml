@@ -13,10 +13,10 @@ description = "Promo code service for the freebusy booking platform: create, val
 [server]
 # environment: "development", "debug", "staging", or "production".
 environment = "debug"
-enable_http = true
+enable_http = false
 enable_health = true
 enable_mcp = true
-experimental_http3 = true
+experimental_http3 = false
 
 [server.grpc]
 host = "0.0.0.0"

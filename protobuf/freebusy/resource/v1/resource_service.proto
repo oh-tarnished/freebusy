@@ -18,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.resource.v1";
 // rooms, equipment, unit types) and the offerings attached to them.
 service ResourceService {
   option (google.api.default_host) = "freebusy.ohtarnished.dev";
-  option (mcp.protobuf.service) = {
+  option (mcp.service) = {
     app: {
       name: "Booking Resources"
       version: "1.0.0"
@@ -29,14 +29,14 @@ service ResourceService {
   // Lists resources.
   rpc ListResources(ListResourcesRequest) returns (ListResourcesResponse) {
     option (google.api.http) = {get: "/v1/resources"};
-    option (mcp.protobuf.tool) = {description: "List bookable resources. Filter by type, status, or tags, search by name, and paginate."};
+    option (mcp.tool) = {description: "List bookable resources. Filter by type, status, or tags, search by name, and paginate."};
   }
 
   // Gets a single resource.
   rpc GetResource(GetResourceRequest) returns (Resource) {
     option (google.api.http) = {get: "/v1/{name=resources/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single resource by name, including its offerings."};
+    option (mcp.tool) = {description: "Get a single resource by name, including its offerings."};
   }
 
   // Creates a resource.
@@ -46,8 +46,8 @@ service ResourceService {
       body: "resource"
     };
     option (google.api.method_signature) = "resource,resource_id";
-    option (mcp.protobuf.tool) = {description: "Create a bookable resource with a type, booking mode, timezone, and capacity."};
-    option (mcp.protobuf.prompt) = {
+    option (mcp.tool) = {description: "Create a bookable resource with a type, booking mode, timezone, and capacity."};
+    option (mcp.prompt) = {
       name: "add_resource"
       description: "Add a bookable resource (provider, room, equipment, or unit type)"
       schema: "freebusy.resource.v1.AddResourceArgs"
@@ -61,7 +61,7 @@ service ResourceService {
       body: "resource"
     };
     option (google.api.method_signature) = "resource,update_mask";
-    option (mcp.protobuf.tool) = {description: "Update a resource's name, description, capacity, timezone, tags, or attributes."};
+    option (mcp.tool) = {description: "Update a resource's name, description, capacity, timezone, tags, or attributes."};
   }
 
   // Archives a resource, hiding it from availability and new bookings.
@@ -71,7 +71,7 @@ service ResourceService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Archive a resource so it stops appearing in availability and accepting bookings."};
+    option (mcp.tool) = {description: "Archive a resource so it stops appearing in availability and accepting bookings."};
   }
 
   // Unarchives a resource, restoring it to the active state.
@@ -81,21 +81,21 @@ service ResourceService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Restore an archived resource so it appears in availability and accepts bookings again."};
+    option (mcp.tool) = {description: "Restore an archived resource so it appears in availability and accepts bookings again."};
   }
 
   // Lists the offerings attached to a resource.
   rpc ListOfferings(ListOfferingsRequest) returns (ListOfferingsResponse) {
     option (google.api.http) = {get: "/v1/{parent=resources/*}/offerings"};
     option (google.api.method_signature) = "parent";
-    option (mcp.protobuf.tool) = {description: "List the offerings (duration + price) attached to a resource."};
+    option (mcp.tool) = {description: "List the offerings (duration + price) attached to a resource."};
   }
 
   // Gets a single offering.
   rpc GetOffering(GetOfferingRequest) returns (Offering) {
     option (google.api.http) = {get: "/v1/{name=resources/*/offerings/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single offering by name."};
+    option (mcp.tool) = {description: "Get a single offering by name."};
   }
 
   // Creates an offering on a resource.
@@ -105,7 +105,7 @@ service ResourceService {
       body: "offering"
     };
     option (google.api.method_signature) = "parent,offering,offering_id";
-    option (mcp.protobuf.tool) = {description: "Add an offering (e.g. '30-min consult') with a duration and price to a resource."};
+    option (mcp.tool) = {description: "Add an offering (e.g. '30-min consult') with a duration and price to a resource."};
   }
 
   // Updates an offering.
@@ -115,13 +115,13 @@ service ResourceService {
       body: "offering"
     };
     option (google.api.method_signature) = "offering,update_mask";
-    option (mcp.protobuf.tool) = {description: "Update an offering's name, duration, price, or status."};
+    option (mcp.tool) = {description: "Update an offering's name, duration, price, or status."};
   }
 
   // Deletes an offering.
   rpc DeleteOffering(DeleteOfferingRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {delete: "/v1/{name=resources/*/offerings/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Delete an offering from a resource by name."};
+    option (mcp.tool) = {description: "Delete an offering from a resource by name."};
   }
 }

@@ -19,6 +19,20 @@ orm:
 openapi-merge:
     go run ./tools/protobuf/openapi
 
+# Generate the Envoy grpc-web proxy config (envoy/launch.yaml) from the
+# per-service OpenAPI specs: one route per gRPC service -> the freebusy backend.
+envoy-gen:
+    go run ./tools/protobuf/envoy
+
+# Start the Envoy grpc-web proxy (envoy/docker-compose.yaml). Fronts the backend
+# on :8080; admin UI on http://localhost:9901. Run the freebusy backend first.
+envoy-up:
+    docker compose -f envoy/docker-compose.yaml up -d
+
+# Stop the Envoy grpc-web proxy.
+envoy-down:
+    docker compose -f envoy/docker-compose.yaml down
+
 # Regenerate Hasura DDN metadata after a DB schema change (introspect connector,
 # rebuild supergraph, restart engine, refresh generateql client). Pass a domain
 # to drop+regenerate its changed models, e.g. `just hasura-regen promocode`.
@@ -37,8 +51,12 @@ generate language="all" descriptors="true":
         buf generate --template tools/protobuf/buf/openapiv3.buf.gen.yaml
         echo "==> OpenAPI merge..."
         go run ./tools/protobuf/openapi
+        echo "==> Envoy config generate..."
+        go run ./tools/protobuf/envoy
         echo "==> ORM generate (prisma + gorm)..."
         buf generate --template tools/protobuf/buf/orm.buf.gen.yaml
+        echo "==> TypeScript generate..."
+        buf generate --template tools/protobuf/buf/typescript.buf.gen.yaml
         echo "==> Docs generate..."
         go run ./tools/protobuf/docs protobuf
     elif [ "{{language}}" = "orm" ]; then
@@ -49,6 +67,8 @@ generate language="all" descriptors="true":
         buf generate --template tools/protobuf/buf/openapiv3.buf.gen.yaml
         echo "==> OpenAPI merge..."
         go run ./tools/protobuf/openapi
+        echo "==> Envoy config generate..."
+        go run ./tools/protobuf/envoy
     elif [ -f "tools/protobuf/buf/{{language}}.buf.gen.yaml" ]; then
         buf generate --template tools/protobuf/buf/{{language}}.buf.gen.yaml
     else

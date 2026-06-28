@@ -10,16 +10,16 @@ require (
 	github.com/machanirobotics/pulse/pulse-go v0.0.0-20260524060824-a62605622128
 	github.com/oh-tarnished/freebusy/protobuf v0.0.0-00010101000000-000000000000
 	github.com/oh-tarnished/generateql v0.3.0
-	github.com/oh-tarnished/runtime-go/config v0.0.0-20260623124317-9bdc75fc55d0
-	github.com/oh-tarnished/runtime-go/grpc v0.0.0-20260623124317-9bdc75fc55d0
-	github.com/oh-tarnished/runtime-go/ulid v0.0.0-20260623124317-9bdc75fc55d0
+	github.com/oh-tarnished/runtime-go/config v0.0.0-20260625174747-ee0fd6e44bef
+	github.com/oh-tarnished/runtime-go/grpc v0.0.0-20260625174747-ee0fd6e44bef
+	github.com/oh-tarnished/runtime-go/ulid v0.0.0-20260625174747-ee0fd6e44bef
 	github.com/the-protobuf-project/resourcename v0.0.0-20260616190751-3e187a5d3da5
 	google.golang.org/genproto v0.0.0-20260622175928-b703f567277d
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/postgres v1.6.0
-	gorm.io/gorm v1.31.1
+	gorm.io/gorm v1.31.2
 	gorm.io/plugin/opentelemetry v0.1.16
 )
 
@@ -79,7 +79,6 @@ require (
 	github.com/knadh/koanf/providers/structs v1.0.0 // indirect
 	github.com/knadh/koanf/v2 v2.3.5 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.0 // indirect
-	github.com/machanirobotics/grpc-mcp-gateway v1.5.63 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.21 // indirect
 	github.com/mattn/go-runewidth v0.0.23 // indirect
@@ -94,7 +93,7 @@ require (
 	github.com/olekukonko/tablewriter v1.1.4 // indirect
 	github.com/paulmach/orb v0.11.1 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
-	github.com/pierrec/lz4/v4 v4.1.27 // indirect
+	github.com/pierrec/lz4/v4 v4.1.26 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
@@ -104,6 +103,7 @@ require (
 	github.com/segmentio/encoding v0.5.4 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
+	github.com/the-protobuf-project/grpc-mcp-gateway v1.6.0 // indirect
 	github.com/the-protobuf-project/protorm v1.1.1 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect

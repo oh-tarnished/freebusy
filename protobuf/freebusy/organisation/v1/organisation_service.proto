@@ -20,7 +20,7 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 // service is where organisations and members are created and administered.
 service OrganisationService {
   option (google.api.default_host) = "freebusy.ohtarnished.dev";
-  option (mcp.protobuf.service) = {
+  option (mcp.service) = {
     app: {
       name: "Organizations"
       version: "1.0.0"
@@ -31,14 +31,14 @@ service OrganisationService {
   // Lists the organisations the caller belongs to.
   rpc ListOrganisations(ListOrganisationsRequest) returns (ListOrganisationsResponse) {
     option (google.api.http) = {get: "/v1/organisations"};
-    option (mcp.protobuf.tool) = {description: "List the organizations the caller belongs to."};
+    option (mcp.tool) = {description: "List the organizations the caller belongs to."};
   }
 
   // Gets a single organisation.
   rpc GetOrganisation(GetOrganisationRequest) returns (Organisation) {
     option (google.api.http) = {get: "/v1/{name=organisations/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single organization by resource name."};
+    option (mcp.tool) = {description: "Get a single organization by resource name."};
   }
 
   // Creates an organisation. The caller becomes its first owner.
@@ -48,7 +48,7 @@ service OrganisationService {
       body: "organisation"
     };
     option (google.api.method_signature) = "organisation,organisation_id";
-    option (mcp.protobuf.tool) = {description: "Create an organization; the caller becomes its first owner."};
+    option (mcp.tool) = {description: "Create an organization; the caller becomes its first owner."};
   }
 
   // Updates an organisation.
@@ -58,14 +58,14 @@ service OrganisationService {
       body: "organisation"
     };
     option (google.api.method_signature) = "organisation,update_mask";
-    option (mcp.protobuf.tool) = {description: "Update an organization's display name, slug, billing email, or settings."};
+    option (mcp.tool) = {description: "Update an organization's display name, slug, billing email, or settings."};
   }
 
   // Deletes an organisation.
   rpc DeleteOrganisation(DeleteOrganisationRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {delete: "/v1/{name=organisations/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Delete an organization by resource name."};
+    option (mcp.tool) = {description: "Delete an organization by resource name."};
   }
 
   // Invites a member to an organisation.
@@ -75,8 +75,8 @@ service OrganisationService {
       body: "*"
     };
     option (google.api.method_signature) = "parent,email,role";
-    option (mcp.protobuf.tool) = {description: "Invite an email address to an organisation with a role (owner, admin, member, or viewer)."};
-    option (mcp.protobuf.prompt) = {
+    option (mcp.tool) = {description: "Invite an email address to an organisation with a role (owner, admin, member, or viewer)."};
+    option (mcp.prompt) = {
       name: "invite_member"
       description: "Invite someone to an organization"
       schema: "freebusy.organisation.v1.InviteMemberArgs"
@@ -87,14 +87,14 @@ service OrganisationService {
   rpc ListMembers(ListMembersRequest) returns (ListMembersResponse) {
     option (google.api.http) = {get: "/v1/{parent=organisations/*}/members"};
     option (google.api.method_signature) = "parent";
-    option (mcp.protobuf.tool) = {description: "List the members of an organisation. Filter by role or state."};
+    option (mcp.tool) = {description: "List the members of an organisation. Filter by role or state."};
   }
 
   // Gets a single member.
   rpc GetMember(GetMemberRequest) returns (Member) {
     option (google.api.http) = {get: "/v1/{name=organisations/*/members/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single organisation member by resource name."};
+    option (mcp.tool) = {description: "Get a single organisation member by resource name."};
   }
 
   // Updates a member; the role is the only mutable field.
@@ -104,13 +104,13 @@ service OrganisationService {
       body: "member"
     };
     option (google.api.method_signature) = "member,update_mask";
-    option (mcp.protobuf.tool) = {description: "Change an organisation member's role."};
+    option (mcp.tool) = {description: "Change an organisation member's role."};
   }
 
   // Removes a member from an organisation.
   rpc DeleteMember(DeleteMemberRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {delete: "/v1/{name=organisations/*/members/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Remove a member from an organisation by member resource name."};
+    option (mcp.tool) = {description: "Remove a member from an organisation by member resource name."};
   }
 }

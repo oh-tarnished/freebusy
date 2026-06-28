@@ -4,8 +4,8 @@ go 1.26.4
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0
-	github.com/machanirobotics/grpc-mcp-gateway v1.5.63
 	github.com/modelcontextprotocol/go-sdk v1.6.1
+	github.com/the-protobuf-project/grpc-mcp-gateway v1.6.0
 	github.com/the-protobuf-project/protorm v1.1.1
 	google.golang.org/genproto v0.0.0-20260622175928-b703f567277d
 	google.golang.org/genproto/googleapis/api v0.0.0-20260622175928-b703f567277d

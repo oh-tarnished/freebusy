@@ -22,7 +22,7 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 // webhook that calls ConfirmBooking server-side.
 service BookingService {
   option (google.api.default_host) = "freebusy.ohtarnished.dev";
-  option (mcp.protobuf.service) = {
+  option (mcp.service) = {
     app: {
       name: "Bookings"
       version: "1.0.0"
@@ -37,8 +37,8 @@ service BookingService {
       body: "booking"
     };
     option (google.api.method_signature) = "booking,booking_id";
-    option (mcp.protobuf.tool) = {description: "Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code."};
-    option (mcp.protobuf.prompt) = {
+    option (mcp.tool) = {description: "Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code."};
+    option (mcp.prompt) = {
       name: "book_slot"
       description: "Book a resource at a given time"
       schema: "freebusy.booking.v1.BookSlotArgs"
@@ -49,13 +49,13 @@ service BookingService {
   rpc GetBooking(GetBookingRequest) returns (Booking) {
     option (google.api.http) = {get: "/v1/{name=bookings/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single booking by resource name, including status, assigned unit, and totals."};
+    option (mcp.tool) = {description: "Get a single booking by resource name, including status, assigned unit, and totals."};
   }
 
   // Lists bookings.
   rpc ListBookings(ListBookingsRequest) returns (ListBookingsResponse) {
     option (google.api.http) = {get: "/v1/bookings"};
-    option (mcp.protobuf.tool) = {description: "List bookings. Filter by resource, customer, status, or overlapping time window, and paginate."};
+    option (mcp.tool) = {description: "List bookings. Filter by resource, customer, status, or overlapping time window, and paginate."};
   }
 
   // Confirms a held booking.
@@ -65,7 +65,7 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference."};
+    option (mcp.tool) = {description: "Confirm a held booking (PENDING_HOLD -> CONFIRMED), optionally recording a payment reference."};
   }
 
   // Cancels a booking.
@@ -75,7 +75,7 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Cancel a booking, optionally with a reason and note. Frees the held units and computes the refund from the cancellation policy."};
+    option (mcp.tool) = {description: "Cancel a booking, optionally with a reason and note. Frees the held units and computes the refund from the cancellation policy."};
   }
 
   // Previews the refund a cancellation would yield now, without cancelling.
@@ -85,7 +85,7 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling."};
+    option (mcp.tool) = {description: "Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling."};
   }
 
   // Reschedules a booking to a new span.
@@ -95,6 +95,6 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name,window";
-    option (mcp.protobuf.tool) = {description: "Move a booking to a new span (and optionally offering), re-checking availability on the new window."};
+    option (mcp.tool) = {description: "Move a booking to a new span (and optionally offering), re-checking availability on the new window."};
   }
 }

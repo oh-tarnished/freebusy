@@ -1,0 +1,22 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+inputs:
+  - directory: protobuf
+  # Include external deps so timostamm-protobuf-ts emits TS stubs
+  # for types used by your protos (google/type/*, mcp/protobuf/*).
+  - module: buf.build/googleapis/googleapis
+  - module: buf.build/machanirobotics/grpc-mcp-gateway
+  - module: buf.build/the-protobuf-project/protorm
+plugins:
+  # --- TypeScript definitions for Protobuf messages ---
+  - remote: buf.build/community/timostamm-protobuf-ts:v2.11.1
+    out: protobuf/generated/typescript
+
+  # --- gRPC-Web client stubs (same directory tree as message types) ---
+  - remote: buf.build/grpc/web:v2.0.2
+    out: protobuf/generated/typescript
+    opt:
+      - import_style=typescript
+      - mode=grpcwebtext

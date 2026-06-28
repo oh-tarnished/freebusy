@@ -18,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 // a prospective booking. Redemption itself happens inside CreateBooking.
 service PromoCodeService {
   option (google.api.default_host) = "freebusy.ohtarnished.dev";
-  option (mcp.protobuf.service) = {
+  option (mcp.service) = {
     app: {
       name: "Promo Codes"
       version: "1.0.0"
@@ -29,14 +29,14 @@ service PromoCodeService {
   // Lists promo codes.
   rpc ListPromoCodes(ListPromoCodesRequest) returns (ListPromoCodesResponse) {
     option (google.api.http) = {get: "/promocode/v1/promoCodes"};
-    option (mcp.protobuf.tool) = {description: "List promo codes. Filter by status, search by code, and paginate."};
+    option (mcp.tool) = {description: "List promo codes. Filter by status, search by code, and paginate."};
   }
 
   // Gets a single promo code.
   rpc GetPromoCode(GetPromoCodeRequest) returns (PromoCode) {
     option (google.api.http) = {get: "/promocode/v1/{name=promoCodes/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single promo code by resource name, including its caps and redemption count."};
+    option (mcp.tool) = {description: "Get a single promo code by resource name, including its caps and redemption count."};
   }
 
   // Creates a promo code.
@@ -46,7 +46,7 @@ service PromoCodeService {
       body: "promo_code"
     };
     option (google.api.method_signature) = "promo_code,promo_code_id";
-    option (mcp.protobuf.tool) = {description: "Create a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope."};
+    option (mcp.tool) = {description: "Create a promo code with a percentage or fixed discount, a redemption window, usage caps, and scope."};
   }
 
   // Updates a promo code.
@@ -56,14 +56,14 @@ service PromoCodeService {
       body: "promo_code"
     };
     option (google.api.method_signature) = "promo_code,update_mask";
-    option (mcp.protobuf.tool) = {description: "Update a promo code's discount, window, caps, scope, or status."};
+    option (mcp.tool) = {description: "Update a promo code's discount, window, caps, scope, or status."};
   }
 
   // Deletes a promo code.
   rpc DeletePromoCode(DeletePromoCodeRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {delete: "/promocode/v1/{name=promoCodes/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Delete a promo code by resource name."};
+    option (mcp.tool) = {description: "Delete a promo code by resource name."};
   }
 
   // Validates a code against a prospective booking and returns the discount.
@@ -73,7 +73,7 @@ service PromoCodeService {
       body: "*"
     };
     option (google.api.method_signature) = "code,subtotal";
-    option (mcp.protobuf.tool) = {description: "Check whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total."};
+    option (mcp.tool) = {description: "Check whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total."};
   }
 
   // Lists redemptions of a promo code (paged). Redemptions are created during
@@ -81,13 +81,13 @@ service PromoCodeService {
   rpc ListRedemptions(ListRedemptionsRequest) returns (ListRedemptionsResponse) {
     option (google.api.http) = {get: "/promocode/v1/{parent=promoCodes/*}/redemptions"};
     option (google.api.method_signature) = "parent";
-    option (mcp.protobuf.tool) = {description: "List the redemptions of a promo code, paginated and filterable by customer or time."};
+    option (mcp.tool) = {description: "List the redemptions of a promo code, paginated and filterable by customer or time."};
   }
 
   // Gets a single redemption by resource name.
   rpc GetRedemption(GetRedemptionRequest) returns (Redemption) {
     option (google.api.http) = {get: "/promocode/v1/{name=promoCodes/*/redemptions/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a single promo code redemption by resource name."};
+    option (mcp.tool) = {description: "Get a single promo code redemption by resource name."};
   }
 }

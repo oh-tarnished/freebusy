@@ -16,7 +16,7 @@ option java_package = "dev.ohtarnished.freebusy.identity.v1";
 // redirect flow over plain HTTP handled by the IdP, never an RPC here.
 service IdentityService {
   option (google.api.default_host) = "freebusy.ohtarnished.dev";
-  option (mcp.protobuf.service) = {
+  option (mcp.service) = {
     app: {
       name: "Identity"
       version: "1.0.0"
@@ -28,13 +28,13 @@ service IdentityService {
   rpc GetUser(GetUserRequest) returns (User) {
     option (google.api.http) = {get: "/v1/{name=users/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.protobuf.tool) = {description: "Get a user (\"users/me\" for the signed-in caller), including profile and organisation memberships."};
+    option (mcp.tool) = {description: "Get a user (\"users/me\" for the signed-in caller), including profile and organisation memberships."};
   }
 
   // Lists users sharing an organisation with the caller.
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
     option (google.api.http) = {get: "/v1/users"};
-    option (mcp.protobuf.tool) = {description: "List users sharing an organisation with the caller; filter by organisation or display name."};
+    option (mcp.tool) = {description: "List users sharing an organisation with the caller; filter by organisation or display name."};
   }
 
   // Updates the signed-in user's profile.
@@ -44,6 +44,6 @@ service IdentityService {
       body: "user"
     };
     option (google.api.method_signature) = "user,update_mask";
-    option (mcp.protobuf.tool) = {description: "Update the signed-in user's profile: display name, avatar, locale, or time zone."};
+    option (mcp.tool) = {description: "Update the signed-in user's profile: display name, avatar, locale, or time zone."};
   }
 }
