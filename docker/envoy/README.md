@@ -12,7 +12,7 @@ services directly.
 
 - `launch.yaml` — **generated**, do not edit. One route per gRPC service, all
   pointing at the single `freebusy_backend` cluster. Regenerate with
-  `just envoy-gen` (also runs as part of `just generate`).
+  `just gen envoy` (also runs as part of `just gen`).
 - `docker-compose.yaml` — runs Envoy with `launch.yaml` mounted at
   `/etc/envoy/envoy.yaml`.
 
@@ -27,14 +27,14 @@ services directly.
 2. Start Envoy:
 
    ```sh
-   just envoy-up           # docker compose -f envoy/docker-compose.yaml up -d
+   just envoy up           # docker compose -f docker/envoy/docker-compose.yaml up -d
    ```
 
 3. Browser grpc-web clients now hit `http://localhost:8080`. Check Envoy is
    healthy at http://localhost:9901/ready, and stop it with:
 
    ```sh
-   just envoy-down
+   just envoy down
    ```
 
 ## Backend host

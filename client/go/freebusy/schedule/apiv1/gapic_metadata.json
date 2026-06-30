@@ -1,0 +1,48 @@
+{
+  "schema": "1.0",
+  "comment": "This file maps proto services/RPCs to the corresponding library clients/methods.",
+  "language": "go",
+  "protoPackage": "freebusy.schedule.v1",
+  "libraryPackage": "github.com/oh-tarnished/freebusy/client/go/freebusy/schedule/apiv1",
+  "services": {
+    "ScheduleService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "Client",
+          "rpcs": {
+            "CreateAvailabilityException": {
+              "methods": [
+                "CreateAvailabilityException"
+              ]
+            },
+            "DeleteAvailabilityException": {
+              "methods": [
+                "DeleteAvailabilityException"
+              ]
+            },
+            "GetAvailabilityException": {
+              "methods": [
+                "GetAvailabilityException"
+              ]
+            },
+            "GetSchedule": {
+              "methods": [
+                "GetSchedule"
+              ]
+            },
+            "ListAvailabilityExceptions": {
+              "methods": [
+                "ListAvailabilityExceptions"
+              ]
+            },
+            "UpdateSchedule": {
+              "methods": [
+                "UpdateSchedule"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

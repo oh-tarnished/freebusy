@@ -1,0 +1,473 @@
+{
+  "clientLibrary": {
+    "name": "github.com/oh-tarnished/freebusy/client/go/freebusy/organisation/apiv1",
+    "version": "$VERSION",
+    "language": "GO",
+    "apis": [
+      {
+        "id": "freebusy.organisation.v1",
+        "version": "v1"
+      }
+    ]
+  },
+  "snippets": [
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_CreateOrganisation_sync",
+      "title": "freebusy CreateOrganisation Sample",
+      "description": "CreateOrganisation creates an organisation. The caller becomes its first owner.",
+      "file": "Client/CreateOrganisation/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "CreateOrganisation",
+        "fullName": "freebusy.organisation.v1.Client.CreateOrganisation",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.CreateOrganisationRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*orgpbv1pb.Organisation",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "CreateOrganisation",
+          "fullName": "freebusy.organisation.v1.OrganisationService.CreateOrganisation",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_DeleteMember_sync",
+      "title": "freebusy DeleteMember Sample",
+      "description": "DeleteMember removes a member from an organisation.",
+      "file": "Client/DeleteMember/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "DeleteMember",
+        "fullName": "freebusy.organisation.v1.Client.DeleteMember",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.DeleteMemberRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "DeleteMember",
+          "fullName": "freebusy.organisation.v1.OrganisationService.DeleteMember",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 53,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_DeleteOrganisation_sync",
+      "title": "freebusy DeleteOrganisation Sample",
+      "description": "DeleteOrganisation deletes an organisation.",
+      "file": "Client/DeleteOrganisation/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "DeleteOrganisation",
+        "fullName": "freebusy.organisation.v1.Client.DeleteOrganisation",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.DeleteOrganisationRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "DeleteOrganisation",
+          "fullName": "freebusy.organisation.v1.OrganisationService.DeleteOrganisation",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 53,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_GetMember_sync",
+      "title": "freebusy GetMember Sample",
+      "description": "GetMember gets a single member.",
+      "file": "Client/GetMember/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "GetMember",
+        "fullName": "freebusy.organisation.v1.Client.GetMember",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.GetMemberRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*orgpbv1pb.Member",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "GetMember",
+          "fullName": "freebusy.organisation.v1.OrganisationService.GetMember",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_GetOrganisation_sync",
+      "title": "freebusy GetOrganisation Sample",
+      "description": "GetOrganisation gets a single organisation.",
+      "file": "Client/GetOrganisation/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "GetOrganisation",
+        "fullName": "freebusy.organisation.v1.Client.GetOrganisation",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.GetOrganisationRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*orgpbv1pb.Organisation",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "GetOrganisation",
+          "fullName": "freebusy.organisation.v1.OrganisationService.GetOrganisation",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_InviteMember_sync",
+      "title": "freebusy InviteMember Sample",
+      "description": "InviteMember invites a member to an organisation.",
+      "file": "Client/InviteMember/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "InviteMember",
+        "fullName": "freebusy.organisation.v1.Client.InviteMember",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.InviteMemberRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*orgpbv1pb.InviteMemberResponse",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "InviteMember",
+          "fullName": "freebusy.organisation.v1.OrganisationService.InviteMember",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_ListMembers_sync",
+      "title": "freebusy ListMembers Sample",
+      "description": "ListMembers lists the members of an organisation.",
+      "file": "Client/ListMembers/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "ListMembers",
+        "fullName": "freebusy.organisation.v1.Client.ListMembers",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.ListMembersRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "MemberIterator",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "ListMembers",
+          "fullName": "freebusy.organisation.v1.OrganisationService.ListMembers",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 68,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_ListOrganisations_sync",
+      "title": "freebusy ListOrganisations Sample",
+      "description": "ListOrganisations lists the organisations the caller belongs to.",
+      "file": "Client/ListOrganisations/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "ListOrganisations",
+        "fullName": "freebusy.organisation.v1.Client.ListOrganisations",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.ListOrganisationsRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "OrganisationIterator",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "ListOrganisations",
+          "fullName": "freebusy.organisation.v1.OrganisationService.ListOrganisations",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 68,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_UpdateMember_sync",
+      "title": "freebusy UpdateMember Sample",
+      "description": "UpdateMember updates a member; the role is the only mutable field.",
+      "file": "Client/UpdateMember/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "UpdateMember",
+        "fullName": "freebusy.organisation.v1.Client.UpdateMember",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.UpdateMemberRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*orgpbv1pb.Member",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "UpdateMember",
+          "fullName": "freebusy.organisation.v1.OrganisationService.UpdateMember",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_OrganisationService_UpdateOrganisation_sync",
+      "title": "freebusy UpdateOrganisation Sample",
+      "description": "UpdateOrganisation updates an organisation.",
+      "file": "Client/UpdateOrganisation/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "UpdateOrganisation",
+        "fullName": "freebusy.organisation.v1.Client.UpdateOrganisation",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "orgpbv1pb.UpdateOrganisationRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*orgpbv1pb.Organisation",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.organisation.v1.Client"
+        },
+        "method": {
+          "shortName": "UpdateOrganisation",
+          "fullName": "freebusy.organisation.v1.OrganisationService.UpdateOrganisation",
+          "service": {
+            "shortName": "OrganisationService",
+            "fullName": "freebusy.organisation.v1.OrganisationService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    }
+  ]
+}

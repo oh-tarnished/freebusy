@@ -1,0 +1,68 @@
+{
+  "schema": "1.0",
+  "comment": "This file maps proto services/RPCs to the corresponding library clients/methods.",
+  "language": "go",
+  "protoPackage": "freebusy.organisation.v1",
+  "libraryPackage": "github.com/oh-tarnished/freebusy/client/go/freebusy/organisation/apiv1",
+  "services": {
+    "OrganisationService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "Client",
+          "rpcs": {
+            "CreateOrganisation": {
+              "methods": [
+                "CreateOrganisation"
+              ]
+            },
+            "DeleteMember": {
+              "methods": [
+                "DeleteMember"
+              ]
+            },
+            "DeleteOrganisation": {
+              "methods": [
+                "DeleteOrganisation"
+              ]
+            },
+            "GetMember": {
+              "methods": [
+                "GetMember"
+              ]
+            },
+            "GetOrganisation": {
+              "methods": [
+                "GetOrganisation"
+              ]
+            },
+            "InviteMember": {
+              "methods": [
+                "InviteMember"
+              ]
+            },
+            "ListMembers": {
+              "methods": [
+                "ListMembers"
+              ]
+            },
+            "ListOrganisations": {
+              "methods": [
+                "ListOrganisations"
+              ]
+            },
+            "UpdateMember": {
+              "methods": [
+                "UpdateMember"
+              ]
+            },
+            "UpdateOrganisation": {
+              "methods": [
+                "UpdateOrganisation"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

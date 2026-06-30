@@ -1,0 +1,337 @@
+{
+  "clientLibrary": {
+    "name": "github.com/oh-tarnished/freebusy/client/go/freebusy/booking/apiv1",
+    "version": "$VERSION",
+    "language": "GO",
+    "apis": [
+      {
+        "id": "freebusy.booking.v1",
+        "version": "v1"
+      }
+    ]
+  },
+  "snippets": [
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_CancelBooking_sync",
+      "title": "freebusy CancelBooking Sample",
+      "description": "CancelBooking cancels a booking.",
+      "file": "Client/CancelBooking/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "CancelBooking",
+        "fullName": "freebusy.booking.v1.Client.CancelBooking",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.CancelBookingRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*bookingpbv1pb.Booking",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "CancelBooking",
+          "fullName": "freebusy.booking.v1.BookingService.CancelBooking",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_ConfirmBooking_sync",
+      "title": "freebusy ConfirmBooking Sample",
+      "description": "ConfirmBooking confirms a held booking.",
+      "file": "Client/ConfirmBooking/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "ConfirmBooking",
+        "fullName": "freebusy.booking.v1.Client.ConfirmBooking",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.ConfirmBookingRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*bookingpbv1pb.Booking",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "ConfirmBooking",
+          "fullName": "freebusy.booking.v1.BookingService.ConfirmBooking",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_CreateBooking_sync",
+      "title": "freebusy CreateBooking Sample",
+      "description": "CreateBooking creates a booking, placing a hold.",
+      "file": "Client/CreateBooking/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "CreateBooking",
+        "fullName": "freebusy.booking.v1.Client.CreateBooking",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.CreateBookingRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*bookingpbv1pb.Booking",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "CreateBooking",
+          "fullName": "freebusy.booking.v1.BookingService.CreateBooking",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_GetBooking_sync",
+      "title": "freebusy GetBooking Sample",
+      "description": "GetBooking gets a single booking.",
+      "file": "Client/GetBooking/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "GetBooking",
+        "fullName": "freebusy.booking.v1.Client.GetBooking",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.GetBookingRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*bookingpbv1pb.Booking",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "GetBooking",
+          "fullName": "freebusy.booking.v1.BookingService.GetBooking",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_ListBookings_sync",
+      "title": "freebusy ListBookings Sample",
+      "description": "ListBookings lists bookings.",
+      "file": "Client/ListBookings/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "ListBookings",
+        "fullName": "freebusy.booking.v1.Client.ListBookings",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.ListBookingsRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "BookingIterator",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "ListBookings",
+          "fullName": "freebusy.booking.v1.BookingService.ListBookings",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 68,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_PreviewCancellation_sync",
+      "title": "freebusy PreviewCancellation Sample",
+      "description": "PreviewCancellation previews the refund a cancellation would yield now, without cancelling.",
+      "file": "Client/PreviewCancellation/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "PreviewCancellation",
+        "fullName": "freebusy.booking.v1.Client.PreviewCancellation",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.PreviewCancellationRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*bookingpbv1pb.PreviewCancellationResponse",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "PreviewCancellation",
+          "fullName": "freebusy.booking.v1.BookingService.PreviewCancellation",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_BookingService_RescheduleBooking_sync",
+      "title": "freebusy RescheduleBooking Sample",
+      "description": "RescheduleBooking reschedules a booking to a new span.",
+      "file": "Client/RescheduleBooking/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "RescheduleBooking",
+        "fullName": "freebusy.booking.v1.Client.RescheduleBooking",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "bookingpbv1pb.RescheduleBookingRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*bookingpbv1pb.Booking",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.booking.v1.Client"
+        },
+        "method": {
+          "shortName": "RescheduleBooking",
+          "fullName": "freebusy.booking.v1.BookingService.RescheduleBooking",
+          "service": {
+            "shortName": "BookingService",
+            "fullName": "freebusy.booking.v1.BookingService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    }
+  ]
+}

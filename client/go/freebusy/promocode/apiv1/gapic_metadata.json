@@ -1,0 +1,58 @@
+{
+  "schema": "1.0",
+  "comment": "This file maps proto services/RPCs to the corresponding library clients/methods.",
+  "language": "go",
+  "protoPackage": "freebusy.promocode.v1",
+  "libraryPackage": "github.com/oh-tarnished/freebusy/client/go/freebusy/promocode/apiv1",
+  "services": {
+    "PromoCodeService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "Client",
+          "rpcs": {
+            "CreatePromoCode": {
+              "methods": [
+                "CreatePromoCode"
+              ]
+            },
+            "DeletePromoCode": {
+              "methods": [
+                "DeletePromoCode"
+              ]
+            },
+            "GetPromoCode": {
+              "methods": [
+                "GetPromoCode"
+              ]
+            },
+            "GetRedemption": {
+              "methods": [
+                "GetRedemption"
+              ]
+            },
+            "ListPromoCodes": {
+              "methods": [
+                "ListPromoCodes"
+              ]
+            },
+            "ListRedemptions": {
+              "methods": [
+                "ListRedemptions"
+              ]
+            },
+            "UpdatePromoCode": {
+              "methods": [
+                "UpdatePromoCode"
+              ]
+            },
+            "ValidatePromoCode": {
+              "methods": [
+                "ValidatePromoCode"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

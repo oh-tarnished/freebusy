@@ -7,7 +7,7 @@
 //
 // It delegates to the generated freebusy.Default registry (protorm emits it with
 // every model + EnsureSchemas), so new entities are covered automatically on the
-// next `just orm`.
+// next `just gen orm`.
 package main
 
 import (

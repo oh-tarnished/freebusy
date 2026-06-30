@@ -1,0 +1,153 @@
+{
+  "clientLibrary": {
+    "name": "github.com/oh-tarnished/freebusy/client/go/freebusy/identity/apiv1",
+    "version": "$VERSION",
+    "language": "GO",
+    "apis": [
+      {
+        "id": "freebusy.identity.v1",
+        "version": "v1"
+      }
+    ]
+  },
+  "snippets": [
+    {
+      "regionTag": "freebusy_v1_generated_IdentityService_GetUser_sync",
+      "title": "freebusy GetUser Sample",
+      "description": "GetUser returns a user. Use \"users/me\" for the signed-in caller.",
+      "file": "Client/GetUser/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "GetUser",
+        "fullName": "freebusy.identity.v1.Client.GetUser",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "identitypbv1pb.GetUserRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*identitypbv1pb.User",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.identity.v1.Client"
+        },
+        "method": {
+          "shortName": "GetUser",
+          "fullName": "freebusy.identity.v1.IdentityService.GetUser",
+          "service": {
+            "shortName": "IdentityService",
+            "fullName": "freebusy.identity.v1.IdentityService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_IdentityService_ListUsers_sync",
+      "title": "freebusy ListUsers Sample",
+      "description": "ListUsers lists users sharing an organisation with the caller.",
+      "file": "Client/ListUsers/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "ListUsers",
+        "fullName": "freebusy.identity.v1.Client.ListUsers",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "identitypbv1pb.ListUsersRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "UserIterator",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.identity.v1.Client"
+        },
+        "method": {
+          "shortName": "ListUsers",
+          "fullName": "freebusy.identity.v1.IdentityService.ListUsers",
+          "service": {
+            "shortName": "IdentityService",
+            "fullName": "freebusy.identity.v1.IdentityService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 68,
+          "type": "FULL"
+        }
+      ]
+    },
+    {
+      "regionTag": "freebusy_v1_generated_IdentityService_UpdateUser_sync",
+      "title": "freebusy UpdateUser Sample",
+      "description": "UpdateUser updates the signed-in user's profile.",
+      "file": "Client/UpdateUser/main.go",
+      "language": "GO",
+      "clientMethod": {
+        "shortName": "UpdateUser",
+        "fullName": "freebusy.identity.v1.Client.UpdateUser",
+        "parameters": [
+          {
+            "type": "context.Context",
+            "name": "ctx"
+          },
+          {
+            "type": "identitypbv1pb.UpdateUserRequest",
+            "name": "req"
+          },
+          {
+            "type": "...gax.CallOption",
+            "name": "opts"
+          }
+        ],
+        "resultType": "*identitypbv1pb.User",
+        "client": {
+          "shortName": "Client",
+          "fullName": "freebusy.identity.v1.Client"
+        },
+        "method": {
+          "shortName": "UpdateUser",
+          "fullName": "freebusy.identity.v1.IdentityService.UpdateUser",
+          "service": {
+            "shortName": "IdentityService",
+            "fullName": "freebusy.identity.v1.IdentityService"
+          }
+        }
+      },
+      "origin": "API_DEFINITION",
+      "segments": [
+        {
+          "start": 18,
+          "end": 55,
+          "type": "FULL"
+        }
+      ]
+    }
+  ]
+}

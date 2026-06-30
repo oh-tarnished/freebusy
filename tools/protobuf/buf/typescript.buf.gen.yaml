@@ -4,19 +4,33 @@ managed:
   enabled: true
 inputs:
   - directory: protobuf
-  # Include external deps so timostamm-protobuf-ts emits TS stubs
-  # for types used by your protos (google/type/*, mcp/protobuf/*).
+  # Include external deps so protoc-gen-es emits TS for every type the protos
+  # reference (google/type/*, google/api/*, mcp/protobuf/*, protorm/*).
   - module: buf.build/googleapis/googleapis
   - module: buf.build/machanirobotics/grpc-mcp-gateway
   - module: buf.build/the-protobuf-project/protorm
 plugins:
-  # --- TypeScript definitions for Protobuf messages ---
-  - remote: buf.build/community/timostamm-protobuf-ts:v2.11.1
-    out: protobuf/generated/typescript
-
-  # --- gRPC-Web client stubs (same directory tree as message types) ---
-  - remote: buf.build/grpc/web:v2.0.2
-    out: protobuf/generated/typescript
+  # --- TypeScript messages + service descriptors (protobuf-es / Connect-ES) ---
+  # protoc-gen-es (protobuf-es v2) emits `*_pb.ts` with plain-object message
+  # types, enums, and `GenService` service descriptors. At runtime the SDK
+  # drives those descriptors with @connectrpc/connect over a grpc-web
+  # transport (@connectrpc/connect-web) — see client/typescript/index.ts.
+  # No separate connect codegen plugin is needed: in Connect-ES v2 the service
+  # descriptors come from protoc-gen-es itself.
+  #
+  # Pinned to the local plugin binary (client/typescript/node_modules/.bin) so
+  # its version always matches the @bufbuild/protobuf runtime in package.json.
+  # `just gen typescript` runs from the repo root, so this relative path holds.
+  #
+  # NOTE: generated code goes into client/typescript/src, NOT the package root.
+  # With `clean: true` above, buf wipes each plugin's `out` dir on every run —
+  # pointing it at the package root would delete the hand-written index.ts,
+  # types/, package.json, and node_modules. Keep it isolated.
+  #
+  # The google/*, mcp/*, and protorm/* trees are generated in-tree from the
+  # extra input modules above; protobuf-es has no npm package shipping these
+  # pre-generated, so in-tree generation is the standard approach.
+  - local: client/typescript/node_modules/.bin/protoc-gen-es
+    out: client/typescript/src
     opt:
-      - import_style=typescript
-      - mode=grpcwebtext
+      - target=ts

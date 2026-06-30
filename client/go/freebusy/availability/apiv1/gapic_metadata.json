@@ -1,0 +1,43 @@
+{
+  "schema": "1.0",
+  "comment": "This file maps proto services/RPCs to the corresponding library clients/methods.",
+  "language": "go",
+  "protoPackage": "freebusy.availability.v1",
+  "libraryPackage": "github.com/oh-tarnished/freebusy/client/go/freebusy/availability/apiv1",
+  "services": {
+    "AvailabilityService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "Client",
+          "rpcs": {
+            "BatchComputeAvailability": {
+              "methods": [
+                "BatchComputeAvailability"
+              ]
+            },
+            "CheckAvailability": {
+              "methods": [
+                "CheckAvailability"
+              ]
+            },
+            "ComputeAvailability": {
+              "methods": [
+                "ComputeAvailability"
+              ]
+            },
+            "ComputeBookableRanges": {
+              "methods": [
+                "ComputeBookableRanges"
+              ]
+            },
+            "SearchAvailability": {
+              "methods": [
+                "SearchAvailability"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

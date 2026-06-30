@@ -1,0 +1,53 @@
+{
+  "schema": "1.0",
+  "comment": "This file maps proto services/RPCs to the corresponding library clients/methods.",
+  "language": "go",
+  "protoPackage": "freebusy.booking.v1",
+  "libraryPackage": "github.com/oh-tarnished/freebusy/client/go/freebusy/booking/apiv1",
+  "services": {
+    "BookingService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "Client",
+          "rpcs": {
+            "CancelBooking": {
+              "methods": [
+                "CancelBooking"
+              ]
+            },
+            "ConfirmBooking": {
+              "methods": [
+                "ConfirmBooking"
+              ]
+            },
+            "CreateBooking": {
+              "methods": [
+                "CreateBooking"
+              ]
+            },
+            "GetBooking": {
+              "methods": [
+                "GetBooking"
+              ]
+            },
+            "ListBookings": {
+              "methods": [
+                "ListBookings"
+              ]
+            },
+            "PreviewCancellation": {
+              "methods": [
+                "PreviewCancellation"
+              ]
+            },
+            "RescheduleBooking": {
+              "methods": [
+                "RescheduleBooking"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -31,13 +31,13 @@ everything stateful or external is the shell's job.
 Generated artifacts under `protobuf/generated/` are produced from the protobuf
 definitions via [`buf`](https://buf.build) and recipes in the `justfile`:
 
-- `just generate` — regenerate everything (Go, OpenAPI, ORM, docs)
-- `just orm` — regenerate the ORM schemas (Prisma + GORM) only
-- `just docs` — regenerate the protobuf docs only
+- `just gen` — regenerate everything (Go, OpenAPI, ORM, docs)
+- `just gen orm` — regenerate the ORM schemas (Prisma + GORM) only
+- `just gen docs` — regenerate the protobuf docs only
 
 ORM generation requires the `protoc-gen-protorm` plugin to be installed and on
 your `PATH`. Install it globally, e.g. via Homebrew or `go install`, before
-running `just orm` / `just generate`. The generated ORM output reflects whatever
+running `just gen orm` / `just gen`. The generated ORM output reflects whatever
 `protoc-gen-protorm` version is installed, so keep it up to date.
 
 ---

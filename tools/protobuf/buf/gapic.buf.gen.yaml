@@ -1,0 +1,55 @@
+# Per-service GAPIC template — NOT run directly with `buf generate`.
+#
+# `just gen gapic` slices this file at the marker comments and runs several
+# scoped `buf generate` passes:
+#
+#   * Go (above # PYTHON_PLUGIN): GAPIC emits one library per proto package,
+#     so the recipe substitutes __SVC__ and runs once per service, scoped with
+#     --path, into client/go/freebusy/<svc>/apiv1. Bundling all services into
+#     one go-gapic-package collides (duplicate doc.go/auxiliary.go → missing
+#     pagination iterators → won't compile).
+#
+#   * Python GAPIC (between # PYTHON_PLUGIN and # PYTHON_PB2): one unified
+#     library, generated in a single pass scoped to the 7 SERVICE packages
+#     (not shared). freebusy.shared.v1 is a common package imported by every
+#     service; if GAPIC also emitted proto-plus for it, its symbols would be
+#     registered twice (proto-plus + raw _pb2) and the descriptor pool would
+#     reject the duplicate. So shared is treated like the google.* commons:
+#     referenced only via raw _pb2 (next pass).
+#
+#   * Python raw _pb2 (after # PYTHON_PB2): the protobuf-python plugin emits
+#     freebusy/shared/v1/*_pb2.py — the only non-pip raw modules the generated
+#     proto-plus types import (google.* come from googleapis-common-protos).
+#
+# Needs: protoc-gen-go_gapic, and for Python protoc-gen-python_gapic + pandoc
+#   brew install the-protobuf-project/tap/protoc-gen-python-gapic pandoc
+version: v2
+# clean MUST stay false: the out dirs hold hand-written files (e.g.
+# client/go/go.mod) and `clean` wipes a plugin's whole out dir per run.
+clean: false
+# No managed mode: GAPIC reads each proto's real go_package to import the
+# underlying *pb.go message types — rewriting it would break those imports.
+inputs:
+  - directory: protobuf
+plugins:
+  # --- Go GAPIC client → client/go/freebusy/<svc>/apiv1 ---
+  - local: protoc-gen-go_gapic
+    out: client/go
+    opt:
+      - go-gapic-package=github.com/oh-tarnished/freebusy/client/go/freebusy/__SVC__/apiv1;__SVC__
+      - api-service-config=tools/protobuf/buf/gapic/freebusy_v1.yaml
+      - grpc-service-config=tools/protobuf/buf/gapic/freebusy_grpc_service_config.json
+      - module=github.com/oh-tarnished/freebusy/client/go
+      - metadata
+  # PYTHON_PLUGIN
+  # --- Python GAPIC client (proto-plus + clients) → client/python ---
+  - local: protoc-gen-python_gapic
+    out: client/python
+    opt:
+      - transport=grpc
+      - service-yaml=tools/protobuf/buf/gapic/freebusy_v1.yaml
+      - retry-config=tools/protobuf/buf/gapic/freebusy_grpc_service_config.json
+  # PYTHON_PB2
+  # --- Raw protobuf-python for the shared common types → client/python ---
+  - remote: buf.build/protocolbuffers/python:v35.1
+    out: client/python

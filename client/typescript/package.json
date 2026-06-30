@@ -1,0 +1,30 @@
+{
+  "name": "freebusy-client",
+  "version": "0.1.0",
+  "main": "./index.ts",
+  "module": "./index.ts",
+  "devDependencies": {
+    "@bufbuild/protoc-gen-es": "^2.12.1",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^6.0.3"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./src/*": "./src/*"
+  },
+  "description": "FreeBusy gRPC-Web TypeScript SDK (browser client)",
+  "files": [
+    "index.ts",
+    "types",
+    "src"
+  ],
+  "type": "module",
+  "types": "./index.ts",
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.12.1",
+    "@connectrpc/connect": "^2.1.2",
+    "@connectrpc/connect-web": "^2.1.2"
+  }
+}
