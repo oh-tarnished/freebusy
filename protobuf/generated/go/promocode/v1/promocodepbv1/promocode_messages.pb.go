@@ -442,12 +442,12 @@ type ValidatePromoCodeRequest struct {
 	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
 	// Subtotal the discount would apply to.
 	Subtotal *money.Money `protobuf:"bytes,2,opt,name=subtotal,proto3" json:"subtotal,omitempty"`
-	// Resource being booked, for scope checks.
-	// Format: resources/{resource}
-	Resource string `protobuf:"bytes,3,opt,name=resource,proto3" json:"resource,omitempty"`
-	// Offering being booked, for scope checks.
-	// Format: resources/{resource}/offerings/{offering}
-	Offering string `protobuf:"bytes,4,opt,name=offering,proto3" json:"offering,omitempty"`
+	// Property being booked, for scope checks.
+	// Format: properties/{property}
+	Property string `protobuf:"bytes,3,opt,name=property,proto3" json:"property,omitempty"`
+	// Unit being booked, for scope checks.
+	// Format: properties/{property}/units/{unit}
+	Unit string `protobuf:"bytes,4,opt,name=unit,proto3" json:"unit,omitempty"`
 	// Customer redeeming the code, for per-customer limit checks.
 	// Format: users/{user}
 	Customer      string `protobuf:"bytes,5,opt,name=customer,proto3" json:"customer,omitempty"`
@@ -499,16 +499,16 @@ func (x *ValidatePromoCodeRequest) GetSubtotal() *money.Money {
 	return nil
 }
 
-func (x *ValidatePromoCodeRequest) GetResource() string {
+func (x *ValidatePromoCodeRequest) GetProperty() string {
 	if x != nil {
-		return x.Resource
+		return x.Property
 	}
 	return ""
 }
 
-func (x *ValidatePromoCodeRequest) GetOffering() string {
+func (x *ValidatePromoCodeRequest) GetUnit() string {
 	if x != nil {
-		return x.Offering
+		return x.Unit
 	}
 	return ""
 }
@@ -847,14 +847,14 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
 	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\x12\x17\n" +
 	"\x04etag\x18\x02 \x01(\tB\x03\xe0A\x01R\x04etag\x12\x19\n" +
-	"\x05force\x18\x03 \x01(\bB\x03\xe0A\x01R\x05force\"\xad\x02\n" +
+	"\x05force\x18\x03 \x01(\bB\x03\xe0A\x01R\x05force\"\xa1\x02\n" +
 	"\x18ValidatePromoCodeRequest\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x123\n" +
 	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\bsubtotal\x12A\n" +
-	"\bresource\x18\x03 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/ResourceR\bresource\x12A\n" +
-	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12=\n" +
+	"\bproperty\x18\x03 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/PropertyR\bproperty\x125\n" +
+	"\x04unit\x18\x04 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/UnitR\x04unit\x12=\n" +
 	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
 	"\x19freebusy.identity.v1/UserR\bcustomer\"\xd6\x02\n" +
 	"\x19ValidatePromoCodeResponse\x12\x14\n" +

@@ -540,20 +540,20 @@ components:
                     description: |-
                         Minimum subtotal required for the code to apply.
                          Normalized into the shared common.moneys table (belongs-to via min_subtotal_id).
-                applicableResources:
+                applicableProperties:
                     type: array
                     items:
                         type: string
                     description: |-
-                        Resources the code applies to. Empty means all resources.
-                         Format: resources/{resource}
-                applicableOfferings:
+                        Properties the code applies to. Empty means all properties.
+                         Format: properties/{property}
+                applicableUnits:
                     type: array
                     items:
                         type: string
                     description: |-
-                        Offerings the code applies to. Empty means all offerings.
-                         Format: resources/{resource}/offerings/{offering}
+                        Units the code applies to. Empty means all units.
+                         Format: properties/{property}/units/{unit}
             description: |-
                 Scope restricts which bookings a code applies to. Nested value object →
                  belongs-to promocode.scopes. Its repeated resource references and Money
@@ -601,16 +601,16 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Money'
                     description: Subtotal the discount would apply to.
-                resource:
+                property:
                     type: string
                     description: |-
-                        Resource being booked, for scope checks.
-                         Format: resources/{resource}
-                offering:
+                        Property being booked, for scope checks.
+                         Format: properties/{property}
+                unit:
                     type: string
                     description: |-
-                        Offering being booked, for scope checks.
-                         Format: resources/{resource}/offerings/{offering}
+                        Unit being booked, for scope checks.
+                         Format: properties/{property}/units/{unit}
                 customer:
                     type: string
                     description: |-

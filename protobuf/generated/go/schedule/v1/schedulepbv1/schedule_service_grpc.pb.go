@@ -32,21 +32,21 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// ScheduleService is the write side of availability configuration: a resource's
+// ScheduleService is the write side of availability configuration: a unit's
 // recurring working hours, blackout/holiday exceptions, buffers, and stay rules.
 // These are the inputs the freebusy engine consumes to compute availability.
 type ScheduleServiceClient interface {
-	// Reads the full availability configuration for a resource.
+	// Reads the full availability configuration for a unit.
 	GetSchedule(ctx context.Context, in *GetScheduleRequest, opts ...grpc.CallOption) (*Schedule, error)
-	// Updates a resource's availability configuration. Set update_mask to the
+	// Updates a unit's availability configuration. Set update_mask to the
 	// section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
 	// cancellation_policy.
 	UpdateSchedule(ctx context.Context, in *UpdateScheduleRequest, opts ...grpc.CallOption) (*Schedule, error)
-	// Lists the exceptions configured for a resource.
+	// Lists the exceptions configured for a unit.
 	ListAvailabilityExceptions(ctx context.Context, in *ListAvailabilityExceptionsRequest, opts ...grpc.CallOption) (*ListAvailabilityExceptionsResponse, error)
 	// Gets a single availability exception.
 	GetAvailabilityException(ctx context.Context, in *GetAvailabilityExceptionRequest, opts ...grpc.CallOption) (*AvailabilityException, error)
-	// Adds an availability exception to a resource.
+	// Adds an availability exception to a unit.
 	CreateAvailabilityException(ctx context.Context, in *CreateAvailabilityExceptionRequest, opts ...grpc.CallOption) (*AvailabilityException, error)
 	// Removes an availability exception.
 	DeleteAvailabilityException(ctx context.Context, in *DeleteAvailabilityExceptionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -124,21 +124,21 @@ func (c *scheduleServiceClient) DeleteAvailabilityException(ctx context.Context,
 // All implementations must embed UnimplementedScheduleServiceServer
 // for forward compatibility.
 //
-// ScheduleService is the write side of availability configuration: a resource's
+// ScheduleService is the write side of availability configuration: a unit's
 // recurring working hours, blackout/holiday exceptions, buffers, and stay rules.
 // These are the inputs the freebusy engine consumes to compute availability.
 type ScheduleServiceServer interface {
-	// Reads the full availability configuration for a resource.
+	// Reads the full availability configuration for a unit.
 	GetSchedule(context.Context, *GetScheduleRequest) (*Schedule, error)
-	// Updates a resource's availability configuration. Set update_mask to the
+	// Updates a unit's availability configuration. Set update_mask to the
 	// section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
 	// cancellation_policy.
 	UpdateSchedule(context.Context, *UpdateScheduleRequest) (*Schedule, error)
-	// Lists the exceptions configured for a resource.
+	// Lists the exceptions configured for a unit.
 	ListAvailabilityExceptions(context.Context, *ListAvailabilityExceptionsRequest) (*ListAvailabilityExceptionsResponse, error)
 	// Gets a single availability exception.
 	GetAvailabilityException(context.Context, *GetAvailabilityExceptionRequest) (*AvailabilityException, error)
-	// Adds an availability exception to a resource.
+	// Adds an availability exception to a unit.
 	CreateAvailabilityException(context.Context, *CreateAvailabilityExceptionRequest) (*AvailabilityException, error)
 	// Removes an availability exception.
 	DeleteAvailabilityException(context.Context, *DeleteAvailabilityExceptionRequest) (*emptypb.Empty, error)

@@ -27,7 +27,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// A reservation against a resource. The hold lifecycle lives here as states
+// A reservation against a unit. The hold lifecycle lives here as states
 // rather than a separate service: CreateBooking places a PENDING_HOLD,
 // confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
 // are never confirmed.
@@ -36,12 +36,9 @@ type Booking struct {
 	// The booking name.
 	// Format: bookings/{booking}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The resource being booked.
-	// Format: resources/{resource}
-	Resource string `protobuf:"bytes,3,opt,name=resource,proto3" json:"resource,omitempty"`
-	// The offering being booked, when applicable.
-	// Format: resources/{resource}/offerings/{offering}
-	Offering string `protobuf:"bytes,4,opt,name=offering,proto3" json:"offering,omitempty"`
+	// The unit being booked.
+	// Format: properties/{property}/units/{unit}
+	Unit string `protobuf:"bytes,3,opt,name=unit,proto3" json:"unit,omitempty"`
 	// The user the booking is for.
 	// Format: users/{user}
 	Customer string `protobuf:"bytes,5,opt,name=customer,proto3" json:"customer,omitempty"`
@@ -87,7 +84,7 @@ type Booking struct {
 	ConfirmTime *timestamppb.Timestamp `protobuf:"bytes,20,opt,name=confirm_time,json=confirmTime,proto3" json:"confirm_time,omitempty"`
 	// When the booking was cancelled, if at all.
 	CancelTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=cancel_time,json=cancelTime,proto3" json:"cancel_time,omitempty"`
-	// Amount refunded on cancellation, computed from the resource's cancellation
+	// Amount refunded on cancellation, computed from the unit's cancellation
 	// policy and how far ahead of the booking start it was cancelled. Set only
 	// once the booking is CANCELLED. Use PreviewCancellation to see this before
 	// committing.
@@ -140,16 +137,9 @@ func (x *Booking) GetName() string {
 	return ""
 }
 
-func (x *Booking) GetResource() string {
+func (x *Booking) GetUnit() string {
 	if x != nil {
-		return x.Resource
-	}
-	return ""
-}
-
-func (x *Booking) GetOffering() string {
-	if x != nil {
-		return x.Offering
+		return x.Unit
 	}
 	return ""
 }
@@ -319,13 +309,11 @@ var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\x90\f\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xc7\v\n" +
 	"\aBooking\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12A\n" +
-	"\bresource\x18\x03 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/ResourceR\bresource\x12A\n" +
-	"\boffering\x18\x04 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x125\n" +
+	"\x04unit\x18\x03 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/UnitR\x04unit\x12=\n" +
 	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
 	"\x19freebusy.identity.v1/UserR\bcustomer\x12:\n" +
 	"\acontact\x18\x18 \x01(\v2\x1b.freebusy.shared.v1.ContactB\x03\xe0A\x01R\acontact\x12\x19\n" +
@@ -358,7 +346,7 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\x0erefund_percent\x18\x1b \x01(\x05B\x03\xe0A\x03R\rrefundPercent\x129\n" +
 	"\bhold_ttl\x18\x16 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x05R\aholdTtl\x12\x12\n" +
 	"\x04etag\x18\x17 \x01(\tR\x04etag:G\xeaAD\n" +
-	"\x1bfreebusy.booking.v1/Booking\x12\x12bookings/{booking}*\bbookings2\abookingJ\x04\b\x02\x10\x03B\xf0\x01\n" +
+	"\x1bfreebusy.booking.v1/Booking\x12\x12bookings/{booking}*\bbookings2\abookingJ\x04\b\x02\x10\x03J\x04\b\x04\x10\x05B\xf0\x01\n" +
 	"\x17com.freebusy.booking.v1B\fBookingProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"
 
 var (

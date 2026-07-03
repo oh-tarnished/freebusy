@@ -17,8 +17,8 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 // instead of a duplicate hold). The promo code and hold TTL are set on the
 // Booking resource itself.
 message CreateBookingRequest {
-  // The booking to create. Supply resource, window, and optionally offering,
-  // units, customer, contact, notes, attributes, promo_code, and hold_ttl.
+  // The booking to create. Supply unit, window, and optionally units,
+  // customer, contact, notes, attributes, promo_code, and hold_ttl.
   // Provide contact when there is no customer (a guest booking). Output-only
   // fields are ignored.
   Booking booking = 1 [(google.api.field_behavior) = REQUIRED];
@@ -56,7 +56,7 @@ message ListBookingsRequest {
   // Page token from a previous ListBookings call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+  // Filter expression (AIP-160), e.g. `unit = "properties/9/units/42"`,
   // `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
   string filter = 3 [(google.api.field_behavior) = OPTIONAL];
 

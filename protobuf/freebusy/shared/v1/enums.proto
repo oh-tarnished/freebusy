@@ -53,3 +53,25 @@ enum BookingMode {
   // Date-range stays over a pool of interchangeable units (lodging).
   BOOKING_MODE_NIGHTLY = 2;
 }
+
+// Kind of media asset a Media reference points at. Documents (PDFs, house rules,
+// fact sheets) are just media with type DOCUMENT — they are not a separate type.
+enum MediaType {
+  // Unset.
+  MEDIA_TYPE_UNSPECIFIED = 0;
+
+  // A photo (e.g. a room or property showcase image).
+  MEDIA_TYPE_IMAGE = 1;
+
+  // A video clip.
+  MEDIA_TYPE_VIDEO = 2;
+
+  // A document such as a PDF fact sheet, policy, or house rules.
+  MEDIA_TYPE_DOCUMENT = 3;
+
+  // A floor plan diagram.
+  MEDIA_TYPE_FLOORPLAN = 4;
+
+  // A 360°/virtual-tour asset.
+  MEDIA_TYPE_VIRTUAL_TOUR = 5;
+}

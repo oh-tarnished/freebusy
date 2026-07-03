@@ -6,8 +6,8 @@ info:
     title: AvailabilityService API
     description: |-
         AvailabilityService is the read-only, cacheable surface over the pure freebusy
-         engine. It has no side effects: given a resource and a window it returns what
-         is bookable, in the shape matching the resource's booking_mode.
+         engine. It has no side effects: given a unit and a window it returns what is
+         bookable, in the shape matching the unit's booking_mode.
 
          Its operations are custom methods (AIP-136): they compute results rather than
          fetch or list a resource, so they intentionally do not use the Get/List/Batch
@@ -16,16 +16,22 @@ info:
 servers:
     - url: https://freebusy.ohtarnished.dev
 paths:
-    /v1/resources/{resource}:checkAvailability:
+    /v1/properties/{property}/units/{unit}:checkAvailability:
         post:
             tags:
                 - AvailabilityService
             description: Tests whether one exact span is bookable.
             operationId: AvailabilityService_CheckAvailability
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -48,16 +54,22 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/resources/{resource}:computeAvailability:
+    /v1/properties/{property}/units/{unit}:computeAvailability:
         post:
             tags:
                 - AvailabilityService
-            description: Computes availability for a resource over a window.
+            description: Computes availability for a unit over a window.
             operationId: AvailabilityService_ComputeAvailability
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -80,16 +92,22 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/resources/{resource}:computeBookableRanges:
+    /v1/properties/{property}/units/{unit}:computeBookableRanges:
         post:
             tags:
                 - AvailabilityService
             description: Computes contiguous bookable ranges within a window.
             operationId: AvailabilityService_ComputeBookableRanges
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -112,11 +130,11 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/resources:batchCompute:
+    /v1/units:batchCompute:
         post:
             tags:
                 - AvailabilityService
-            description: Computes availability for several resources at once.
+            description: Computes availability for several units at once.
             operationId: AvailabilityService_BatchComputeAvailability
             requestBody:
                 content:
@@ -137,11 +155,11 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/resources:searchAvailability:
+    /v1/units:searchAvailability:
         post:
             tags:
                 - AvailabilityService
-            description: Searches the catalog for resources bookable over a period.
+            description: Searches the catalog for units bookable over a period.
             operationId: AvailabilityService_SearchAvailability
             requestBody:
                 content:
@@ -167,21 +185,21 @@ components:
         AvailabilityMatch:
             type: object
             properties:
-                resource:
+                unit:
                     type: string
                     description: |-
-                        The matching resource.
-                         Format: resources/{resource}
+                        The matching unit.
+                         Format: properties/{property}/units/{unit}
                 displayName:
                     type: string
-                    description: Cached display name of the resource, for convenience.
+                    description: Cached display name of the unit, for convenience.
                 mode:
                     type: integer
-                    description: The resource's booking mode.
+                    description: The unit's booking mode.
                     format: enum
                 bookable:
                     type: boolean
-                    description: Whether the resource is bookable for the requested period and units.
+                    description: Whether the unit is bookable for the requested period and units.
                 price:
                     allOf:
                         - $ref: '#/components/schemas/Money'
@@ -189,8 +207,8 @@ components:
                         Lead price for the requested period: the stay total for NIGHTLY, or the slot
                          price for TIME_SLOT. Used for sorting and display.
             description: |-
-                One resource matched by SearchAvailability, with a lead price for the period.
-                 Detailed slots/nights are fetched per resource via ComputeAvailability.
+                One unit matched by SearchAvailability, with a lead price for the period.
+                 Detailed slots/nights are fetched per unit via ComputeAvailability.
         BatchComputeAvailabilityRequest:
             required:
                 - requests
@@ -203,15 +221,15 @@ components:
                     description: The individual compute requests. Results are returned in the same order.
             description: |-
                 Request message for BatchComputeAvailability. Each entry is a full
-                 ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,
-                 and units all work in batch exactly as they do in the single call.
+                 ComputeAvailabilityRequest (AIP-231), so per-unit duration and units all work
+                 in batch exactly as they do in the single call.
         BatchComputeAvailabilityResponse:
             type: object
             properties:
-                resources:
+                units:
                     type: array
                     items:
-                        $ref: '#/components/schemas/ResourceAvailability'
+                        $ref: '#/components/schemas/UnitAvailability'
                     description: Availability per request, in request order.
             description: Response message for BatchComputeAvailability.
         BookableRange:
@@ -227,33 +245,28 @@ components:
             description: A contiguous span that is bookable end to end.
         CheckAvailabilityRequest:
             required:
-                - resource
+                - unit
             type: object
             properties:
-                resource:
+                unit:
                     type: string
                     description: |-
-                        The resource to test.
-                         Format: resources/{resource}
+                        The unit to test.
+                         Format: properties/{property}/units/{unit}
                 window:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
-                    description: An exact time window, the natural form for TIME_SLOT resources.
+                    description: An exact time window, the natural form for TIME_SLOT units.
                 dateRange:
                     allOf:
                         - $ref: '#/components/schemas/DateRange'
                     description: |-
-                        A calendar-date range in the resource's timezone, the natural form for
+                        A calendar-date range in the unit's timezone, the natural form for
                          NIGHTLY stays; end_date is the check-out date.
                 units:
                     type: integer
                     description: Number of units required to be free. Defaults to 1.
                     format: int32
-                offering:
-                    type: string
-                    description: |-
-                        Offering whose duration/rules apply, when relevant.
-                         Format: resources/{resource}/offerings/{offering}
             description: Request message for CheckAvailability.
         CheckAvailabilityResponse:
             type: object
@@ -273,35 +286,30 @@ components:
             description: Response message for CheckAvailability.
         ComputeAvailabilityRequest:
             required:
-                - resource
+                - unit
             type: object
             properties:
-                resource:
+                unit:
                     type: string
                     description: |-
-                        The resource to compute availability for.
-                         Format: resources/{resource}
+                        The unit to compute availability for.
+                         Format: properties/{property}/units/{unit}
                 window:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
-                    description: An exact time window, the natural form for TIME_SLOT resources.
+                    description: An exact time window, the natural form for TIME_SLOT units.
                 dateRange:
                     allOf:
                         - $ref: '#/components/schemas/DateRange'
                     description: |-
-                        A calendar-date range in the resource's timezone, the natural form for
-                         NIGHTLY resources; end_date is the check-out date.
+                        A calendar-date range in the unit's timezone, the natural form for
+                         NIGHTLY units; end_date is the check-out date.
                 duration:
                     pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
                     type: string
                     description: |-
-                        Slot length for TIME_SLOT resources. Ignored when offering is set or for
-                         NIGHTLY resources.
-                offering:
-                    type: string
-                    description: |-
-                        Offering to derive duration and price from. Takes precedence over duration.
-                         Format: resources/{resource}/offerings/{offering}
+                        Slot length for TIME_SLOT units. Overrides the unit's default duration when
+                         set; ignored for NIGHTLY units.
                 units:
                     type: integer
                     description: Number of units required to be free. Defaults to 1.
@@ -312,7 +320,7 @@ components:
             properties:
                 mode:
                     type: integer
-                    description: Which shape is populated, matching the resource's booking_mode.
+                    description: Which shape is populated, matching the unit's booking_mode.
                     format: enum
                 slots:
                     type: array
@@ -327,33 +335,28 @@ components:
             description: Response message for ComputeAvailability.
         ComputeBookableRangesRequest:
             required:
-                - resource
+                - unit
             type: object
             properties:
-                resource:
+                unit:
                     type: string
                     description: |-
-                        The resource to compute bookable ranges for.
-                         Format: resources/{resource}
+                        The unit to compute bookable ranges for.
+                         Format: properties/{property}/units/{unit}
                 window:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
-                    description: An exact time window, the natural form for TIME_SLOT resources.
+                    description: An exact time window, the natural form for TIME_SLOT units.
                 dateRange:
                     allOf:
                         - $ref: '#/components/schemas/DateRange'
                     description: |-
-                        A calendar-date range in the resource's timezone, the natural form for
-                         NIGHTLY resources.
+                        A calendar-date range in the unit's timezone, the natural form for
+                         NIGHTLY units.
                 duration:
                     pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
                     type: string
-                    description: Minimum span length for TIME_SLOT resources.
-                offering:
-                    type: string
-                    description: |-
-                        Offering to derive duration/rules from.
-                         Format: resources/{resource}/offerings/{offering}
+                    description: Minimum span length for TIME_SLOT units.
                 units:
                     type: integer
                     description: Number of units required to be free. Defaults to 1.
@@ -421,7 +424,7 @@ components:
             properties:
                 night:
                     type: string
-                    description: The night, in the resource's local timezone.
+                    description: The night, in the unit's local timezone.
                     format: date
                 freeUnits:
                     type: integer
@@ -429,48 +432,25 @@ components:
                     format: int32
                 closed:
                     type: boolean
-                    description: Whether the resource is closed that night (exception/blackout).
+                    description: Whether the unit is closed that night (exception/blackout).
                 price:
                     allOf:
                         - $ref: '#/components/schemas/Money'
-                    description: Nightly price, when an offering was supplied.
-            description: Per-night availability, produced for NIGHTLY resources.
-        ResourceAvailability:
-            type: object
-            properties:
-                resource:
-                    type: string
-                    description: |-
-                        The resource these results are for.
-                         Format: resources/{resource}
-                mode:
-                    type: integer
-                    description: Which shape is populated, matching the resource's booking_mode.
-                    format: enum
-                slots:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Slot'
-                    description: Slots, when mode is TIME_SLOT.
-                nights:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/NightAvailability'
-                    description: Per-night availability, when mode is NIGHTLY.
-            description: Availability for one resource, used in batch responses.
+                    description: Nightly price, derived from the unit's pricing.
+            description: Per-night availability, produced for NIGHTLY units.
         SearchAvailabilityRequest:
             type: object
             properties:
                 window:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
-                    description: An exact time window, the natural form for TIME_SLOT resources.
+                    description: An exact time window, the natural form for TIME_SLOT units.
                 dateRange:
                     allOf:
                         - $ref: '#/components/schemas/DateRange'
                     description: |-
-                        A calendar-date range in each resource's timezone, the natural form for
-                         NIGHTLY resources; end_date is the check-out date.
+                        A calendar-date range in each unit's timezone, the natural form for
+                         NIGHTLY units; end_date is the check-out date.
                 units:
                     type: integer
                     description: Number of units / party size required free. Defaults to 1.
@@ -478,8 +458,8 @@ components:
                 filter:
                     type: string
                     description: |-
-                        Filter (AIP-160) over resource fields to narrow the catalog, e.g.
-                         `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
+                        Filter (AIP-160) over unit fields to narrow the catalog, e.g.
+                         `type = UNIT_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
                 orderBy:
                     type: string
                     description: |-
@@ -495,14 +475,26 @@ components:
                 includeUnavailable:
                     type: boolean
                     description: |-
-                        If true, include resources that matched the filter but are not bookable for
-                         the period (with bookable=false), instead of dropping them.
+                        If true, include units that matched the filter but are not bookable for the
+                         period (with bookable=false), instead of dropping them.
+                property:
+                    type: string
+                    description: |-
+                        Scope the search to a single property (hotel). Empty searches all properties.
+                         Format: properties/{property}
+                organisation:
+                    type: string
+                    description: |-
+                        Scope the search to a single organisation (chain). Empty searches all
+                         organisations the caller can see.
+                         Format: organisations/{organisation}
             description: |-
-                Request message for SearchAvailability. Sweeps the catalog for resources that
-                 are bookable over a period for a given party size, narrowed by a resource
-                 filter and sorted for presentation. This is the storefront query: one call
-                 returns the matching resources with a lead price, rather than the caller
-                 listing resources and computing availability for each.
+                Request message for SearchAvailability. Sweeps the catalog for units that are
+                 bookable over a period for a given party size, narrowed by a filter and
+                 optionally scoped to one property (hotel) or organisation (chain), and sorted
+                 for presentation. This is the storefront query: one call returns the matching
+                 units with a lead price, rather than the caller listing units and computing
+                 availability for each.
         SearchAvailabilityResponse:
             type: object
             properties:
@@ -510,7 +502,7 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/AvailabilityMatch'
-                    description: The matching resources, ordered per order_by.
+                    description: The matching units, ordered per order_by.
                 nextPageToken:
                     type: string
                     description: Token to pass as page_token to retrieve the next page; empty when no more.
@@ -524,7 +516,7 @@ components:
                     format: date-time
                 endTime:
                     type: string
-                    description: Exclusive end of the slot (start + offering/requested duration).
+                    description: Exclusive end of the slot (start + unit/requested duration).
                     format: date-time
                 freeCount:
                     type: integer
@@ -536,8 +528,8 @@ components:
                 price:
                     allOf:
                         - $ref: '#/components/schemas/Money'
-                    description: Price for booking this slot, when an offering was supplied.
-            description: A discrete bookable time slot, produced for TIME_SLOT resources.
+                    description: Price for booking this slot, derived from the unit's pricing.
+            description: A discrete bookable time slot, produced for TIME_SLOT units.
         Status:
             type: object
             properties:
@@ -584,5 +576,28 @@ components:
             description: |-
                 A reason a span is not bookable, as a machine-readable code plus a
                  human-readable explanation. Clients should branch on code, never on message.
+        UnitAvailability:
+            type: object
+            properties:
+                unit:
+                    type: string
+                    description: |-
+                        The unit these results are for.
+                         Format: properties/{property}/units/{unit}
+                mode:
+                    type: integer
+                    description: Which shape is populated, matching the unit's booking_mode.
+                    format: enum
+                slots:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Slot'
+                    description: Slots, when mode is TIME_SLOT.
+                nights:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/NightAvailability'
+                    description: Per-night availability, when mode is NIGHTLY.
+            description: Availability for one unit, used in batch responses.
 tags:
     - name: AvailabilityService

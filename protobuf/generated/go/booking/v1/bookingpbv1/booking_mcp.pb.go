@@ -26,10 +26,8 @@ const (
 // Arguments for the "book_slot" prompt.
 type BookSlotArgs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Resource to book, as a resource name ("resources/42") or a display name.
-	Resource string `protobuf:"bytes,1,opt,name=resource,proto3" json:"resource,omitempty"`
-	// Offering to book, as a resource name or a display name (e.g. "30-min consult").
-	Offering string `protobuf:"bytes,2,opt,name=offering,proto3" json:"offering,omitempty"`
+	// Unit to book, as a resource name ("properties/9/units/42") or a display name.
+	Unit string `protobuf:"bytes,1,opt,name=unit,proto3" json:"unit,omitempty"`
 	// Start of the booking (RFC 3339, e.g. "2026-07-01T14:00:00Z").
 	StartTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
 	// Number of units / party size. Defaults to 1.
@@ -70,16 +68,9 @@ func (*BookSlotArgs) Descriptor() ([]byte, []int) {
 	return file_freebusy_booking_v1_booking_mcp_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *BookSlotArgs) GetResource() string {
+func (x *BookSlotArgs) GetUnit() string {
 	if x != nil {
-		return x.Resource
-	}
-	return ""
-}
-
-func (x *BookSlotArgs) GetOffering() string {
-	if x != nil {
-		return x.Offering
+		return x.Unit
 	}
 	return ""
 }
@@ -109,15 +100,14 @@ var File_freebusy_booking_v1_booking_mcp_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_mcp_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/booking/v1/booking_mcp.proto\x12\x13freebusy.booking.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcf\x01\n" +
-	"\fBookSlotArgs\x12\x1f\n" +
-	"\bresource\x18\x01 \x01(\tB\x03\xe0A\x02R\bresource\x12\x1f\n" +
-	"\boffering\x18\x02 \x01(\tB\x03\xe0A\x01R\boffering\x12>\n" +
+	"%freebusy/booking/v1/booking_mcp.proto\x12\x13freebusy.booking.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xac\x01\n" +
+	"\fBookSlotArgs\x12\x17\n" +
+	"\x04unit\x18\x01 \x01(\tB\x03\xe0A\x02R\x04unit\x12>\n" +
 	"\n" +
 	"start_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x02R\tstartTime\x12\x19\n" +
 	"\x05units\x18\x04 \x01(\x05B\x03\xe0A\x01R\x05units\x12\"\n" +
 	"\n" +
-	"promo_code\x18\x05 \x01(\tB\x03\xe0A\x01R\tpromoCodeB\xf3\x01\n" +
+	"promo_code\x18\x05 \x01(\tB\x03\xe0A\x01R\tpromoCodeJ\x04\b\x02\x10\x03B\xf3\x01\n" +
 	"\x17com.freebusy.booking.v1B\x0fBookingMcpProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"
 
 var (

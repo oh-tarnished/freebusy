@@ -11,7 +11,7 @@ components:
               format: date-time
               type: string
             dateRange:
-              description: A range of whole calendar dates in the resource's timezone,
+              description: A range of whole calendar dates in the unit's timezone,
                 the natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through
                 Dec 26").
               properties:
@@ -57,20 +57,20 @@ components:
                   type: object
               type: object
             kind:
-              description: Whether this span closes the resource or adds extra availability.
+              description: Whether this span closes the unit or adds extra availability.
               enum:
               - EXCEPTION_KIND_UNSPECIFIED
               - EXCEPTION_KIND_CLOSURE
               - EXCEPTION_KIND_EXTRA_HOURS
               type: string
             name:
-              description: 'The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+              description: 'The exception name. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
               type: string
             reason:
               description: Human-readable reason (e.g. "Public holiday").
               type: string
             window:
-              description: An exact time window, the natural form for TIME_SLOT resources.
+              description: An exact time window, the natural form for TIME_SLOT units.
               properties:
                 endTime:
                   description: Exclusive end of the interval.
@@ -87,7 +87,7 @@ components:
             one if unset.
           type: string
         parent:
-          description: 'The resource to add the exception to. Format: resources/{resource}'
+          description: 'The unit to add the exception to. Format: properties/{property}/units/{unit}'
           type: string
         requestId:
           description: Caller-supplied idempotency key; identical retries return the
@@ -98,21 +98,21 @@ components:
       description: Request message for DeleteAvailabilityException.
       properties:
         name:
-          description: 'The exception to remove. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+          description: 'The exception to remove. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
           type: string
       type: object
     freebusy.schedule.v1.GetAvailabilityExceptionRequest:
       description: Request message for GetAvailabilityException.
       properties:
         name:
-          description: 'The exception to retrieve. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+          description: 'The exception to retrieve. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
           type: string
       type: object
     freebusy.schedule.v1.GetScheduleRequest:
       description: Request message for GetSchedule.
       properties:
         name:
-          description: 'The schedule to read. Format: resources/{resource}/schedule'
+          description: 'The schedule to read. Format: properties/{property}/units/{unit}/schedule'
           type: string
       type: object
     freebusy.schedule.v1.ListAvailabilityExceptionsRequest:
@@ -133,7 +133,7 @@ components:
             page.
           type: string
         parent:
-          description: 'The resource whose exceptions to list. Format: resources/{resource}'
+          description: 'The unit whose exceptions to list. Format: properties/{property}/units/{unit}'
           type: string
       type: object
     freebusy.schedule.v1.ListAvailabilityExceptionsResponse:
@@ -142,16 +142,15 @@ components:
         availabilityExceptions:
           description: The page of exceptions.
           items:
-            description: 'An override of a resource''s normal hours on a specific
-              span: a blackout / holiday closure, or extra hours beyond the recurring
-              rules.'
+            description: 'An override of a unit''s normal hours on a specific span:
+              a blackout / holiday closure, or extra hours beyond the recurring rules.'
             properties:
               createTime:
                 description: Creation timestamp.
                 format: date-time
                 type: string
               dateRange:
-                description: A range of whole calendar dates in the resource's timezone,
+                description: A range of whole calendar dates in the unit's timezone,
                   the natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through
                   Dec 26").
                 properties:
@@ -197,21 +196,21 @@ components:
                     type: object
                 type: object
               kind:
-                description: Whether this span closes the resource or adds extra availability.
+                description: Whether this span closes the unit or adds extra availability.
                 enum:
                 - EXCEPTION_KIND_UNSPECIFIED
                 - EXCEPTION_KIND_CLOSURE
                 - EXCEPTION_KIND_EXTRA_HOURS
                 type: string
               name:
-                description: 'The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+                description: 'The exception name. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
                 type: string
               reason:
                 description: Human-readable reason (e.g. "Public holiday").
                 type: string
               window:
                 description: An exact time window, the natural form for TIME_SLOT
-                  resources.
+                  units.
                 properties:
                   endTime:
                     description: Exclusive end of the interval.
@@ -256,8 +255,8 @@ components:
                   type: string
               type: object
             cancellationPolicy:
-              description: Refund rules applied when a booking on this resource is
-                cancelled. Unset means cancellations are non-refundable by default.
+              description: Refund rules applied when a booking on this unit is cancelled.
+                Unset means cancellations are non-refundable by default.
               properties:
                 tiers:
                   description: Ordered refund tiers. For a given cancellation the
@@ -287,19 +286,19 @@ components:
               type: string
             exceptions:
               description: 'Resource names of the active exceptions; manage them with
-                the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+                the AvailabilityException standard methods. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
               items:
                 type: string
               type: array
             name:
-              description: 'The schedule name. Format: resources/{resource}/schedule'
+              description: 'The schedule name. Format: properties/{property}/units/{unit}/schedule'
               type: string
             recurringRules:
               description: Recurring working hours.
               items:
                 description: A recurring availability window expressed as an RRULE
                   plus a daily open span. The freebusy engine expands these against
-                  the resource's timezone.
+                  the unit's timezone.
                 properties:
                   closes:
                     description: Local time-of-day the window closes, 24-hour "HH:MM"
@@ -317,7 +316,7 @@ components:
                 type: object
               type: array
             stayConstraints:
-              description: Stay rules (NIGHTLY resources).
+              description: Stay rules (NIGHTLY units).
               properties:
                 advanceMaxDays:
                   description: Latest a stay may begin, in days from now. Zero means

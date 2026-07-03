@@ -153,18 +153,18 @@ message Scope {
   // Normalized into the shared common.moneys table (belongs-to via min_subtotal_id).
   google.type.Money min_subtotal = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // Resources the code applies to. Empty means all resources.
-  // Format: resources/{resource}
-  repeated string applicable_resources = 2 [
+  // Properties the code applies to. Empty means all properties.
+  // Format: properties/{property}
+  repeated string applicable_properties = 2 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
   ];
 
-  // Offerings the code applies to. Empty means all offerings.
-  // Format: resources/{resource}/offerings/{offering}
-  repeated string applicable_offerings = 3 [
+  // Units the code applies to. Empty means all units.
+  // Format: properties/{property}/units/{unit}
+  repeated string applicable_units = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 }
 

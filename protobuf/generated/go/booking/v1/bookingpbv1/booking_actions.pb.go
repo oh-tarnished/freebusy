@@ -166,7 +166,7 @@ func (x *CancelBookingRequest) GetRequestId() string {
 }
 
 // Request message for RescheduleBooking. Atomically moves a booking to a new
-// span (and optionally offering), re-running availability and the exclusion
+// span (and optionally unit), re-running availability and the exclusion
 // check on the new window.
 type RescheduleBookingRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -175,9 +175,9 @@ type RescheduleBookingRequest struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The new reserved span.
 	Window *sharedpbv1.TimeWindow `protobuf:"bytes,2,opt,name=window,proto3" json:"window,omitempty"`
-	// The new offering, when changing it as part of the reschedule.
-	// Format: resources/{resource}/offerings/{offering}
-	Offering string `protobuf:"bytes,3,opt,name=offering,proto3" json:"offering,omitempty"`
+	// The new unit, when changing it as part of the reschedule.
+	// Format: properties/{property}/units/{unit}
+	Unit string `protobuf:"bytes,3,opt,name=unit,proto3" json:"unit,omitempty"`
 	// Caller-supplied idempotency key that dedupes retries of this reschedule.
 	RequestId     string `protobuf:"bytes,4,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -228,9 +228,9 @@ func (x *RescheduleBookingRequest) GetWindow() *sharedpbv1.TimeWindow {
 	return nil
 }
 
-func (x *RescheduleBookingRequest) GetOffering() string {
+func (x *RescheduleBookingRequest) GetUnit() string {
 	if x != nil {
-		return x.Offering
+		return x.Unit
 	}
 	return ""
 }
@@ -243,7 +243,7 @@ func (x *RescheduleBookingRequest) GetRequestId() string {
 }
 
 // Request message for PreviewCancellation. Computes the refund a cancellation
-// would yield right now, under the resource's cancellation policy, without
+// would yield right now, under the unit's cancellation policy, without
 // cancelling the booking.
 type PreviewCancellationRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -391,13 +391,13 @@ const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\x06reason\x18\x02 \x01(\x0e2!.freebusy.booking.v1.CancelReasonB\x03\xe0A\x01R\x06reason\x12\x17\n" +
 	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xff\x01\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xf3\x01\n" +
 	"\x18RescheduleBookingRequest\x127\n" +
 	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
 	"\x1bfreebusy.booking.v1/BookingR\x04name\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12A\n" +
-	"\boffering\x18\x03 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/OfferingR\boffering\x12*\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x125\n" +
+	"\x04unit\x18\x03 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/UnitR\x04unit\x12*\n" +
 	"\n" +
 	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"U\n" +
 	"\x1aPreviewCancellationRequest\x127\n" +

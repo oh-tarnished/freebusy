@@ -1,8 +1,8 @@
 components:
   schemas:
     freebusy.booking.v1.Booking:
-      description: 'A reservation against a resource. The hold lifecycle lives here
-        as states rather than a separate service: CreateBooking places a PENDING_HOLD,
+      description: 'A reservation against a unit. The hold lifecycle lives here as
+        states rather than a separate service: CreateBooking places a PENDING_HOLD,
         confirmation flips it to CONFIRMED, and an internal sweeper expires holds
         that are never confirmed.'
       properties:
@@ -94,9 +94,6 @@ components:
         notes:
           description: Free-form notes on the booking.
           type: string
-        offering:
-          description: 'The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}'
-          type: string
         price:
           description: Computed subtotal before discounts.
           properties:
@@ -179,10 +176,10 @@ components:
             if any. Format: promo-codes/{promo_code}'
           type: string
         refundAmount:
-          description: Amount refunded on cancellation, computed from the resource's
-            cancellation policy and how far ahead of the booking start it was cancelled.
-            Set only once the booking is CANCELLED. Use PreviewCancellation to see
-            this before committing.
+          description: Amount refunded on cancellation, computed from the unit's cancellation
+            policy and how far ahead of the booking start it was cancelled. Set only
+            once the booking is CANCELLED. Use PreviewCancellation to see this before
+            committing.
           properties:
             currencyCode:
               description: The three-letter currency code defined in ISO 4217.
@@ -207,9 +204,6 @@ components:
           description: Percentage of the total that `refund_amount` represents (0-100).
           format: int32
           type: integer
-        resource:
-          description: 'The resource being booked. Format: resources/{resource}'
-          type: string
         state:
           description: Current lifecycle state.
           enum:
@@ -243,6 +237,9 @@ components:
               type: integer
               x-kubernetes-int-or-string: true
           type: object
+        unit:
+          description: 'The unit being booked. Format: properties/{property}/units/{unit}'
+          type: string
         units:
           description: Number of units / party size reserved. Defaults to 1.
           format: int32

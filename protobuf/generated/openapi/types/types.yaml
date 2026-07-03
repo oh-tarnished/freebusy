@@ -64,6 +64,46 @@ components:
               type: integer
           type: object
       type: object
+    freebusy.shared.v1.Media:
+      description: A reference to a media asset — a showcase image, video, floor plan,
+        virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes
+        live in object storage (S3 or any HTTP-reachable host); this message only
+        carries the link and its presentation metadata. Attached wherever a resource
+        wants a gallery, e.g. a Property (hotel) or a Unit (room).
+      properties:
+        description:
+          description: Longer description or alt text.
+          type: string
+        mimeType:
+          description: MIME type of the asset (e.g. "image/jpeg", "application/pdf"),
+            when known.
+          type: string
+        primary:
+          description: Whether this is the primary/hero asset of its gallery.
+          type: boolean
+        sortOrder:
+          description: Ordering hint within a gallery; lower sorts first.
+          format: int32
+          type: integer
+        title:
+          description: Short human-readable caption/title for display.
+          type: string
+        type:
+          description: What kind of asset this is; DOCUMENT covers PDFs/policies/house
+            rules.
+          enum:
+          - MEDIA_TYPE_UNSPECIFIED
+          - MEDIA_TYPE_IMAGE
+          - MEDIA_TYPE_VIDEO
+          - MEDIA_TYPE_DOCUMENT
+          - MEDIA_TYPE_FLOORPLAN
+          - MEDIA_TYPE_VIRTUAL_TOUR
+          type: string
+        uri:
+          description: Publicly reachable URL of the asset (an S3/CDN link or any
+            HTTPS URL).
+          type: string
+      type: object
     freebusy.shared.v1.PriceComponent:
       description: 'One line in a price breakdown: a base charge, a fee, a tax, or
         a discount. Clients branch on `type` and `code`; the signed `amount` rolls

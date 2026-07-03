@@ -1,18 +1,17 @@
 components:
   schemas:
     freebusy.availability.v1.AvailabilityMatch:
-      description: One resource matched by SearchAvailability, with a lead price for
-        the period. Detailed slots/nights are fetched per resource via ComputeAvailability.
+      description: One unit matched by SearchAvailability, with a lead price for the
+        period. Detailed slots/nights are fetched per unit via ComputeAvailability.
       properties:
         bookable:
-          description: Whether the resource is bookable for the requested period and
-            units.
+          description: Whether the unit is bookable for the requested period and units.
           type: boolean
         displayName:
-          description: Cached display name of the resource, for convenience.
+          description: Cached display name of the unit, for convenience.
           type: string
         mode:
-          description: The resource's booking mode.
+          description: The unit's booking mode.
           enum:
           - BOOKING_MODE_UNSPECIFIED
           - BOOKING_MODE_TIME_SLOT
@@ -41,14 +40,14 @@ components:
               type: integer
               x-kubernetes-int-or-string: true
           type: object
-        resource:
-          description: 'The matching resource. Format: resources/{resource}'
+        unit:
+          description: 'The matching unit. Format: properties/{property}/units/{unit}'
           type: string
       type: object
     freebusy.availability.v1.BatchComputeAvailabilityRequest:
       description: Request message for BatchComputeAvailability. Each entry is a full
-        ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,
-        and units all work in batch exactly as they do in the single call.
+        ComputeAvailabilityRequest (AIP-231), so per-unit duration and units all work
+        in batch exactly as they do in the single call.
       properties:
         requests:
           description: The individual compute requests. Results are returned in the
@@ -57,8 +56,8 @@ components:
             description: Request message for ComputeAvailability.
             properties:
               dateRange:
-                description: A calendar-date range in the resource's timezone, the
-                  natural form for NIGHTLY resources; end_date is the check-out date.
+                description: A calendar-date range in the unit's timezone, the natural
+                  form for NIGHTLY units; end_date is the check-out date.
                 properties:
                   endDate:
                     description: Exclusive end date of the range.
@@ -102,15 +101,11 @@ components:
                     type: object
                 type: object
               duration:
-                description: Slot length for TIME_SLOT resources. Ignored when offering
-                  is set or for NIGHTLY resources.
+                description: Slot length for TIME_SLOT units. Overrides the unit's
+                  default duration when set; ignored for NIGHTLY units.
                 type: string
-              offering:
-                description: 'Offering to derive duration and price from. Takes precedence
-                  over duration. Format: resources/{resource}/offerings/{offering}'
-                type: string
-              resource:
-                description: 'The resource to compute availability for. Format: resources/{resource}'
+              unit:
+                description: 'The unit to compute availability for. Format: properties/{property}/units/{unit}'
                 type: string
               units:
                 description: Number of units required to be free. Defaults to 1.
@@ -118,7 +113,7 @@ components:
                 type: integer
               window:
                 description: An exact time window, the natural form for TIME_SLOT
-                  resources.
+                  units.
                 properties:
                   endTime:
                     description: Exclusive end of the interval.
@@ -135,13 +130,13 @@ components:
     freebusy.availability.v1.BatchComputeAvailabilityResponse:
       description: Response message for BatchComputeAvailability.
       properties:
-        resources:
+        units:
           description: Availability per request, in request order.
           items:
-            description: Availability for one resource, used in batch responses.
+            description: Availability for one unit, used in batch responses.
             properties:
               mode:
-                description: Which shape is populated, matching the resource's booking_mode.
+                description: Which shape is populated, matching the unit's booking_mode.
                 enum:
                 - BOOKING_MODE_UNSPECIFIED
                 - BOOKING_MODE_TIME_SLOT
@@ -150,17 +145,17 @@ components:
               nights:
                 description: Per-night availability, when mode is NIGHTLY.
                 items:
-                  description: Per-night availability, produced for NIGHTLY resources.
+                  description: Per-night availability, produced for NIGHTLY units.
                   properties:
                     closed:
-                      description: Whether the resource is closed that night (exception/blackout).
+                      description: Whether the unit is closed that night (exception/blackout).
                       type: boolean
                     freeUnits:
                       description: Number of units of the pool free that night.
                       format: int32
                       type: integer
                     night:
-                      description: The night, in the resource's local timezone.
+                      description: The night, in the unit's local timezone.
                       properties:
                         day:
                           description: Day of a month. Must be from 1 to 31 and valid
@@ -180,7 +175,7 @@ components:
                           type: integer
                       type: object
                     price:
-                      description: Nightly price, when an offering was supplied.
+                      description: Nightly price, derived from the unit's pricing.
                       properties:
                         currencyCode:
                           description: The three-letter currency code defined in ISO
@@ -205,21 +200,18 @@ components:
                       type: object
                   type: object
                 type: array
-              resource:
-                description: 'The resource these results are for. Format: resources/{resource}'
-                type: string
               slots:
                 description: Slots, when mode is TIME_SLOT.
                 items:
                   description: A discrete bookable time slot, produced for TIME_SLOT
-                    resources.
+                    units.
                   properties:
                     bookable:
                       description: Whether the slot can actually be booked (free and
                         passes policy).
                       type: boolean
                     endTime:
-                      description: Exclusive end of the slot (start + offering/requested
+                      description: Exclusive end of the slot (start + unit/requested
                         duration).
                       format: date-time
                       type: string
@@ -229,8 +221,8 @@ components:
                       format: int32
                       type: integer
                     price:
-                      description: Price for booking this slot, when an offering was
-                        supplied.
+                      description: Price for booking this slot, derived from the unit's
+                        pricing.
                       properties:
                         currencyCode:
                           description: The three-letter currency code defined in ISO
@@ -259,6 +251,9 @@ components:
                       type: string
                   type: object
                 type: array
+              unit:
+                description: 'The unit these results are for. Format: properties/{property}/units/{unit}'
+                type: string
             type: object
           type: array
       type: object
@@ -285,8 +280,8 @@ components:
       description: Request message for CheckAvailability.
       properties:
         dateRange:
-          description: A calendar-date range in the resource's timezone, the natural
-            form for NIGHTLY stays; end_date is the check-out date.
+          description: A calendar-date range in the unit's timezone, the natural form
+            for NIGHTLY stays; end_date is the check-out date.
           properties:
             endDate:
               description: Exclusive end date of the range.
@@ -329,19 +324,15 @@ components:
                   type: integer
               type: object
           type: object
-        offering:
-          description: 'Offering whose duration/rules apply, when relevant. Format:
-            resources/{resource}/offerings/{offering}'
-          type: string
-        resource:
-          description: 'The resource to test. Format: resources/{resource}'
+        unit:
+          description: 'The unit to test. Format: properties/{property}/units/{unit}'
           type: string
         units:
           description: Number of units required to be free. Defaults to 1.
           format: int32
           type: integer
         window:
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
           properties:
             endTime:
               description: Exclusive end of the interval.
@@ -397,8 +388,8 @@ components:
       description: Request message for ComputeAvailability.
       properties:
         dateRange:
-          description: A calendar-date range in the resource's timezone, the natural
-            form for NIGHTLY resources; end_date is the check-out date.
+          description: A calendar-date range in the unit's timezone, the natural form
+            for NIGHTLY units; end_date is the check-out date.
           properties:
             endDate:
               description: Exclusive end date of the range.
@@ -442,22 +433,18 @@ components:
               type: object
           type: object
         duration:
-          description: Slot length for TIME_SLOT resources. Ignored when offering
-            is set or for NIGHTLY resources.
+          description: Slot length for TIME_SLOT units. Overrides the unit's default
+            duration when set; ignored for NIGHTLY units.
           type: string
-        offering:
-          description: 'Offering to derive duration and price from. Takes precedence
-            over duration. Format: resources/{resource}/offerings/{offering}'
-          type: string
-        resource:
-          description: 'The resource to compute availability for. Format: resources/{resource}'
+        unit:
+          description: 'The unit to compute availability for. Format: properties/{property}/units/{unit}'
           type: string
         units:
           description: Number of units required to be free. Defaults to 1.
           format: int32
           type: integer
         window:
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
           properties:
             endTime:
               description: Exclusive end of the interval.
@@ -473,7 +460,7 @@ components:
       description: Response message for ComputeAvailability.
       properties:
         mode:
-          description: Which shape is populated, matching the resource's booking_mode.
+          description: Which shape is populated, matching the unit's booking_mode.
           enum:
           - BOOKING_MODE_UNSPECIFIED
           - BOOKING_MODE_TIME_SLOT
@@ -482,17 +469,17 @@ components:
         nights:
           description: Per-night availability, when mode is NIGHTLY.
           items:
-            description: Per-night availability, produced for NIGHTLY resources.
+            description: Per-night availability, produced for NIGHTLY units.
             properties:
               closed:
-                description: Whether the resource is closed that night (exception/blackout).
+                description: Whether the unit is closed that night (exception/blackout).
                 type: boolean
               freeUnits:
                 description: Number of units of the pool free that night.
                 format: int32
                 type: integer
               night:
-                description: The night, in the resource's local timezone.
+                description: The night, in the unit's local timezone.
                 properties:
                   day:
                     description: Day of a month. Must be from 1 to 31 and valid for
@@ -512,7 +499,7 @@ components:
                     type: integer
                 type: object
               price:
-                description: Nightly price, when an offering was supplied.
+                description: Nightly price, derived from the unit's pricing.
                 properties:
                   currencyCode:
                     description: The three-letter currency code defined in ISO 4217.
@@ -538,15 +525,14 @@ components:
         slots:
           description: Slots, when mode is TIME_SLOT.
           items:
-            description: A discrete bookable time slot, produced for TIME_SLOT resources.
+            description: A discrete bookable time slot, produced for TIME_SLOT units.
             properties:
               bookable:
                 description: Whether the slot can actually be booked (free and passes
                   policy).
                 type: boolean
               endTime:
-                description: Exclusive end of the slot (start + offering/requested
-                  duration).
+                description: Exclusive end of the slot (start + unit/requested duration).
                 format: date-time
                 type: string
               freeCount:
@@ -555,7 +541,8 @@ components:
                 format: int32
                 type: integer
               price:
-                description: Price for booking this slot, when an offering was supplied.
+                description: Price for booking this slot, derived from the unit's
+                  pricing.
                 properties:
                   currencyCode:
                     description: The three-letter currency code defined in ISO 4217.
@@ -587,8 +574,8 @@ components:
       description: Request message for ComputeBookableRanges.
       properties:
         dateRange:
-          description: A calendar-date range in the resource's timezone, the natural
-            form for NIGHTLY resources.
+          description: A calendar-date range in the unit's timezone, the natural form
+            for NIGHTLY units.
           properties:
             endDate:
               description: Exclusive end date of the range.
@@ -632,20 +619,17 @@ components:
               type: object
           type: object
         duration:
-          description: Minimum span length for TIME_SLOT resources.
+          description: Minimum span length for TIME_SLOT units.
           type: string
-        offering:
-          description: 'Offering to derive duration/rules from. Format: resources/{resource}/offerings/{offering}'
-          type: string
-        resource:
-          description: 'The resource to compute bookable ranges for. Format: resources/{resource}'
+        unit:
+          description: 'The unit to compute bookable ranges for. Format: properties/{property}/units/{unit}'
           type: string
         units:
           description: Number of units required to be free. Defaults to 1.
           format: int32
           type: integer
         window:
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
           properties:
             endTime:
               description: Exclusive end of the interval.
@@ -684,17 +668,17 @@ components:
           type: array
       type: object
     freebusy.availability.v1.NightAvailability:
-      description: Per-night availability, produced for NIGHTLY resources.
+      description: Per-night availability, produced for NIGHTLY units.
       properties:
         closed:
-          description: Whether the resource is closed that night (exception/blackout).
+          description: Whether the unit is closed that night (exception/blackout).
           type: boolean
         freeUnits:
           description: Number of units of the pool free that night.
           format: int32
           type: integer
         night:
-          description: The night, in the resource's local timezone.
+          description: The night, in the unit's local timezone.
           properties:
             day:
               description: Day of a month. Must be from 1 to 31 and valid for the
@@ -714,7 +698,7 @@ components:
               type: integer
           type: object
         price:
-          description: Nightly price, when an offering was supplied.
+          description: Nightly price, derived from the unit's pricing.
           properties:
             currencyCode:
               description: The three-letter currency code defined in ISO 4217.
@@ -736,133 +720,17 @@ components:
               x-kubernetes-int-or-string: true
           type: object
       type: object
-    freebusy.availability.v1.ResourceAvailability:
-      description: Availability for one resource, used in batch responses.
-      properties:
-        mode:
-          description: Which shape is populated, matching the resource's booking_mode.
-          enum:
-          - BOOKING_MODE_UNSPECIFIED
-          - BOOKING_MODE_TIME_SLOT
-          - BOOKING_MODE_NIGHTLY
-          type: string
-        nights:
-          description: Per-night availability, when mode is NIGHTLY.
-          items:
-            description: Per-night availability, produced for NIGHTLY resources.
-            properties:
-              closed:
-                description: Whether the resource is closed that night (exception/blackout).
-                type: boolean
-              freeUnits:
-                description: Number of units of the pool free that night.
-                format: int32
-                type: integer
-              night:
-                description: The night, in the resource's local timezone.
-                properties:
-                  day:
-                    description: Day of a month. Must be from 1 to 31 and valid for
-                      the year and month, or 0 to specify a year by itself or a year
-                      and month where the day isn't significant.
-                    format: int32
-                    type: integer
-                  month:
-                    description: Month of a year. Must be from 1 to 12, or 0 to specify
-                      a year without a month and day.
-                    format: int32
-                    type: integer
-                  year:
-                    description: Year of the date. Must be from 1 to 9999, or 0 to
-                      specify a date without a year.
-                    format: int32
-                    type: integer
-                type: object
-              price:
-                description: Nightly price, when an offering was supplied.
-                properties:
-                  currencyCode:
-                    description: The three-letter currency code defined in ISO 4217.
-                    type: string
-                  nanos:
-                    description: Number of nano (10^-9) units of the amount. The value
-                      must be between -999,999,999 and +999,999,999 inclusive. If
-                      `units` is positive, `nanos` must be positive or zero. If `units`
-                      is zero, `nanos` can be positive, zero, or negative. If `units`
-                      is negative, `nanos` must be negative or zero. For example $-1.75
-                      is represented as `units`=-1 and `nanos`=-750,000,000.
-                    format: int32
-                    type: integer
-                  units:
-                    description: The whole units of the amount. For example if `currencyCode`
-                      is `"USD"`, then 1 unit is one US dollar.
-                    format: int64
-                    type: integer
-                    x-kubernetes-int-or-string: true
-                type: object
-            type: object
-          type: array
-        resource:
-          description: 'The resource these results are for. Format: resources/{resource}'
-          type: string
-        slots:
-          description: Slots, when mode is TIME_SLOT.
-          items:
-            description: A discrete bookable time slot, produced for TIME_SLOT resources.
-            properties:
-              bookable:
-                description: Whether the slot can actually be booked (free and passes
-                  policy).
-                type: boolean
-              endTime:
-                description: Exclusive end of the slot (start + offering/requested
-                  duration).
-                format: date-time
-                type: string
-              freeCount:
-                description: Number of units free in this slot (capacity minus overlapping
-                  bookings).
-                format: int32
-                type: integer
-              price:
-                description: Price for booking this slot, when an offering was supplied.
-                properties:
-                  currencyCode:
-                    description: The three-letter currency code defined in ISO 4217.
-                    type: string
-                  nanos:
-                    description: Number of nano (10^-9) units of the amount. The value
-                      must be between -999,999,999 and +999,999,999 inclusive. If
-                      `units` is positive, `nanos` must be positive or zero. If `units`
-                      is zero, `nanos` can be positive, zero, or negative. If `units`
-                      is negative, `nanos` must be negative or zero. For example $-1.75
-                      is represented as `units`=-1 and `nanos`=-750,000,000.
-                    format: int32
-                    type: integer
-                  units:
-                    description: The whole units of the amount. For example if `currencyCode`
-                      is `"USD"`, then 1 unit is one US dollar.
-                    format: int64
-                    type: integer
-                    x-kubernetes-int-or-string: true
-                type: object
-              startTime:
-                description: Inclusive start of the slot.
-                format: date-time
-                type: string
-            type: object
-          type: array
-      type: object
     freebusy.availability.v1.SearchAvailabilityRequest:
       description: 'Request message for SearchAvailability. Sweeps the catalog for
-        resources that are bookable over a period for a given party size, narrowed
-        by a resource filter and sorted for presentation. This is the storefront query:
-        one call returns the matching resources with a lead price, rather than the
-        caller listing resources and computing availability for each.'
+        units that are bookable over a period for a given party size, narrowed by
+        a filter and optionally scoped to one property (hotel) or organisation (chain),
+        and sorted for presentation. This is the storefront query: one call returns
+        the matching units with a lead price, rather than the caller listing units
+        and computing availability for each.'
       properties:
         dateRange:
-          description: A calendar-date range in each resource's timezone, the natural
-            form for NIGHTLY resources; end_date is the check-out date.
+          description: A calendar-date range in each unit's timezone, the natural
+            form for NIGHTLY units; end_date is the check-out date.
           properties:
             endDate:
               description: Exclusive end date of the range.
@@ -906,18 +774,20 @@ components:
               type: object
           type: object
         filter:
-          description: Filter (AIP-160) over resource fields to narrow the catalog,
-            e.g. `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name
-            match.
+          description: Filter (AIP-160) over unit fields to narrow the catalog, e.g.
+            `type = UNIT_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
           type: string
         includeUnavailable:
-          description: If true, include resources that matched the filter but are
-            not bookable for the period (with bookable=false), instead of dropping
-            them.
+          description: If true, include units that matched the filter but are not
+            bookable for the period (with bookable=false), instead of dropping them.
           type: boolean
         orderBy:
           description: Sort order for matches, e.g. "price" or "price desc". Defaults
             to price ascending.
+          type: string
+        organisation:
+          description: 'Scope the search to a single organisation (chain). Empty searches
+            all organisations the caller can see. Format: organisations/{organisation}'
           type: string
         pageSize:
           description: Maximum number of matches to return. The server may cap this.
@@ -926,12 +796,16 @@ components:
         pageToken:
           description: Page token from a previous SearchAvailability call's next_page_token.
           type: string
+        property:
+          description: 'Scope the search to a single property (hotel). Empty searches
+            all properties. Format: properties/{property}'
+          type: string
         units:
           description: Number of units / party size required free. Defaults to 1.
           format: int32
           type: integer
         window:
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
           properties:
             endTime:
               description: Exclusive end of the interval.
@@ -947,20 +821,20 @@ components:
       description: Response message for SearchAvailability.
       properties:
         matches:
-          description: The matching resources, ordered per order_by.
+          description: The matching units, ordered per order_by.
           items:
-            description: One resource matched by SearchAvailability, with a lead price
-              for the period. Detailed slots/nights are fetched per resource via ComputeAvailability.
+            description: One unit matched by SearchAvailability, with a lead price
+              for the period. Detailed slots/nights are fetched per unit via ComputeAvailability.
             properties:
               bookable:
-                description: Whether the resource is bookable for the requested period
+                description: Whether the unit is bookable for the requested period
                   and units.
                 type: boolean
               displayName:
-                description: Cached display name of the resource, for convenience.
+                description: Cached display name of the unit, for convenience.
                 type: string
               mode:
-                description: The resource's booking mode.
+                description: The unit's booking mode.
                 enum:
                 - BOOKING_MODE_UNSPECIFIED
                 - BOOKING_MODE_TIME_SLOT
@@ -990,8 +864,8 @@ components:
                     type: integer
                     x-kubernetes-int-or-string: true
                 type: object
-              resource:
-                description: 'The matching resource. Format: resources/{resource}'
+              unit:
+                description: 'The matching unit. Format: properties/{property}/units/{unit}'
                 type: string
             type: object
           type: array
@@ -1001,13 +875,13 @@ components:
           type: string
       type: object
     freebusy.availability.v1.Slot:
-      description: A discrete bookable time slot, produced for TIME_SLOT resources.
+      description: A discrete bookable time slot, produced for TIME_SLOT units.
       properties:
         bookable:
           description: Whether the slot can actually be booked (free and passes policy).
           type: boolean
         endTime:
-          description: Exclusive end of the slot (start + offering/requested duration).
+          description: Exclusive end of the slot (start + unit/requested duration).
           format: date-time
           type: string
         freeCount:
@@ -1016,7 +890,7 @@ components:
           format: int32
           type: integer
         price:
-          description: Price for booking this slot, when an offering was supplied.
+          description: Price for booking this slot, derived from the unit's pricing.
           properties:
             currencyCode:
               description: The three-letter currency code defined in ISO 4217.
@@ -1064,6 +938,123 @@ components:
           type: string
         message:
           description: Human-readable explanation suitable for display, not for parsing.
+          type: string
+      type: object
+    freebusy.availability.v1.UnitAvailability:
+      description: Availability for one unit, used in batch responses.
+      properties:
+        mode:
+          description: Which shape is populated, matching the unit's booking_mode.
+          enum:
+          - BOOKING_MODE_UNSPECIFIED
+          - BOOKING_MODE_TIME_SLOT
+          - BOOKING_MODE_NIGHTLY
+          type: string
+        nights:
+          description: Per-night availability, when mode is NIGHTLY.
+          items:
+            description: Per-night availability, produced for NIGHTLY units.
+            properties:
+              closed:
+                description: Whether the unit is closed that night (exception/blackout).
+                type: boolean
+              freeUnits:
+                description: Number of units of the pool free that night.
+                format: int32
+                type: integer
+              night:
+                description: The night, in the unit's local timezone.
+                properties:
+                  day:
+                    description: Day of a month. Must be from 1 to 31 and valid for
+                      the year and month, or 0 to specify a year by itself or a year
+                      and month where the day isn't significant.
+                    format: int32
+                    type: integer
+                  month:
+                    description: Month of a year. Must be from 1 to 12, or 0 to specify
+                      a year without a month and day.
+                    format: int32
+                    type: integer
+                  year:
+                    description: Year of the date. Must be from 1 to 9999, or 0 to
+                      specify a date without a year.
+                    format: int32
+                    type: integer
+                type: object
+              price:
+                description: Nightly price, derived from the unit's pricing.
+                properties:
+                  currencyCode:
+                    description: The three-letter currency code defined in ISO 4217.
+                    type: string
+                  nanos:
+                    description: Number of nano (10^-9) units of the amount. The value
+                      must be between -999,999,999 and +999,999,999 inclusive. If
+                      `units` is positive, `nanos` must be positive or zero. If `units`
+                      is zero, `nanos` can be positive, zero, or negative. If `units`
+                      is negative, `nanos` must be negative or zero. For example $-1.75
+                      is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+                    type: integer
+                  units:
+                    description: The whole units of the amount. For example if `currencyCode`
+                      is `"USD"`, then 1 unit is one US dollar.
+                    format: int64
+                    type: integer
+                    x-kubernetes-int-or-string: true
+                type: object
+            type: object
+          type: array
+        slots:
+          description: Slots, when mode is TIME_SLOT.
+          items:
+            description: A discrete bookable time slot, produced for TIME_SLOT units.
+            properties:
+              bookable:
+                description: Whether the slot can actually be booked (free and passes
+                  policy).
+                type: boolean
+              endTime:
+                description: Exclusive end of the slot (start + unit/requested duration).
+                format: date-time
+                type: string
+              freeCount:
+                description: Number of units free in this slot (capacity minus overlapping
+                  bookings).
+                format: int32
+                type: integer
+              price:
+                description: Price for booking this slot, derived from the unit's
+                  pricing.
+                properties:
+                  currencyCode:
+                    description: The three-letter currency code defined in ISO 4217.
+                    type: string
+                  nanos:
+                    description: Number of nano (10^-9) units of the amount. The value
+                      must be between -999,999,999 and +999,999,999 inclusive. If
+                      `units` is positive, `nanos` must be positive or zero. If `units`
+                      is zero, `nanos` can be positive, zero, or negative. If `units`
+                      is negative, `nanos` must be negative or zero. For example $-1.75
+                      is represented as `units`=-1 and `nanos`=-750,000,000.
+                    format: int32
+                    type: integer
+                  units:
+                    description: The whole units of the amount. For example if `currencyCode`
+                      is `"USD"`, then 1 unit is one US dollar.
+                    format: int64
+                    type: integer
+                    x-kubernetes-int-or-string: true
+                type: object
+              startTime:
+                description: Inclusive start of the slot.
+                format: date-time
+                type: string
+            type: object
+          type: array
+        unit:
+          description: 'The unit these results are for. Format: properties/{property}/units/{unit}'
           type: string
       type: object
 info:

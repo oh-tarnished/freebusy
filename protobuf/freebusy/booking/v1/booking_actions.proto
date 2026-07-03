@@ -62,7 +62,7 @@ message CancelBookingRequest {
 }
 
 // Request message for RescheduleBooking. Atomically moves a booking to a new
-// span (and optionally offering), re-running availability and the exclusion
+// span (and optionally unit), re-running availability and the exclusion
 // check on the new window.
 message RescheduleBookingRequest {
   // The booking to reschedule.
@@ -75,11 +75,11 @@ message RescheduleBookingRequest {
   // The new reserved span.
   freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
 
-  // The new offering, when changing it as part of the reschedule.
-  // Format: resources/{resource}/offerings/{offering}
-  string offering = 3 [
+  // The new unit, when changing it as part of the reschedule.
+  // Format: properties/{property}/units/{unit}
+  string unit = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 
   // Caller-supplied idempotency key that dedupes retries of this reschedule.
@@ -90,7 +90,7 @@ message RescheduleBookingRequest {
 }
 
 // Request message for PreviewCancellation. Computes the refund a cancellation
-// would yield right now, under the resource's cancellation policy, without
+// would yield right now, under the unit's cancellation policy, without
 // cancelling the booking.
 message PreviewCancellationRequest {
   // The booking to preview a cancellation for.

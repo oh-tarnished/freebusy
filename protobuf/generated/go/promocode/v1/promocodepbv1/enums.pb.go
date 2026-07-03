@@ -100,7 +100,7 @@ const (
 	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED PromoCodeInvalidReason = 6
 	// The subtotal is below scope.min_subtotal.
 	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL PromoCodeInvalidReason = 7
-	// The booked resource/offering is outside scope.applicable_resources/offerings.
+	// The booked property/unit is outside scope.applicable_properties/units.
 	PromoCodeInvalidReason_PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE PromoCodeInvalidReason = 8
 )
 

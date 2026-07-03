@@ -8,6 +8,18 @@ components:
       - BOOKING_MODE_TIME_SLOT
       - BOOKING_MODE_NIGHTLY
       type: string
+    freebusy.shared.v1.MediaType:
+      description: Kind of media asset a Media reference points at. Documents (PDFs,
+        house rules, fact sheets) are just media with type DOCUMENT — they are not
+        a separate type.
+      enum:
+      - MEDIA_TYPE_UNSPECIFIED
+      - MEDIA_TYPE_IMAGE
+      - MEDIA_TYPE_VIDEO
+      - MEDIA_TYPE_DOCUMENT
+      - MEDIA_TYPE_FLOORPLAN
+      - MEDIA_TYPE_VIRTUAL_TOUR
+      type: string
     freebusy.shared.v1.OrderDirection:
       description: Enums shared across more than one freebusy resource. Resource-specific
         enums live alongside their resource (e.g. BookingStatus in the booking package),

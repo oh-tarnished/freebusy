@@ -14,7 +14,7 @@ option java_multiple_files = true;
 option java_outer_classname = "ScheduleServiceProto";
 option java_package = "dev.ohtarnished.freebusy.schedule.v1";
 
-// ScheduleService is the write side of availability configuration: a resource's
+// ScheduleService is the write side of availability configuration: a unit's
 // recurring working hours, blackout/holiday exceptions, buffers, and stay rules.
 // These are the inputs the freebusy engine consumes to compute availability.
 service ScheduleService {
@@ -23,56 +23,56 @@ service ScheduleService {
     app: {
       name: "Booking Schedule"
       version: "1.0.0"
-      description: "Configure recurring hours, exceptions, buffers, and stay rules for a resource."
+      description: "Configure recurring hours, exceptions, buffers, and stay rules for a unit."
     }
   };
 
-  // Reads the full availability configuration for a resource.
+  // Reads the full availability configuration for a unit.
   rpc GetSchedule(GetScheduleRequest) returns (Schedule) {
-    option (google.api.http) = {get: "/v1/{name=resources/*/schedule}"};
+    option (google.api.http) = {get: "/v1/{name=properties/*/units/*/schedule}"};
     option (google.api.method_signature) = "name";
-    option (mcp.tool) = {description: "Get a resource's full availability configuration: recurring hours, buffers, stay rules, and exceptions."};
+    option (mcp.tool) = {description: "Get a unit's full availability configuration: recurring hours, buffers, stay rules, and exceptions."};
   }
 
-  // Updates a resource's availability configuration. Set update_mask to the
+  // Updates a unit's availability configuration. Set update_mask to the
   // section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
   // cancellation_policy.
   rpc UpdateSchedule(UpdateScheduleRequest) returns (Schedule) {
     option (google.api.http) = {
-      patch: "/v1/{schedule.name=resources/*/schedule}"
+      patch: "/v1/{schedule.name=properties/*/units/*/schedule}"
       body: "schedule"
     };
     option (google.api.method_signature) = "schedule,update_mask";
-    option (mcp.tool) = {description: "Update a resource's schedule: recurring working hours, buffers, and/or nightly stay rules."};
+    option (mcp.tool) = {description: "Update a unit's schedule: recurring working hours, buffers, and/or nightly stay rules."};
   }
 
-  // Lists the exceptions configured for a resource.
+  // Lists the exceptions configured for a unit.
   rpc ListAvailabilityExceptions(ListAvailabilityExceptionsRequest) returns (ListAvailabilityExceptionsResponse) {
-    option (google.api.http) = {get: "/v1/{parent=resources/*}/availabilityExceptions"};
+    option (google.api.http) = {get: "/v1/{parent=properties/*/units/*}/availabilityExceptions"};
     option (google.api.method_signature) = "parent";
-    option (mcp.tool) = {description: "List the blackout/closure and extra-hours exceptions for a resource."};
+    option (mcp.tool) = {description: "List the blackout/closure and extra-hours exceptions for a unit."};
   }
 
   // Gets a single availability exception.
   rpc GetAvailabilityException(GetAvailabilityExceptionRequest) returns (AvailabilityException) {
-    option (google.api.http) = {get: "/v1/{name=resources/*/availabilityExceptions/*}"};
+    option (google.api.http) = {get: "/v1/{name=properties/*/units/*/availabilityExceptions/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.tool) = {description: "Get a single availability exception by resource name."};
+    option (mcp.tool) = {description: "Get a single availability exception by name."};
   }
 
-  // Adds an availability exception to a resource.
+  // Adds an availability exception to a unit.
   rpc CreateAvailabilityException(CreateAvailabilityExceptionRequest) returns (AvailabilityException) {
     option (google.api.http) = {
-      post: "/v1/{parent=resources/*}/availabilityExceptions"
+      post: "/v1/{parent=properties/*/units/*}/availabilityExceptions"
       body: "availability_exception"
     };
     option (google.api.method_signature) = "parent,availability_exception,availability_exception_id";
-    option (mcp.tool) = {description: "Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a resource."};
+    option (mcp.tool) = {description: "Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a unit."};
   }
 
   // Removes an availability exception.
   rpc DeleteAvailabilityException(DeleteAvailabilityExceptionRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {delete: "/v1/{name=resources/*/availabilityExceptions/*}"};
+    option (google.api.http) = {delete: "/v1/{name=properties/*/units/*/availabilityExceptions/*}"};
     option (google.api.method_signature) = "name";
     option (mcp.tool) = {description: "Remove an availability exception by name."};
   }

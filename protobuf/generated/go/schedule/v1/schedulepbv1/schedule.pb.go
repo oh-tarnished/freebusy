@@ -26,7 +26,7 @@ const (
 )
 
 // A recurring availability window expressed as an RRULE plus a daily open span.
-// The freebusy engine expands these against the resource's timezone.
+// The freebusy engine expands these against the unit's timezone.
 type RecurringRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
@@ -175,7 +175,7 @@ func (x *BufferSettings) GetGap() *durationpb.Duration {
 	return nil
 }
 
-// Stay rules that affect bookability for NIGHTLY resources.
+// Stay rules that affect bookability for NIGHTLY units.
 type StayConstraints struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Minimum number of nights per booking.
@@ -266,14 +266,14 @@ func (x *StayConstraints) GetAdvanceMaxDays() int32 {
 	return 0
 }
 
-// An override of a resource's normal hours on a specific span: a blackout /
+// An override of a unit's normal hours on a specific span: a blackout /
 // holiday closure, or extra hours beyond the recurring rules.
 type AvailabilityException struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The exception name.
-	// Format: resources/{resource}/availabilityExceptions/{availability_exception}
+	// Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Whether this span closes the resource or adds extra availability.
+	// Whether this span closes the unit or adds extra availability.
 	Kind ExceptionKind `protobuf:"varint,3,opt,name=kind,proto3,enum=freebusy.schedule.v1.ExceptionKind" json:"kind,omitempty"`
 	// The affected span. Exactly one must be set.
 	//
@@ -378,12 +378,12 @@ type isAvailabilityException_Span interface {
 }
 
 type AvailabilityException_Window struct {
-	// An exact time window, the natural form for TIME_SLOT resources.
+	// An exact time window, the natural form for TIME_SLOT units.
 	Window *sharedpbv1.TimeWindow `protobuf:"bytes,4,opt,name=window,proto3,oneof"`
 }
 
 type AvailabilityException_DateRange struct {
-	// A range of whole calendar dates in the resource's timezone, the natural
+	// A range of whole calendar dates in the unit's timezone, the natural
 	// form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
 	DateRange *sharedpbv1.DateRange `protobuf:"bytes,7,opt,name=date_range,json=dateRange,proto3,oneof"`
 }
@@ -392,24 +392,24 @@ func (*AvailabilityException_Window) isAvailabilityException_Span() {}
 
 func (*AvailabilityException_DateRange) isAvailabilityException_Span() {}
 
-// Aggregate read view of a resource's availability configuration: the inputs the
-// freebusy engine consumes. Modeled as a singleton resource, one per resource.
+// Aggregate read view of a unit's availability configuration: the inputs the
+// freebusy engine consumes. Modeled as a singleton resource, one per unit.
 type Schedule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The schedule name.
-	// Format: resources/{resource}/schedule
+	// Format: properties/{property}/units/{unit}/schedule
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Recurring working hours.
 	RecurringRules []*RecurringRule `protobuf:"bytes,2,rep,name=recurring_rules,json=recurringRules,proto3" json:"recurring_rules,omitempty"`
 	// Buffer and notice settings.
 	Buffers *BufferSettings `protobuf:"bytes,3,opt,name=buffers,proto3" json:"buffers,omitempty"`
-	// Stay rules (NIGHTLY resources).
+	// Stay rules (NIGHTLY units).
 	StayConstraints *StayConstraints `protobuf:"bytes,4,opt,name=stay_constraints,json=stayConstraints,proto3" json:"stay_constraints,omitempty"`
 	// Resource names of the active exceptions; manage them with the
 	// AvailabilityException standard methods.
-	// Format: resources/{resource}/availabilityExceptions/{availability_exception}
+	// Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
 	Exceptions []string `protobuf:"bytes,5,rep,name=exceptions,proto3" json:"exceptions,omitempty"`
-	// Refund rules applied when a booking on this resource is cancelled. Unset
+	// Refund rules applied when a booking on this unit is cancelled. Unset
 	// means cancellations are non-refundable by default.
 	CancellationPolicy *CancellationPolicy `protobuf:"bytes,7,opt,name=cancellation_policy,json=cancellationPolicy,proto3" json:"cancellation_policy,omitempty"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update.
@@ -628,7 +628,7 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\x10checkin_weekdays\x18\x03 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x0fcheckinWeekdays\x12M\n" +
 	"\x11checkout_weekdays\x18\x04 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x10checkoutWeekdays\x12-\n" +
 	"\x10advance_min_days\x18\x05 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMinDays\x12-\n" +
-	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\xfd\x03\n" +
+	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\x8b\x04\n" +
 	"\x15AvailabilityException\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12<\n" +
 	"\x04kind\x18\x03 \x01(\x0e2#.freebusy.schedule.v1.ExceptionKindB\x03\xe0A\x02R\x04kind\x128\n" +
@@ -637,9 +637,9 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"date_range\x18\a \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x1b\n" +
 	"\x06reason\x18\x05 \x01(\tB\x03\xe0A\x01R\x06reason\x12@\n" +
 	"\vcreate_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
-	"createTime:\xa5\x01\xeaA\xa1\x01\n" +
-	"*freebusy.schedule.v1/AvailabilityException\x12Dresources/{resource}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
-	"\x04spanJ\x04\b\x02\x10\x03\"\xb2\x04\n" +
+	"createTime:\xb3\x01\xeaA\xaf\x01\n" +
+	"*freebusy.schedule.v1/AvailabilityException\x12Rproperties/{property}/units/{unit}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
+	"\x04spanJ\x04\b\x02\x10\x03\"\xc0\x04\n" +
 	"\bSchedule\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\x0frecurring_rules\x18\x02 \x03(\v2#.freebusy.schedule.v1.RecurringRuleB\x03\xe0A\x01R\x0erecurringRules\x12C\n" +
@@ -650,8 +650,8 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"*freebusy.schedule.v1/AvailabilityExceptionR\n" +
 	"exceptions\x12^\n" +
 	"\x13cancellation_policy\x18\a \x01(\v2(.freebusy.schedule.v1.CancellationPolicyB\x03\xe0A\x01R\x12cancellationPolicy\x12\x12\n" +
-	"\x04etag\x18\x06 \x01(\tR\x04etag:V\xeaAS\n" +
-	"\x1dfreebusy.schedule.v1/Schedule\x12\x1dresources/{resource}/schedule*\tschedules2\bschedule\"Q\n" +
+	"\x04etag\x18\x06 \x01(\tR\x04etag:d\xeaAa\n" +
+	"\x1dfreebusy.schedule.v1/Schedule\x12+properties/{property}/units/{unit}/schedule*\tschedules2\bschedule\"Q\n" +
 	"\x12CancellationPolicy\x12;\n" +
 	"\x05tiers\x18\x01 \x03(\v2 .freebusy.schedule.v1.RefundTierB\x03\xe0A\x01R\x05tiers\"p\n" +
 	"\n" +

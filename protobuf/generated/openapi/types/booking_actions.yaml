@@ -43,7 +43,7 @@ components:
       type: object
     freebusy.booking.v1.PreviewCancellationRequest:
       description: Request message for PreviewCancellation. Computes the refund a
-        cancellation would yield right now, under the resource's cancellation policy,
+        cancellation would yield right now, under the unit's cancellation policy,
         without cancelling the booking.
       properties:
         name:
@@ -111,19 +111,19 @@ components:
       type: object
     freebusy.booking.v1.RescheduleBookingRequest:
       description: Request message for RescheduleBooking. Atomically moves a booking
-        to a new span (and optionally offering), re-running availability and the exclusion
+        to a new span (and optionally unit), re-running availability and the exclusion
         check on the new window.
       properties:
         name:
           description: 'The booking to reschedule. Format: bookings/{booking}'
           type: string
-        offering:
-          description: 'The new offering, when changing it as part of the reschedule.
-            Format: resources/{resource}/offerings/{offering}'
-          type: string
         requestId:
           description: Caller-supplied idempotency key that dedupes retries of this
             reschedule.
+          type: string
+        unit:
+          description: 'The new unit, when changing it as part of the reschedule.
+            Format: properties/{property}/units/{unit}'
           type: string
         window:
           description: The new reserved span.

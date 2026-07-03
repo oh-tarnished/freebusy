@@ -1,17 +1,16 @@
 components:
   schemas:
     freebusy.schedule.v1.AvailabilityException:
-      description: 'An override of a resource''s normal hours on a specific span:
-        a blackout / holiday closure, or extra hours beyond the recurring rules.'
+      description: 'An override of a unit''s normal hours on a specific span: a blackout
+        / holiday closure, or extra hours beyond the recurring rules.'
       properties:
         createTime:
           description: Creation timestamp.
           format: date-time
           type: string
         dateRange:
-          description: A range of whole calendar dates in the resource's timezone,
-            the natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec
-            26").
+          description: A range of whole calendar dates in the unit's timezone, the
+            natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
           properties:
             endDate:
               description: Exclusive end date of the range.
@@ -55,20 +54,20 @@ components:
               type: object
           type: object
         kind:
-          description: Whether this span closes the resource or adds extra availability.
+          description: Whether this span closes the unit or adds extra availability.
           enum:
           - EXCEPTION_KIND_UNSPECIFIED
           - EXCEPTION_KIND_CLOSURE
           - EXCEPTION_KIND_EXTRA_HOURS
           type: string
         name:
-          description: 'The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+          description: 'The exception name. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
           type: string
         reason:
           description: Human-readable reason (e.g. "Public holiday").
           type: string
         window:
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
           properties:
             endTime:
               description: Exclusive end of the interval.
@@ -126,7 +125,7 @@ components:
       type: object
     freebusy.schedule.v1.RecurringRule:
       description: A recurring availability window expressed as an RRULE plus a daily
-        open span. The freebusy engine expands these against the resource's timezone.
+        open span. The freebusy engine expands these against the unit's timezone.
       properties:
         closes:
           description: Local time-of-day the window closes, 24-hour "HH:MM" (e.g.
@@ -155,9 +154,9 @@ components:
           type: integer
       type: object
     freebusy.schedule.v1.Schedule:
-      description: 'Aggregate read view of a resource''s availability configuration:
-        the inputs the freebusy engine consumes. Modeled as a singleton resource,
-        one per resource.'
+      description: 'Aggregate read view of a unit''s availability configuration: the
+        inputs the freebusy engine consumes. Modeled as a singleton resource, one
+        per unit.'
       properties:
         buffers:
           description: Buffer and notice settings.
@@ -179,7 +178,7 @@ components:
               type: string
           type: object
         cancellationPolicy:
-          description: Refund rules applied when a booking on this resource is cancelled.
+          description: Refund rules applied when a booking on this unit is cancelled.
             Unset means cancellations are non-refundable by default.
           properties:
             tiers:
@@ -210,18 +209,18 @@ components:
           type: string
         exceptions:
           description: 'Resource names of the active exceptions; manage them with
-            the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception}'
+            the AvailabilityException standard methods. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}'
           items:
             type: string
           type: array
         name:
-          description: 'The schedule name. Format: resources/{resource}/schedule'
+          description: 'The schedule name. Format: properties/{property}/units/{unit}/schedule'
           type: string
         recurringRules:
           description: Recurring working hours.
           items:
             description: A recurring availability window expressed as an RRULE plus
-              a daily open span. The freebusy engine expands these against the resource's
+              a daily open span. The freebusy engine expands these against the unit's
               timezone.
             properties:
               closes:
@@ -239,7 +238,7 @@ components:
             type: object
           type: array
         stayConstraints:
-          description: Stay rules (NIGHTLY resources).
+          description: Stay rules (NIGHTLY units).
           properties:
             advanceMaxDays:
               description: Latest a stay may begin, in days from now. Zero means no
@@ -293,7 +292,7 @@ components:
           type: object
       type: object
     freebusy.schedule.v1.StayConstraints:
-      description: Stay rules that affect bookability for NIGHTLY resources.
+      description: Stay rules that affect bookability for NIGHTLY units.
       properties:
         advanceMaxDays:
           description: Latest a stay may begin, in days from now. Zero means no limit.

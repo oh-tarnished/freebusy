@@ -31,9 +31,7 @@ paths:
                     type: string
                 - name: filter
                   in: query
-                  description: |-
-                    Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
-                     match on display_name.
+                  description: Filter expression (AIP-160), e.g. a match on display_name or email.
                   schema:
                     type: string
                 - name: orderBy
@@ -139,24 +137,6 @@ components:
                     type: string
                     description: Token to pass as page_token to retrieve the next page; empty when no more.
             description: Response message for ListUsers.
-        MembershipSummary:
-            type: object
-            properties:
-                organisation:
-                    readOnly: true
-                    type: string
-                    description: |-
-                        The organisation.
-                         Format: organisations/{organisation}
-                orgDisplayName:
-                    readOnly: true
-                    type: string
-                    description: Cached display name of the organisation.
-                role:
-                    readOnly: true
-                    type: string
-                    description: The user's role in the organisation (an OrganisationRole value name).
-            description: A compact view of an organisation the user belongs to.
         Status:
             type: object
             properties:
@@ -197,12 +177,6 @@ components:
                 timeZone:
                     type: string
                     description: IANA time zone (e.g. "America/New_York").
-                memberships:
-                    readOnly: true
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/MembershipSummary'
-                    description: The organisations this user belongs to, with role.
                 createTime:
                     readOnly: true
                     type: string

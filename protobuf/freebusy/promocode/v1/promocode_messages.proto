@@ -124,18 +124,18 @@ message ValidatePromoCodeRequest {
   // Subtotal the discount would apply to.
   google.type.Money subtotal = 2 [(google.api.field_behavior) = REQUIRED];
 
-  // Resource being booked, for scope checks.
-  // Format: resources/{resource}
-  string resource = 3 [
+  // Property being booked, for scope checks.
+  // Format: properties/{property}
+  string property = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
   ];
 
-  // Offering being booked, for scope checks.
-  // Format: resources/{resource}/offerings/{offering}
-  string offering = 4 [
+  // Unit being booked, for scope checks.
+  // Format: properties/{property}/units/{unit}
+  string unit = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 
   // Customer redeeming the code, for per-customer limit checks.

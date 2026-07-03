@@ -203,6 +203,72 @@ func (BookingMode) EnumDescriptor() ([]byte, []int) {
 	return file_freebusy_shared_v1_enums_proto_rawDescGZIP(), []int{2}
 }
 
+// Kind of media asset a Media reference points at. Documents (PDFs, house rules,
+// fact sheets) are just media with type DOCUMENT — they are not a separate type.
+type MediaType int32
+
+const (
+	// Unset.
+	MediaType_MEDIA_TYPE_UNSPECIFIED MediaType = 0
+	// A photo (e.g. a room or property showcase image).
+	MediaType_MEDIA_TYPE_IMAGE MediaType = 1
+	// A video clip.
+	MediaType_MEDIA_TYPE_VIDEO MediaType = 2
+	// A document such as a PDF fact sheet, policy, or house rules.
+	MediaType_MEDIA_TYPE_DOCUMENT MediaType = 3
+	// A floor plan diagram.
+	MediaType_MEDIA_TYPE_FLOORPLAN MediaType = 4
+	// A 360°/virtual-tour asset.
+	MediaType_MEDIA_TYPE_VIRTUAL_TOUR MediaType = 5
+)
+
+// Enum value maps for MediaType.
+var (
+	MediaType_name = map[int32]string{
+		0: "MEDIA_TYPE_UNSPECIFIED",
+		1: "MEDIA_TYPE_IMAGE",
+		2: "MEDIA_TYPE_VIDEO",
+		3: "MEDIA_TYPE_DOCUMENT",
+		4: "MEDIA_TYPE_FLOORPLAN",
+		5: "MEDIA_TYPE_VIRTUAL_TOUR",
+	}
+	MediaType_value = map[string]int32{
+		"MEDIA_TYPE_UNSPECIFIED":  0,
+		"MEDIA_TYPE_IMAGE":        1,
+		"MEDIA_TYPE_VIDEO":        2,
+		"MEDIA_TYPE_DOCUMENT":     3,
+		"MEDIA_TYPE_FLOORPLAN":    4,
+		"MEDIA_TYPE_VIRTUAL_TOUR": 5,
+	}
+)
+
+func (x MediaType) Enum() *MediaType {
+	p := new(MediaType)
+	*p = x
+	return p
+}
+
+func (x MediaType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (MediaType) Descriptor() protoreflect.EnumDescriptor {
+	return file_freebusy_shared_v1_enums_proto_enumTypes[3].Descriptor()
+}
+
+func (MediaType) Type() protoreflect.EnumType {
+	return &file_freebusy_shared_v1_enums_proto_enumTypes[3]
+}
+
+func (x MediaType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use MediaType.Descriptor instead.
+func (MediaType) EnumDescriptor() ([]byte, []int) {
+	return file_freebusy_shared_v1_enums_proto_rawDescGZIP(), []int{3}
+}
+
 var File_freebusy_shared_v1_enums_proto protoreflect.FileDescriptor
 
 const file_freebusy_shared_v1_enums_proto_rawDesc = "" +
@@ -224,7 +290,14 @@ const file_freebusy_shared_v1_enums_proto_rawDesc = "" +
 	"\vBookingMode\x12\x1c\n" +
 	"\x18BOOKING_MODE_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16BOOKING_MODE_TIME_SLOT\x10\x01\x12\x18\n" +
-	"\x14BOOKING_MODE_NIGHTLY\x10\x02B\xe6\x01\n" +
+	"\x14BOOKING_MODE_NIGHTLY\x10\x02*\xa3\x01\n" +
+	"\tMediaType\x12\x1a\n" +
+	"\x16MEDIA_TYPE_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10MEDIA_TYPE_IMAGE\x10\x01\x12\x14\n" +
+	"\x10MEDIA_TYPE_VIDEO\x10\x02\x12\x17\n" +
+	"\x13MEDIA_TYPE_DOCUMENT\x10\x03\x12\x18\n" +
+	"\x14MEDIA_TYPE_FLOORPLAN\x10\x04\x12\x1b\n" +
+	"\x17MEDIA_TYPE_VIRTUAL_TOUR\x10\x05B\xe6\x01\n" +
 	"\x16com.freebusy.shared.v1B\n" +
 	"EnumsProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1\xa2\x02\x03FSX\xaa\x02\x12Freebusy.Shared.V1\xca\x02\x12Freebusy\\Shared\\V1\xe2\x02\x1eFreebusy\\Shared\\V1\\GPBMetadata\xea\x02\x14Freebusy::Shared::V1b\x06proto3"
 
@@ -240,11 +313,12 @@ func file_freebusy_shared_v1_enums_proto_rawDescGZIP() []byte {
 	return file_freebusy_shared_v1_enums_proto_rawDescData
 }
 
-var file_freebusy_shared_v1_enums_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_freebusy_shared_v1_enums_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_freebusy_shared_v1_enums_proto_goTypes = []any{
 	(OrderDirection)(0), // 0: freebusy.shared.v1.OrderDirection
 	(Weekday)(0),        // 1: freebusy.shared.v1.Weekday
 	(BookingMode)(0),    // 2: freebusy.shared.v1.BookingMode
+	(MediaType)(0),      // 3: freebusy.shared.v1.MediaType
 }
 var file_freebusy_shared_v1_enums_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -264,7 +338,7 @@ func file_freebusy_shared_v1_enums_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_shared_v1_enums_proto_rawDesc), len(file_freebusy_shared_v1_enums_proto_rawDesc)),
-			NumEnums:      3,
+			NumEnums:      4,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,

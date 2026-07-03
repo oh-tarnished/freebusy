@@ -123,15 +123,15 @@ components:
         scope:
           description: What the code applies to (eligibility) → belongs-to promocode.scopes.
           properties:
-            applicableOfferings:
-              description: 'Offerings the code applies to. Empty means all offerings.
-                Format: resources/{resource}/offerings/{offering}'
+            applicableProperties:
+              description: 'Properties the code applies to. Empty means all properties.
+                Format: properties/{property}'
               items:
                 type: string
               type: array
-            applicableResources:
-              description: 'Resources the code applies to. Empty means all resources.
-                Format: resources/{resource}'
+            applicableUnits:
+              description: 'Units the code applies to. Empty means all units. Format:
+                properties/{property}/units/{unit}'
               items:
                 type: string
               type: array
@@ -255,15 +255,15 @@ components:
         object → belongs-to promocode.scopes. Its repeated resource references and
         Money normalize one level deeper (array columns / common.moneys).
       properties:
-        applicableOfferings:
-          description: 'Offerings the code applies to. Empty means all offerings.
-            Format: resources/{resource}/offerings/{offering}'
+        applicableProperties:
+          description: 'Properties the code applies to. Empty means all properties.
+            Format: properties/{property}'
           items:
             type: string
           type: array
-        applicableResources:
-          description: 'Resources the code applies to. Empty means all resources.
-            Format: resources/{resource}'
+        applicableUnits:
+          description: 'Units the code applies to. Empty means all units. Format:
+            properties/{property}/units/{unit}'
           items:
             type: string
           type: array

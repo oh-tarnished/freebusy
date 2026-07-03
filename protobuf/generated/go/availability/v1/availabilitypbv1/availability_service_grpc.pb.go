@@ -31,22 +31,22 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // AvailabilityService is the read-only, cacheable surface over the pure freebusy
-// engine. It has no side effects: given a resource and a window it returns what
-// is bookable, in the shape matching the resource's booking_mode.
+// engine. It has no side effects: given a unit and a window it returns what is
+// bookable, in the shape matching the unit's booking_mode.
 //
 // Its operations are custom methods (AIP-136): they compute results rather than
 // fetch or list a resource, so they intentionally do not use the Get/List/Batch
 // standard-method names or shapes.
 type AvailabilityServiceClient interface {
-	// Computes availability for a resource over a window.
+	// Computes availability for a unit over a window.
 	ComputeAvailability(ctx context.Context, in *ComputeAvailabilityRequest, opts ...grpc.CallOption) (*ComputeAvailabilityResponse, error)
 	// Tests whether one exact span is bookable.
 	CheckAvailability(ctx context.Context, in *CheckAvailabilityRequest, opts ...grpc.CallOption) (*CheckAvailabilityResponse, error)
 	// Computes contiguous bookable ranges within a window.
 	ComputeBookableRanges(ctx context.Context, in *ComputeBookableRangesRequest, opts ...grpc.CallOption) (*ComputeBookableRangesResponse, error)
-	// Computes availability for several resources at once.
+	// Computes availability for several units at once.
 	BatchComputeAvailability(ctx context.Context, in *BatchComputeAvailabilityRequest, opts ...grpc.CallOption) (*BatchComputeAvailabilityResponse, error)
-	// Searches the catalog for resources bookable over a period.
+	// Searches the catalog for units bookable over a period.
 	SearchAvailability(ctx context.Context, in *SearchAvailabilityRequest, opts ...grpc.CallOption) (*SearchAvailabilityResponse, error)
 }
 
@@ -113,22 +113,22 @@ func (c *availabilityServiceClient) SearchAvailability(ctx context.Context, in *
 // for forward compatibility.
 //
 // AvailabilityService is the read-only, cacheable surface over the pure freebusy
-// engine. It has no side effects: given a resource and a window it returns what
-// is bookable, in the shape matching the resource's booking_mode.
+// engine. It has no side effects: given a unit and a window it returns what is
+// bookable, in the shape matching the unit's booking_mode.
 //
 // Its operations are custom methods (AIP-136): they compute results rather than
 // fetch or list a resource, so they intentionally do not use the Get/List/Batch
 // standard-method names or shapes.
 type AvailabilityServiceServer interface {
-	// Computes availability for a resource over a window.
+	// Computes availability for a unit over a window.
 	ComputeAvailability(context.Context, *ComputeAvailabilityRequest) (*ComputeAvailabilityResponse, error)
 	// Tests whether one exact span is bookable.
 	CheckAvailability(context.Context, *CheckAvailabilityRequest) (*CheckAvailabilityResponse, error)
 	// Computes contiguous bookable ranges within a window.
 	ComputeBookableRanges(context.Context, *ComputeBookableRangesRequest) (*ComputeBookableRangesResponse, error)
-	// Computes availability for several resources at once.
+	// Computes availability for several units at once.
 	BatchComputeAvailability(context.Context, *BatchComputeAvailabilityRequest) (*BatchComputeAvailabilityResponse, error)
-	// Searches the catalog for resources bookable over a period.
+	// Searches the catalog for units bookable over a period.
 	SearchAvailability(context.Context, *SearchAvailabilityRequest) (*SearchAvailabilityResponse, error)
 	mustEmbedUnimplementedAvailabilityServiceServer()
 }

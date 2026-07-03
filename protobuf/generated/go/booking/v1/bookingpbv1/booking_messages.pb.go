@@ -28,8 +28,8 @@ const (
 // Booking resource itself.
 type CreateBookingRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The booking to create. Supply resource, window, and optionally offering,
-	// units, customer, contact, notes, attributes, promo_code, and hold_ttl.
+	// The booking to create. Supply unit, window, and optionally units,
+	// customer, contact, notes, attributes, promo_code, and hold_ttl.
 	// Provide contact when there is no customer (a guest booking). Output-only
 	// fields are ignored.
 	Booking *Booking `protobuf:"bytes,1,opt,name=booking,proto3" json:"booking,omitempty"`
@@ -157,7 +157,7 @@ type ListBookingsRequest struct {
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListBookings call's next_page_token.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	// Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+	// Filter expression (AIP-160), e.g. `unit = "properties/9/units/42"`,
 	// `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
 	Filter string `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Sort order, e.g. "create_time desc" or "window.start_time".

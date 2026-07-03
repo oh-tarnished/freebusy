@@ -20,7 +20,7 @@ option java_outer_classname = "ScheduleProto";
 option java_package = "dev.ohtarnished.freebusy.schedule.v1";
 
 // A recurring availability window expressed as an RRULE plus a daily open span.
-// The freebusy engine expands these against the resource's timezone.
+// The freebusy engine expands these against the unit's timezone.
 message RecurringRule {
   // RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
   string rrule = 1 [(google.api.field_behavior) = REQUIRED];
@@ -53,7 +53,7 @@ message BufferSettings {
   google.protobuf.Duration gap = 5 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Stay rules that affect bookability for NIGHTLY resources.
+// Stay rules that affect bookability for NIGHTLY units.
 message StayConstraints {
   // Minimum number of nights per booking.
   int32 min_nights = 1 [(google.api.field_behavior) = OPTIONAL];
@@ -74,32 +74,32 @@ message StayConstraints {
   int32 advance_max_days = 6 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// An override of a resource's normal hours on a specific span: a blackout /
+// An override of a unit's normal hours on a specific span: a blackout /
 // holiday closure, or extra hours beyond the recurring rules.
 message AvailabilityException {
   option (google.api.resource) = {
     type: "freebusy.schedule.v1/AvailabilityException"
-    pattern: "resources/{resource}/availabilityExceptions/{availability_exception}"
+    pattern: "properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}"
     singular: "availabilityException"
     plural: "availabilityExceptions"
   };
 
   // The exception name.
-  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  // Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
 
-  // Whether this span closes the resource or adds extra availability.
+  // Whether this span closes the unit or adds extra availability.
   ExceptionKind kind = 3 [(google.api.field_behavior) = REQUIRED];
 
   // The affected span. Exactly one must be set.
   oneof span {
-    // An exact time window, the natural form for TIME_SLOT resources.
+    // An exact time window, the natural form for TIME_SLOT units.
     freebusy.shared.v1.TimeWindow window = 4;
 
-    // A range of whole calendar dates in the resource's timezone, the natural
+    // A range of whole calendar dates in the unit's timezone, the natural
     // form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
     freebusy.shared.v1.DateRange date_range = 7;
   }
@@ -111,18 +111,18 @@ message AvailabilityException {
   google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
-// Aggregate read view of a resource's availability configuration: the inputs the
-// freebusy engine consumes. Modeled as a singleton resource, one per resource.
+// Aggregate read view of a unit's availability configuration: the inputs the
+// freebusy engine consumes. Modeled as a singleton resource, one per unit.
 message Schedule {
   option (google.api.resource) = {
     type: "freebusy.schedule.v1/Schedule"
-    pattern: "resources/{resource}/schedule"
+    pattern: "properties/{property}/units/{unit}/schedule"
     singular: "schedule"
     plural: "schedules"
   };
 
   // The schedule name.
-  // Format: resources/{resource}/schedule
+  // Format: properties/{property}/units/{unit}/schedule
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // Recurring working hours.
@@ -131,18 +131,18 @@ message Schedule {
   // Buffer and notice settings.
   BufferSettings buffers = 3 [(google.api.field_behavior) = OPTIONAL];
 
-  // Stay rules (NIGHTLY resources).
+  // Stay rules (NIGHTLY units).
   StayConstraints stay_constraints = 4 [(google.api.field_behavior) = OPTIONAL];
 
   // Resource names of the active exceptions; manage them with the
   // AvailabilityException standard methods.
-  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  // Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
   repeated string exceptions = 5 [
     (google.api.field_behavior) = OUTPUT_ONLY,
     (google.api.resource_reference) = {type: "freebusy.schedule.v1/AvailabilityException"}
   ];
 
-  // Refund rules applied when a booking on this resource is cancelled. Unset
+  // Refund rules applied when a booking on this unit is cancelled. Unset
   // means cancellations are non-refundable by default.
   CancellationPolicy cancellation_policy = 7 [(google.api.field_behavior) = OPTIONAL];
 

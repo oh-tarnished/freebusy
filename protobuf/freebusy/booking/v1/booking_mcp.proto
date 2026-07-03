@@ -12,11 +12,12 @@ option java_package = "dev.ohtarnished.freebusy.booking.v1";
 
 // Arguments for the "book_slot" prompt.
 message BookSlotArgs {
-  // Resource to book, as a resource name ("resources/42") or a display name.
-  string resource = 1 [(google.api.field_behavior) = REQUIRED];
+  // Field number of the removed `offering` arg; never reuse it (a unit now
+  // carries its own pricing).
+  reserved 2;
 
-  // Offering to book, as a resource name or a display name (e.g. "30-min consult").
-  string offering = 2 [(google.api.field_behavior) = OPTIONAL];
+  // Unit to book, as a resource name ("properties/9/units/42") or a display name.
+  string unit = 1 [(google.api.field_behavior) = REQUIRED];
 
   // Start of the booking (RFC 3339, e.g. "2026-07-01T14:00:00Z").
   google.protobuf.Timestamp start_time = 3 [(google.api.field_behavior) = REQUIRED];

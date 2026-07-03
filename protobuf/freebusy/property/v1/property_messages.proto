@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package freebusy.property.v1;
+
+import "freebusy/property/v1/property.proto";
+import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1;propertypbv1";
+option java_multiple_files = true;
+option java_outer_classname = "PropertyMessagesProto";
+option java_package = "dev.ohtarnished.freebusy.property.v1";
+
+// Request message for ListProperties.
+message ListPropertiesRequest {
+  // Maximum number of properties to return. The server may cap this.
+  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Page token from a previous ListProperties call, for pagination.
+  string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression (AIP-160), e.g. `organisation = "organisations/7"`,
+  // `state = PROPERTY_STATE_ACTIVE`, `tags:"beachfront"`, or a display_name match.
+  string filter = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order, e.g. "display_name" or "create_time desc".
+  string order_by = 4 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListProperties.
+message ListPropertiesResponse {
+  // The page of properties.
+  repeated Property properties = 1;
+
+  // Next page token, if more results remain. Omitted if this is the last page.
+  string next_page_token = 2;
+}
+
+// Request message for GetProperty.
+message GetPropertyRequest {
+  // The property to retrieve.
+  // Format: properties/{property}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+  ];
+}
+
+// Request message for CreateProperty.
+message CreatePropertyRequest {
+  // The property to create. The name, state, and units fields are ignored.
+  Property property = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the property; the server generates one if unset.
+  string property_id = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 3 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+// Request message for UpdateProperty.
+message UpdatePropertyRequest {
+  // The property to update; its name identifies the target.
+  Property property = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for ArchiveProperty.
+message ArchivePropertyRequest {
+  // The property to archive.
+  // Format: properties/{property}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+  ];
+}
+
+// Request message for UnarchiveProperty.
+message UnarchivePropertyRequest {
+  // The property to restore to the active state.
+  // Format: properties/{property}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+  ];
+}
+
+// Request message for ListUnits.
+message ListUnitsRequest {
+  // The parent property whose units to list.
+  // Format: properties/{property}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+  ];
+
+  // Maximum number of units to return. The server may cap this.
+  int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Page token from a previous ListUnits call's next_page_token.
+  string page_token = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Filter expression (AIP-160), e.g. `type = UNIT_TYPE_ROOM`,
+  // `state = UNIT_STATE_ACTIVE`, or a match on display_name.
+  string filter = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Sort order, e.g. "display_name" or "create_time desc".
+  string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response message for ListUnits.
+message ListUnitsResponse {
+  // The page of units.
+  repeated Unit units = 1;
+
+  // Next page token. Omitted if this is the last page.
+  string next_page_token = 2;
+}
+
+// Request message for GetUnit.
+message GetUnitRequest {
+  // The unit to retrieve.
+  // Format: properties/{property}/units/{unit}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+  ];
+}
+
+// Request message for CreateUnit.
+message CreateUnitRequest {
+  // The property to attach the unit to.
+  // Format: properties/{property}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+  ];
+
+  // The unit to create. Its name and state fields are ignored.
+  Unit unit = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional caller-chosen ID for the unit; the server generates one if unset.
+  string unit_id = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Caller-supplied idempotency key; identical retries return the first result.
+  string request_id = 4 [
+    (google.api.field_info).format = UUID4,
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+// Request message for UpdateUnit.
+message UpdateUnitRequest {
+  // The unit to update; its name identifies the target.
+  Unit unit = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Fields to overwrite. Omit to replace all mutable fields.
+  google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Request message for DeleteUnit.
+message DeleteUnitRequest {
+  // The unit to delete.
+  // Format: properties/{property}/units/{unit}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+  ];
+}

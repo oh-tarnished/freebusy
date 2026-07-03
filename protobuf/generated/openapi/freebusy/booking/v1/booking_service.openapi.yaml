@@ -36,7 +36,7 @@ paths:
                 - name: filter
                   in: query
                   description: |-
-                    Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+                    Filter expression (AIP-160), e.g. `unit = "properties/9/units/42"`,
                      `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
                   schema:
                     type: string
@@ -260,7 +260,7 @@ components:
     schemas:
         Booking:
             required:
-                - resource
+                - unit
                 - window
             type: object
             properties:
@@ -269,16 +269,11 @@ components:
                     description: |-
                         The booking name.
                          Format: bookings/{booking}
-                resource:
+                unit:
                     type: string
                     description: |-
-                        The resource being booked.
-                         Format: resources/{resource}
-                offering:
-                    type: string
-                    description: |-
-                        The offering being booked, when applicable.
-                         Format: resources/{resource}/offerings/{offering}
+                        The unit being booked.
+                         Format: properties/{property}/units/{unit}
                 customer:
                     type: string
                     description: |-
@@ -379,7 +374,7 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Money'
                     description: |-
-                        Amount refunded on cancellation, computed from the resource's cancellation
+                        Amount refunded on cancellation, computed from the unit's cancellation
                          policy and how far ahead of the booking start it was cancelled. Set only
                          once the booking is CANCELLED. Use PreviewCancellation to see this before
                          committing.
@@ -398,7 +393,7 @@ components:
                     type: string
                     description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
             description: |-
-                A reservation against a resource. The hold lifecycle lives here as states
+                A reservation against a unit. The hold lifecycle lives here as states
                  rather than a separate service: CreateBooking places a PENDING_HOLD,
                  confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
                  are never confirmed.
@@ -516,7 +511,7 @@ components:
                          Format: bookings/{booking}
             description: |-
                 Request message for PreviewCancellation. Computes the refund a cancellation
-                 would yield right now, under the resource's cancellation policy, without
+                 would yield right now, under the unit's cancellation policy, without
                  cancelling the booking.
         PreviewCancellationResponse:
             type: object
@@ -580,17 +575,17 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
                     description: The new reserved span.
-                offering:
+                unit:
                     type: string
                     description: |-
-                        The new offering, when changing it as part of the reschedule.
-                         Format: resources/{resource}/offerings/{offering}
+                        The new unit, when changing it as part of the reschedule.
+                         Format: properties/{property}/units/{unit}
                 requestId:
                     type: string
                     description: Caller-supplied idempotency key that dedupes retries of this reschedule.
             description: |-
                 Request message for RescheduleBooking. Atomically moves a booking to a new
-                 span (and optionally offering), re-running availability and the exclusion
+                 span (and optionally unit), re-running availability and the exclusion
                  check on the new window.
         Status:
             type: object

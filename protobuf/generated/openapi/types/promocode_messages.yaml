@@ -105,15 +105,15 @@ components:
             scope:
               description: What the code applies to (eligibility) → belongs-to promocode.scopes.
               properties:
-                applicableOfferings:
-                  description: 'Offerings the code applies to. Empty means all offerings.
-                    Format: resources/{resource}/offerings/{offering}'
+                applicableProperties:
+                  description: 'Properties the code applies to. Empty means all properties.
+                    Format: properties/{property}'
                   items:
                     type: string
                   type: array
-                applicableResources:
-                  description: 'Resources the code applies to. Empty means all resources.
-                    Format: resources/{resource}'
+                applicableUnits:
+                  description: 'Units the code applies to. Empty means all units.
+                    Format: properties/{property}/units/{unit}'
                   items:
                     type: string
                   type: array
@@ -335,15 +335,15 @@ components:
               scope:
                 description: What the code applies to (eligibility) → belongs-to promocode.scopes.
                 properties:
-                  applicableOfferings:
-                    description: 'Offerings the code applies to. Empty means all offerings.
-                      Format: resources/{resource}/offerings/{offering}'
+                  applicableProperties:
+                    description: 'Properties the code applies to. Empty means all
+                      properties. Format: properties/{property}'
                     items:
                       type: string
                     type: array
-                  applicableResources:
-                    description: 'Resources the code applies to. Empty means all resources.
-                      Format: resources/{resource}'
+                  applicableUnits:
+                    description: 'Units the code applies to. Empty means all units.
+                      Format: properties/{property}/units/{unit}'
                     items:
                       type: string
                     type: array
@@ -588,15 +588,15 @@ components:
             scope:
               description: What the code applies to (eligibility) → belongs-to promocode.scopes.
               properties:
-                applicableOfferings:
-                  description: 'Offerings the code applies to. Empty means all offerings.
-                    Format: resources/{resource}/offerings/{offering}'
+                applicableProperties:
+                  description: 'Properties the code applies to. Empty means all properties.
+                    Format: properties/{property}'
                   items:
                     type: string
                   type: array
-                applicableResources:
-                  description: 'Resources the code applies to. Empty means all resources.
-                    Format: resources/{resource}'
+                applicableUnits:
+                  description: 'Units the code applies to. Empty means all units.
+                    Format: properties/{property}/units/{unit}'
                   items:
                     type: string
                   type: array
@@ -683,11 +683,8 @@ components:
           description: 'Customer redeeming the code, for per-customer limit checks.
             Format: users/{user}'
           type: string
-        offering:
-          description: 'Offering being booked, for scope checks. Format: resources/{resource}/offerings/{offering}'
-          type: string
-        resource:
-          description: 'Resource being booked, for scope checks. Format: resources/{resource}'
+        property:
+          description: 'Property being booked, for scope checks. Format: properties/{property}'
           type: string
         subtotal:
           description: Subtotal the discount would apply to.
@@ -711,6 +708,9 @@ components:
               type: integer
               x-kubernetes-int-or-string: true
           type: object
+        unit:
+          description: 'Unit being booked, for scope checks. Format: properties/{property}/units/{unit}'
+          type: string
       type: object
     freebusy.promocode.v1.ValidatePromoCodeResponse:
       description: Response message for ValidatePromoCode.

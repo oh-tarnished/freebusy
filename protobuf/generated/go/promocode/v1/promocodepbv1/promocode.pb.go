@@ -412,14 +412,14 @@ type Scope struct {
 	// Minimum subtotal required for the code to apply.
 	// Normalized into the shared common.moneys table (belongs-to via min_subtotal_id).
 	MinSubtotal *money.Money `protobuf:"bytes,1,opt,name=min_subtotal,json=minSubtotal,proto3" json:"min_subtotal,omitempty"`
-	// Resources the code applies to. Empty means all resources.
-	// Format: resources/{resource}
-	ApplicableResources []string `protobuf:"bytes,2,rep,name=applicable_resources,json=applicableResources,proto3" json:"applicable_resources,omitempty"`
-	// Offerings the code applies to. Empty means all offerings.
-	// Format: resources/{resource}/offerings/{offering}
-	ApplicableOfferings []string `protobuf:"bytes,3,rep,name=applicable_offerings,json=applicableOfferings,proto3" json:"applicable_offerings,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// Properties the code applies to. Empty means all properties.
+	// Format: properties/{property}
+	ApplicableProperties []string `protobuf:"bytes,2,rep,name=applicable_properties,json=applicableProperties,proto3" json:"applicable_properties,omitempty"`
+	// Units the code applies to. Empty means all units.
+	// Format: properties/{property}/units/{unit}
+	ApplicableUnits []string `protobuf:"bytes,3,rep,name=applicable_units,json=applicableUnits,proto3" json:"applicable_units,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Scope) Reset() {
@@ -459,16 +459,16 @@ func (x *Scope) GetMinSubtotal() *money.Money {
 	return nil
 }
 
-func (x *Scope) GetApplicableResources() []string {
+func (x *Scope) GetApplicableProperties() []string {
 	if x != nil {
-		return x.ApplicableResources
+		return x.ApplicableProperties
 	}
 	return nil
 }
 
-func (x *Scope) GetApplicableOfferings() []string {
+func (x *Scope) GetApplicableUnits() []string {
 	if x != nil {
-		return x.ApplicableOfferings
+		return x.ApplicableUnits
 	}
 	return nil
 }
@@ -601,13 +601,13 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\aendTime\"\xa8\x01\n" +
 	"\vUsageLimits\x12I\n" +
 	"\x0fmax_redemptions\x18\x01 \x01(\v2\x1b.google.protobuf.Int64ValueB\x03\xe0A\x01R\x0emaxRedemptions\x12N\n" +
-	"\x12per_customer_limit\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueB\x03\xe0A\x01R\x10perCustomerLimit\"\xf7\x01\n" +
+	"\x12per_customer_limit\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueB\x03\xe0A\x01R\x10perCustomerLimit\"\xed\x01\n" +
 	"\x05Scope\x12:\n" +
-	"\fmin_subtotal\x18\x01 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12X\n" +
-	"\x14applicable_resources\x18\x02 \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/ResourceR\x13applicableResources\x12X\n" +
-	"\x14applicable_offerings\x18\x03 \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.resource.v1/OfferingR\x13applicableOfferings\"\xa1\x03\n" +
+	"\fmin_subtotal\x18\x01 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12Z\n" +
+	"\x15applicable_properties\x18\x02 \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/PropertyR\x14applicableProperties\x12L\n" +
+	"\x10applicable_units\x18\x03 \x03(\tB!\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/UnitR\x0fapplicableUnits\"\xa1\x03\n" +
 	"\n" +
 	"Redemption\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12=\n" +

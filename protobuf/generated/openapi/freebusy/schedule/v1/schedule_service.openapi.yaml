@@ -5,23 +5,29 @@ openapi: 3.0.3
 info:
     title: ScheduleService API
     description: |-
-        ScheduleService is the write side of availability configuration: a resource's
+        ScheduleService is the write side of availability configuration: a unit's
          recurring working hours, blackout/holiday exceptions, buffers, and stay rules.
          These are the inputs the freebusy engine consumes to compute availability.
     version: 0.0.1
 servers:
     - url: https://freebusy.ohtarnished.dev
 paths:
-    /v1/resources/{resource}/availabilityExceptions:
+    /v1/properties/{property}/units/{unit}/availabilityExceptions:
         get:
             tags:
                 - ScheduleService
-            description: Lists the exceptions configured for a resource.
+            description: Lists the exceptions configured for a unit.
             operationId: ScheduleService_ListAvailabilityExceptions
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -62,12 +68,18 @@ paths:
         post:
             tags:
                 - ScheduleService
-            description: Adds an availability exception to a resource.
+            description: Adds an availability exception to a unit.
             operationId: ScheduleService_CreateAvailabilityException
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -100,16 +112,22 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/resources/{resource}/availabilityExceptions/{availabilityException}:
+    /v1/properties/{property}/units/{unit}/availabilityExceptions/{availabilityException}:
         get:
             tags:
                 - ScheduleService
             description: Gets a single availability exception.
             operationId: ScheduleService_GetAvailabilityException
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -138,9 +156,15 @@ paths:
             description: Removes an availability exception.
             operationId: ScheduleService_DeleteAvailabilityException
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -160,16 +184,22 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/resources/{resource}/schedule:
+    /v1/properties/{property}/units/{unit}/schedule:
         get:
             tags:
                 - ScheduleService
-            description: Reads the full availability configuration for a resource.
+            description: Reads the full availability configuration for a unit.
             operationId: ScheduleService_GetSchedule
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -190,14 +220,20 @@ paths:
             tags:
                 - ScheduleService
             description: |-
-                Updates a resource's availability configuration. Set update_mask to the
+                Updates a unit's availability configuration. Set update_mask to the
                  section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
                  cancellation_policy.
             operationId: ScheduleService_UpdateSchedule
             parameters:
-                - name: resource
+                - name: property
                   in: path
-                  description: The resource id.
+                  description: The property id.
+                  required: true
+                  schema:
+                    type: string
+                - name: unit
+                  in: path
+                  description: The unit id.
                   required: true
                   schema:
                     type: string
@@ -237,20 +273,20 @@ components:
                     type: string
                     description: |-
                         The exception name.
-                         Format: resources/{resource}/availabilityExceptions/{availability_exception}
+                         Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
                 kind:
                     type: integer
-                    description: Whether this span closes the resource or adds extra availability.
+                    description: Whether this span closes the unit or adds extra availability.
                     format: enum
                 window:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
-                    description: An exact time window, the natural form for TIME_SLOT resources.
+                    description: An exact time window, the natural form for TIME_SLOT units.
                 dateRange:
                     allOf:
                         - $ref: '#/components/schemas/DateRange'
                     description: |-
-                        A range of whole calendar dates in the resource's timezone, the natural
+                        A range of whole calendar dates in the unit's timezone, the natural
                          form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
                 reason:
                     type: string
@@ -261,7 +297,7 @@ components:
                     description: Creation timestamp.
                     format: date-time
             description: |-
-                An override of a resource's normal hours on a specific span: a blackout /
+                An override of a unit's normal hours on a specific span: a blackout /
                  holiday closure, or extra hours beyond the recurring rules.
         BufferSettings:
             type: object
@@ -359,7 +395,7 @@ components:
                          day (e.g. opens "22:00", closes "02:00").
             description: |-
                 A recurring availability window expressed as an RRULE plus a daily open span.
-                 The freebusy engine expands these against the resource's timezone.
+                 The freebusy engine expands these against the unit's timezone.
         RefundTier:
             required:
                 - cutoff
@@ -384,7 +420,7 @@ components:
                     type: string
                     description: |-
                         The schedule name.
-                         Format: resources/{resource}/schedule
+                         Format: properties/{property}/units/{unit}/schedule
                 recurringRules:
                     type: array
                     items:
@@ -397,7 +433,7 @@ components:
                 stayConstraints:
                     allOf:
                         - $ref: '#/components/schemas/StayConstraints'
-                    description: Stay rules (NIGHTLY resources).
+                    description: Stay rules (NIGHTLY units).
                 exceptions:
                     readOnly: true
                     type: array
@@ -406,19 +442,19 @@ components:
                     description: |-
                         Resource names of the active exceptions; manage them with the
                          AvailabilityException standard methods.
-                         Format: resources/{resource}/availabilityExceptions/{availability_exception}
+                         Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
                 cancellationPolicy:
                     allOf:
                         - $ref: '#/components/schemas/CancellationPolicy'
                     description: |-
-                        Refund rules applied when a booking on this resource is cancelled. Unset
+                        Refund rules applied when a booking on this unit is cancelled. Unset
                          means cancellations are non-refundable by default.
                 etag:
                     type: string
                     description: Opaque version for optimistic concurrency (AIP-154); echo on update.
             description: |-
-                Aggregate read view of a resource's availability configuration: the inputs the
-                 freebusy engine consumes. Modeled as a singleton resource, one per resource.
+                Aggregate read view of a unit's availability configuration: the inputs the
+                 freebusy engine consumes. Modeled as a singleton resource, one per unit.
         Status:
             type: object
             properties:
@@ -466,7 +502,7 @@ components:
                     type: integer
                     description: Latest a stay may begin, in days from now. Zero means no limit.
                     format: int32
-            description: Stay rules that affect bookability for NIGHTLY resources.
+            description: Stay rules that affect bookability for NIGHTLY units.
         TimeWindow:
             required:
                 - startTime

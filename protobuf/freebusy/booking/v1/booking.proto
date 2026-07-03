@@ -19,7 +19,7 @@ option java_multiple_files = true;
 option java_outer_classname = "BookingProto";
 option java_package = "dev.ohtarnished.freebusy.booking.v1";
 
-// A reservation against a resource. The hold lifecycle lives here as states
+// A reservation against a unit. The hold lifecycle lives here as states
 // rather than a separate service: CreateBooking places a PENDING_HOLD,
 // confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
 // are never confirmed.
@@ -38,19 +38,16 @@ message Booking {
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
 
-  // The resource being booked.
-  // Format: resources/{resource}
-  string resource = 3 [
+  // The unit being booked.
+  // Format: properties/{property}/units/{unit}
+  string unit = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 
-  // The offering being booked, when applicable.
-  // Format: resources/{resource}/offerings/{offering}
-  string offering = 4 [
-    (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Offering"}
-  ];
+  // Field number of the removed `offering` field; never reuse it. A unit now
+  // carries its own pricing, so a booking references only the unit.
+  reserved 4;
 
   // The user the booking is for.
   // Format: users/{user}
@@ -122,7 +119,7 @@ message Booking {
   // When the booking was cancelled, if at all.
   google.protobuf.Timestamp cancel_time = 21 [(google.api.field_behavior) = OUTPUT_ONLY];
 
-  // Amount refunded on cancellation, computed from the resource's cancellation
+  // Amount refunded on cancellation, computed from the unit's cancellation
   // policy and how far ahead of the booking start it was cancelled. Set only
   // once the booking is CANCELLED. Use PreviewCancellation to see this before
   // committing.

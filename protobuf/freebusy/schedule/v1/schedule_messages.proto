@@ -16,7 +16,7 @@ option java_package = "dev.ohtarnished.freebusy.schedule.v1";
 // Request message for GetSchedule.
 message GetScheduleRequest {
   // The schedule to read.
-  // Format: resources/{resource}/schedule
+  // Format: properties/{property}/units/{unit}/schedule
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {type: "freebusy.schedule.v1/Schedule"}
@@ -36,11 +36,11 @@ message UpdateScheduleRequest {
 
 // Request message for ListAvailabilityExceptions.
 message ListAvailabilityExceptionsRequest {
-  // The resource whose exceptions to list.
-  // Format: resources/{resource}
+  // The unit whose exceptions to list.
+  // Format: properties/{property}/units/{unit}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 
   // Maximum number of exceptions to return.
@@ -68,7 +68,7 @@ message ListAvailabilityExceptionsResponse {
 // Request message for GetAvailabilityException.
 message GetAvailabilityExceptionRequest {
   // The exception to retrieve.
-  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  // Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {type: "freebusy.schedule.v1/AvailabilityException"}
@@ -77,11 +77,11 @@ message GetAvailabilityExceptionRequest {
 
 // Request message for CreateAvailabilityException.
 message CreateAvailabilityExceptionRequest {
-  // The resource to add the exception to.
-  // Format: resources/{resource}
+  // The unit to add the exception to.
+  // Format: properties/{property}/units/{unit}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.resource.v1/Resource"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 
   // The exception to add. Its name field is ignored.
@@ -100,7 +100,7 @@ message CreateAvailabilityExceptionRequest {
 // Request message for DeleteAvailabilityException.
 message DeleteAvailabilityExceptionRequest {
   // The exception to remove.
-  // Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  // Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {type: "freebusy.schedule.v1/AvailabilityException"}

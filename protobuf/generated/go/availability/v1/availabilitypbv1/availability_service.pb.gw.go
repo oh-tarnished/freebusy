@@ -47,13 +47,13 @@ func request_AvailabilityService_ComputeAvailability_0(ctx context.Context, mars
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
-	val, ok := pathParams["resource"]
+	val, ok := pathParams["unit"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "unit")
 	}
-	protoReq.Resource, err = runtime.String(val)
+	protoReq.Unit, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "resource", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "unit", err)
 	}
 	msg, err := client.ComputeAvailability(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -68,13 +68,13 @@ func local_request_AvailabilityService_ComputeAvailability_0(ctx context.Context
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	val, ok := pathParams["resource"]
+	val, ok := pathParams["unit"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "unit")
 	}
-	protoReq.Resource, err = runtime.String(val)
+	protoReq.Unit, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "resource", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "unit", err)
 	}
 	msg, err := server.ComputeAvailability(ctx, &protoReq)
 	return msg, metadata, err
@@ -92,13 +92,13 @@ func request_AvailabilityService_CheckAvailability_0(ctx context.Context, marsha
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
-	val, ok := pathParams["resource"]
+	val, ok := pathParams["unit"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "unit")
 	}
-	protoReq.Resource, err = runtime.String(val)
+	protoReq.Unit, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "resource", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "unit", err)
 	}
 	msg, err := client.CheckAvailability(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -113,13 +113,13 @@ func local_request_AvailabilityService_CheckAvailability_0(ctx context.Context, 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	val, ok := pathParams["resource"]
+	val, ok := pathParams["unit"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "unit")
 	}
-	protoReq.Resource, err = runtime.String(val)
+	protoReq.Unit, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "resource", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "unit", err)
 	}
 	msg, err := server.CheckAvailability(ctx, &protoReq)
 	return msg, metadata, err
@@ -137,13 +137,13 @@ func request_AvailabilityService_ComputeBookableRanges_0(ctx context.Context, ma
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
-	val, ok := pathParams["resource"]
+	val, ok := pathParams["unit"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "unit")
 	}
-	protoReq.Resource, err = runtime.String(val)
+	protoReq.Unit, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "resource", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "unit", err)
 	}
 	msg, err := client.ComputeBookableRanges(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -158,13 +158,13 @@ func local_request_AvailabilityService_ComputeBookableRanges_0(ctx context.Conte
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	val, ok := pathParams["resource"]
+	val, ok := pathParams["unit"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "unit")
 	}
-	protoReq.Resource, err = runtime.String(val)
+	protoReq.Unit, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "resource", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "unit", err)
 	}
 	msg, err := server.ComputeBookableRanges(ctx, &protoReq)
 	return msg, metadata, err
@@ -236,7 +236,7 @@ func RegisterAvailabilityServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeAvailability", runtime.WithHTTPPathPattern("/v1/{resource=resources/*}:computeAvailability"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeAvailability", runtime.WithHTTPPathPattern("/v1/{unit=properties/*/units/*}:computeAvailability"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -256,7 +256,7 @@ func RegisterAvailabilityServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/CheckAvailability", runtime.WithHTTPPathPattern("/v1/{resource=resources/*}:checkAvailability"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/CheckAvailability", runtime.WithHTTPPathPattern("/v1/{unit=properties/*/units/*}:checkAvailability"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -276,7 +276,7 @@ func RegisterAvailabilityServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeBookableRanges", runtime.WithHTTPPathPattern("/v1/{resource=resources/*}:computeBookableRanges"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeBookableRanges", runtime.WithHTTPPathPattern("/v1/{unit=properties/*/units/*}:computeBookableRanges"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -296,7 +296,7 @@ func RegisterAvailabilityServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/resources:batchCompute"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/units:batchCompute"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -316,7 +316,7 @@ func RegisterAvailabilityServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/SearchAvailability", runtime.WithHTTPPathPattern("/v1/resources:searchAvailability"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/SearchAvailability", runtime.WithHTTPPathPattern("/v1/units:searchAvailability"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -374,7 +374,7 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeAvailability", runtime.WithHTTPPathPattern("/v1/{resource=resources/*}:computeAvailability"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeAvailability", runtime.WithHTTPPathPattern("/v1/{unit=properties/*/units/*}:computeAvailability"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -391,7 +391,7 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/CheckAvailability", runtime.WithHTTPPathPattern("/v1/{resource=resources/*}:checkAvailability"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/CheckAvailability", runtime.WithHTTPPathPattern("/v1/{unit=properties/*/units/*}:checkAvailability"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -408,7 +408,7 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeBookableRanges", runtime.WithHTTPPathPattern("/v1/{resource=resources/*}:computeBookableRanges"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/ComputeBookableRanges", runtime.WithHTTPPathPattern("/v1/{unit=properties/*/units/*}:computeBookableRanges"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -425,7 +425,7 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/resources:batchCompute"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/BatchComputeAvailability", runtime.WithHTTPPathPattern("/v1/units:batchCompute"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -442,7 +442,7 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/SearchAvailability", runtime.WithHTTPPathPattern("/v1/resources:searchAvailability"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/freebusy.availability.v1.AvailabilityService/SearchAvailability", runtime.WithHTTPPathPattern("/v1/units:searchAvailability"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -459,11 +459,11 @@ func RegisterAvailabilityServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 var (
-	pattern_AvailabilityService_ComputeAvailability_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "resources", "resource"}, "computeAvailability"))
-	pattern_AvailabilityService_CheckAvailability_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "resources", "resource"}, "checkAvailability"))
-	pattern_AvailabilityService_ComputeBookableRanges_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "resources", "resource"}, "computeBookableRanges"))
-	pattern_AvailabilityService_BatchComputeAvailability_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "resources"}, "batchCompute"))
-	pattern_AvailabilityService_SearchAvailability_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "resources"}, "searchAvailability"))
+	pattern_AvailabilityService_ComputeAvailability_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "properties", "units", "unit"}, "computeAvailability"))
+	pattern_AvailabilityService_CheckAvailability_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "properties", "units", "unit"}, "checkAvailability"))
+	pattern_AvailabilityService_ComputeBookableRanges_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 2, 2, 1, 0, 4, 4, 5, 3}, []string{"v1", "properties", "units", "unit"}, "computeBookableRanges"))
+	pattern_AvailabilityService_BatchComputeAvailability_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "units"}, "batchCompute"))
+	pattern_AvailabilityService_SearchAvailability_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "units"}, "searchAvailability"))
 )
 
 var (

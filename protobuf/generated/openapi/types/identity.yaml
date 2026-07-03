@@ -9,15 +9,12 @@ components:
           type: string
       type: object
     freebusy.identity.v1.ListUsersRequest:
-      description: Request message for ListUsers. Users are global, so the visible
-        set is every user sharing at least one organisation with the caller; use `organisation
-        = "organisations/{organisation}"` in filter to narrow to one organisation,
-        or OrganisationService.ListMembers for a single organisation's roster with
-        roles.
+      description: Request message for ListUsers. Users are global; use OrganisationService
+        and the booking/property services to relate a user to a chain or property.
       properties:
         filter:
-          description: Filter expression (AIP-160), e.g. `organisation = "organisations/7"`
-            or a match on display_name.
+          description: Filter expression (AIP-160), e.g. a match on display_name or
+            email.
           type: string
         orderBy:
           description: Sort order, e.g. "display_name" or "create_time desc".
@@ -65,24 +62,6 @@ components:
               locale:
                 description: BCP 47 locale (e.g. "en-US").
                 type: string
-              memberships:
-                description: The organisations this user belongs to, with role.
-                items:
-                  description: A compact view of an organisation the user belongs
-                    to.
-                  properties:
-                    orgDisplayName:
-                      description: Cached display name of the organisation.
-                      type: string
-                    organisation:
-                      description: 'The organisation. Format: organisations/{organisation}'
-                      type: string
-                    role:
-                      description: The user's role in the organisation (an OrganisationRole
-                        value name).
-                      type: string
-                  type: object
-                type: array
               name:
                 description: 'The user name. The alias "users/me" resolves to the
                   caller. Format: users/{user}'
@@ -96,20 +75,6 @@ components:
                 type: string
             type: object
           type: array
-      type: object
-    freebusy.identity.v1.MembershipSummary:
-      description: A compact view of an organisation the user belongs to.
-      properties:
-        orgDisplayName:
-          description: Cached display name of the organisation.
-          type: string
-        organisation:
-          description: 'The organisation. Format: organisations/{organisation}'
-          type: string
-        role:
-          description: The user's role in the organisation (an OrganisationRole value
-            name).
-          type: string
       type: object
     freebusy.identity.v1.UpdateUserRequest:
       description: Request message for UpdateUser.
@@ -147,23 +112,6 @@ components:
             locale:
               description: BCP 47 locale (e.g. "en-US").
               type: string
-            memberships:
-              description: The organisations this user belongs to, with role.
-              items:
-                description: A compact view of an organisation the user belongs to.
-                properties:
-                  orgDisplayName:
-                    description: Cached display name of the organisation.
-                    type: string
-                  organisation:
-                    description: 'The organisation. Format: organisations/{organisation}'
-                    type: string
-                  role:
-                    description: The user's role in the organisation (an OrganisationRole
-                      value name).
-                    type: string
-                type: object
-              type: array
             name:
               description: 'The user name. The alias "users/me" resolves to the caller.
                 Format: users/{user}'
@@ -203,23 +151,6 @@ components:
         locale:
           description: BCP 47 locale (e.g. "en-US").
           type: string
-        memberships:
-          description: The organisations this user belongs to, with role.
-          items:
-            description: A compact view of an organisation the user belongs to.
-            properties:
-              orgDisplayName:
-                description: Cached display name of the organisation.
-                type: string
-              organisation:
-                description: 'The organisation. Format: organisations/{organisation}'
-                type: string
-              role:
-                description: The user's role in the organisation (an OrganisationRole
-                  value name).
-                type: string
-            type: object
-          type: array
         name:
           description: 'The user name. The alias "users/me" resolves to the caller.
             Format: users/{user}'

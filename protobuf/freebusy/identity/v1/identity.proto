@@ -46,8 +46,9 @@ message User {
   // IANA time zone (e.g. "America/New_York").
   string time_zone = 7 [(google.api.field_behavior) = OPTIONAL];
 
-  // The organisations this user belongs to, with role.
-  repeated MembershipSummary memberships = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Field number of the removed `memberships` field; never reuse it. Users are
+  // not members of a chain — a user relates to a property only through bookings.
+  reserved 8;
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -57,22 +58,6 @@ message User {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update.
   string etag = 11;
-}
-
-// A compact view of an organisation the user belongs to.
-message MembershipSummary {
-  // The organisation.
-  // Format: organisations/{organisation}
-  string organisation = 1 [
-    (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
-  ];
-
-  // Cached display name of the organisation.
-  string org_display_name = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
-
-  // The user's role in the organisation (an OrganisationRole value name).
-  string role = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // Request message for GetUser.
@@ -94,11 +79,8 @@ message UpdateUserRequest {
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Request message for ListUsers. Users are global, so the visible set is every
-// user sharing at least one organisation with the caller; use
-// `organisation = "organisations/{organisation}"` in filter to narrow to one
-// organisation, or OrganisationService.ListMembers for a single organisation's
-// roster with roles.
+// Request message for ListUsers. Users are global; use OrganisationService and
+// the booking/property services to relate a user to a chain or property.
 message ListUsersRequest {
   // Maximum number of users to return. The server may cap this.
   int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
@@ -106,8 +88,7 @@ message ListUsersRequest {
   // Page token from a previous ListUsers call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
 
-  // Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
-  // match on display_name.
+  // Filter expression (AIP-160), e.g. a match on display_name or email.
   string filter = 3 [(google.api.field_behavior) = OPTIONAL];
 
   // Sort order, e.g. "display_name" or "create_time desc".

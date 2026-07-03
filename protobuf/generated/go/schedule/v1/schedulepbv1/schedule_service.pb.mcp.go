@@ -17,22 +17,22 @@ import (
 )
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.
-var ScheduleService_CreateAvailabilityExceptionSchemaJSON = `{"description":"Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a resource.","properties":{"availability_exception":{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["window"]},{"properties":{"date_range":{"properties":{"end_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"start_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"}},"required":["start_date","end_date"],"type":"object"}},"required":["date_range"]}]}],"properties":{"create_time":{"format":"date-time","type":["string","null"]},"kind":{"enum":["EXCEPTION_KIND_UNSPECIFIED","EXCEPTION_KIND_CLOSURE","EXCEPTION_KIND_EXTRA_HOURS"],"type":"string"},"name":{"type":"string"},"reason":{"type":"string"}},"required":["kind"],"type":"object"},"availability_exception_id":{"type":"string"},"parent":{"type":"string"},"request_id":{"type":"string"}},"required":["parent","availability_exception"],"type":"object"}`
+var ScheduleService_CreateAvailabilityExceptionSchemaJSON = `{"description":"Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a unit.","properties":{"availability_exception":{"anyOf":[{"$comment":"Protobuf oneOf group.","oneOf":[{"properties":{"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["window"]},{"properties":{"date_range":{"properties":{"end_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"start_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"}},"required":["start_date","end_date"],"type":"object"}},"required":["date_range"]}]}],"properties":{"create_time":{"format":"date-time","type":["string","null"]},"kind":{"enum":["EXCEPTION_KIND_UNSPECIFIED","EXCEPTION_KIND_CLOSURE","EXCEPTION_KIND_EXTRA_HOURS"],"type":"string"},"name":{"type":"string"},"reason":{"type":"string"}},"required":["kind"],"type":"object"},"availability_exception_id":{"type":"string"},"parent":{"type":"string"},"request_id":{"type":"string"}},"required":["parent","availability_exception"],"type":"object"}`
 var ScheduleService_DeleteAvailabilityExceptionSchemaJSON = `{"description":"Remove an availability exception by name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var ScheduleService_GetAvailabilityExceptionSchemaJSON = `{"description":"Get a single availability exception by resource name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var ScheduleService_GetScheduleSchemaJSON = `{"description":"Get a resource's full availability configuration: recurring hours, buffers, stay rules, and exceptions.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var ScheduleService_ListAvailabilityExceptionsSchemaJSON = `{"description":"List the blackout/closure and extra-hours exceptions for a resource.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"parent":{"type":"string"}},"required":["parent"],"type":"object"}`
-var ScheduleService_UpdateScheduleSchemaJSON = `{"description":"Update a resource's schedule: recurring working hours, buffers, and/or nightly stay rules.","properties":{"schedule":{"properties":{"buffers":{"properties":{"end_delta":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"gap":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"max_advance":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"min_notice":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"start_delta":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]}},"required":[],"type":"object"},"cancellation_policy":{"properties":{"tiers":{"items":{"properties":{"cutoff":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"refund_percent":{"type":"integer"}},"required":["cutoff","refund_percent"],"type":"object"},"type":"array"}},"required":[],"type":"object"},"etag":{"type":"string"},"exceptions":{"items":{"type":"string"},"type":"array"},"name":{"type":"string"},"recurring_rules":{"items":{"properties":{"closes":{"type":"string"},"opens":{"type":"string"},"rrule":{"type":"string"}},"required":["rrule"],"type":"object"},"type":"array"},"stay_constraints":{"properties":{"advance_max_days":{"type":"integer"},"advance_min_days":{"type":"integer"},"checkin_weekdays":{"items":{"enum":["WEEKDAY_UNSPECIFIED","WEEKDAY_MONDAY","WEEKDAY_TUESDAY","WEEKDAY_WEDNESDAY","WEEKDAY_THURSDAY","WEEKDAY_FRIDAY","WEEKDAY_SATURDAY","WEEKDAY_SUNDAY"],"type":"string"},"type":"array"},"checkout_weekdays":{"items":{"enum":["WEEKDAY_UNSPECIFIED","WEEKDAY_MONDAY","WEEKDAY_TUESDAY","WEEKDAY_WEDNESDAY","WEEKDAY_THURSDAY","WEEKDAY_FRIDAY","WEEKDAY_SATURDAY","WEEKDAY_SUNDAY"],"type":"string"},"type":"array"},"max_nights":{"type":"integer"},"min_nights":{"type":"integer"}},"required":[],"type":"object"}},"required":[],"type":"object"},"update_mask":{"type":"string"}},"required":["schedule"],"type":"object"}`
+var ScheduleService_GetAvailabilityExceptionSchemaJSON = `{"description":"Get a single availability exception by name.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var ScheduleService_GetScheduleSchemaJSON = `{"description":"Get a unit's full availability configuration: recurring hours, buffers, stay rules, and exceptions.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
+var ScheduleService_ListAvailabilityExceptionsSchemaJSON = `{"description":"List the blackout/closure and extra-hours exceptions for a unit.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"},"parent":{"type":"string"}},"required":["parent"],"type":"object"}`
+var ScheduleService_UpdateScheduleSchemaJSON = `{"description":"Update a unit's schedule: recurring working hours, buffers, and/or nightly stay rules.","properties":{"schedule":{"properties":{"buffers":{"properties":{"end_delta":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"gap":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"max_advance":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"min_notice":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"start_delta":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]}},"required":[],"type":"object"},"cancellation_policy":{"properties":{"tiers":{"items":{"properties":{"cutoff":{"pattern":"^-?[0-9]+(\\.[0-9]+)?s$","type":["string","null"]},"refund_percent":{"type":"integer"}},"required":["cutoff","refund_percent"],"type":"object"},"type":"array"}},"required":[],"type":"object"},"etag":{"type":"string"},"exceptions":{"items":{"type":"string"},"type":"array"},"name":{"type":"string"},"recurring_rules":{"items":{"properties":{"closes":{"type":"string"},"opens":{"type":"string"},"rrule":{"type":"string"}},"required":["rrule"],"type":"object"},"type":"array"},"stay_constraints":{"properties":{"advance_max_days":{"type":"integer"},"advance_min_days":{"type":"integer"},"checkin_weekdays":{"items":{"enum":["WEEKDAY_UNSPECIFIED","WEEKDAY_MONDAY","WEEKDAY_TUESDAY","WEEKDAY_WEDNESDAY","WEEKDAY_THURSDAY","WEEKDAY_FRIDAY","WEEKDAY_SATURDAY","WEEKDAY_SUNDAY"],"type":"string"},"type":"array"},"checkout_weekdays":{"items":{"enum":["WEEKDAY_UNSPECIFIED","WEEKDAY_MONDAY","WEEKDAY_TUESDAY","WEEKDAY_WEDNESDAY","WEEKDAY_THURSDAY","WEEKDAY_FRIDAY","WEEKDAY_SATURDAY","WEEKDAY_SUNDAY"],"type":"string"},"type":"array"},"max_nights":{"type":"integer"},"min_nights":{"type":"integer"}},"required":[],"type":"object"}},"required":[],"type":"object"},"update_mask":{"type":"string"}},"required":["schedule"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.
 var (
-	ScheduleService_CreateAvailabilityExceptionTool = runtime.MustCreateTool("schedule_service-create_availability_exception_v1", `Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a resource.`, ScheduleService_CreateAvailabilityExceptionSchemaJSON)
+	ScheduleService_CreateAvailabilityExceptionTool = runtime.MustCreateTool("schedule_service-create_availability_exception_v1", `Add a closure (blackout/holiday) or extra-hours exception over a date/time span for a unit.`, ScheduleService_CreateAvailabilityExceptionSchemaJSON)
 	ScheduleService_DeleteAvailabilityExceptionTool = runtime.MustCreateTool("schedule_service-delete_availability_exception_v1", `Remove an availability exception by name.`, ScheduleService_DeleteAvailabilityExceptionSchemaJSON)
-	ScheduleService_GetAvailabilityExceptionTool    = runtime.MustCreateTool("schedule_service-get_availability_exception_v1", `Get a single availability exception by resource name.`, ScheduleService_GetAvailabilityExceptionSchemaJSON)
-	ScheduleService_GetScheduleTool                 = runtime.MustCreateTool("schedule_service-get_schedule_v1", `Get a resource's full availability configuration: recurring hours, buffers, stay rules, and exceptions.`, ScheduleService_GetScheduleSchemaJSON)
-	ScheduleService_ListAvailabilityExceptionsTool  = runtime.MustCreateTool("schedule_service-list_availability_exceptions_v1", `List the blackout/closure and extra-hours exceptions for a resource.`, ScheduleService_ListAvailabilityExceptionsSchemaJSON)
-	ScheduleService_UpdateScheduleTool              = runtime.MustCreateTool("schedule_service-update_schedule_v1", `Update a resource's schedule: recurring working hours, buffers, and/or nightly stay rules.`, ScheduleService_UpdateScheduleSchemaJSON)
+	ScheduleService_GetAvailabilityExceptionTool    = runtime.MustCreateTool("schedule_service-get_availability_exception_v1", `Get a single availability exception by name.`, ScheduleService_GetAvailabilityExceptionSchemaJSON)
+	ScheduleService_GetScheduleTool                 = runtime.MustCreateTool("schedule_service-get_schedule_v1", `Get a unit's full availability configuration: recurring hours, buffers, stay rules, and exceptions.`, ScheduleService_GetScheduleSchemaJSON)
+	ScheduleService_ListAvailabilityExceptionsTool  = runtime.MustCreateTool("schedule_service-list_availability_exceptions_v1", `List the blackout/closure and extra-hours exceptions for a unit.`, ScheduleService_ListAvailabilityExceptionsSchemaJSON)
+	ScheduleService_UpdateScheduleTool              = runtime.MustCreateTool("schedule_service-update_schedule_v1", `Update a unit's schedule: recurring working hours, buffers, and/or nightly stay rules.`, ScheduleService_UpdateScheduleSchemaJSON)
 )
 
 // ScheduleServiceMCPServer is the interface that users implement to handle MCP
@@ -187,15 +187,15 @@ func RegisterScheduleServiceMCPHandler(s *mcp.Server, srv ScheduleServiceMCPServ
 		})
 	}
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "schedule://resources/{resource}/schedule",
+		URITemplate: "schedule://properties/{property}/units/{unit}/schedule",
 		Name:        "Schedule",
-		Description: "Schedule resource (resources/{resource}/schedule)",
+		Description: "Schedule resource (properties/{property}/units/{unit}/schedule)",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "availabilityException://resources/{resource}/availabilityExceptions/{availability_exception}",
+		URITemplate: "availabilityException://properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}",
 		Name:        "AvailabilityException",
-		Description: "AvailabilityException resource (resources/{resource}/availabilityExceptions/{availability_exception})",
+		Description: "AvailabilityException resource (properties/{property}/units/{unit}/availabilityExceptions/{availability_exception})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 
@@ -203,7 +203,7 @@ func RegisterScheduleServiceMCPHandler(s *mcp.Server, srv ScheduleServiceMCPServ
 		URI:      appResourceURI,
 		Name:     "Booking Schedule",
 		MIMEType: "text/html",
-	}, runtime.DefaultAppResourceHandler("Booking Schedule", "1.0.0", "Configure recurring hours, exceptions, buffers, and stay rules for a resource."))
+	}, runtime.DefaultAppResourceHandler("Booking Schedule", "1.0.0", "Configure recurring hours, exceptions, buffers, and stay rules for a unit."))
 }
 
 // ScheduleServiceMCPDefaultBasePath is the default HTTP path prefix for
@@ -372,15 +372,15 @@ func ForwardToScheduleServiceMCPClient(s *mcp.Server, client ScheduleServiceMCPC
 		})
 	}
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "schedule://resources/{resource}/schedule",
+		URITemplate: "schedule://properties/{property}/units/{unit}/schedule",
 		Name:        "Schedule",
-		Description: "Schedule resource (resources/{resource}/schedule)",
+		Description: "Schedule resource (properties/{property}/units/{unit}/schedule)",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 	s.AddResourceTemplate(&mcp.ResourceTemplate{
-		URITemplate: "availabilityException://resources/{resource}/availabilityExceptions/{availability_exception}",
+		URITemplate: "availabilityException://properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}",
 		Name:        "AvailabilityException",
-		Description: "AvailabilityException resource (resources/{resource}/availabilityExceptions/{availability_exception})",
+		Description: "AvailabilityException resource (properties/{property}/units/{unit}/availabilityExceptions/{availability_exception})",
 		MIMEType:    "application/json",
 	}, runtime.DefaultResourceHandler())
 
@@ -388,5 +388,5 @@ func ForwardToScheduleServiceMCPClient(s *mcp.Server, client ScheduleServiceMCPC
 		URI:      appResourceURI,
 		Name:     "Booking Schedule",
 		MIMEType: "text/html",
-	}, runtime.DefaultAppResourceHandler("Booking Schedule", "1.0.0", "Configure recurring hours, exceptions, buffers, and stay rules for a resource."))
+	}, runtime.DefaultAppResourceHandler("Booking Schedule", "1.0.0", "Configure recurring hours, exceptions, buffers, and stay rules for a unit."))
 }

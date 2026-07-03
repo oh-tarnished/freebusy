@@ -43,8 +43,6 @@ type User struct {
 	Locale string `protobuf:"bytes,6,opt,name=locale,proto3" json:"locale,omitempty"`
 	// IANA time zone (e.g. "America/New_York").
 	TimeZone string `protobuf:"bytes,7,opt,name=time_zone,json=timeZone,proto3" json:"time_zone,omitempty"`
-	// The organisations this user belongs to, with role.
-	Memberships []*MembershipSummary `protobuf:"bytes,8,rep,name=memberships,proto3" json:"memberships,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// Last-modification timestamp.
@@ -127,13 +125,6 @@ func (x *User) GetTimeZone() string {
 	return ""
 }
 
-func (x *User) GetMemberships() []*MembershipSummary {
-	if x != nil {
-		return x.Memberships
-	}
-	return nil
-}
-
 func (x *User) GetCreateTime() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreateTime
@@ -155,71 +146,6 @@ func (x *User) GetEtag() string {
 	return ""
 }
 
-// A compact view of an organisation the user belongs to.
-type MembershipSummary struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The organisation.
-	// Format: organisations/{organisation}
-	Organisation string `protobuf:"bytes,1,opt,name=organisation,proto3" json:"organisation,omitempty"`
-	// Cached display name of the organisation.
-	OrgDisplayName string `protobuf:"bytes,2,opt,name=org_display_name,json=orgDisplayName,proto3" json:"org_display_name,omitempty"`
-	// The user's role in the organisation (an OrganisationRole value name).
-	Role          string `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *MembershipSummary) Reset() {
-	*x = MembershipSummary{}
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *MembershipSummary) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MembershipSummary) ProtoMessage() {}
-
-func (x *MembershipSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MembershipSummary.ProtoReflect.Descriptor instead.
-func (*MembershipSummary) Descriptor() ([]byte, []int) {
-	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *MembershipSummary) GetOrganisation() string {
-	if x != nil {
-		return x.Organisation
-	}
-	return ""
-}
-
-func (x *MembershipSummary) GetOrgDisplayName() string {
-	if x != nil {
-		return x.OrgDisplayName
-	}
-	return ""
-}
-
-func (x *MembershipSummary) GetRole() string {
-	if x != nil {
-		return x.Role
-	}
-	return ""
-}
-
 // Request message for GetUser.
 type GetUserRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -232,7 +158,7 @@ type GetUserRequest struct {
 
 func (x *GetUserRequest) Reset() {
 	*x = GetUserRequest{}
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[2]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -244,7 +170,7 @@ func (x *GetUserRequest) String() string {
 func (*GetUserRequest) ProtoMessage() {}
 
 func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[2]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -257,7 +183,7 @@ func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
 func (*GetUserRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{2}
+	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetUserRequest) GetName() string {
@@ -280,7 +206,7 @@ type UpdateUserRequest struct {
 
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[3]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -292,7 +218,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[3]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -305,7 +231,7 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{3}
+	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UpdateUserRequest) GetUser() *User {
@@ -322,19 +248,15 @@ func (x *UpdateUserRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	return nil
 }
 
-// Request message for ListUsers. Users are global, so the visible set is every
-// user sharing at least one organisation with the caller; use
-// `organisation = "organisations/{organisation}"` in filter to narrow to one
-// organisation, or OrganisationService.ListMembers for a single organisation's
-// roster with roles.
+// Request message for ListUsers. Users are global; use OrganisationService and
+// the booking/property services to relate a user to a chain or property.
 type ListUsersRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Maximum number of users to return. The server may cap this.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListUsers call's next_page_token.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	// Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
-	// match on display_name.
+	// Filter expression (AIP-160), e.g. a match on display_name or email.
 	Filter string `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
 	// Sort order, e.g. "display_name" or "create_time desc".
 	OrderBy       string `protobuf:"bytes,4,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
@@ -344,7 +266,7 @@ type ListUsersRequest struct {
 
 func (x *ListUsersRequest) Reset() {
 	*x = ListUsersRequest{}
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[4]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -356,7 +278,7 @@ func (x *ListUsersRequest) String() string {
 func (*ListUsersRequest) ProtoMessage() {}
 
 func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[4]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -369,7 +291,7 @@ func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUsersRequest.ProtoReflect.Descriptor instead.
 func (*ListUsersRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{4}
+	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ListUsersRequest) GetPageSize() int32 {
@@ -413,7 +335,7 @@ type ListUsersResponse struct {
 
 func (x *ListUsersResponse) Reset() {
 	*x = ListUsersResponse{}
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[5]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -425,7 +347,7 @@ func (x *ListUsersResponse) String() string {
 func (*ListUsersResponse) ProtoMessage() {}
 
 func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[5]
+	mi := &file_freebusy_identity_v1_identity_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -438,7 +360,7 @@ func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUsersResponse.ProtoReflect.Descriptor instead.
 func (*ListUsersResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{5}
+	return file_freebusy_identity_v1_identity_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ListUsersResponse) GetUsers() []*User {
@@ -459,7 +381,7 @@ var File_freebusy_identity_v1_identity_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xee\x03\n" +
+	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa4\x03\n" +
 	"\x04User\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tB\x03\xe0A\x03R\x05email\x12&\n" +
@@ -467,20 +389,14 @@ const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\n" +
 	"avatar_url\x18\x05 \x01(\tB\x03\xe0A\x01R\tavatarUrl\x12\x1b\n" +
 	"\x06locale\x18\x06 \x01(\tB\x03\xe0A\x01R\x06locale\x12 \n" +
-	"\ttime_zone\x18\a \x01(\tB\x03\xe0A\x01R\btimeZone\x12N\n" +
-	"\vmemberships\x18\b \x03(\v2'.freebusy.identity.v1.MembershipSummaryB\x03\xe0A\x03R\vmemberships\x12@\n" +
+	"\ttime_zone\x18\a \x01(\tB\x03\xe0A\x01R\btimeZone\x12@\n" +
 	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
 	"\x04etag\x18\v \x01(\tR\x04etag:9\xeaA6\n" +
-	"\x19freebusy.identity.v1/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03\"\xae\x01\n" +
-	"\x11MembershipSummary\x12Q\n" +
-	"\forganisation\x18\x01 \x01(\tB-\xe0A\x03\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\forganisation\x12-\n" +
-	"\x10org_display_name\x18\x02 \x01(\tB\x03\xe0A\x03R\x0eorgDisplayName\x12\x17\n" +
-	"\x04role\x18\x03 \x01(\tB\x03\xe0A\x03R\x04role\"G\n" +
+	"\x19freebusy.identity.v1/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03J\x04\b\b\x10\t\"G\n" +
 	"\x0eGetUserRequest\x125\n" +
 	"\x04name\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
 	"\x19freebusy.identity.v1/UserR\x04name\"\x8a\x01\n" +
@@ -511,29 +427,27 @@ func file_freebusy_identity_v1_identity_proto_rawDescGZIP() []byte {
 	return file_freebusy_identity_v1_identity_proto_rawDescData
 }
 
-var file_freebusy_identity_v1_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_freebusy_identity_v1_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_freebusy_identity_v1_identity_proto_goTypes = []any{
 	(*User)(nil),                  // 0: freebusy.identity.v1.User
-	(*MembershipSummary)(nil),     // 1: freebusy.identity.v1.MembershipSummary
-	(*GetUserRequest)(nil),        // 2: freebusy.identity.v1.GetUserRequest
-	(*UpdateUserRequest)(nil),     // 3: freebusy.identity.v1.UpdateUserRequest
-	(*ListUsersRequest)(nil),      // 4: freebusy.identity.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),     // 5: freebusy.identity.v1.ListUsersResponse
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
-	(*fieldmaskpb.FieldMask)(nil), // 7: google.protobuf.FieldMask
+	(*GetUserRequest)(nil),        // 1: freebusy.identity.v1.GetUserRequest
+	(*UpdateUserRequest)(nil),     // 2: freebusy.identity.v1.UpdateUserRequest
+	(*ListUsersRequest)(nil),      // 3: freebusy.identity.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),     // 4: freebusy.identity.v1.ListUsersResponse
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil), // 6: google.protobuf.FieldMask
 }
 var file_freebusy_identity_v1_identity_proto_depIdxs = []int32{
-	1, // 0: freebusy.identity.v1.User.memberships:type_name -> freebusy.identity.v1.MembershipSummary
-	6, // 1: freebusy.identity.v1.User.create_time:type_name -> google.protobuf.Timestamp
-	6, // 2: freebusy.identity.v1.User.update_time:type_name -> google.protobuf.Timestamp
-	0, // 3: freebusy.identity.v1.UpdateUserRequest.user:type_name -> freebusy.identity.v1.User
-	7, // 4: freebusy.identity.v1.UpdateUserRequest.update_mask:type_name -> google.protobuf.FieldMask
-	0, // 5: freebusy.identity.v1.ListUsersResponse.users:type_name -> freebusy.identity.v1.User
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	5, // 0: freebusy.identity.v1.User.create_time:type_name -> google.protobuf.Timestamp
+	5, // 1: freebusy.identity.v1.User.update_time:type_name -> google.protobuf.Timestamp
+	0, // 2: freebusy.identity.v1.UpdateUserRequest.user:type_name -> freebusy.identity.v1.User
+	6, // 3: freebusy.identity.v1.UpdateUserRequest.update_mask:type_name -> google.protobuf.FieldMask
+	0, // 4: freebusy.identity.v1.ListUsersResponse.users:type_name -> freebusy.identity.v1.User
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_identity_v1_identity_proto_init() }
@@ -547,7 +461,7 @@ func file_freebusy_identity_v1_identity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_identity_v1_identity_proto_rawDesc), len(file_freebusy_identity_v1_identity_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
