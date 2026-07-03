@@ -49,6 +49,12 @@ static_resources:
                             timeout: 60s
 
                         - match:
+                            prefix: "/freebusy.channel.v1.ChannelService/"
+                          route:
+                            cluster: freebusy_backend
+                            timeout: 60s
+
+                        - match:
                             prefix: "/freebusy.identity.v1.IdentityService/"
                           route:
                             cluster: freebusy_backend
@@ -62,6 +68,12 @@ static_resources:
 
                         - match:
                             prefix: "/freebusy.promocode.v1.PromoCodeService/"
+                          route:
+                            cluster: freebusy_backend
+                            timeout: 60s
+
+                        - match:
+                            prefix: "/freebusy.property.v1.PropertyService/"
                           route:
                             cluster: freebusy_backend
                             timeout: 60s
