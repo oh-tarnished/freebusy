@@ -5,10 +5,10 @@ managed:
 inputs:
   - directory: protobuf
   # Include external deps so protoc-gen-es emits TS for every type the protos
-  # reference (google/type/*, google/api/*, mcp/protobuf/*, protorm/*).
+  # reference (google/type/*, google/api/*, mcp/protobuf/*, orm/*).
   - module: buf.build/googleapis/googleapis
   - module: buf.build/machanirobotics/grpc-mcp-gateway
-  - module: buf.build/the-protobuf-project/protorm
+  - module: buf.build/the-protobuf-project/orm
 plugins:
   # --- TypeScript messages + service descriptors (protobuf-es / Connect-ES) ---
   # protoc-gen-es (protobuf-es v2) emits `*_pb.ts` with plain-object message
@@ -27,7 +27,7 @@ plugins:
   # pointing it at the package root would delete the hand-written index.ts,
   # types/, package.json, and node_modules. Keep it isolated.
   #
-  # The google/*, mcp/*, and protorm/* trees are generated in-tree from the
+  # The google/*, mcp/*, and orm/* trees are generated in-tree from the
   # extra input modules above; protobuf-es has no npm package shipping these
   # pre-generated, so in-tree generation is the standard approach.
   - local: client/typescript/node_modules/.bin/protoc-gen-es

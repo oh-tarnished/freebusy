@@ -8,7 +8,7 @@ import "google/api/resource.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/type/money.proto";
-import "protorm/v1/annotations.proto";
+import "orm/v1/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1";
 option java_multiple_files = true;
@@ -16,8 +16,8 @@ option java_outer_classname = "PromoCodeProto";
 option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 // Promo codes share the freebusy database under their own "promocode" schema, so
 // the imported google.type.Money can be shared cross-schema in "common" (routed
-// via protorm.yaml — google.type can't be annotated). See protorm.yaml.
-option (protorm.v1.datasource) = {
+// via orm.yaml — google.type can't be annotated). See orm.yaml.
+option (orm.v1.datasource) = {
   database: "freebusy"
   schema: "promocode"
   provider: "postgres"
@@ -37,7 +37,7 @@ message PromoCode {
   // Surrogate ULID PK; the AIP name is demoted to a UNIQUE lookup column.
   // create_time/update_time are declared as fields below, so no timestamps:true
   // (that would add duplicate created_at/updated_at columns).
-  option (protorm.v1.table) = {id: ID_STRATEGY_ULID};
+  option (orm.v1.table) = {id: ID_STRATEGY_ULID};
 
   // The promo code name.
   // Format: promoCodes/{promo_code}
@@ -49,7 +49,7 @@ message PromoCode {
   // The human-entered code, unique across all promo codes (e.g. "SUMMER25").
   string code = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (protorm.v1.column) = {unique: true}
+    (orm.v1.column) = {unique: true}
   ];
 
   // Internal display name (not shown to customers).
@@ -58,7 +58,7 @@ message PromoCode {
   // Free-form description.
   string description = 5 [
     (google.api.field_behavior) = OPTIONAL,
-    (protorm.v1.column) = {type: "TEXT"}
+    (orm.v1.column) = {type: "TEXT"}
   ];
 
   // Flat discount/window/limits/scope fields were promoted into the nested value
@@ -181,7 +181,7 @@ message Redemption {
     singular: "redemption"
     plural: "redemptions"
   };
-  option (protorm.v1.table) = {id: ID_STRATEGY_ULID};
+  option (orm.v1.table) = {id: ID_STRATEGY_ULID};
 
   // The redemption resource name.
   // Format: promoCodes/{promo_code}/redemptions/{redemption}

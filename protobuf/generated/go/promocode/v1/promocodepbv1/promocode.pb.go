@@ -7,7 +7,7 @@
 package promocodepbv1
 
 import (
-	_ "github.com/the-protobuf-project/protorm/plugin/pb/protormpbv1"
+	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -567,7 +567,7 @@ var File_freebusy_promocode_v1_promocode_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x1cprotorm/v1/annotations.proto\"\xed\x06\n" +
+	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xed\x06\n" +
 	"\tPromoCode\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x1d\n" +
 	"\x04code\x18\x03 \x01(\tB\t\xe0A\x02\x92\xb5\x18\x02 \x01R\x04code\x12&\n" +
@@ -586,7 +586,7 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"updateTime\x12\x12\n" +
 	"\x04etag\x18\x15 \x01(\tR\x04etag:Z\xeaAQ\n" +
 	"\x1ffreebusy.promocode.v1/PromoCode\x12\x17promoCodes/{promo_code}*\n" +
-	"promoCodes2\tpromoCode\x8a\xb5\x18\x02 \x01J\x04\b\x02\x10\x03J\x04\b\x06\x10\aJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\t\x10\n" +
+	"promoCodes2\tpromoCode\x8a\xb5\x18\x02\x18\x01J\x04\b\x02\x10\x03J\x04\b\x06\x10\aJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\t\x10\n" +
 	"J\x04\b\n" +
 	"\x10\vJ\x04\b\v\x10\fJ\x04\b\f\x10\rJ\x04\b\r\x10\x0eJ\x04\b\x0e\x10\x0fJ\x04\b\x0f\x10\x10J\x04\b\x16\x10\x17\"l\n" +
 	"\bDiscount\x12!\n" +
@@ -618,7 +618,7 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\rredeemed_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\fredeemedTime\x12>\n" +
 	"\x0eamount_applied\x18\x05 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\ramountApplied:v\xeaAm\n" +
 	" freebusy.promocode.v1/Redemption\x120promoCodes/{promo_code}/redemptions/{redemption}*\vredemptions2\n" +
-	"redemption\x8a\xb5\x18\x02 \x01B\xd5\x02\x82\xb5\x18O\n" +
+	"redemption\x8a\xb5\x18\x02\x18\x01B\xd5\x02\x82\xb5\x18O\n" +
 	"\bfreebusy\x12\tpromocode\x1a.postgresql://user:pass@localhost:5432/freebusy\"\bpostgres\n" +
 	"\x19com.freebusy.promocode.v1B\x0ePromocodeProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
 

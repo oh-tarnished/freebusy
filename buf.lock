@@ -7,6 +7,6 @@ deps:
   - name: buf.build/the-protobuf-project/mcp
     commit: d8286d36a0cc4df5bf65e342195ab82d
     digest: b5:8355c7cb9f258ad16c9be3641ded547acaa1717243cd11c345c370b242f092c2e573f55d82c9a81a6a852421d0e84ccee8881dca73f15660eed7044ef0e24ac5
-  - name: buf.build/the-protobuf-project/protorm
-    commit: 592219814f8b4d489185d365c867bd6d
-    digest: b5:4a49cc09e35e1b5e1b16e53b063577d79e79f55250777bd2e9cddaaad014abb7b0f1d591c00d19956aa0448201225929f0bc701ee7df1ee71bc2bbb9347a8cea
+  - name: buf.build/the-protobuf-project/orm
+    commit: 878eb59a32de460183b1f9ecce9914d8
+    digest: b5:7b11f0117e0f27d0157b35015b525f2c353f21083e44d7c63227f5da5d14195b9e42bfbab46291789bac23d44ff360b87c34776040845dc3794d9d05942f9b1e

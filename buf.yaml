@@ -8,4 +8,4 @@ breaking:
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/the-protobuf-project/mcp
-  - buf.build/the-protobuf-project/protorm
+  - buf.build/the-protobuf-project/orm
