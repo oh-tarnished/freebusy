@@ -33,22 +33,30 @@ security:
 tags:
   - name: Availability Service
   - name: Booking Service
+  - name: Channel Service
   - name: Identity Service
   - name: Organisation Service
   - name: Promo Code Service
+  - name: Property Service
   - name: Resource Service
   - name: Schedule Service
 paths:
-  /v1/resources/{resource}:checkAvailability:
+  /v1/properties/{property}/units/{unit}:checkAvailability:
     post:
       tags:
         - Availability Service
       description: Tests whether one exact span is bookable.
       operationId: AvailabilityService_CheckAvailability
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -78,16 +86,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Check Availability
-  /v1/resources/{resource}:computeAvailability:
+  /v1/properties/{property}/units/{unit}:computeAvailability:
     post:
       tags:
         - Availability Service
-      description: Computes availability for a resource over a window.
+      description: Computes availability for a unit over a window.
       operationId: AvailabilityService_ComputeAvailability
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -117,16 +131,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Compute Availability
-  /v1/resources/{resource}:computeBookableRanges:
+  /v1/properties/{property}/units/{unit}:computeBookableRanges:
     post:
       tags:
         - Availability Service
       description: Computes contiguous bookable ranges within a window.
       operationId: AvailabilityService_ComputeBookableRanges
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -156,11 +176,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Compute Bookable Ranges
-  /v1/resources:batchCompute:
+  /v1/units:batchCompute:
     post:
       tags:
         - Availability Service
-      description: Computes availability for several resources at once.
+      description: Computes availability for several units at once.
       operationId: AvailabilityService_BatchComputeAvailability
       requestBody:
         content:
@@ -188,11 +208,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Batch Compute Availability
-  /v1/resources:searchAvailability:
+  /v1/units:searchAvailability:
     post:
       tags:
         - Availability Service
-      description: Searches the catalog for resources bookable over a period.
+      description: Searches the catalog for units bookable over a period.
       operationId: AvailabilityService_SearchAvailability
       requestBody:
         content:
@@ -241,7 +261,7 @@ paths:
         - name: filter
           in: query
           description: |-
-            Filter expression (AIP-160), e.g. `resource = "resources/42"`,
+            Filter expression (AIP-160), e.g. `unit = "properties/9/units/42"`,
              `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate.
           schema:
             type: string
@@ -510,11 +530,687 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Reschedule Booking
+  /v1/channels:
+    get:
+      tags:
+        - Channel Service
+      description: Lists channels.
+      operationId: ChannelService_ListChannels
+      parameters:
+        - name: pageSize
+          in: query
+          description: Maximum number of channels to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListChannels call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `property = "properties/9"`,
+             `type = CHANNEL_TYPE_AGODA`, or `state = CHANNEL_STATE_CONNECTED`.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "create_time desc".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListChannelsResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: List Channels
+    post:
+      tags:
+        - Channel Service
+      description: Creates a channel connection for a property.
+      operationId: ChannelService_CreateChannel
+      parameters:
+        - name: channelId
+          in: query
+          description: Optional caller-chosen ID for the channel; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Channel'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Create Channel
+  /v1/channels/{channel}:
+    get:
+      tags:
+        - Channel Service
+      description: Gets a single channel.
+      operationId: ChannelService_GetChannel
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Channel
+    delete:
+      tags:
+        - Channel Service
+      description: Deletes a channel connection.
+      operationId: ChannelService_DeleteChannel
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: |-
+            If true, delete the channel and its unit mappings; if false and mappings
+             exist, the call fails.
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content: {}
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Delete Channel
+    patch:
+      tags:
+        - Channel Service
+      description: Updates a channel.
+      operationId: ChannelService_UpdateChannel
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Channel'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Update Channel
+  /v1/channels/{channel}/syncEvents:
+    get:
+      tags:
+        - Channel Service
+      description: Lists a channel's sync events.
+      operationId: ChannelService_ListSyncEvents
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of events to return.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListSyncEvents call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `direction = SYNC_DIRECTION_OUTBOUND`,
+             `state = SYNC_STATE_FAILED`.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "event_time desc".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSyncEventsResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: List Sync Events
+  /v1/channels/{channel}/syncStatus:
+    get:
+      tags:
+        - Channel Service
+      description: Reports a channel's sync health.
+      operationId: ChannelService_GetChannelSyncStatus
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelSyncStatus'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Channel Sync Status
+  /v1/channels/{channel}/unitMappings:
+    get:
+      tags:
+        - Channel Service
+      description: Lists the unit mappings on a channel.
+      operationId: ChannelService_ListUnitMappings
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of mappings to return.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListUnitMappings call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter expression (AIP-160), e.g. `state = MAPPING_STATE_UNMAPPED`.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUnitMappingsResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: List Unit Mappings
+    post:
+      tags:
+        - Channel Service
+      description: Maps a unit to the channel's external room type / rate plan.
+      operationId: ChannelService_CreateUnitMapping
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: unitMappingId
+          in: query
+          description: Optional caller-chosen ID for the mapping; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitMapping'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitMapping'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Create Unit Mapping
+  /v1/channels/{channel}/unitMappings/{unitMapping}:
+    get:
+      tags:
+        - Channel Service
+      description: Gets a single unit mapping.
+      operationId: ChannelService_GetUnitMapping
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: unitMapping
+          in: path
+          description: The unitMapping id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitMapping'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Unit Mapping
+    delete:
+      tags:
+        - Channel Service
+      description: Deletes a unit mapping.
+      operationId: ChannelService_DeleteUnitMapping
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: unitMapping
+          in: path
+          description: The unitMapping id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Delete Unit Mapping
+    patch:
+      tags:
+        - Channel Service
+      description: Updates a unit mapping.
+      operationId: ChannelService_UpdateUnitMapping
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+        - name: unitMapping
+          in: path
+          description: The unitMapping id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitMapping'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitMapping'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Update Unit Mapping
+  /v1/channels/{channel}:disable:
+    post:
+      tags:
+        - Channel Service
+      description: Disables a channel, pausing ARI push and reservation pull.
+      operationId: ChannelService_DisableChannel
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisableChannelRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Disable Channel
+  /v1/channels/{channel}:enable:
+    post:
+      tags:
+        - Channel Service
+      description: Enables a channel, resuming ARI push and reservation pull.
+      operationId: ChannelService_EnableChannel
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnableChannelRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Enable Channel
+  /v1/channels/{channel}:importReservation:
+    post:
+      tags:
+        - Channel Service
+      description: Lands a reservation made on a channel, reconciling it into a booking.
+      operationId: ChannelService_ImportReservation
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportReservationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportReservationResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Import Reservation
+  /v1/channels/{channel}:pushAri:
+    post:
+      tags:
+        - Channel Service
+      description: Pushes availability/rate/restriction updates for a channel's mapped units.
+      operationId: ChannelService_PushAri
+      parameters:
+        - name: channel
+          in: path
+          description: The channel id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushAriRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushAriResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Push Ari
   /v1/users:
     get:
       tags:
         - Identity Service
-      description: Lists users sharing an organisation with the caller.
+      description: Lists users.
       operationId: IdentityService_ListUsers
       parameters:
         - name: pageSize
@@ -530,9 +1226,7 @@ paths:
             type: string
         - name: filter
           in: query
-          description: |-
-            Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a
-             match on display_name.
+          description: Filter expression (AIP-160), e.g. a match on display_name or email.
           schema:
             type: string
         - name: orderBy
@@ -1422,6 +2116,481 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Validate Promo Code
+  /v1/properties:
+    get:
+      tags:
+        - Property Service
+      description: Lists properties.
+      operationId: PropertyService_ListProperties
+      parameters:
+        - name: pageSize
+          in: query
+          description: Maximum number of properties to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListProperties call, for pagination.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `organisation = "organisations/7"`,
+             `state = PROPERTY_STATE_ACTIVE`, `tags:"beachfront"`, or a display_name match.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "display_name" or "create_time desc".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPropertiesResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: List Properties
+    post:
+      tags:
+        - Property Service
+      description: Creates a property. The caller's chain becomes its owner.
+      operationId: PropertyService_CreateProperty
+      parameters:
+        - name: propertyId
+          in: query
+          description: Optional caller-chosen ID for the property; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Property'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Create Property
+  /v1/properties/{property}:
+    get:
+      tags:
+        - Property Service
+      description: Gets a single property.
+      operationId: PropertyService_GetProperty
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Property
+    patch:
+      tags:
+        - Property Service
+      description: Updates a property.
+      operationId: PropertyService_UpdateProperty
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Property'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Update Property
+  /v1/properties/{property}/units:
+    get:
+      tags:
+        - Property Service
+      description: Lists the units (room types) within a property.
+      operationId: PropertyService_ListUnits
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of units to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListUnits call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `type = UNIT_TYPE_ROOM`,
+             `state = UNIT_STATE_ACTIVE`, or a match on display_name.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "display_name" or "create_time desc".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUnitsResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: List Units
+    post:
+      tags:
+        - Property Service
+      description: Creates a unit within a property.
+      operationId: PropertyService_CreateUnit
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unitId
+          in: query
+          description: Optional caller-chosen ID for the unit; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Unit'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Create Unit
+  /v1/properties/{property}/units/{unit}:
+    get:
+      tags:
+        - Property Service
+      description: Gets a single unit.
+      operationId: PropertyService_GetUnit
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Unit
+    delete:
+      tags:
+        - Property Service
+      description: Deletes a unit from a property.
+      operationId: PropertyService_DeleteUnit
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Delete Unit
+    patch:
+      tags:
+        - Property Service
+      description: Updates a unit.
+      operationId: PropertyService_UpdateUnit
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Unit'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Update Unit
+  /v1/properties/{property}:archive:
+    post:
+      tags:
+        - Property Service
+      description: Archives a property, hiding it from the storefront and new bookings.
+      operationId: PropertyService_ArchiveProperty
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArchivePropertyRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Archive Property
+  /v1/properties/{property}:unarchive:
+    post:
+      tags:
+        - Property Service
+      description: Unarchives a property, restoring it to the active state.
+      operationId: PropertyService_UnarchiveProperty
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnarchivePropertyRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Unarchive Property
   /v1/resources:
     get:
       tags:
@@ -1895,16 +3064,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Unarchive Resource
-  /v1/resources/{resource}/availabilityExceptions:
+  /v1/properties/{property}/units/{unit}/availabilityExceptions:
     get:
       tags:
         - Schedule Service
-      description: Lists the exceptions configured for a resource.
+      description: Lists the exceptions configured for a unit.
       operationId: ScheduleService_ListAvailabilityExceptions
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -1952,12 +3127,18 @@ paths:
     post:
       tags:
         - Schedule Service
-      description: Adds an availability exception to a resource.
+      description: Adds an availability exception to a unit.
       operationId: ScheduleService_CreateAvailabilityException
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -1997,16 +3178,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Create Availability Exception
-  /v1/resources/{resource}/availabilityExceptions/{availabilityException}:
+  /v1/properties/{property}/units/{unit}/availabilityExceptions/{availabilityException}:
     get:
       tags:
         - Schedule Service
       description: Gets a single availability exception.
       operationId: ScheduleService_GetAvailabilityException
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -2042,9 +3229,15 @@ paths:
       description: Removes an availability exception.
       operationId: ScheduleService_DeleteAvailabilityException
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -2071,16 +3264,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Delete Availability Exception
-  /v1/resources/{resource}/schedule:
+  /v1/properties/{property}/units/{unit}/schedule:
     get:
       tags:
         - Schedule Service
-      description: Reads the full availability configuration for a resource.
+      description: Reads the full availability configuration for a unit.
       operationId: ScheduleService_GetSchedule
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -2108,14 +3307,20 @@ paths:
       tags:
         - Schedule Service
       description: |-
-        Updates a resource's availability configuration. Set update_mask to the
+        Updates a unit's availability configuration. Set update_mask to the
          section(s) to replace: recurring_rules, buffers, stay_constraints, and/or
          cancellation_policy.
       operationId: ScheduleService_UpdateSchedule
       parameters:
-        - name: resource
+        - name: property
           in: path
-          description: The resource id.
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: unit
+          in: path
+          description: The unit id.
           required: true
           schema:
             type: string
@@ -2162,21 +3367,21 @@ components:
     AvailabilityMatch:
       type: object
       properties:
-        resource:
+        unit:
           type: string
           description: |-
-            The matching resource.
-             Format: resources/{resource}
+            The matching unit.
+             Format: properties/{property}/units/{unit}
         displayName:
           type: string
-          description: Cached display name of the resource, for convenience.
+          description: Cached display name of the unit, for convenience.
         mode:
           type: integer
-          description: The resource's booking mode.
+          description: The unit's booking mode.
           format: enum
         bookable:
           type: boolean
-          description: Whether the resource is bookable for the requested period and units.
+          description: Whether the unit is bookable for the requested period and units.
         price:
           allOf:
             - $ref: '#/components/schemas/Money'
@@ -2184,8 +3389,8 @@ components:
             Lead price for the requested period: the stay total for NIGHTLY, or the slot
              price for TIME_SLOT. Used for sorting and display.
       description: |-
-        One resource matched by SearchAvailability, with a lead price for the period.
-         Detailed slots/nights are fetched per resource via ComputeAvailability.
+        One unit matched by SearchAvailability, with a lead price for the period.
+         Detailed slots/nights are fetched per unit via ComputeAvailability.
     BatchComputeAvailabilityRequest:
       required:
         - requests
@@ -2198,15 +3403,15 @@ components:
           description: The individual compute requests. Results are returned in the same order.
       description: |-
         Request message for BatchComputeAvailability. Each entry is a full
-         ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering,
-         and units all work in batch exactly as they do in the single call.
+         ComputeAvailabilityRequest (AIP-231), so per-unit duration and units all work
+         in batch exactly as they do in the single call.
     BatchComputeAvailabilityResponse:
       type: object
       properties:
-        resources:
+        units:
           type: array
           items:
-            $ref: '#/components/schemas/ResourceAvailability'
+            $ref: '#/components/schemas/UnitAvailability'
           description: Availability per request, in request order.
       description: Response message for BatchComputeAvailability.
     BookableRange:
@@ -2222,33 +3427,28 @@ components:
       description: A contiguous span that is bookable end to end.
     CheckAvailabilityRequest:
       required:
-        - resource
+        - unit
       type: object
       properties:
-        resource:
+        unit:
           type: string
           description: |-
-            The resource to test.
-             Format: resources/{resource}
+            The unit to test.
+             Format: properties/{property}/units/{unit}
         window:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
         dateRange:
           allOf:
             - $ref: '#/components/schemas/DateRange'
           description: |-
-            A calendar-date range in the resource's timezone, the natural form for
+            A calendar-date range in the unit's timezone, the natural form for
              NIGHTLY stays; end_date is the check-out date.
         units:
           type: integer
           description: Number of units required to be free. Defaults to 1.
           format: int32
-        offering:
-          type: string
-          description: |-
-            Offering whose duration/rules apply, when relevant.
-             Format: resources/{resource}/offerings/{offering}
       description: Request message for CheckAvailability.
     CheckAvailabilityResponse:
       type: object
@@ -2268,35 +3468,30 @@ components:
       description: Response message for CheckAvailability.
     ComputeAvailabilityRequest:
       required:
-        - resource
+        - unit
       type: object
       properties:
-        resource:
+        unit:
           type: string
           description: |-
-            The resource to compute availability for.
-             Format: resources/{resource}
+            The unit to compute availability for.
+             Format: properties/{property}/units/{unit}
         window:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
         dateRange:
           allOf:
             - $ref: '#/components/schemas/DateRange'
           description: |-
-            A calendar-date range in the resource's timezone, the natural form for
-             NIGHTLY resources; end_date is the check-out date.
+            A calendar-date range in the unit's timezone, the natural form for
+             NIGHTLY units; end_date is the check-out date.
         duration:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
           description: |-
-            Slot length for TIME_SLOT resources. Ignored when offering is set or for
-             NIGHTLY resources.
-        offering:
-          type: string
-          description: |-
-            Offering to derive duration and price from. Takes precedence over duration.
-             Format: resources/{resource}/offerings/{offering}
+            Slot length for TIME_SLOT units. Overrides the unit's default duration when
+             set; ignored for NIGHTLY units.
         units:
           type: integer
           description: Number of units required to be free. Defaults to 1.
@@ -2307,7 +3502,7 @@ components:
       properties:
         mode:
           type: integer
-          description: Which shape is populated, matching the resource's booking_mode.
+          description: Which shape is populated, matching the unit's booking_mode.
           format: enum
         slots:
           type: array
@@ -2322,33 +3517,28 @@ components:
       description: Response message for ComputeAvailability.
     ComputeBookableRangesRequest:
       required:
-        - resource
+        - unit
       type: object
       properties:
-        resource:
+        unit:
           type: string
           description: |-
-            The resource to compute bookable ranges for.
-             Format: resources/{resource}
+            The unit to compute bookable ranges for.
+             Format: properties/{property}/units/{unit}
         window:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
         dateRange:
           allOf:
             - $ref: '#/components/schemas/DateRange'
           description: |-
-            A calendar-date range in the resource's timezone, the natural form for
-             NIGHTLY resources.
+            A calendar-date range in the unit's timezone, the natural form for
+             NIGHTLY units.
         duration:
           pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
           type: string
-          description: Minimum span length for TIME_SLOT resources.
-        offering:
-          type: string
-          description: |-
-            Offering to derive duration/rules from.
-             Format: resources/{resource}/offerings/{offering}
+          description: Minimum span length for TIME_SLOT units.
         units:
           type: integer
           description: Number of units required to be free. Defaults to 1.
@@ -2416,7 +3606,7 @@ components:
       properties:
         night:
           type: string
-          description: The night, in the resource's local timezone.
+          description: The night, in the unit's local timezone.
           format: date
         freeUnits:
           type: integer
@@ -2424,48 +3614,25 @@ components:
           format: int32
         closed:
           type: boolean
-          description: Whether the resource is closed that night (exception/blackout).
+          description: Whether the unit is closed that night (exception/blackout).
         price:
           allOf:
             - $ref: '#/components/schemas/Money'
-          description: Nightly price, when an offering was supplied.
-      description: Per-night availability, produced for NIGHTLY resources.
-    ResourceAvailability:
-      type: object
-      properties:
-        resource:
-          type: string
-          description: |-
-            The resource these results are for.
-             Format: resources/{resource}
-        mode:
-          type: integer
-          description: Which shape is populated, matching the resource's booking_mode.
-          format: enum
-        slots:
-          type: array
-          items:
-            $ref: '#/components/schemas/Slot'
-          description: Slots, when mode is TIME_SLOT.
-        nights:
-          type: array
-          items:
-            $ref: '#/components/schemas/NightAvailability'
-          description: Per-night availability, when mode is NIGHTLY.
-      description: Availability for one resource, used in batch responses.
+          description: Nightly price, derived from the unit's pricing.
+      description: Per-night availability, produced for NIGHTLY units.
     SearchAvailabilityRequest:
       type: object
       properties:
         window:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
         dateRange:
           allOf:
             - $ref: '#/components/schemas/DateRange'
           description: |-
-            A calendar-date range in each resource's timezone, the natural form for
-             NIGHTLY resources; end_date is the check-out date.
+            A calendar-date range in each unit's timezone, the natural form for
+             NIGHTLY units; end_date is the check-out date.
         units:
           type: integer
           description: Number of units / party size required free. Defaults to 1.
@@ -2473,8 +3640,8 @@ components:
         filter:
           type: string
           description: |-
-            Filter (AIP-160) over resource fields to narrow the catalog, e.g.
-             `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
+            Filter (AIP-160) over unit fields to narrow the catalog, e.g.
+             `type = UNIT_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
         orderBy:
           type: string
           description: |-
@@ -2490,14 +3657,26 @@ components:
         includeUnavailable:
           type: boolean
           description: |-
-            If true, include resources that matched the filter but are not bookable for
-             the period (with bookable=false), instead of dropping them.
+            If true, include units that matched the filter but are not bookable for the
+             period (with bookable=false), instead of dropping them.
+        property:
+          type: string
+          description: |-
+            Scope the search to a single property (hotel). Empty searches all properties.
+             Format: properties/{property}
+        organisation:
+          type: string
+          description: |-
+            Scope the search to a single organisation (chain). Empty searches all
+             organisations the caller can see.
+             Format: organisations/{organisation}
       description: |-
-        Request message for SearchAvailability. Sweeps the catalog for resources that
-         are bookable over a period for a given party size, narrowed by a resource
-         filter and sorted for presentation. This is the storefront query: one call
-         returns the matching resources with a lead price, rather than the caller
-         listing resources and computing availability for each.
+        Request message for SearchAvailability. Sweeps the catalog for units that are
+         bookable over a period for a given party size, narrowed by a filter and
+         optionally scoped to one property (hotel) or organisation (chain), and sorted
+         for presentation. This is the storefront query: one call returns the matching
+         units with a lead price, rather than the caller listing units and computing
+         availability for each.
     SearchAvailabilityResponse:
       type: object
       properties:
@@ -2505,7 +3684,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AvailabilityMatch'
-          description: The matching resources, ordered per order_by.
+          description: The matching units, ordered per order_by.
         nextPageToken:
           type: string
           description: Token to pass as page_token to retrieve the next page; empty when no more.
@@ -2519,7 +3698,7 @@ components:
           format: date-time
         endTime:
           type: string
-          description: Exclusive end of the slot (start + offering/requested duration).
+          description: Exclusive end of the slot (start + unit/requested duration).
           format: date-time
         freeCount:
           type: integer
@@ -2531,8 +3710,8 @@ components:
         price:
           allOf:
             - $ref: '#/components/schemas/Money'
-          description: Price for booking this slot, when an offering was supplied.
-      description: A discrete bookable time slot, produced for TIME_SLOT resources.
+          description: Price for booking this slot, derived from the unit's pricing.
+      description: A discrete bookable time slot, produced for TIME_SLOT units.
     Status:
       type: object
       properties:
@@ -2579,9 +3758,32 @@ components:
       description: |-
         A reason a span is not bookable, as a machine-readable code plus a
          human-readable explanation. Clients should branch on code, never on message.
+    UnitAvailability:
+      type: object
+      properties:
+        unit:
+          type: string
+          description: |-
+            The unit these results are for.
+             Format: properties/{property}/units/{unit}
+        mode:
+          type: integer
+          description: Which shape is populated, matching the unit's booking_mode.
+          format: enum
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+          description: Slots, when mode is TIME_SLOT.
+        nights:
+          type: array
+          items:
+            $ref: '#/components/schemas/NightAvailability'
+          description: Per-night availability, when mode is NIGHTLY.
+      description: Availability for one unit, used in batch responses.
     Booking:
       required:
-        - resource
+        - unit
         - window
       type: object
       properties:
@@ -2590,16 +3792,11 @@ components:
           description: |-
             The booking name.
              Format: bookings/{booking}
-        resource:
+        unit:
           type: string
           description: |-
-            The resource being booked.
-             Format: resources/{resource}
-        offering:
-          type: string
-          description: |-
-            The offering being booked, when applicable.
-             Format: resources/{resource}/offerings/{offering}
+            The unit being booked.
+             Format: properties/{property}/units/{unit}
         customer:
           type: string
           description: |-
@@ -2619,7 +3816,7 @@ components:
         window:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
-          description: The reserved span. For NIGHTLY resources this spans check-in to check-out.
+          description: The reserved span. For NIGHTLY units this spans check-in to check-out.
         assignedUnit:
           readOnly: true
           type: string
@@ -2700,7 +3897,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/Money'
           description: |-
-            Amount refunded on cancellation, computed from the resource's cancellation
+            Amount refunded on cancellation, computed from the unit's cancellation
              policy and how far ahead of the booking start it was cancelled. Set only
              once the booking is CANCELLED. Use PreviewCancellation to see this before
              committing.
@@ -2719,7 +3916,7 @@ components:
           type: string
           description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
       description: |-
-        A reservation against a resource. The hold lifecycle lives here as states
+        A reservation against a unit. The hold lifecycle lives here as states
          rather than a separate service: CreateBooking places a PENDING_HOLD,
          confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
          are never confirmed.
@@ -2807,7 +4004,7 @@ components:
              Format: bookings/{booking}
       description: |-
         Request message for PreviewCancellation. Computes the refund a cancellation
-         would yield right now, under the resource's cancellation policy, without
+         would yield right now, under the unit's cancellation policy, without
          cancelling the booking.
     PreviewCancellationResponse:
       type: object
@@ -2871,18 +4068,403 @@ components:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
           description: The new reserved span.
-        offering:
+        unit:
           type: string
           description: |-
-            The new offering, when changing it as part of the reschedule.
-             Format: resources/{resource}/offerings/{offering}
+            The new unit, when changing it as part of the reschedule.
+             Format: properties/{property}/units/{unit}
         requestId:
           type: string
           description: Caller-supplied idempotency key that dedupes retries of this reschedule.
       description: |-
         Request message for RescheduleBooking. Atomically moves a booking to a new
-         span (and optionally offering), re-running availability and the exclusion
+         span (and optionally unit), re-running availability and the exclusion
          check on the new window.
+    AriUpdate:
+      required:
+        - unit
+        - date
+      type: object
+      properties:
+        unit:
+          type: string
+          description: |-
+            The unit this update is for.
+             Format: properties/{property}/units/{unit}
+        date:
+          type: string
+          description: The date (in the unit's timezone) the values apply to.
+          format: date
+        available:
+          type: integer
+          description: Number of units available to sell on this date.
+          format: int32
+        rate:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: Nightly rate to publish for this date.
+        restrictions:
+          allOf:
+            - $ref: '#/components/schemas/Restrictions'
+          description: Booking restrictions to publish for this date.
+      description: |-
+        One day's availability, rate, and restrictions for a unit — the atomic unit of
+         an outbound ARI push. It is the channel-facing projection of the unit's price
+         and its Schedule's stay constraints for a single date.
+    Channel:
+      required:
+        - property
+        - type
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The channel name.
+             Format: channels/{channel}
+        property:
+          type: string
+          description: |-
+            The property this channel distributes.
+             Format: properties/{property}
+        type:
+          type: integer
+          description: |-
+            Which OTA/GDS this connects to. Immutable: the adapter and external ID space
+             are fixed per channel.
+          format: enum
+        displayName:
+          type: string
+          description: Human-friendly label (e.g. "Booking.com — Goa Resort").
+        externalPropertyId:
+          type: string
+          description: The channel's own code for this hotel (e.g. the Booking.com hotel id).
+        credentialRef:
+          type: string
+          description: |-
+            Opaque handle to the stored credentials for this connection (a secret-manager
+             key or vault path). The secrets themselves are never returned by the API.
+        state:
+          readOnly: true
+          type: integer
+          description: Connection state.
+          format: enum
+        lastSyncTime:
+          readOnly: true
+          type: string
+          description: When ARI/reservations last synced successfully.
+          format: date-time
+        createTime:
+          readOnly: true
+          type: string
+          description: Creation timestamp.
+          format: date-time
+        updateTime:
+          readOnly: true
+          type: string
+          description: Last-modification timestamp.
+          format: date-time
+        etag:
+          type: string
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A connection between one property and one distribution channel (OTA/GDS). It
+         is the anchor for 2-way ARI: availability/rates/inventory are pushed out per
+         mapped unit, and reservations made on the channel are pulled in as bookings.
+         Credentials are never carried in the API — only an opaque handle to where they
+         are stored.
+    ChannelSyncStatus:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The sync-status name.
+             Format: channels/{channel}/syncStatus
+        state:
+          readOnly: true
+          type: integer
+          description: Current connection state.
+          format: enum
+        lastSyncTime:
+          type: string
+          description: When ARI/reservations last synced successfully.
+          format: date-time
+        pendingCount:
+          type: integer
+          description: Count of updates still queued.
+          format: int32
+        failedCount:
+          type: integer
+          description: Count of updates that failed since the last success.
+          format: int32
+        lastError:
+          type: string
+          description: Most recent error message, when the last sync failed.
+      description: |-
+        A rollup of a channel's sync health, modeled as a singleton sub-resource of the
+         channel (one per channel) and read via GetChannelSyncStatus.
+    DisableChannelRequest:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The channel to disable (pause ARI push and reservation pull).
+             Format: channels/{channel}
+      description: Request message for DisableChannel.
+    EnableChannelRequest:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The channel to enable (resume ARI push and reservation pull).
+             Format: channels/{channel}
+      description: Request message for EnableChannel.
+    ExternalReservation:
+      required:
+        - channel
+        - externalId
+        - unit
+        - stay
+        - op
+      type: object
+      properties:
+        channel:
+          type: string
+          description: |-
+            The channel the reservation came from.
+             Format: channels/{channel}
+        externalId:
+          type: string
+          description: |-
+            The channel's own id for this reservation (used for idempotency and
+             modify/cancel matching).
+        unit:
+          type: string
+          description: |-
+            The resolved freebusy unit being booked.
+             Format: properties/{property}/units/{unit}
+        guest:
+          allOf:
+            - $ref: '#/components/schemas/Contact'
+          description: Guest contact details supplied by the channel.
+        stay:
+          allOf:
+            - $ref: '#/components/schemas/DateRange'
+          description: 'The stay: check-in to check-out (end_date is the check-out date).'
+        units:
+          type: integer
+          description: Number of units / rooms reserved. Defaults to 1.
+          format: int32
+        total:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: The reservation total as charged on the channel.
+        op:
+          type: integer
+          description: Whether this is a create, modify, or cancel.
+          format: enum
+      description: |-
+        A reservation as it exists on the channel, landed inbound so it can be
+         reconciled into a freebusy Booking. The unit is resolved from the channel's
+         external ids via the UnitMapping.
+    ImportReservationRequest:
+      required:
+        - reservation
+      type: object
+      properties:
+        reservation:
+          allOf:
+            - $ref: '#/components/schemas/ExternalReservation'
+          description: The reservation as it exists on the channel.
+      description: |-
+        Request message for ImportReservation. Lands a reservation made on a channel so
+         it reconciles into a freebusy Booking (create/modify/cancel).
+    ImportReservationResponse:
+      type: object
+      properties:
+        booking:
+          type: string
+          description: |-
+            The freebusy booking created or updated from the reservation.
+             Format: bookings/{booking}
+      description: Response message for ImportReservation.
+    ListChannelsResponse:
+      type: object
+      properties:
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+          description: The page of channels.
+        nextPageToken:
+          type: string
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
+      description: Response message for ListChannels.
+    ListSyncEventsResponse:
+      type: object
+      properties:
+        syncEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncEvent'
+          description: The page of sync events.
+        nextPageToken:
+          type: string
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
+      description: Response message for ListSyncEvents.
+    ListUnitMappingsResponse:
+      type: object
+      properties:
+        unitMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnitMapping'
+          description: The page of unit mappings.
+        nextPageToken:
+          type: string
+          description: Token to pass as page_token to retrieve the next page; empty when no more.
+      description: Response message for ListUnitMappings.
+    PushAriRequest:
+      required:
+        - channel
+        - updates
+      type: object
+      properties:
+        channel:
+          type: string
+          description: |-
+            The channel to push to.
+             Format: channels/{channel}
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/AriUpdate'
+          description: The per-unit, per-date updates to publish.
+      description: |-
+        Request message for PushAri. Pushes availability/rate/restriction updates for a
+         channel's mapped units (AIP-231 batch shape). Unmapped units are rejected.
+    PushAriResponse:
+      type: object
+      properties:
+        accepted:
+          type: integer
+          description: Number of updates accepted for publishing.
+          format: int32
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncEvent'
+          description: Per-update sync events (queued or failed), for observability.
+      description: Response message for PushAri.
+    Restrictions:
+      type: object
+      properties:
+        minStay:
+          type: integer
+          description: Minimum length of stay. Zero means no minimum.
+          format: int32
+        maxStay:
+          type: integer
+          description: Maximum length of stay. Zero means no maximum.
+          format: int32
+        arrivalClosed:
+          type: boolean
+          description: 'Closed to arrival: a stay may not start on this date.'
+        departureClosed:
+          type: boolean
+          description: 'Closed to departure: a stay may not end on this date.'
+        stopSell:
+          type: boolean
+          description: 'Stop-sell: the unit is not sellable on this date regardless of inventory.'
+      description: Sell restrictions published to a channel for a date.
+    SyncEvent:
+      type: object
+      properties:
+        direction:
+          type: integer
+          description: Whether this was an outbound push or an inbound pull.
+          format: enum
+        channel:
+          type: string
+          description: |-
+            The channel involved.
+             Format: channels/{channel}
+        unit:
+          type: string
+          description: |-
+            The unit involved, when the event is unit-scoped.
+             Format: properties/{property}/units/{unit}
+        date:
+          type: string
+          description: The date the event concerned, when applicable.
+          format: date
+        state:
+          readOnly: true
+          type: integer
+          description: Outcome.
+          format: enum
+        error:
+          type: string
+          description: Human-readable error when state is FAILED.
+        eventTime:
+          type: string
+          description: When the event occurred.
+          format: date-time
+      description: |-
+        A record of one sync attempt, for observability of the ARI push / reservation
+         pull. Returned by ListSyncEvents; not a standalone resource.
+    UnitMapping:
+      required:
+        - unit
+        - externalRoomTypeId
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The mapping name.
+             Format: channels/{channel}/unitMappings/{unit_mapping}
+        unit:
+          type: string
+          description: |-
+            The freebusy unit being mapped.
+             Format: properties/{property}/units/{unit}
+        externalRoomTypeId:
+          type: string
+          description: The channel's room-type id this unit maps to.
+        externalRatePlanId:
+          type: string
+          description: The channel's rate-plan id this unit maps to.
+        state:
+          readOnly: true
+          type: integer
+          description: Mapping state.
+          format: enum
+        createTime:
+          readOnly: true
+          type: string
+          description: Creation timestamp.
+          format: date-time
+        updateTime:
+          readOnly: true
+          type: string
+          description: Last-modification timestamp.
+          format: date-time
+        etag:
+          type: string
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        Maps a freebusy Unit to its counterpart on the channel. ARI for a unit only
+         flows once a MAPPED mapping exists: the external room-type and rate-plan ids
+         key the availability/rate/restriction push and resolve inbound reservations
+         back to the right unit.
     ListUsersResponse:
       type: object
       properties:
@@ -2895,24 +4477,6 @@ components:
           type: string
           description: Token to pass as page_token to retrieve the next page; empty when no more.
       description: Response message for ListUsers.
-    MembershipSummary:
-      type: object
-      properties:
-        organisation:
-          readOnly: true
-          type: string
-          description: |-
-            The organisation.
-             Format: organisations/{organisation}
-        orgDisplayName:
-          readOnly: true
-          type: string
-          description: Cached display name of the organisation.
-        role:
-          readOnly: true
-          type: string
-          description: The user's role in the organisation (an OrganisationRole value name).
-      description: A compact view of an organisation the user belongs to.
     User:
       type: object
       properties:
@@ -2937,12 +4501,6 @@ components:
         timeZone:
           type: string
           description: IANA time zone (e.g. "America/New_York").
-        memberships:
-          readOnly: true
-          type: array
-          items:
-            $ref: '#/components/schemas/MembershipSummary'
-          description: The organisations this user belongs to, with role.
         createTime:
           readOnly: true
           type: string
@@ -3114,9 +4672,11 @@ components:
           type: string
           description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
       description: |-
-        A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation
-         with row-level security keyed off the caller's organisation, so most resource names
-         stay flat and the organisation appears explicitly only here.
+        A chain: the hotel brand/company that owns one or more properties, and the
+         unit of multi-tenancy. The shell enforces isolation with row-level security
+         keyed off the caller's organisation. Each Property references the Organisation
+         it belongs to; members here are the chain's administrators, not its guests
+         (guests relate to a property only through bookings).
     Discount:
       type: object
       properties:
@@ -3242,8 +4802,8 @@ components:
           description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
       description: |-
         A redeemable discount applied to a booking's subtotal. Scoped by a redemption
-         window, usage caps, a minimum subtotal, and an optional set of resources /
-         offerings it applies to.
+         window, usage caps, a minimum subtotal, and an optional set of properties /
+         units it applies to.
     Redemption:
       required:
         - customer
@@ -3307,20 +4867,20 @@ components:
           description: |-
             Minimum subtotal required for the code to apply.
              Normalized into the shared common.moneys table (belongs-to via min_subtotal_id).
-        applicableResources:
+        applicableProperties:
           type: array
           items:
             type: string
           description: |-
-            Resources the code applies to. Empty means all resources.
-             Format: resources/{resource}
-        applicableOfferings:
+            Properties the code applies to. Empty means all properties.
+             Format: properties/{property}
+        applicableUnits:
           type: array
           items:
             type: string
           description: |-
-            Offerings the code applies to. Empty means all offerings.
-             Format: resources/{resource}/offerings/{offering}
+            Units the code applies to. Empty means all units.
+             Format: properties/{property}/units/{unit}
       description: |-
         Scope restricts which bookings a code applies to. Nested value object →
          belongs-to promocode.scopes. Its repeated resource references and Money
@@ -3352,16 +4912,16 @@ components:
           allOf:
             - $ref: '#/components/schemas/Money'
           description: Subtotal the discount would apply to.
-        resource:
+        property:
           type: string
           description: |-
-            Resource being booked, for scope checks.
-             Format: resources/{resource}
-        offering:
+            Property being booked, for scope checks.
+             Format: properties/{property}
+        unit:
           type: string
           description: |-
-            Offering being booked, for scope checks.
-             Format: resources/{resource}/offerings/{offering}
+            Unit being booked, for scope checks.
+             Format: properties/{property}/units/{unit}
         customer:
           type: string
           description: |-
@@ -3401,7 +4961,7 @@ components:
             - $ref: '#/components/schemas/Money'
           description: Subtotal minus the discount.
       description: Response message for ValidatePromoCode.
-    ArchiveResourceRequest:
+    ArchivePropertyRequest:
       required:
         - name
       type: object
@@ -3409,9 +4969,9 @@ components:
         name:
           type: string
           description: |-
-            The resource to archive.
-             Format: resources/{resource}
-      description: Request message for ArchiveResource.
+            The property to archive.
+             Format: properties/{property}
+      description: Request message for ArchiveProperty.
     Fee:
       required:
         - code
@@ -3441,8 +5001,591 @@ components:
           type: boolean
           description: Whether this fee is included in the taxable base.
       description: |-
-        A fee added on top of an offering's base subtotal. Exactly one of `amount` or
+        A fee added on top of a unit's base subtotal. Exactly one of `amount` or
          `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
+    ListPropertiesResponse:
+      type: object
+      properties:
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+          description: The page of properties.
+        nextPageToken:
+          type: string
+          description: Next page token, if more results remain. Omitted if this is the last page.
+      description: Response message for ListProperties.
+    ListUnitsResponse:
+      type: object
+      properties:
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/Unit'
+          description: The page of units.
+        nextPageToken:
+          type: string
+          description: Next page token. Omitted if this is the last page.
+      description: Response message for ListUnits.
+    LosDiscount:
+      required:
+        - minNights
+      type: object
+      properties:
+        minNights:
+          type: integer
+          description: Minimum nights for the discount to apply.
+          format: int32
+        percentOff:
+          type: integer
+          description: Percent off the subtotal (1-100), when discounting by percentage.
+          format: int32
+        amountOff:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: Fixed amount off the subtotal, when discounting by a flat amount.
+      description: |-
+        A discount applied to a NIGHTLY subtotal once the stay reaches a minimum
+         length. Exactly one of percent_off or amount_off is set.
+    Media:
+      required:
+        - uri
+        - type
+      type: object
+      properties:
+        uri:
+          type: string
+          description: Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+        type:
+          type: integer
+          description: What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+          format: enum
+        title:
+          type: string
+          description: Short human-readable caption/title for display.
+        description:
+          type: string
+          description: Longer description or alt text.
+        mimeType:
+          type: string
+          description: MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+        sortOrder:
+          type: integer
+          description: Ordering hint within a gallery; lower sorts first.
+          format: int32
+        primary:
+          type: boolean
+          description: Whether this is the primary/hero asset of its gallery.
+      description: |-
+        A media asset in a Property's showcase gallery — an image, video, floor plan,
+         virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes
+         live in object storage (S3 or any HTTP-reachable host); this message only
+         carries the link and its presentation metadata. `UnitMedia` is the identical
+         per-Unit gallery; they are separate messages so the ORM materializes each as a
+         child table with a single owning parent.
+    Policy:
+      type: object
+      properties:
+        checkinTime:
+          allOf:
+            - $ref: '#/components/schemas/TimeOfDay'
+          description: Local check-in time (e.g. 14:00).
+        checkoutTime:
+          allOf:
+            - $ref: '#/components/schemas/TimeOfDay'
+          description: Local check-out time (e.g. 11:00).
+        houseRules:
+          type: array
+          items:
+            type: string
+          description: House rules shown to guests (e.g. "No smoking", "Pets on request").
+        notes:
+          type: string
+          description: Any additional free-text notes displayed with the policy.
+      description: |-
+        Guest-facing, informational property policy: what to *display* to a guest
+         (check-in/out hours, house rules). The enforced refund/stay rules that gate
+         bookability live on each Unit's Schedule (freebusy.schedule.v1), not here, so
+         there is a single source of truth for enforcement.
+    PostalAddress:
+      type: object
+      properties:
+        revision:
+          type: integer
+          description: |-
+            The schema revision of the `PostalAddress`. This must be set to 0, which is
+             the latest revision.
+
+             All new revisions **must** be backward compatible with old revisions.
+          format: int32
+        regionCode:
+          type: string
+          description: |-
+            Required. CLDR region code of the country/region of the address. This
+             is never inferred and it is up to the user to ensure the value is
+             correct. See https://cldr.unicode.org/ and
+             https://www.unicode.org/cldr/charts/30/supplemental/territory_information.html
+             for details. Example: "CH" for Switzerland.
+        languageCode:
+          type: string
+          description: |-
+            Optional. BCP-47 language code of the contents of this address (if
+             known). This is often the UI language of the input form or is expected
+             to match one of the languages used in the address' country/region, or their
+             transliterated equivalents.
+             This can affect formatting in certain countries, but is not critical
+             to the correctness of the data and will never affect any validation or
+             other non-formatting related operations.
+
+             If this value is not known, it should be omitted (rather than specifying a
+             possibly incorrect default).
+
+             Examples: "zh-Hant", "ja", "ja-Latn", "en".
+        postalCode:
+          type: string
+          description: |-
+            Optional. Postal code of the address. Not all countries use or require
+             postal codes to be present, but where they are used, they may trigger
+             additional validation with other parts of the address (for example,
+             state or zip code validation in the United States).
+        sortingCode:
+          type: string
+          description: |-
+            Optional. Additional, country-specific, sorting code. This is not used
+             in most regions. Where it is used, the value is either a string like
+             "CEDEX", optionally followed by a number (for example, "CEDEX 7"), or just
+             a number alone, representing the "sector code" (Jamaica), "delivery area
+             indicator" (Malawi) or "post office indicator" (Côte d'Ivoire).
+        administrativeArea:
+          type: string
+          description: |-
+            Optional. Highest administrative subdivision which is used for postal
+             addresses of a country or region.
+             For example, this can be a state, a province, an oblast, or a prefecture.
+             For Spain, this is the province and not the autonomous
+             community (for example, "Barcelona" and not "Catalonia").
+             Many countries don't use an administrative area in postal addresses. For
+             example, in Switzerland, this should be left unpopulated.
+        locality:
+          type: string
+          description: |-
+            Optional. Generally refers to the city or town portion of the address.
+             Examples: US city, IT comune, UK post town.
+             In regions of the world where localities are not well defined or do not fit
+             into this structure well, leave `locality` empty and use `address_lines`.
+        sublocality:
+          type: string
+          description: |-
+            Optional. Sublocality of the address.
+             For example, this can be a neighborhood, borough, or district.
+        addressLines:
+          type: array
+          items:
+            type: string
+          description: |-
+            Unstructured address lines describing the lower levels of an address.
+
+             Because values in `address_lines` do not have type information and may
+             sometimes contain multiple values in a single field (for example,
+             "Austin, TX"), it is important that the line order is clear. The order of
+             address lines should be "envelope order" for the country or region of the
+             address. In places where this can vary (for example, Japan),
+             `address_language` is used to make it explicit (for example, "ja" for
+             large-to-small ordering and "ja-Latn" or "en" for small-to-large). In this
+             way, the most specific line of an address can be selected based on the
+             language.
+
+             The minimum permitted structural representation of an address consists
+             of a `region_code` with all remaining information placed in the
+             `address_lines`. It would be possible to format such an address very
+             approximately without geocoding, but no semantic reasoning could be
+             made about any of the address components until it was at least
+             partially resolved.
+
+             Creating an address only containing a `region_code` and `address_lines` and
+             then geocoding is the recommended way to handle completely unstructured
+             addresses (as opposed to guessing which parts of the address should be
+             localities or administrative areas).
+        recipients:
+          type: array
+          items:
+            type: string
+          description: |-
+            Optional. The recipient at the address.
+             This field may, under certain circumstances, contain multiline information.
+             For example, it might contain "care of" information.
+        organization:
+          type: string
+          description: Optional. The name of the organization at the address.
+      description: |-
+        Represents a postal address, such as for postal delivery or payments
+         addresses. With a postal address, a postal service can deliver items to a
+         premise, P.O. box, or similar. A postal address is not intended to model
+         geographical locations like roads, towns, or mountains.
+
+         In typical usage, an address would be created by user input or from importing
+         existing data, depending on the type of process.
+
+         Advice on address input or editing:
+
+          - Use an internationalization-ready address widget such as
+          https://github.com/google/libaddressinput.
+          - Users should not be presented with UI elements for input or editing of
+          fields outside countries where that field is used.
+
+         For more guidance on how to use this schema, see:
+         https://support.google.com/business/answer/6397478.
+    Property:
+      required:
+        - organisation
+        - displayName
+        - timeZone
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The property name.
+             Format: properties/{property}
+        organisation:
+          type: string
+          description: |-
+            The chain/brand that owns this property.
+             Format: organisations/{organisation}
+        displayName:
+          type: string
+          description: Human-friendly name (e.g. "Grand Beach Resort, Goa").
+        description:
+          type: string
+          description: Free-form description shown on the property's page.
+        address:
+          allOf:
+            - $ref: '#/components/schemas/PostalAddress'
+          description: Postal address of the property.
+        timeZone:
+          type: string
+          description: IANA timezone (e.g. "Asia/Kolkata") the property operates in.
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/Media'
+          description: |-
+            Showcase gallery and documents (images, video, floor plans, PDFs).
+             Documents are Media with type DOCUMENT.
+        policy:
+          allOf:
+            - $ref: '#/components/schemas/Policy'
+          description: |-
+            Guest-facing informational policy (display only). The enforced rules
+             (cancellation, stay constraints, buffers) live per-Unit in the schedule
+             service, not here.
+        tags:
+          type: array
+          items:
+            type: string
+          description: Arbitrary tags for grouping and filtering (e.g. "beachfront", "5-star").
+        attributes:
+          type: object
+          description: Arbitrary attributes used for templating, policy, and segmentation.
+        units:
+          readOnly: true
+          type: array
+          items:
+            type: string
+          description: |-
+            Resource names of the units (room types) under this property; manage them
+             with the Unit standard methods.
+             Format: properties/{property}/units/{unit}
+        state:
+          readOnly: true
+          type: integer
+          description: Lifecycle state.
+          format: enum
+        createTime:
+          readOnly: true
+          type: string
+          description: Creation timestamp.
+          format: date-time
+        updateTime:
+          readOnly: true
+          type: string
+          description: Last-modification timestamp.
+          format: date-time
+        etag:
+          type: string
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A hotel (or other lodging property): the guest-facing venue a chain operates.
+         A Property belongs to an Organisation (the chain/brand) and carries the
+         showcase media, address, and informational policies shown to guests. Its
+         bookable inventory lives in child Units (room types); pricing and availability
+         are modeled there, not here.
+    RateOverride:
+      required:
+        - price
+      type: object
+      properties:
+        dateRange:
+          allOf:
+            - $ref: '#/components/schemas/DateRange'
+          description: |-
+            Dates the override applies to, in the unit's timezone. Unset means it
+             applies on every date (a pure weekday rule).
+        weekdays:
+          type: array
+          items:
+            type: integer
+            format: enum
+          description: Weekdays the override applies to. Empty means every day within date_range.
+        price:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: The price in effect while this override matches.
+      description: |-
+        A price override for a span of dates and/or specific weekdays, layered over a
+         unit's base `price`. The price is still interpreted per the unit's
+         pricing_unit (per night, per booking, per person).
+    Tax:
+      required:
+        - code
+        - percent
+      type: object
+      properties:
+        code:
+          type: string
+          description: Stable machine code, e.g. "occupancy_tax" or "gst".
+        displayName:
+          type: string
+          description: Human-readable label for receipts.
+        percent:
+          type: number
+          description: Tax rate as a percentage, e.g. 12 for 12% GST.
+          format: double
+      description: |-
+        A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces
+         as a TYPE_TAX line in a booking's price_components.
+    TimeOfDay:
+      type: object
+      properties:
+        hours:
+          type: integer
+          description: |-
+            Hours of a day in 24 hour format. Must be greater than or equal to 0 and
+             typically must be less than or equal to 23. An API may choose to allow the
+             value "24:00:00" for scenarios like business closing time.
+          format: int32
+        minutes:
+          type: integer
+          description: |-
+            Minutes of an hour. Must be greater than or equal to 0 and less than or
+             equal to 59.
+          format: int32
+        seconds:
+          type: integer
+          description: |-
+            Seconds of a minute. Must be greater than or equal to 0 and typically must
+             be less than or equal to 59. An API may allow the value 60 if it allows
+             leap-seconds.
+          format: int32
+        nanos:
+          type: integer
+          description: |-
+            Fractions of seconds, in nanoseconds. Must be greater than or equal to 0
+             and less than or equal to 999,999,999.
+          format: int32
+      description: |-
+        Represents a time of day. The date and time zone are either not significant
+         or are specified elsewhere. An API may choose to allow leap seconds. Related
+         types are [google.type.Date][google.type.Date] and
+         `google.protobuf.Timestamp`.
+    UnarchivePropertyRequest:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The property to restore to the active state.
+             Format: properties/{property}
+      description: Request message for UnarchiveProperty.
+    Unit:
+      required:
+        - displayName
+        - type
+        - bookingMode
+        - timeZone
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The unit name.
+             Format: properties/{property}/units/{unit}
+        displayName:
+          type: string
+          description: Human-friendly name (e.g. "Deluxe King", "Sea-View Suite").
+        description:
+          type: string
+          description: Free-form description.
+        type:
+          type: integer
+          description: What kind of unit this is.
+          format: enum
+        bookingMode:
+          type: integer
+          description: |-
+            How this unit is booked, and therefore the availability shape it yields.
+             Immutable: flipping it after bookings exist would invalidate every existing
+             booking and availability computation.
+          format: enum
+        capacity:
+          type: integer
+          description: Number of interchangeable units in the pool. Defaults to 1 when unset.
+          format: int32
+        maxOccupancy:
+          type: integer
+          description: |-
+            Maximum guests per unit (occupancy limit). A future policy layer (OPA)
+             reads this to validate party size on a booking. Zero means unspecified.
+          format: int32
+        timeZone:
+          type: string
+          description: |-
+            IANA timezone the unit's hours and dates are evaluated in. Required so
+             availability is timezone-correct.
+        price:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: |-
+            Base price, interpreted per pricing_unit. For NIGHTLY units this is the
+             default nightly rate; rate_overrides layer seasonal/weekend rates on top.
+        pricingUnit:
+          type: integer
+          description: What the price is charged per.
+          format: enum
+        duration:
+          pattern: ^-?(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,9})?s$
+          type: string
+          description: Slot length. Required for TIME_SLOT units; ignored for NIGHTLY.
+        rateOverrides:
+          type: array
+          items:
+            $ref: '#/components/schemas/RateOverride'
+          description: |-
+            Rate calendar: date- and weekday-scoped overrides of `price`. For NIGHTLY
+             units this is the seasonal/weekend rate calendar. `price` is the default
+             when no override matches. Later-listed overrides win where they overlap.
+        losDiscounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/LosDiscount'
+          description: |-
+            Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at
+             least `min_nights` long. The most generous matching discount applies.
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fee'
+          description: |-
+            Fees added on top of the base subtotal (e.g. cleaning, service). Each
+             surfaces as a TYPE_FEE line in a booking's price_components.
+        taxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tax'
+          description: |-
+            Taxes applied to the taxable base (subtotal plus taxable fees). Each
+             surfaces as a TYPE_TAX line in a booking's price_components.
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnitMedia'
+          description: Showcase gallery and documents for this unit (images, video, floor plans).
+        applicablePromoCodes:
+          type: array
+          items:
+            type: string
+          description: |-
+            Promo codes advertised as applicable to this unit (an allow-list shown to
+             guests). Actual eligibility/validation still happens at booking time.
+             Format: promo-codes/{promo_code}
+        tags:
+          type: array
+          items:
+            type: string
+          description: Arbitrary tags for grouping and filtering.
+        attributes:
+          type: object
+          description: Arbitrary attributes used for templating, policy, and segmentation.
+        state:
+          readOnly: true
+          type: integer
+          description: Lifecycle state.
+          format: enum
+        createTime:
+          readOnly: true
+          type: string
+          description: Creation timestamp.
+          format: date-time
+        updateTime:
+          readOnly: true
+          type: string
+          description: Last-modification timestamp.
+          format: date-time
+        etag:
+          type: string
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A bookable unit type within a property: a pool of `capacity` interchangeable
+         rooms/units of the same kind (e.g. "Deluxe King", capacity 12). A Unit carries
+         its own pricing, media, occupancy limit, and the promo codes advertised for
+         it. The freebusy engine computes how many units are free for a window; its
+         booking_mode decides whether availability is time slots or per-night counts.
+    UnitMedia:
+      required:
+        - uri
+        - type
+      type: object
+      properties:
+        uri:
+          type: string
+          description: Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+        type:
+          type: integer
+          description: What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+          format: enum
+        title:
+          type: string
+          description: Short human-readable caption/title for display.
+        description:
+          type: string
+          description: Longer description or alt text.
+        mimeType:
+          type: string
+          description: MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+        sortOrder:
+          type: integer
+          description: Ordering hint within a gallery; lower sorts first.
+          format: int32
+        primary:
+          type: boolean
+          description: Whether this is the primary/hero asset of its gallery.
+      description: |-
+        A media asset in a Unit's gallery. Identical in shape to `Media`; kept a
+         separate message so the ORM gives it its own child table owned solely by the
+         Unit (a single unit_id foreign key).
+    ArchiveResourceRequest:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The resource to archive.
+             Format: resources/{resource}
+      description: Request message for ArchiveResource.
     ListOfferingsResponse:
       type: object
       properties:
@@ -3467,26 +5610,6 @@ components:
           type: string
           description: Next page token, if more results remain. Omitted if this is the last page.
       description: Response message for ListResources.
-    LosDiscount:
-      required:
-        - minNights
-      type: object
-      properties:
-        minNights:
-          type: integer
-          description: Minimum nights for the discount to apply.
-          format: int32
-        percentOff:
-          type: integer
-          description: Percent off the subtotal (1-100), when discounting by percentage.
-          format: int32
-        amountOff:
-          allOf:
-            - $ref: '#/components/schemas/Money'
-          description: Fixed amount off the subtotal, when discounting by a flat amount.
-      description: |-
-        A discount applied to a NIGHTLY subtotal once the stay reaches a minimum
-         length. Exactly one of percent_off or amount_off is set.
     Offering:
       required:
         - displayName
@@ -3567,31 +5690,6 @@ components:
         A specific way a resource can be booked, carrying its duration and price. A
          "30-min consult" and a "60-min session" are two offerings on the same
          provider. For NIGHTLY resources the duration is unused and price is per-night.
-    RateOverride:
-      required:
-        - price
-      type: object
-      properties:
-        dateRange:
-          allOf:
-            - $ref: '#/components/schemas/DateRange'
-          description: |-
-            Dates the override applies to, in the resource's timezone. Unset means it
-             applies on every date (a pure weekday rule).
-        weekdays:
-          type: array
-          items:
-            type: integer
-            format: enum
-          description: Weekdays the override applies to. Empty means every day within date_range.
-        price:
-          allOf:
-            - $ref: '#/components/schemas/Money'
-          description: The price in effect while this override matches.
-      description: |-
-        A price override for a span of dates and/or specific weekdays, layered over an
-         offering's base `price`. The price is still interpreted per the offering's
-         pricing_unit (per night, per booking, per person).
     Resource:
       required:
         - displayName
@@ -3671,25 +5769,6 @@ components:
          resource is a pool of `capacity` interchangeable units; the freebusy engine
          computes how many are free for a given window. Its booking_mode decides
          whether availability is produced as time slots or per-night counts.
-    Tax:
-      required:
-        - code
-        - percent
-      type: object
-      properties:
-        code:
-          type: string
-          description: Stable machine code, e.g. "occupancy_tax" or "vat".
-        displayName:
-          type: string
-          description: Human-readable label for receipts.
-        percent:
-          type: number
-          description: Tax rate as a percentage, e.g. 8.5 for 8.5%.
-          format: double
-      description: |-
-        A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces
-         as a TYPE_TAX line in a booking's price_components.
     UnarchiveResourceRequest:
       required:
         - name
@@ -3710,20 +5789,20 @@ components:
           type: string
           description: |-
             The exception name.
-             Format: resources/{resource}/availabilityExceptions/{availability_exception}
+             Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
         kind:
           type: integer
-          description: Whether this span closes the resource or adds extra availability.
+          description: Whether this span closes the unit or adds extra availability.
           format: enum
         window:
           allOf:
             - $ref: '#/components/schemas/TimeWindow'
-          description: An exact time window, the natural form for TIME_SLOT resources.
+          description: An exact time window, the natural form for TIME_SLOT units.
         dateRange:
           allOf:
             - $ref: '#/components/schemas/DateRange'
           description: |-
-            A range of whole calendar dates in the resource's timezone, the natural
+            A range of whole calendar dates in the unit's timezone, the natural
              form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26").
         reason:
           type: string
@@ -3734,7 +5813,7 @@ components:
           description: Creation timestamp.
           format: date-time
       description: |-
-        An override of a resource's normal hours on a specific span: a blackout /
+        An override of a unit's normal hours on a specific span: a blackout /
          holiday closure, or extra hours beyond the recurring rules.
     BufferSettings:
       type: object
@@ -3806,7 +5885,7 @@ components:
              day (e.g. opens "22:00", closes "02:00").
       description: |-
         A recurring availability window expressed as an RRULE plus a daily open span.
-         The freebusy engine expands these against the resource's timezone.
+         The freebusy engine expands these against the unit's timezone.
     RefundTier:
       required:
         - cutoff
@@ -3831,7 +5910,7 @@ components:
           type: string
           description: |-
             The schedule name.
-             Format: resources/{resource}/schedule
+             Format: properties/{property}/units/{unit}/schedule
         recurringRules:
           type: array
           items:
@@ -3844,7 +5923,7 @@ components:
         stayConstraints:
           allOf:
             - $ref: '#/components/schemas/StayConstraints'
-          description: Stay rules (NIGHTLY resources).
+          description: Stay rules (NIGHTLY units).
         exceptions:
           readOnly: true
           type: array
@@ -3853,19 +5932,19 @@ components:
           description: |-
             Resource names of the active exceptions; manage them with the
              AvailabilityException standard methods.
-             Format: resources/{resource}/availabilityExceptions/{availability_exception}
+             Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
         cancellationPolicy:
           allOf:
             - $ref: '#/components/schemas/CancellationPolicy'
           description: |-
-            Refund rules applied when a booking on this resource is cancelled. Unset
+            Refund rules applied when a booking on this unit is cancelled. Unset
              means cancellations are non-refundable by default.
         etag:
           type: string
           description: Opaque version for optimistic concurrency (AIP-154); echo on update.
       description: |-
-        Aggregate read view of a resource's availability configuration: the inputs the
-         freebusy engine consumes. Modeled as a singleton resource, one per resource.
+        Aggregate read view of a unit's availability configuration: the inputs the
+         freebusy engine consumes. Modeled as a singleton resource, one per unit.
     StayConstraints:
       type: object
       properties:
@@ -3897,4 +5976,4 @@ components:
           type: integer
           description: Latest a stay may begin, in days from now. Zero means no limit.
           format: int32
-      description: Stay rules that affect bookability for NIGHTLY resources.
+      description: Stay rules that affect bookability for NIGHTLY units.

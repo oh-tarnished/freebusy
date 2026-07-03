@@ -247,7 +247,7 @@ components:
           items:
             description: A redeemable discount applied to a booking's subtotal. Scoped
               by a redemption window, usage caps, a minimum subtotal, and an optional
-              set of resources / offerings it applies to.
+              set of properties / units it applies to.
             properties:
               code:
                 description: The human-entered code, unique across all promo codes

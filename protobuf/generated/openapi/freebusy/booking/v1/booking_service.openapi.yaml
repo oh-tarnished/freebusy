@@ -293,7 +293,7 @@ components:
                 window:
                     allOf:
                         - $ref: '#/components/schemas/TimeWindow'
-                    description: The reserved span. For NIGHTLY resources this spans check-in to check-out.
+                    description: The reserved span. For NIGHTLY units this spans check-in to check-out.
                 assignedUnit:
                     readOnly: true
                     type: string

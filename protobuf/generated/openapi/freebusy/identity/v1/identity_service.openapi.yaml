@@ -15,7 +15,7 @@ paths:
         get:
             tags:
                 - IdentityService
-            description: Lists users sharing an organisation with the caller.
+            description: Lists users.
             operationId: IdentityService_ListUsers
             parameters:
                 - name: pageSize

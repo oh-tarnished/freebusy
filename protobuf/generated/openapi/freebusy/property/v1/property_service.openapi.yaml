@@ -554,11 +554,12 @@ components:
                     type: boolean
                     description: Whether this is the primary/hero asset of its gallery.
             description: |-
-                A reference to a media asset — a showcase image, video, floor plan, virtual
-                 tour, or a document (PDF fact sheet, policy, house rules). The bytes live in
-                 object storage (S3 or any HTTP-reachable host); this message only carries the
-                 link and its presentation metadata. Attached wherever a resource wants a
-                 gallery, e.g. a Property (hotel) or a Unit (room).
+                A media asset in a Property's showcase gallery — an image, video, floor plan,
+                 virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes
+                 live in object storage (S3 or any HTTP-reachable host); this message only
+                 carries the link and its presentation metadata. `UnitMedia` is the identical
+                 per-Unit gallery; they are separate messages so the ORM materializes each as a
+                 child table with a single owning parent.
         Money:
             type: object
             properties:
@@ -1014,7 +1015,7 @@ components:
                 media:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Media'
+                        $ref: '#/components/schemas/UnitMedia'
                     description: Showcase gallery and documents for this unit (images, video, floor plans).
                 applicablePromoCodes:
                     type: array
@@ -1056,5 +1057,38 @@ components:
                  its own pricing, media, occupancy limit, and the promo codes advertised for
                  it. The freebusy engine computes how many units are free for a window; its
                  booking_mode decides whether availability is time slots or per-night counts.
+        UnitMedia:
+            required:
+                - uri
+                - type
+            type: object
+            properties:
+                uri:
+                    type: string
+                    description: Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+                type:
+                    type: integer
+                    description: What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+                    format: enum
+                title:
+                    type: string
+                    description: Short human-readable caption/title for display.
+                description:
+                    type: string
+                    description: Longer description or alt text.
+                mimeType:
+                    type: string
+                    description: MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+                sortOrder:
+                    type: integer
+                    description: Ordering hint within a gallery; lower sorts first.
+                    format: int32
+                primary:
+                    type: boolean
+                    description: Whether this is the primary/hero asset of its gallery.
+            description: |-
+                A media asset in a Unit's gallery. Identical in shape to `Media`; kept a
+                 separate message so the ORM gives it its own child table owned solely by the
+                 Unit (a single unit_id foreign key).
 tags:
     - name: PropertyService

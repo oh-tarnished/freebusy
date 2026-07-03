@@ -112,12 +112,13 @@ components:
               description: Showcase gallery and documents (images, video, floor plans,
                 PDFs). Documents are Media with type DOCUMENT.
               items:
-                description: A reference to a media asset — a showcase image, video,
-                  floor plan, virtual tour, or a document (PDF fact sheet, policy,
-                  house rules). The bytes live in object storage (S3 or any HTTP-reachable
-                  host); this message only carries the link and its presentation metadata.
-                  Attached wherever a resource wants a gallery, e.g. a Property (hotel)
-                  or a Unit (room).
+                description: A media asset in a Property's showcase gallery — an image,
+                  video, floor plan, virtual tour, or a document (PDF fact sheet,
+                  policy, house rules). The bytes live in object storage (S3 or any
+                  HTTP-reachable host); this message only carries the link and its
+                  presentation metadata. `UnitMedia` is the identical per-Unit gallery;
+                  they are separate messages so the ORM materializes each as a child
+                  table with a single owning parent.
                 properties:
                   description:
                     description: Longer description or alt text.
@@ -431,12 +432,9 @@ components:
               description: Showcase gallery and documents for this unit (images, video,
                 floor plans).
               items:
-                description: A reference to a media asset — a showcase image, video,
-                  floor plan, virtual tour, or a document (PDF fact sheet, policy,
-                  house rules). The bytes live in object storage (S3 or any HTTP-reachable
-                  host); this message only carries the link and its presentation metadata.
-                  Attached wherever a resource wants a gallery, e.g. a Property (hotel)
-                  or a Unit (room).
+                description: A media asset in a Unit's gallery. Identical in shape
+                  to `Media`; kept a separate message so the ORM gives it its own
+                  child table owned solely by the Unit (a single unit_id foreign key).
                 properties:
                   description:
                     description: Longer description or alt text.
@@ -815,12 +813,13 @@ components:
                 description: Showcase gallery and documents (images, video, floor
                   plans, PDFs). Documents are Media with type DOCUMENT.
                 items:
-                  description: A reference to a media asset — a showcase image, video,
-                    floor plan, virtual tour, or a document (PDF fact sheet, policy,
-                    house rules). The bytes live in object storage (S3 or any HTTP-reachable
-                    host); this message only carries the link and its presentation
-                    metadata. Attached wherever a resource wants a gallery, e.g. a
-                    Property (hotel) or a Unit (room).
+                  description: A media asset in a Property's showcase gallery — an
+                    image, video, floor plan, virtual tour, or a document (PDF fact
+                    sheet, policy, house rules). The bytes live in object storage
+                    (S3 or any HTTP-reachable host); this message only carries the
+                    link and its presentation metadata. `UnitMedia` is the identical
+                    per-Unit gallery; they are separate messages so the ORM materializes
+                    each as a child table with a single owning parent.
                   properties:
                     description:
                       description: Longer description or alt text.
@@ -1155,12 +1154,10 @@ components:
                 description: Showcase gallery and documents for this unit (images,
                   video, floor plans).
                 items:
-                  description: A reference to a media asset — a showcase image, video,
-                    floor plan, virtual tour, or a document (PDF fact sheet, policy,
-                    house rules). The bytes live in object storage (S3 or any HTTP-reachable
-                    host); this message only carries the link and its presentation
-                    metadata. Attached wherever a resource wants a gallery, e.g. a
-                    Property (hotel) or a Unit (room).
+                  description: A media asset in a Unit's gallery. Identical in shape
+                    to `Media`; kept a separate message so the ORM gives it its own
+                    child table owned solely by the Unit (a single unit_id foreign
+                    key).
                   properties:
                     description:
                       description: Longer description or alt text.
@@ -1494,12 +1491,13 @@ components:
               description: Showcase gallery and documents (images, video, floor plans,
                 PDFs). Documents are Media with type DOCUMENT.
               items:
-                description: A reference to a media asset — a showcase image, video,
-                  floor plan, virtual tour, or a document (PDF fact sheet, policy,
-                  house rules). The bytes live in object storage (S3 or any HTTP-reachable
-                  host); this message only carries the link and its presentation metadata.
-                  Attached wherever a resource wants a gallery, e.g. a Property (hotel)
-                  or a Unit (room).
+                description: A media asset in a Property's showcase gallery — an image,
+                  video, floor plan, virtual tour, or a document (PDF fact sheet,
+                  policy, house rules). The bytes live in object storage (S3 or any
+                  HTTP-reachable host); this message only carries the link and its
+                  presentation metadata. `UnitMedia` is the identical per-Unit gallery;
+                  they are separate messages so the ORM materializes each as a child
+                  table with a single owning parent.
                 properties:
                   description:
                     description: Longer description or alt text.
@@ -1807,12 +1805,9 @@ components:
               description: Showcase gallery and documents for this unit (images, video,
                 floor plans).
               items:
-                description: A reference to a media asset — a showcase image, video,
-                  floor plan, virtual tour, or a document (PDF fact sheet, policy,
-                  house rules). The bytes live in object storage (S3 or any HTTP-reachable
-                  host); this message only carries the link and its presentation metadata.
-                  Attached wherever a resource wants a gallery, e.g. a Property (hotel)
-                  or a Unit (room).
+                description: A media asset in a Unit's gallery. Identical in shape
+                  to `Media`; kept a separate message so the ORM gives it its own
+                  child table owned solely by the Unit (a single unit_id foreign key).
                 properties:
                   description:
                     description: Longer description or alt text.

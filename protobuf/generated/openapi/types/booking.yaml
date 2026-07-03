@@ -249,8 +249,8 @@ components:
           format: date-time
           type: string
         window:
-          description: The reserved span. For NIGHTLY resources this spans check-in
-            to check-out.
+          description: The reserved span. For NIGHTLY units this spans check-in to
+            check-out.
           properties:
             endTime:
               description: Exclusive end of the interval.
