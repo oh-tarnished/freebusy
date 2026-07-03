@@ -49,11 +49,11 @@ func TestParseFilter(t *testing.T) {
 
 func TestParseFilterErrors(t *testing.T) {
 	for _, filter := range []string{
-		"= ACTIVE",          // leading operator
-		"state =",           // missing value
-		"state = = ACTIVE",  // operator where value expected
+		"= ACTIVE",           // leading operator
+		"state =",            // missing value
+		"state = = ACTIVE",   // operator where value expected
 		`code : "unbalanced`, // unterminated quote
-		"code ! ACTIVE",     // lone bang
+		"code ! ACTIVE",      // lone bang
 	} {
 		t.Run(filter, func(t *testing.T) {
 			if _, err := ParseFilter(filter); !errors.Is(err, ErrInvalidArgument) {

@@ -113,11 +113,11 @@ func int32Wrapper(w *wrapperspb.Int32Value) *int32 {
 // persists it in one transaction (moneys and children before the resource that
 // references them; join rows after the scope they belong to).
 type promoGraph struct {
-	promo     *promocode.PromoCode
-	discount  *promocode.Discount
-	window    *promocode.RedemptionWindow
-	limits    *promocode.UsageLimits
-	scope     *promocode.Scope
+	promo      *promocode.PromoCode
+	discount   *promocode.Discount
+	window     *promocode.RedemptionWindow
+	limits     *promocode.UsageLimits
+	scope      *promocode.Scope
 	moneys     []*common.Money
 	properties []*promocode.ScopeApplicableProperties
 	units      []*promocode.ScopeApplicableUnits

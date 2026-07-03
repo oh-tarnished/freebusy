@@ -4,14 +4,14 @@ import (
 	"strings"
 	"time"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/discountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/redemptionwindowsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
 	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/usagelimitsql"
 	"github.com/oh-tarnished/freebusy/internal/service/promocode/discount"
@@ -112,14 +112,14 @@ func moneyFromModel(m *commonschema.CommonMoneys) *money.Money {
 // (Money rows and children before the resource that references them; join rows
 // after the scope they belong to).
 type graph struct {
-	resource  resourceql.CreateInput
-	discount  discountsql.CreateInput
-	window    *redemptionwindowsql.CreateInput
-	limits    *usagelimitsql.CreateInput
-	scope     *scopesql.CreateInput
-	moneys    []moneysql.CreateInput
+	resource   resourceql.CreateInput
+	discount   discountsql.CreateInput
+	window     *redemptionwindowsql.CreateInput
+	limits     *usagelimitsql.CreateInput
+	scope      *scopesql.CreateInput
+	moneys     []moneysql.CreateInput
 	properties []scopeapplicablepropertiesql.CreateInput
-	units []scopeapplicableunitsql.CreateInput
+	units      []scopeapplicableunitsql.CreateInput
 }
 
 // buildGraph turns a proto PromoCode into the insert graph that backs it, minting
@@ -200,8 +200,8 @@ func buildGraph(pc *promocodepbv1.PromoCode, now time.Time) *graph {
 		}
 		for _, name := range sc.GetApplicableUnits() {
 			g.units = append(g.units, scopeapplicableunitsql.CreateInput{
-				Id:           ulid.GenerateString(),
-				ScopeId:      sID,
+				Id:       ulid.GenerateString(),
+				ScopeId:  sID,
 				UnitId:   lastSegment(name),
 				UnitName: name,
 			})
@@ -213,15 +213,15 @@ func buildGraph(pc *promocodepbv1.PromoCode, now time.Time) *graph {
 
 // parts holds a stored resource row and the child rows fetched to hydrate it.
 type parts struct {
-	res       *pcschema.PromocodeResource
-	discount  *pcschema.PromocodeDiscounts
-	amountOff *commonschema.CommonMoneys
-	window    *pcschema.PromocodeRedemptionWindows
-	limits    *pcschema.PromocodeUsageLimits
-	scope     *pcschema.PromocodeScopes
-	minSub    *commonschema.CommonMoneys
+	res        *pcschema.PromocodeResource
+	discount   *pcschema.PromocodeDiscounts
+	amountOff  *commonschema.CommonMoneys
+	window     *pcschema.PromocodeRedemptionWindows
+	limits     *pcschema.PromocodeUsageLimits
+	scope      *pcschema.PromocodeScopes
+	minSub     *commonschema.CommonMoneys
 	properties []pcschema.PromocodeScopeApplicableProperties
-	units []pcschema.PromocodeScopeApplicableUnits
+	units      []pcschema.PromocodeScopeApplicableUnits
 }
 
 // fromParts assembles the protobuf PromoCode from a stored resource row and its
