@@ -37,10 +37,10 @@ service BookingService {
       body: "booking"
     };
     option (google.api.method_signature) = "booking,booking_id";
-    option (mcp.tool) = {description: "Create a booking and place a hold on a resource for a span. Requires an idempotency key; optionally apply a promo code."};
+    option (mcp.tool) = {description: "Create a booking and place a hold on a unit for a span. Requires an idempotency key; optionally apply a promo code."};
     option (mcp.prompt) = {
       name: "book_slot"
-      description: "Book a resource at a given time"
+      description: "Book a unit at a given time"
       schema: "freebusy.booking.v1.BookSlotArgs"
     };
   }
@@ -55,7 +55,7 @@ service BookingService {
   // Lists bookings.
   rpc ListBookings(ListBookingsRequest) returns (ListBookingsResponse) {
     option (google.api.http) = {get: "/v1/bookings"};
-    option (mcp.tool) = {description: "List bookings. Filter by resource, customer, status, or overlapping time window, and paginate."};
+    option (mcp.tool) = {description: "List bookings. Filter by unit, customer, status, or overlapping time window, and paginate."};
   }
 
   // Confirms a held booking.
@@ -85,7 +85,7 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name";
-    option (mcp.tool) = {description: "Preview the refund amount and percent a cancellation would yield right now under the resource's cancellation policy, without cancelling."};
+    option (mcp.tool) = {description: "Preview the refund amount and percent a cancellation would yield right now under the unit's cancellation policy, without cancelling."};
   }
 
   // Reschedules a booking to a new span.
@@ -95,6 +95,6 @@ service BookingService {
       body: "*"
     };
     option (google.api.method_signature) = "name,window";
-    option (mcp.tool) = {description: "Move a booking to a new span (and optionally offering), re-checking availability on the new window."};
+    option (mcp.tool) = {description: "Move a booking to a new span (and optionally unit), re-checking availability on the new window."};
   }
 }

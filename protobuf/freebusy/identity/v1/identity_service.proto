@@ -28,13 +28,13 @@ service IdentityService {
   rpc GetUser(GetUserRequest) returns (User) {
     option (google.api.http) = {get: "/v1/{name=users/*}"};
     option (google.api.method_signature) = "name";
-    option (mcp.tool) = {description: "Get a user (\"users/me\" for the signed-in caller), including profile and organisation memberships."};
+    option (mcp.tool) = {description: "Get a user (\"users/me\" for the signed-in caller), including profile preferences."};
   }
 
-  // Lists users sharing an organisation with the caller.
+  // Lists users.
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
     option (google.api.http) = {get: "/v1/users"};
-    option (mcp.tool) = {description: "List users sharing an organisation with the caller; filter by organisation or display name."};
+    option (mcp.tool) = {description: "List users; filter by display name or email."};
   }
 
   // Updates the signed-in user's profile.

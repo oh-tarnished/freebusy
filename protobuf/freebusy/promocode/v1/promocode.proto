@@ -25,8 +25,8 @@ option (orm.v1.datasource) = {
 };
 
 // A redeemable discount applied to a booking's subtotal. Scoped by a redemption
-// window, usage caps, a minimum subtotal, and an optional set of resources /
-// offerings it applies to.
+// window, usage caps, a minimum subtotal, and an optional set of properties /
+// units it applies to.
 message PromoCode {
   option (google.api.resource) = {
     type: "freebusy.promocode.v1/PromoCode"

@@ -73,7 +73,7 @@ service PromoCodeService {
       body: "*"
     };
     option (google.api.method_signature) = "code,subtotal";
-    option (mcp.tool) = {description: "Check whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total."};
+    option (mcp.tool) = {description: "Check whether a code applies to a booking (property/unit/subtotal/customer) and compute the discount and final total."};
   }
 
   // Lists redemptions of a promo code (paged). Redemptions are created during

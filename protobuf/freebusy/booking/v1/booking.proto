@@ -64,7 +64,7 @@ message Booking {
   // Number of units / party size reserved. Defaults to 1.
   int32 units = 6 [(google.api.field_behavior) = OPTIONAL];
 
-  // The reserved span. For NIGHTLY resources this spans check-in to check-out.
+  // The reserved span. For NIGHTLY units this spans check-in to check-out.
   freebusy.shared.v1.TimeWindow window = 7 [(google.api.field_behavior) = REQUIRED];
 
   // Which specific unit of the pool was assigned (the shell's atomic pick).
