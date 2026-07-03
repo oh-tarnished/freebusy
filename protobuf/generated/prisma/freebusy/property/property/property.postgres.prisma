@@ -71,6 +71,9 @@ model Property {
   /// Back-relation: Unit records that reference this model via property_id.
   units Unit[]
 
+  /// Back-relation: Media records that reference this model via property_id.
+  medias Media[]
+
   /// Back-relation: PropertyUnits records that reference this model via property_id.
   unitsLink PropertyUnits[]
 
@@ -79,9 +82,6 @@ model Property {
 
   /// Back-relation: Schedule records that reference this model via property_id.
   resource2 Schedule[]
-
-  /// Back-relation: Media records that reference this model via property_id.
-  medias Media[]
 
   /// Composite index on [organisation].
   @@index([organisationID])
@@ -181,6 +181,9 @@ model Unit {
   /// Back-relation: Tax records that reference this model via unit_id.
   taxes Tax[]
 
+  /// Back-relation: UnitMedia records that reference this model via unit_id.
+  unitMedias UnitMedia[]
+
   /// Back-relation: PropertyUnits records that reference this model via unit_id.
   unitsLink PropertyUnits[]
 
@@ -190,15 +193,52 @@ model Unit {
   /// Back-relation: AvailabilityException records that reference this model via unit_id.
   availabilityExceptions AvailabilityException[]
 
-  /// Back-relation: Media records that reference this model via unit_id.
-  medias Media[]
-
   /// Composite index on [property_id].
   @@index([propertyID])
   /// Composite index on [price_id].
   @@index([priceID])
   /// Maps the model to the "units" table in the database.
   @@map("units")
+  /// Maps the model to the "property" schema in the database.
+  @@schema("property")
+}
+
+/// A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
+model Media {
+  /// Unique identifier for the record.
+  id String @id @default(ulid()) @map("id")
+
+  /// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+  uri String @map("uri")
+
+  /// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+  type MediaType @default(IMAGE) @map("type")
+
+  /// Short human-readable caption/title for display.
+  title String? @map("title")
+
+  /// Longer description or alt text.
+  description String? @map("description")
+
+  /// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+  mimeType String? @map("mime_type")
+
+  /// Ordering hint within a gallery; lower sorts first.
+  sortOrder Int? @map("sort_order")
+
+  /// Whether this is the primary/hero asset of its gallery.
+  primary Boolean? @map("primary")
+
+  /// Foreign key to Property.
+  propertyID String @map("property_id")
+
+  /// Relation to Property via property_id.
+  property Property @relation(fields: [propertyID], references: [id], onDelete: Cascade)
+
+  /// Composite index on [property_id].
+  @@index([propertyID])
+  /// Maps the model to the "medias" table in the database.
+  @@map("medias")
   /// Maps the model to the "property" schema in the database.
   @@schema("property")
 }
@@ -366,6 +406,46 @@ model Tax {
   @@index([unitID])
   /// Maps the model to the "taxes" table in the database.
   @@map("taxes")
+  /// Maps the model to the "property" schema in the database.
+  @@schema("property")
+}
+
+/// A media asset in a Unit's gallery. Identical in shape to `Media`; kept a separate message so the ORM gives it its own child table owned solely by the Unit (a single unit_id foreign key).
+model UnitMedia {
+  /// Unique identifier for the record.
+  id String @id @default(ulid()) @map("id")
+
+  /// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+  uri String @map("uri")
+
+  /// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+  type MediaType @default(IMAGE) @map("type")
+
+  /// Short human-readable caption/title for display.
+  title String? @map("title")
+
+  /// Longer description or alt text.
+  description String? @map("description")
+
+  /// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+  mimeType String? @map("mime_type")
+
+  /// Ordering hint within a gallery; lower sorts first.
+  sortOrder Int? @map("sort_order")
+
+  /// Whether this is the primary/hero asset of its gallery.
+  primary Boolean? @map("primary")
+
+  /// Foreign key to Unit.
+  unitID String @map("unit_id")
+
+  /// Relation to Unit via unit_id.
+  unit Unit @relation(fields: [unitID], references: [id], onDelete: Cascade)
+
+  /// Composite index on [unit_id].
+  @@index([unitID])
+  /// Maps the model to the "unit_medias" table in the database.
+  @@map("unit_medias")
   /// Maps the model to the "property" schema in the database.
   @@schema("property")
 }

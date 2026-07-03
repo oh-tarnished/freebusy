@@ -15,10 +15,10 @@ Every protobuf module under `protobuf/`. Each row links to that module's generat
 | Identity | `freebusy.identity.v1` | 1 | 5 | 0 | [README](freebusy/identity/README.md) |
 | Organisation | `freebusy.organisation.v1` | 1 | 16 | 3 | [README](freebusy/organisation/README.md) |
 | Promocode | `freebusy.promocode.v1` | 1 | 17 | 3 | [README](freebusy/promocode/README.md) |
-| Property | `freebusy.property.v1` | 1 | 22 | 4 | [README](freebusy/property/README.md) |
+| Property | `freebusy.property.v1` | 1 | 24 | 4 | [README](freebusy/property/README.md) |
 | Schedule | `freebusy.schedule.v1` | 1 | 14 | 1 | [README](freebusy/schedule/README.md) |
-| Shared | `freebusy.shared.v1` | 0 | 5 | 4 | [README](freebusy/shared/README.md) |
-| **Total** | _9 modules_ | 8 | 134 | 24 | |
+| Shared | `freebusy.shared.v1` | 0 | 4 | 4 | [README](freebusy/shared/README.md) |
+| **Total** | _9 modules_ | 8 | 135 | 24 | |
 
 ## Dependency graph
 

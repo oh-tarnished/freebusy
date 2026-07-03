@@ -2,14 +2,14 @@
 // versions:
 // 	protoc-gen-orm 1.2.0
 // 	protoc (unknown)
-// source: freebusy/shared/v1/types.proto
+// source: freebusy/property/v1/property.proto
 //
 // database: freebusy
-// schema:   shared
+// schema:   property
 //
 // orm — https://github.com/the-protobuf-project/orm
 
-package shared
+package property
 
 import (
 	"context"
@@ -19,7 +19,7 @@ import (
 )
 
 // MediaStore provides typed CRUD access to Media records.
-// A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
+// A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
 type MediaStore struct{ DB *gorm.DB }
 
 // Compile-time proof that MediaStore satisfies the generic gormx.Store, so the
@@ -80,16 +80,6 @@ func (s *MediaStore) DeleteByID(ctx context.Context, id string) error {
 func (s *MediaStore) ListByPropertyID(ctx context.Context, id string, opts gormx.ListOptions) ([]Media, error) {
 	var out []Media
 	q := opts.Apply(s.DB.WithContext(ctx).Where("property_id = ?", id))
-	if err := q.Find(&out).Error; err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ListByUnitID returns the Media records whose unit_id matches id, with opts applied.
-func (s *MediaStore) ListByUnitID(ctx context.Context, id string, opts gormx.ListOptions) ([]Media, error) {
-	var out []Media
-	q := opts.Apply(s.DB.WithContext(ctx).Where("unit_id = ?", id))
 	if err := q.Find(&out).Error; err != nil {
 		return nil, err
 	}

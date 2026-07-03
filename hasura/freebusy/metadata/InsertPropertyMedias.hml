@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: InsertSharedMediasObject
+  name: InsertPropertyMediasObject
   fields:
     - name: description
       type: String_1
@@ -20,16 +20,14 @@ definition:
       type: String_1
     - name: type
       type: Enum
-    - name: unitId
-      type: String_1!
     - name: uri
       type: String_1!
   graphql:
-    typeName: InsertSharedMediasObject
-    inputTypeName: InsertSharedMediasObjectInput
+    typeName: InsertPropertyMediasObject
+    inputTypeName: InsertPropertyMediasObjectInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: insert_shared_medias_object
+      dataConnectorObjectType: insert_property_medias_object
       fieldMapping:
         description:
           column:
@@ -55,9 +53,6 @@ definition:
         type:
           column:
             name: type
-        unitId:
-          column:
-            name: unit_id
         uri:
           column:
             name: uri
@@ -66,7 +61,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: InsertSharedMediasObject
+  typeName: InsertPropertyMediasObject
   permissions:
     - role: admin
       output:
@@ -79,28 +74,27 @@ definition:
           - sortOrder
           - title
           - type
-          - unitId
           - uri
 
 ---
 kind: ObjectType
 version: v1
 definition:
-  name: InsertSharedMediasResponse
-  description: Responses from the 'insert_shared_medias' procedure
+  name: InsertPropertyMediasResponse
+  description: Responses from the 'insert_property_medias' procedure
   fields:
     - name: affectedRows
       type: Int32!
       description: The number of rows affected by the mutation
     - name: returning
-      type: "[SharedMedias!]!"
+      type: "[PropertyMedias!]!"
       description: Data from rows affected by the mutation
   graphql:
-    typeName: InsertSharedMediasResponse
-    inputTypeName: InsertSharedMediasResponseInput
+    typeName: InsertPropertyMediasResponse
+    inputTypeName: InsertPropertyMediasResponseInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: insert_shared_medias_response
+      dataConnectorObjectType: insert_property_medias_response
       fieldMapping:
         affectedRows:
           column:
@@ -113,7 +107,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: InsertSharedMediasResponse
+  typeName: InsertPropertyMediasResponse
   permissions:
     - role: admin
       output:
@@ -125,31 +119,31 @@ definition:
 kind: Command
 version: v1
 definition:
-  name: InsertSharedMedias
-  outputType: InsertSharedMediasResponse!
+  name: InsertPropertyMedias
+  outputType: InsertPropertyMediasResponse!
   arguments:
     - name: objects
-      type: "[InsertSharedMediasObject!]!"
+      type: "[InsertPropertyMediasObject!]!"
     - name: postCheck
-      type: SharedMediasBoolExp
-      description: Insert permission predicate over the 'shared_medias' collection
+      type: PropertyMediasBoolExp
+      description: Insert permission predicate over the 'property_medias' collection
   source:
     dataConnectorName: freebusy_pgsql
     dataConnectorCommand:
-      procedure: insert_shared_medias
+      procedure: insert_property_medias
     argumentMapping:
       objects: objects
       postCheck: post_check
   graphql:
-    rootFieldName: insertSharedMedias
+    rootFieldName: insertPropertyMedias
     rootFieldKind: Mutation
-  description: Insert into the shared_medias table
+  description: Insert into the property_medias table
 
 ---
 kind: CommandPermissions
 version: v1
 definition:
-  commandName: InsertSharedMedias
+  commandName: InsertPropertyMedias
   permissions:
     - role: admin
       allowExecution: true

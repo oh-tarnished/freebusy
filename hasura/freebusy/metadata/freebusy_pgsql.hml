@@ -160,6 +160,13 @@ definition:
               unique_columns:
                 - id
         - arguments: {}
+          name: property_medias
+          type: property_medias
+          uniqueness_constraints:
+            medias_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
           name: property_policies
           type: property_policies
           uniqueness_constraints:
@@ -192,6 +199,13 @@ definition:
           type: property_unit_applicable_promo_codes
           uniqueness_constraints:
             unit_applicable_promo_codes_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: property_unit_medias
+          type: property_unit_medias
+          uniqueness_constraints:
+            unit_medias_pkey:
               unique_columns:
                 - id
         - arguments: {}
@@ -276,13 +290,6 @@ definition:
           type: shared_date_ranges
           uniqueness_constraints:
             date_ranges_pkey:
-              unique_columns:
-                - id
-        - arguments: {}
-          name: shared_medias
-          type: shared_medias
-          uniqueness_constraints:
-            medias_pkey:
               unique_columns:
                 - id
         - arguments: {}
@@ -1122,6 +1129,22 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        delete_property_medias_by_id_response:
+          description: Responses from the 'delete_property_medias_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_medias
+                  type: named
+                type: array
+          foreign_keys: {}
         delete_property_policies_by_id_response:
           description: Responses from the 'delete_property_policies_by_id' procedure
           fields:
@@ -1199,6 +1222,22 @@ definition:
               type:
                 element_type:
                   name: property_unit_applicable_promo_codes
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_property_unit_medias_by_id_response:
+          description: Responses from the 'delete_property_unit_medias_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_unit_medias
                   type: named
                 type: array
           foreign_keys: {}
@@ -1391,22 +1430,6 @@ definition:
               type:
                 element_type:
                   name: shared_date_ranges
-                  type: named
-                type: array
-          foreign_keys: {}
-        delete_shared_medias_by_id_response:
-          description: Responses from the 'delete_shared_medias_by_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: shared_medias
                   type: named
                 type: array
           foreign_keys: {}
@@ -2753,6 +2776,73 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        insert_property_medias_object:
+          fields:
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            mime_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            primary:
+              type:
+                type: nullable
+                underlying_type:
+                  name: bool
+                  type: named
+            property_id:
+              type:
+                name: text
+                type: named
+            sort_order:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+            title:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_media_type
+                  type: named
+            uri:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        insert_property_medias_response:
+          description: Responses from the 'insert_property_medias' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_medias
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_property_policies_object:
           fields:
             checkin_time:
@@ -3011,6 +3101,73 @@ definition:
               type:
                 element_type:
                   name: property_unit_applicable_promo_codes
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_property_unit_medias_object:
+          fields:
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            mime_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            primary:
+              type:
+                type: nullable
+                underlying_type:
+                  name: bool
+                  type: named
+            sort_order:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+            title:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_media_type
+                  type: named
+            unit_id:
+              type:
+                name: text
+                type: named
+            uri:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        insert_property_unit_medias_response:
+          description: Responses from the 'insert_property_unit_medias' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_unit_medias
                   type: named
                 type: array
           foreign_keys: {}
@@ -3620,77 +3777,6 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
-        insert_shared_medias_object:
-          fields:
-            description:
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            id:
-              type:
-                name: text
-                type: named
-            mime_type:
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            primary:
-              type:
-                type: nullable
-                underlying_type:
-                  name: bool
-                  type: named
-            property_id:
-              type:
-                name: text
-                type: named
-            sort_order:
-              type:
-                type: nullable
-                underlying_type:
-                  name: int4
-                  type: named
-            title:
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            type:
-              type:
-                type: nullable
-                underlying_type:
-                  name: shared_media_type
-                  type: named
-            unit_id:
-              type:
-                name: text
-                type: named
-            uri:
-              type:
-                name: text
-                type: named
-          foreign_keys: {}
-        insert_shared_medias_response:
-          description: Responses from the 'insert_shared_medias' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: shared_medias
-                  type: named
-                type: array
-          foreign_keys: {}
         insert_shared_price_components_object:
           fields:
             amount_id:
@@ -4296,6 +4382,60 @@ definition:
                 unit_id:
                   - id
               foreign_collection: property_units
+        property_medias:
+          fields:
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            mime_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            primary:
+              type:
+                type: nullable
+                underlying_type:
+                  name: bool
+                  type: named
+            property_id:
+              type:
+                name: text
+                type: named
+            sort_order:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+            title:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            type:
+              type:
+                name: property_media_type
+                type: named
+            uri:
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            medias_property_id_fkey:
+              column_mapping:
+                property_id:
+                  - id
+              foreign_collection: property_properties
         property_policies:
           fields:
             checkin_time:
@@ -4516,6 +4656,60 @@ definition:
                   - id
               foreign_collection: promocode_resource
             unit_applicable_promo_codes_unit_id_fkey:
+              column_mapping:
+                unit_id:
+                  - id
+              foreign_collection: property_units
+        property_unit_medias:
+          fields:
+            description:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            mime_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            primary:
+              type:
+                type: nullable
+                underlying_type:
+                  name: bool
+                  type: named
+            sort_order:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+            title:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            type:
+              type:
+                name: property_media_type
+                type: named
+            unit_id:
+              type:
+                name: text
+                type: named
+            uri:
+              type:
+                name: text
+                type: named
+          foreign_keys:
+            unit_medias_unit_id_fkey:
               column_mapping:
                 unit_id:
                   - id
@@ -5004,69 +5198,6 @@ definition:
                 name: date
                 type: named
           foreign_keys: {}
-        shared_medias:
-          fields:
-            description:
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            id:
-              type:
-                name: text
-                type: named
-            mime_type:
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            primary:
-              type:
-                type: nullable
-                underlying_type:
-                  name: bool
-                  type: named
-            property_id:
-              type:
-                name: text
-                type: named
-            sort_order:
-              type:
-                type: nullable
-                underlying_type:
-                  name: int4
-                  type: named
-            title:
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-            type:
-              type:
-                name: shared_media_type
-                type: named
-            unit_id:
-              type:
-                name: text
-                type: named
-            uri:
-              type:
-                name: text
-                type: named
-          foreign_keys:
-            medias_property_id_fkey:
-              column_mapping:
-                property_id:
-                  - id
-              foreign_collection: property_properties
-            medias_unit_id_fkey:
-              column_mapping:
-                unit_id:
-                  - id
-              foreign_collection: property_units
         shared_price_components:
           fields:
             amount_id:
@@ -7340,6 +7471,97 @@ definition:
                 name: text
                 type: named
           foreign_keys: {}
+        update_column_property_medias_description:
+          description: Update the 'description' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_medias_id:
+          description: Update the 'id' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_medias_mime_type:
+          description: Update the 'mime_type' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_medias_primary:
+          description: Update the 'primary' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: bool
+                  type: named
+          foreign_keys: {}
+        update_column_property_medias_property_id:
+          description: Update the 'property_id' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_medias_sort_order:
+          description: Update the 'sort_order' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+          foreign_keys: {}
+        update_column_property_medias_title:
+          description: Update the 'title' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_medias_type:
+          description: Update the 'type' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: property_media_type
+                type: named
+          foreign_keys: {}
+        update_column_property_medias_uri:
+          description: Update the 'uri' column in the 'property_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
         update_column_property_policies_checkin_time:
           description: Update the 'checkin_time' column in the 'property_policies' collection
           fields:
@@ -7657,6 +7879,97 @@ definition:
           foreign_keys: {}
         update_column_property_unit_applicable_promo_codes_unit_id:
           description: Update the 'unit_id' column in the 'property_unit_applicable_promo_codes' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_description:
+          description: Update the 'description' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_id:
+          description: Update the 'id' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_mime_type:
+          description: Update the 'mime_type' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_primary:
+          description: Update the 'primary' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: bool
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_sort_order:
+          description: Update the 'sort_order' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: int4
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_title:
+          description: Update the 'title' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_type:
+          description: Update the 'type' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: property_media_type
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_unit_id:
+          description: Update the 'unit_id' column in the 'property_unit_medias' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_medias_uri:
+          description: Update the 'uri' column in the 'property_unit_medias' collection
           fields:
             _set:
               description: Set the column to this value
@@ -8400,106 +8713,6 @@ definition:
               description: Set the column to this value
               type:
                 name: date
-                type: named
-          foreign_keys: {}
-        update_column_shared_medias_description:
-          description: Update the 'description' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-          foreign_keys: {}
-        update_column_shared_medias_id:
-          description: Update the 'id' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: text
-                type: named
-          foreign_keys: {}
-        update_column_shared_medias_mime_type:
-          description: Update the 'mime_type' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-          foreign_keys: {}
-        update_column_shared_medias_primary:
-          description: Update the 'primary' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: bool
-                  type: named
-          foreign_keys: {}
-        update_column_shared_medias_property_id:
-          description: Update the 'property_id' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: text
-                type: named
-          foreign_keys: {}
-        update_column_shared_medias_sort_order:
-          description: Update the 'sort_order' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: int4
-                  type: named
-          foreign_keys: {}
-        update_column_shared_medias_title:
-          description: Update the 'title' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                type: nullable
-                underlying_type:
-                  name: text
-                  type: named
-          foreign_keys: {}
-        update_column_shared_medias_type:
-          description: Update the 'type' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: shared_media_type
-                type: named
-          foreign_keys: {}
-        update_column_shared_medias_unit_id:
-          description: Update the 'unit_id' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: text
-                type: named
-          foreign_keys: {}
-        update_column_shared_medias_uri:
-          description: Update the 'uri' column in the 'shared_medias' collection
-          fields:
-            _set:
-              description: Set the column to this value
-              type:
-                name: text
                 type: named
           foreign_keys: {}
         update_column_shared_price_components_amount_id:
@@ -9612,6 +9825,89 @@ definition:
                   name: update_column_property_los_discounts_unit_id
                   type: named
           foreign_keys: {}
+        update_property_medias_by_id_response:
+          description: Responses from the 'update_property_medias_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_medias
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_property_medias_by_id_update_columns:
+          description: Update the columns of the 'property_medias' collection
+          fields:
+            description:
+              description: Update the 'description' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_description
+                  type: named
+            id:
+              description: Update the 'id' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_id
+                  type: named
+            mime_type:
+              description: Update the 'mime_type' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_mime_type
+                  type: named
+            primary:
+              description: Update the 'primary' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_primary
+                  type: named
+            property_id:
+              description: Update the 'property_id' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_property_id
+                  type: named
+            sort_order:
+              description: Update the 'sort_order' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_sort_order
+                  type: named
+            title:
+              description: Update the 'title' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_title
+                  type: named
+            type:
+              description: Update the 'type' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_type
+                  type: named
+            uri:
+              description: Update the 'uri' column in the 'property_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_medias_uri
+                  type: named
+          foreign_keys: {}
         update_property_policies_by_id_response:
           description: Responses from the 'update_property_policies_by_id' procedure
           fields:
@@ -9934,6 +10230,89 @@ definition:
                 type: nullable
                 underlying_type:
                   name: update_column_property_unit_applicable_promo_codes_unit_id
+                  type: named
+          foreign_keys: {}
+        update_property_unit_medias_by_id_response:
+          description: Responses from the 'update_property_unit_medias_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_unit_medias
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_property_unit_medias_by_id_update_columns:
+          description: Update the columns of the 'property_unit_medias' collection
+          fields:
+            description:
+              description: Update the 'description' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_description
+                  type: named
+            id:
+              description: Update the 'id' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_id
+                  type: named
+            mime_type:
+              description: Update the 'mime_type' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_mime_type
+                  type: named
+            primary:
+              description: Update the 'primary' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_primary
+                  type: named
+            sort_order:
+              description: Update the 'sort_order' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_sort_order
+                  type: named
+            title:
+              description: Update the 'title' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_title
+                  type: named
+            type:
+              description: Update the 'type' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_type
+                  type: named
+            unit_id:
+              description: Update the 'unit_id' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_unit_id
+                  type: named
+            uri:
+              description: Update the 'uri' column in the 'property_unit_medias' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_medias_uri
                   type: named
           foreign_keys: {}
         update_property_units_by_id_response:
@@ -10694,96 +11073,6 @@ definition:
                   name: update_column_shared_date_ranges_start_date
                   type: named
           foreign_keys: {}
-        update_shared_medias_by_id_response:
-          description: Responses from the 'update_shared_medias_by_id' procedure
-          fields:
-            affected_rows:
-              description: The number of rows affected by the mutation
-              type:
-                name: int4
-                type: named
-            returning:
-              description: Data from rows affected by the mutation
-              type:
-                element_type:
-                  name: shared_medias
-                  type: named
-                type: array
-          foreign_keys: {}
-        update_shared_medias_by_id_update_columns:
-          description: Update the columns of the 'shared_medias' collection
-          fields:
-            description:
-              description: Update the 'description' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_description
-                  type: named
-            id:
-              description: Update the 'id' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_id
-                  type: named
-            mime_type:
-              description: Update the 'mime_type' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_mime_type
-                  type: named
-            primary:
-              description: Update the 'primary' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_primary
-                  type: named
-            property_id:
-              description: Update the 'property_id' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_property_id
-                  type: named
-            sort_order:
-              description: Update the 'sort_order' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_sort_order
-                  type: named
-            title:
-              description: Update the 'title' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_title
-                  type: named
-            type:
-              description: Update the 'type' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_type
-                  type: named
-            unit_id:
-              description: Update the 'unit_id' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_unit_id
-                  type: named
-            uri:
-              description: Update the 'uri' column in the 'shared_medias' collection.
-              type:
-                type: nullable
-                underlying_type:
-                  name: update_column_shared_medias_uri
-                  type: named
-          foreign_keys: {}
         update_shared_price_components_by_id_response:
           description: Responses from the 'update_shared_price_components_by_id' procedure
           fields:
@@ -11234,6 +11523,23 @@ definition:
                 name: text
                 type: named
             pre_check:
+              description: Delete permission predicate over the 'property_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_medias
+                  type: predicate
+          description: Delete any row on the 'property_medias' collection using the 'id' key
+          name: delete_property_medias_by_id
+          result_type:
+            name: delete_property_medias_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
               description: Delete permission predicate over the 'property_policies' collection
               type:
                 type: nullable
@@ -11312,6 +11618,23 @@ definition:
           name: delete_property_unit_applicable_promo_codes_by_id
           result_type:
             name: delete_property_unit_applicable_promo_codes_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'property_unit_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_medias
+                  type: predicate
+          description: Delete any row on the 'property_unit_medias' collection using the 'id' key
+          name: delete_property_unit_medias_by_id
+          result_type:
+            name: delete_property_unit_medias_by_id_response
             type: named
         - arguments:
             key_id:
@@ -11516,23 +11839,6 @@ definition:
           name: delete_shared_date_ranges_by_id
           result_type:
             name: delete_shared_date_ranges_by_id_response
-            type: named
-        - arguments:
-            key_id:
-              type:
-                name: text
-                type: named
-            pre_check:
-              description: Delete permission predicate over the 'shared_medias' collection
-              type:
-                type: nullable
-                underlying_type:
-                  object_type_name: shared_medias
-                  type: predicate
-          description: Delete any row on the 'shared_medias' collection using the 'id' key
-          name: delete_shared_medias_by_id
-          result_type:
-            name: delete_shared_medias_by_id_response
             type: named
         - arguments:
             key_id:
@@ -11952,6 +12258,25 @@ definition:
             objects:
               type:
                 element_type:
+                  name: insert_property_medias_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'property_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_medias
+                  type: predicate
+          description: Insert into the property_medias table
+          name: insert_property_medias
+          result_type:
+            name: insert_property_medias_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
                   name: insert_property_policies_object
                   type: named
                 type: array
@@ -12042,6 +12367,25 @@ definition:
           name: insert_property_unit_applicable_promo_codes
           result_type:
             name: insert_property_unit_applicable_promo_codes_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_property_unit_medias_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'property_unit_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_medias
+                  type: predicate
+          description: Insert into the property_unit_medias table
+          name: insert_property_unit_medias
+          result_type:
+            name: insert_property_unit_medias_response
             type: named
         - arguments:
             objects:
@@ -12270,25 +12614,6 @@ definition:
           name: insert_shared_date_ranges
           result_type:
             name: insert_shared_date_ranges_response
-            type: named
-        - arguments:
-            objects:
-              type:
-                element_type:
-                  name: insert_shared_medias_object
-                  type: named
-                type: array
-            post_check:
-              description: Insert permission predicate over the 'shared_medias' collection
-              type:
-                type: nullable
-                underlying_type:
-                  object_type_name: shared_medias
-                  type: predicate
-          description: Insert into the shared_medias table
-          name: insert_shared_medias
-          result_type:
-            name: insert_shared_medias_response
             type: named
         - arguments:
             objects:
@@ -12894,6 +13219,34 @@ definition:
                 name: text
                 type: named
             post_check:
+              description: Update permission post-condition predicate over the 'property_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_medias
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'property_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_medias
+                  type: predicate
+            update_columns:
+              type:
+                name: update_property_medias_by_id_update_columns
+                type: named
+          description: Update any row on the 'property_medias' collection using the 'id' key
+          name: update_property_medias_by_id
+          result_type:
+            name: update_property_medias_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
               description: Update permission post-condition predicate over the 'property_policies' collection
               type:
                 type: nullable
@@ -13027,6 +13380,34 @@ definition:
           name: update_property_unit_applicable_promo_codes_by_id
           result_type:
             name: update_property_unit_applicable_promo_codes_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'property_unit_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_medias
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'property_unit_medias' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_medias
+                  type: predicate
+            update_columns:
+              type:
+                name: update_property_unit_medias_by_id_update_columns
+                type: named
+          description: Update any row on the 'property_unit_medias' collection using the 'id' key
+          name: update_property_unit_medias_by_id
+          result_type:
+            name: update_property_unit_medias_by_id_response
             type: named
         - arguments:
             key_id:
@@ -13363,34 +13744,6 @@ definition:
           name: update_shared_date_ranges_by_id
           result_type:
             name: update_shared_date_ranges_by_id_response
-            type: named
-        - arguments:
-            key_id:
-              type:
-                name: text
-                type: named
-            post_check:
-              description: Update permission post-condition predicate over the 'shared_medias' collection
-              type:
-                type: nullable
-                underlying_type:
-                  object_type_name: shared_medias
-                  type: predicate
-            pre_check:
-              description: Update permission pre-condition predicate over the 'shared_medias' collection
-              type:
-                type: nullable
-                underlying_type:
-                  object_type_name: shared_medias
-                  type: predicate
-            update_columns:
-              type:
-                name: update_shared_medias_by_id_update_columns
-                type: named
-          description: Update any row on the 'shared_medias' collection using the 'id' key
-          name: update_shared_medias_by_id
-          result_type:
-            name: update_shared_medias_by_id_response
             type: named
         - arguments:
             key_id:
@@ -14310,6 +14663,39 @@ definition:
               - TIME_SLOT
               - NIGHTLY
             type: enum
+        property_media_type:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: property_media_type
+                type: named
+              type: custom
+          extraction_functions: {}
+          representation:
+            one_of:
+              - IMAGE
+              - VIDEO
+              - DOCUMENT
+              - FLOORPLAN
+              - VIRTUAL_TOUR
+            type: enum
         property_pricing_unit:
           aggregate_functions:
             max:
@@ -14493,39 +14879,6 @@ definition:
             one_of:
               - CLOSURE
               - EXTRA_HOURS
-            type: enum
-        shared_media_type:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: shared_media_type
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - IMAGE
-              - VIDEO
-              - DOCUMENT
-              - FLOORPLAN
-              - VIRTUAL_TOUR
             type: enum
         shared_type:
           aggregate_functions:

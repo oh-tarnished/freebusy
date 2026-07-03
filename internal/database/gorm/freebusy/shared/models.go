@@ -32,23 +32,6 @@ const (
 	TypeDiscount Type = "DISCOUNT"
 )
 
-// Kind of media asset a Media reference points at. Documents (PDFs, house rules, fact sheets) are just media with type DOCUMENT — they are not a separate type.
-type MediaType string
-
-// MediaType values as stored in the database.
-const (
-	// A photo (e.g. a room or property showcase image).
-	MediaTypeImage MediaType = "IMAGE"
-	// A video clip.
-	MediaTypeVideo MediaType = "VIDEO"
-	// A document such as a PDF fact sheet, policy, or house rules.
-	MediaTypeDocument MediaType = "DOCUMENT"
-	// A floor plan diagram.
-	MediaTypeFloorplan MediaType = "FLOORPLAN"
-	// A 360°/virtual-tour asset.
-	MediaTypeVirtualTour MediaType = "VIRTUAL_TOUR"
-)
-
 // Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
 type Contact struct {
 	// Unique identifier for the record.
@@ -93,32 +76,6 @@ type PriceComponent struct {
 }
 
 func (*PriceComponent) TableName() string { return "shared.price_components" }
-
-// A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
-type Media struct {
-	// Unique identifier for the record.
-	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
-	// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
-	URI string `gorm:"column:uri;not null" json:"uri" validate:"required"`
-	// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
-	Type MediaType `gorm:"column:type;not null;default:'IMAGE';check:chk_medias_type,type IN ('IMAGE','VIDEO','DOCUMENT','FLOORPLAN','VIRTUAL_TOUR')" json:"type" validate:"required"`
-	// Short human-readable caption/title for display.
-	Title *string `gorm:"column:title" json:"title,omitempty"`
-	// Longer description or alt text.
-	Description *string `gorm:"column:description" json:"description,omitempty"`
-	// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
-	MimeType *string `gorm:"column:mime_type" json:"mime_type,omitempty"`
-	// Ordering hint within a gallery; lower sorts first.
-	SortOrder *int32 `gorm:"column:sort_order" json:"sort_order,omitempty"`
-	// Whether this is the primary/hero asset of its gallery.
-	Primary *bool `gorm:"column:primary" json:"primary,omitempty"`
-	// Foreign key to Property.
-	PropertyID string `gorm:"column:property_id;not null;index:idx_medias_property_id" json:"property_id" validate:"required"`
-	// Foreign key to Unit.
-	UnitID string `gorm:"column:unit_id;not null;index:idx_medias_unit_id" json:"unit_id" validate:"required"`
-}
-
-func (*Media) TableName() string { return "shared.medias" }
 
 // A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
 type DateRange struct {

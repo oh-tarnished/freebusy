@@ -8,6 +8,7 @@ package propertypbv1
 
 import (
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
+	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
 	postaladdress "google.golang.org/genproto/googleapis/type/postaladdress"
@@ -52,7 +53,7 @@ type Property struct {
 	TimeZone string `protobuf:"bytes,6,opt,name=time_zone,json=timeZone,proto3" json:"time_zone,omitempty"`
 	// Showcase gallery and documents (images, video, floor plans, PDFs).
 	// Documents are Media with type DOCUMENT.
-	Media []*sharedpbv1.Media `protobuf:"bytes,7,rep,name=media,proto3" json:"media,omitempty"`
+	Media []*Media `protobuf:"bytes,7,rep,name=media,proto3" json:"media,omitempty"`
 	// Guest-facing informational policy (display only). The enforced rules
 	// (cancellation, stay constraints, buffers) live per-Unit in the schedule
 	// service, not here.
@@ -149,7 +150,7 @@ func (x *Property) GetTimeZone() string {
 	return ""
 }
 
-func (x *Property) GetMedia() []*sharedpbv1.Media {
+func (x *Property) GetMedia() []*Media {
 	if x != nil {
 		return x.Media
 	}
@@ -337,7 +338,7 @@ type Unit struct {
 	// surfaces as a TYPE_TAX line in a booking's price_components.
 	Taxes []*Tax `protobuf:"bytes,15,rep,name=taxes,proto3" json:"taxes,omitempty"`
 	// Showcase gallery and documents for this unit (images, video, floor plans).
-	Media []*sharedpbv1.Media `protobuf:"bytes,16,rep,name=media,proto3" json:"media,omitempty"`
+	Media []*UnitMedia `protobuf:"bytes,16,rep,name=media,proto3" json:"media,omitempty"`
 	// Promo codes advertised as applicable to this unit (an allow-list shown to
 	// guests). Actual eligibility/validation still happens at booking time.
 	// Format: promo-codes/{promo_code}
@@ -493,7 +494,7 @@ func (x *Unit) GetTaxes() []*Tax {
 	return nil
 }
 
-func (x *Unit) GetMedia() []*sharedpbv1.Media {
+func (x *Unit) GetMedia() []*UnitMedia {
 	if x != nil {
 		return x.Media
 	}
@@ -774,6 +775,213 @@ func (x *Fee) GetTaxable() bool {
 	return false
 }
 
+// A media asset in a Property's showcase gallery — an image, video, floor plan,
+// virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes
+// live in object storage (S3 or any HTTP-reachable host); this message only
+// carries the link and its presentation metadata. `UnitMedia` is the identical
+// per-Unit gallery; they are separate messages so the ORM materializes each as a
+// child table with a single owning parent.
+type Media struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+	Uri string `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
+	// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+	Type sharedpbv1.MediaType `protobuf:"varint,2,opt,name=type,proto3,enum=freebusy.shared.v1.MediaType" json:"type,omitempty"`
+	// Short human-readable caption/title for display.
+	Title string `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	// Longer description or alt text.
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+	MimeType string `protobuf:"bytes,5,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
+	// Ordering hint within a gallery; lower sorts first.
+	SortOrder int32 `protobuf:"varint,6,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	// Whether this is the primary/hero asset of its gallery.
+	Primary       bool `protobuf:"varint,7,opt,name=primary,proto3" json:"primary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Media) Reset() {
+	*x = Media{}
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Media) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Media) ProtoMessage() {}
+
+func (x *Media) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Media.ProtoReflect.Descriptor instead.
+func (*Media) Descriptor() ([]byte, []int) {
+	return file_freebusy_property_v1_property_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Media) GetUri() string {
+	if x != nil {
+		return x.Uri
+	}
+	return ""
+}
+
+func (x *Media) GetType() sharedpbv1.MediaType {
+	if x != nil {
+		return x.Type
+	}
+	return sharedpbv1.MediaType(0)
+}
+
+func (x *Media) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Media) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Media) GetMimeType() string {
+	if x != nil {
+		return x.MimeType
+	}
+	return ""
+}
+
+func (x *Media) GetSortOrder() int32 {
+	if x != nil {
+		return x.SortOrder
+	}
+	return 0
+}
+
+func (x *Media) GetPrimary() bool {
+	if x != nil {
+		return x.Primary
+	}
+	return false
+}
+
+// A media asset in a Unit's gallery. Identical in shape to `Media`; kept a
+// separate message so the ORM gives it its own child table owned solely by the
+// Unit (a single unit_id foreign key).
+type UnitMedia struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+	Uri string `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
+	// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+	Type sharedpbv1.MediaType `protobuf:"varint,2,opt,name=type,proto3,enum=freebusy.shared.v1.MediaType" json:"type,omitempty"`
+	// Short human-readable caption/title for display.
+	Title string `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	// Longer description or alt text.
+	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+	MimeType string `protobuf:"bytes,5,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
+	// Ordering hint within a gallery; lower sorts first.
+	SortOrder int32 `protobuf:"varint,6,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	// Whether this is the primary/hero asset of its gallery.
+	Primary       bool `protobuf:"varint,7,opt,name=primary,proto3" json:"primary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnitMedia) Reset() {
+	*x = UnitMedia{}
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnitMedia) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnitMedia) ProtoMessage() {}
+
+func (x *UnitMedia) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnitMedia.ProtoReflect.Descriptor instead.
+func (*UnitMedia) Descriptor() ([]byte, []int) {
+	return file_freebusy_property_v1_property_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UnitMedia) GetUri() string {
+	if x != nil {
+		return x.Uri
+	}
+	return ""
+}
+
+func (x *UnitMedia) GetType() sharedpbv1.MediaType {
+	if x != nil {
+		return x.Type
+	}
+	return sharedpbv1.MediaType(0)
+}
+
+func (x *UnitMedia) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *UnitMedia) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *UnitMedia) GetMimeType() string {
+	if x != nil {
+		return x.MimeType
+	}
+	return ""
+}
+
+func (x *UnitMedia) GetSortOrder() int32 {
+	if x != nil {
+		return x.SortOrder
+	}
+	return 0
+}
+
+func (x *UnitMedia) GetPrimary() bool {
+	if x != nil {
+		return x.Primary
+	}
+	return false
+}
+
 // A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces
 // as a TYPE_TAX line in a booking's price_components.
 type Tax struct {
@@ -790,7 +998,7 @@ type Tax struct {
 
 func (x *Tax) Reset() {
 	*x = Tax{}
-	mi := &file_freebusy_property_v1_property_proto_msgTypes[6]
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -802,7 +1010,7 @@ func (x *Tax) String() string {
 func (*Tax) ProtoMessage() {}
 
 func (x *Tax) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_property_v1_property_proto_msgTypes[6]
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -815,7 +1023,7 @@ func (x *Tax) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tax.ProtoReflect.Descriptor instead.
 func (*Tax) Descriptor() ([]byte, []int) {
-	return file_freebusy_property_v1_property_proto_rawDescGZIP(), []int{6}
+	return file_freebusy_property_v1_property_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Tax) GetCode() string {
@@ -843,7 +1051,7 @@ var File_freebusy_property_v1_property_proto protoreflect.FileDescriptor
 
 const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\"\xcc\x06\n" +
+	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\xce\x06\n" +
 	"\bProperty\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\forganisation\x18\x02 \x01(\tB-\xe0A\x02\xfaA'\n" +
@@ -851,8 +1059,8 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x129\n" +
 	"\aaddress\x18\x05 \x01(\v2\x1a.google.type.PostalAddressB\x03\xe0A\x01R\aaddress\x12 \n" +
-	"\ttime_zone\x18\x06 \x01(\tB\x03\xe0A\x02R\btimeZone\x124\n" +
-	"\x05media\x18\a \x03(\v2\x19.freebusy.shared.v1.MediaB\x03\xe0A\x01R\x05media\x129\n" +
+	"\ttime_zone\x18\x06 \x01(\tB\x03\xe0A\x02R\btimeZone\x126\n" +
+	"\x05media\x18\a \x03(\v2\x1b.freebusy.property.v1.MediaB\x03\xe0A\x01R\x05media\x129\n" +
 	"\x06policy\x18\b \x01(\v2\x1c.freebusy.property.v1.PolicyB\x03\xe0A\x01R\x06policy\x12\x17\n" +
 	"\x04tags\x18\t \x03(\tB\x03\xe0A\x01R\x04tags\x12<\n" +
 	"\n" +
@@ -874,7 +1082,7 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\rcheckout_time\x18\x02 \x01(\v2\x16.google.type.TimeOfDayB\x03\xe0A\x01R\fcheckoutTime\x12$\n" +
 	"\vhouse_rules\x18\x03 \x03(\tB\x03\xe0A\x01R\n" +
 	"houseRules\x12\x19\n" +
-	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xa9\n" +
+	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xaf\n" +
 	"\n" +
 	"\x04Unit\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
@@ -892,8 +1100,8 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\x0erate_overrides\x18\f \x03(\v2\".freebusy.property.v1.RateOverrideB\x03\xe0A\x01R\rrateOverrides\x12K\n" +
 	"\rlos_discounts\x18\r \x03(\v2!.freebusy.property.v1.LosDiscountB\x03\xe0A\x01R\flosDiscounts\x122\n" +
 	"\x04fees\x18\x0e \x03(\v2\x19.freebusy.property.v1.FeeB\x03\xe0A\x01R\x04fees\x124\n" +
-	"\x05taxes\x18\x0f \x03(\v2\x19.freebusy.property.v1.TaxB\x03\xe0A\x01R\x05taxes\x124\n" +
-	"\x05media\x18\x10 \x03(\v2\x19.freebusy.shared.v1.MediaB\x03\xe0A\x01R\x05media\x12X\n" +
+	"\x05taxes\x18\x0f \x03(\v2\x19.freebusy.property.v1.TaxB\x03\xe0A\x01R\x05taxes\x12:\n" +
+	"\x05media\x18\x10 \x03(\v2\x1f.freebusy.property.v1.UnitMediaB\x03\xe0A\x01R\x05media\x12X\n" +
 	"\x16applicable_promo_codes\x18\x11 \x03(\tB\"\xe0A\x01\xfaA\x1c\n" +
 	"\x1aoh-tarnished.dev/PromoCodeR\x14applicablePromoCodes\x12\x17\n" +
 	"\x04tags\x18\x12 \x03(\tB\x03\xe0A\x01R\x04tags\x12<\n" +
@@ -925,7 +1133,25 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\x06amount\x18\x03 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\x06amount\x12\x1d\n" +
 	"\apercent\x18\x04 \x01(\x05B\x03\xe0A\x01R\apercent\x12I\n" +
 	"\fpricing_unit\x18\x05 \x01(\x0e2!.freebusy.property.v1.PricingUnitB\x03\xe0A\x01R\vpricingUnit\x12\x1d\n" +
-	"\ataxable\x18\x06 \x01(\bB\x03\xe0A\x01R\ataxable\"e\n" +
+	"\ataxable\x18\x06 \x01(\bB\x03\xe0A\x01R\ataxable\"\x85\x02\n" +
+	"\x05Media\x12\x15\n" +
+	"\x03uri\x18\x01 \x01(\tB\x03\xe0A\x02R\x03uri\x126\n" +
+	"\x04type\x18\x02 \x01(\x0e2\x1d.freebusy.shared.v1.MediaTypeB\x03\xe0A\x02R\x04type\x12\x19\n" +
+	"\x05title\x18\x03 \x01(\tB\x03\xe0A\x01R\x05title\x12%\n" +
+	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x12 \n" +
+	"\tmime_type\x18\x05 \x01(\tB\x03\xe0A\x01R\bmimeType\x12\"\n" +
+	"\n" +
+	"sort_order\x18\x06 \x01(\x05B\x03\xe0A\x01R\tsortOrder\x12\x1d\n" +
+	"\aprimary\x18\a \x01(\bB\x03\xe0A\x01R\aprimary:\x06\x8a\xb5\x18\x02\x18\x01\"\x89\x02\n" +
+	"\tUnitMedia\x12\x15\n" +
+	"\x03uri\x18\x01 \x01(\tB\x03\xe0A\x02R\x03uri\x126\n" +
+	"\x04type\x18\x02 \x01(\x0e2\x1d.freebusy.shared.v1.MediaTypeB\x03\xe0A\x02R\x04type\x12\x19\n" +
+	"\x05title\x18\x03 \x01(\tB\x03\xe0A\x01R\x05title\x12%\n" +
+	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x12 \n" +
+	"\tmime_type\x18\x05 \x01(\tB\x03\xe0A\x01R\bmimeType\x12\"\n" +
+	"\n" +
+	"sort_order\x18\x06 \x01(\x05B\x03\xe0A\x01R\tsortOrder\x12\x1d\n" +
+	"\aprimary\x18\a \x01(\bB\x03\xe0A\x01R\aprimary:\x06\x8a\xb5\x18\x02\x18\x01\"e\n" +
 	"\x03Tax\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x1d\n" +
@@ -944,7 +1170,7 @@ func file_freebusy_property_v1_property_proto_rawDescGZIP() []byte {
 	return file_freebusy_property_v1_property_proto_rawDescData
 }
 
-var file_freebusy_property_v1_property_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_freebusy_property_v1_property_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_freebusy_property_v1_property_proto_goTypes = []any{
 	(*Property)(nil),                    // 0: freebusy.property.v1.Property
 	(*Policy)(nil),                      // 1: freebusy.property.v1.Policy
@@ -952,57 +1178,61 @@ var file_freebusy_property_v1_property_proto_goTypes = []any{
 	(*RateOverride)(nil),                // 3: freebusy.property.v1.RateOverride
 	(*LosDiscount)(nil),                 // 4: freebusy.property.v1.LosDiscount
 	(*Fee)(nil),                         // 5: freebusy.property.v1.Fee
-	(*Tax)(nil),                         // 6: freebusy.property.v1.Tax
-	(*postaladdress.PostalAddress)(nil), // 7: google.type.PostalAddress
-	(*sharedpbv1.Media)(nil),            // 8: freebusy.shared.v1.Media
-	(*structpb.Struct)(nil),             // 9: google.protobuf.Struct
-	(PropertyState)(0),                  // 10: freebusy.property.v1.PropertyState
-	(*timestamppb.Timestamp)(nil),       // 11: google.protobuf.Timestamp
-	(*timeofday.TimeOfDay)(nil),         // 12: google.type.TimeOfDay
-	(UnitType)(0),                       // 13: freebusy.property.v1.UnitType
-	(sharedpbv1.BookingMode)(0),         // 14: freebusy.shared.v1.BookingMode
-	(*money.Money)(nil),                 // 15: google.type.Money
-	(PricingUnit)(0),                    // 16: freebusy.property.v1.PricingUnit
-	(*durationpb.Duration)(nil),         // 17: google.protobuf.Duration
-	(UnitState)(0),                      // 18: freebusy.property.v1.UnitState
-	(*sharedpbv1.DateRange)(nil),        // 19: freebusy.shared.v1.DateRange
-	(sharedpbv1.Weekday)(0),             // 20: freebusy.shared.v1.Weekday
+	(*Media)(nil),                       // 6: freebusy.property.v1.Media
+	(*UnitMedia)(nil),                   // 7: freebusy.property.v1.UnitMedia
+	(*Tax)(nil),                         // 8: freebusy.property.v1.Tax
+	(*postaladdress.PostalAddress)(nil), // 9: google.type.PostalAddress
+	(*structpb.Struct)(nil),             // 10: google.protobuf.Struct
+	(PropertyState)(0),                  // 11: freebusy.property.v1.PropertyState
+	(*timestamppb.Timestamp)(nil),       // 12: google.protobuf.Timestamp
+	(*timeofday.TimeOfDay)(nil),         // 13: google.type.TimeOfDay
+	(UnitType)(0),                       // 14: freebusy.property.v1.UnitType
+	(sharedpbv1.BookingMode)(0),         // 15: freebusy.shared.v1.BookingMode
+	(*money.Money)(nil),                 // 16: google.type.Money
+	(PricingUnit)(0),                    // 17: freebusy.property.v1.PricingUnit
+	(*durationpb.Duration)(nil),         // 18: google.protobuf.Duration
+	(UnitState)(0),                      // 19: freebusy.property.v1.UnitState
+	(*sharedpbv1.DateRange)(nil),        // 20: freebusy.shared.v1.DateRange
+	(sharedpbv1.Weekday)(0),             // 21: freebusy.shared.v1.Weekday
+	(sharedpbv1.MediaType)(0),           // 22: freebusy.shared.v1.MediaType
 }
 var file_freebusy_property_v1_property_proto_depIdxs = []int32{
-	7,  // 0: freebusy.property.v1.Property.address:type_name -> google.type.PostalAddress
-	8,  // 1: freebusy.property.v1.Property.media:type_name -> freebusy.shared.v1.Media
+	9,  // 0: freebusy.property.v1.Property.address:type_name -> google.type.PostalAddress
+	6,  // 1: freebusy.property.v1.Property.media:type_name -> freebusy.property.v1.Media
 	1,  // 2: freebusy.property.v1.Property.policy:type_name -> freebusy.property.v1.Policy
-	9,  // 3: freebusy.property.v1.Property.attributes:type_name -> google.protobuf.Struct
-	10, // 4: freebusy.property.v1.Property.state:type_name -> freebusy.property.v1.PropertyState
-	11, // 5: freebusy.property.v1.Property.create_time:type_name -> google.protobuf.Timestamp
-	11, // 6: freebusy.property.v1.Property.update_time:type_name -> google.protobuf.Timestamp
-	12, // 7: freebusy.property.v1.Policy.checkin_time:type_name -> google.type.TimeOfDay
-	12, // 8: freebusy.property.v1.Policy.checkout_time:type_name -> google.type.TimeOfDay
-	13, // 9: freebusy.property.v1.Unit.type:type_name -> freebusy.property.v1.UnitType
-	14, // 10: freebusy.property.v1.Unit.booking_mode:type_name -> freebusy.shared.v1.BookingMode
-	15, // 11: freebusy.property.v1.Unit.price:type_name -> google.type.Money
-	16, // 12: freebusy.property.v1.Unit.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
-	17, // 13: freebusy.property.v1.Unit.duration:type_name -> google.protobuf.Duration
+	10, // 3: freebusy.property.v1.Property.attributes:type_name -> google.protobuf.Struct
+	11, // 4: freebusy.property.v1.Property.state:type_name -> freebusy.property.v1.PropertyState
+	12, // 5: freebusy.property.v1.Property.create_time:type_name -> google.protobuf.Timestamp
+	12, // 6: freebusy.property.v1.Property.update_time:type_name -> google.protobuf.Timestamp
+	13, // 7: freebusy.property.v1.Policy.checkin_time:type_name -> google.type.TimeOfDay
+	13, // 8: freebusy.property.v1.Policy.checkout_time:type_name -> google.type.TimeOfDay
+	14, // 9: freebusy.property.v1.Unit.type:type_name -> freebusy.property.v1.UnitType
+	15, // 10: freebusy.property.v1.Unit.booking_mode:type_name -> freebusy.shared.v1.BookingMode
+	16, // 11: freebusy.property.v1.Unit.price:type_name -> google.type.Money
+	17, // 12: freebusy.property.v1.Unit.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
+	18, // 13: freebusy.property.v1.Unit.duration:type_name -> google.protobuf.Duration
 	3,  // 14: freebusy.property.v1.Unit.rate_overrides:type_name -> freebusy.property.v1.RateOverride
 	4,  // 15: freebusy.property.v1.Unit.los_discounts:type_name -> freebusy.property.v1.LosDiscount
 	5,  // 16: freebusy.property.v1.Unit.fees:type_name -> freebusy.property.v1.Fee
-	6,  // 17: freebusy.property.v1.Unit.taxes:type_name -> freebusy.property.v1.Tax
-	8,  // 18: freebusy.property.v1.Unit.media:type_name -> freebusy.shared.v1.Media
-	9,  // 19: freebusy.property.v1.Unit.attributes:type_name -> google.protobuf.Struct
-	18, // 20: freebusy.property.v1.Unit.state:type_name -> freebusy.property.v1.UnitState
-	11, // 21: freebusy.property.v1.Unit.create_time:type_name -> google.protobuf.Timestamp
-	11, // 22: freebusy.property.v1.Unit.update_time:type_name -> google.protobuf.Timestamp
-	19, // 23: freebusy.property.v1.RateOverride.date_range:type_name -> freebusy.shared.v1.DateRange
-	20, // 24: freebusy.property.v1.RateOverride.weekdays:type_name -> freebusy.shared.v1.Weekday
-	15, // 25: freebusy.property.v1.RateOverride.price:type_name -> google.type.Money
-	15, // 26: freebusy.property.v1.LosDiscount.amount_off:type_name -> google.type.Money
-	15, // 27: freebusy.property.v1.Fee.amount:type_name -> google.type.Money
-	16, // 28: freebusy.property.v1.Fee.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	8,  // 17: freebusy.property.v1.Unit.taxes:type_name -> freebusy.property.v1.Tax
+	7,  // 18: freebusy.property.v1.Unit.media:type_name -> freebusy.property.v1.UnitMedia
+	10, // 19: freebusy.property.v1.Unit.attributes:type_name -> google.protobuf.Struct
+	19, // 20: freebusy.property.v1.Unit.state:type_name -> freebusy.property.v1.UnitState
+	12, // 21: freebusy.property.v1.Unit.create_time:type_name -> google.protobuf.Timestamp
+	12, // 22: freebusy.property.v1.Unit.update_time:type_name -> google.protobuf.Timestamp
+	20, // 23: freebusy.property.v1.RateOverride.date_range:type_name -> freebusy.shared.v1.DateRange
+	21, // 24: freebusy.property.v1.RateOverride.weekdays:type_name -> freebusy.shared.v1.Weekday
+	16, // 25: freebusy.property.v1.RateOverride.price:type_name -> google.type.Money
+	16, // 26: freebusy.property.v1.LosDiscount.amount_off:type_name -> google.type.Money
+	16, // 27: freebusy.property.v1.Fee.amount:type_name -> google.type.Money
+	17, // 28: freebusy.property.v1.Fee.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
+	22, // 29: freebusy.property.v1.Media.type:type_name -> freebusy.shared.v1.MediaType
+	22, // 30: freebusy.property.v1.UnitMedia.type:type_name -> freebusy.shared.v1.MediaType
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_property_v1_property_proto_init() }
@@ -1017,7 +1247,7 @@ func file_freebusy_property_v1_property_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_property_v1_property_proto_rawDesc), len(file_freebusy_property_v1_property_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

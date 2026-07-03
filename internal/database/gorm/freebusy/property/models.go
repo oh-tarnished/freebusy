@@ -83,6 +83,23 @@ const (
 	UnitStateArchived UnitState = "ARCHIVED"
 )
 
+// Kind of media asset a Media reference points at. Documents (PDFs, house rules, fact sheets) are just media with type DOCUMENT — they are not a separate type.
+type MediaType string
+
+// MediaType values as stored in the database.
+const (
+	// A photo (e.g. a room or property showcase image).
+	MediaTypeImage MediaType = "IMAGE"
+	// A video clip.
+	MediaTypeVideo MediaType = "VIDEO"
+	// A document such as a PDF fact sheet, policy, or house rules.
+	MediaTypeDocument MediaType = "DOCUMENT"
+	// A floor plan diagram.
+	MediaTypeFloorplan MediaType = "FLOORPLAN"
+	// A 360°/virtual-tour asset.
+	MediaTypeVirtualTour MediaType = "VIRTUAL_TOUR"
+)
+
 // A hotel (or other lodging property): the guest-facing venue a chain operates. A Property belongs to an Organisation (the chain/brand) and carries the showcase media, address, and informational policies shown to guests. Its bookable inventory lives in child Units (room types); pricing and availability are modeled there, not here.
 type Property struct {
 	// Unique identifier for the record.
@@ -117,6 +134,8 @@ type Property struct {
 	Policy   *Policy `gorm:"foreignKey:PolicyID;constraint:OnDelete:SET NULL" json:"policy,omitempty"`
 	// Back-relation: Unit records that reference this via property_id.
 	Units []Unit `gorm:"foreignKey:PropertyID" json:"units,omitempty"`
+	// Back-relation: Media records that reference this via property_id.
+	Medias []Media `gorm:"foreignKey:PropertyID" json:"medias,omitempty"`
 	// Back-relation: PropertyUnits records that reference this via property_id.
 	UnitsLink []PropertyUnits `gorm:"foreignKey:PropertyID" json:"unitslink,omitempty"`
 }
@@ -173,6 +192,8 @@ type Unit struct {
 	Fees []Fee `gorm:"foreignKey:UnitID" json:"fees,omitempty"`
 	// Back-relation: Tax records that reference this via unit_id.
 	Taxes []Tax `gorm:"foreignKey:UnitID" json:"taxes,omitempty"`
+	// Back-relation: UnitMedia records that reference this via unit_id.
+	UnitMedias []UnitMedia `gorm:"foreignKey:UnitID" json:"unitmedias,omitempty"`
 	// Back-relation: PropertyUnits records that reference this via unit_id.
 	UnitsLink []PropertyUnits `gorm:"foreignKey:UnitID" json:"unitslink,omitempty"`
 	// Back-relation: UnitApplicablePromoCodes records that reference this via unit_id.
@@ -180,6 +201,31 @@ type Unit struct {
 }
 
 func (*Unit) TableName() string { return "property.units" }
+
+// A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
+type Media struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+	URI string `gorm:"column:uri;not null" json:"uri" validate:"required"`
+	// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+	Type MediaType `gorm:"column:type;not null;default:'IMAGE';check:chk_medias_type,type IN ('IMAGE','VIDEO','DOCUMENT','FLOORPLAN','VIRTUAL_TOUR')" json:"type" validate:"required"`
+	// Short human-readable caption/title for display.
+	Title *string `gorm:"column:title" json:"title,omitempty"`
+	// Longer description or alt text.
+	Description *string `gorm:"column:description" json:"description,omitempty"`
+	// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+	MimeType *string `gorm:"column:mime_type" json:"mime_type,omitempty"`
+	// Ordering hint within a gallery; lower sorts first.
+	SortOrder *int32 `gorm:"column:sort_order" json:"sort_order,omitempty"`
+	// Whether this is the primary/hero asset of its gallery.
+	Primary *bool `gorm:"column:primary" json:"primary,omitempty"`
+	// Foreign key to Property.
+	PropertyID string    `gorm:"column:property_id;not null;index:idx_medias_property_id" json:"property_id" validate:"required"`
+	Property   *Property `gorm:"foreignKey:PropertyID;constraint:OnDelete:CASCADE" json:"property,omitempty"`
+}
+
+func (*Media) TableName() string { return "property.medias" }
 
 // Guest-facing, informational property policy: what to *display* to a guest (check-in/out hours, house rules). The enforced refund/stay rules that gate bookability live on each Unit's Schedule (freebusy.schedule.v1), not here, so there is a single source of truth for enforcement.
 type Policy struct {
@@ -276,6 +322,31 @@ type Tax struct {
 }
 
 func (*Tax) TableName() string { return "property.taxes" }
+
+// A media asset in a Unit's gallery. Identical in shape to `Media`; kept a separate message so the ORM gives it its own child table owned solely by the Unit (a single unit_id foreign key).
+type UnitMedia struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+	URI string `gorm:"column:uri;not null" json:"uri" validate:"required"`
+	// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+	Type MediaType `gorm:"column:type;not null;default:'IMAGE';check:chk_unit_medias_type,type IN ('IMAGE','VIDEO','DOCUMENT','FLOORPLAN','VIRTUAL_TOUR')" json:"type" validate:"required"`
+	// Short human-readable caption/title for display.
+	Title *string `gorm:"column:title" json:"title,omitempty"`
+	// Longer description or alt text.
+	Description *string `gorm:"column:description" json:"description,omitempty"`
+	// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+	MimeType *string `gorm:"column:mime_type" json:"mime_type,omitempty"`
+	// Ordering hint within a gallery; lower sorts first.
+	SortOrder *int32 `gorm:"column:sort_order" json:"sort_order,omitempty"`
+	// Whether this is the primary/hero asset of its gallery.
+	Primary *bool `gorm:"column:primary" json:"primary,omitempty"`
+	// Foreign key to Unit.
+	UnitID string `gorm:"column:unit_id;not null;index:idx_unit_medias_unit_id" json:"unit_id" validate:"required"`
+	Unit   *Unit  `gorm:"foreignKey:UnitID;constraint:OnDelete:CASCADE" json:"unit,omitempty"`
+}
+
+func (*UnitMedia) TableName() string { return "property.unit_medias" }
 
 // Join table for the many-to-many relation Property.units ↔ Unit.
 type PropertyUnits struct {

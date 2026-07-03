@@ -77,7 +77,7 @@ CREATE TYPE "schedule"."availability_exception_span_case" AS ENUM ('WINDOW', 'DA
 CREATE TYPE "property"."booking_mode" AS ENUM ('TIME_SLOT', 'NIGHTLY');
 
 -- CreateEnum
-CREATE TYPE "shared"."media_type" AS ENUM ('IMAGE', 'VIDEO', 'DOCUMENT', 'FLOORPLAN', 'VIRTUAL_TOUR');
+CREATE TYPE "property"."media_type" AS ENUM ('IMAGE', 'VIDEO', 'DOCUMENT', 'FLOORPLAN', 'VIRTUAL_TOUR');
 
 -- CreateEnum
 CREATE TYPE "shared"."type" AS ENUM ('BASE', 'FEE', 'TAX', 'DISCOUNT');
@@ -346,6 +346,21 @@ CREATE TABLE "property"."units" (
 );
 
 -- CreateTable
+CREATE TABLE "property"."medias" (
+    "id" TEXT NOT NULL,
+    "uri" TEXT NOT NULL,
+    "type" "property"."media_type" NOT NULL DEFAULT 'IMAGE',
+    "title" TEXT,
+    "description" TEXT,
+    "mime_type" TEXT,
+    "sort_order" INTEGER,
+    "primary" BOOLEAN,
+    "property_id" TEXT NOT NULL,
+
+    CONSTRAINT "medias_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "property"."policies" (
     "id" TEXT NOT NULL,
     "checkin_time" TIME(6),
@@ -401,6 +416,21 @@ CREATE TABLE "property"."taxes" (
     "unit_id" TEXT NOT NULL,
 
     CONSTRAINT "taxes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "property"."unit_medias" (
+    "id" TEXT NOT NULL,
+    "uri" TEXT NOT NULL,
+    "type" "property"."media_type" NOT NULL DEFAULT 'IMAGE',
+    "title" TEXT,
+    "description" TEXT,
+    "mime_type" TEXT,
+    "sort_order" INTEGER,
+    "primary" BOOLEAN,
+    "unit_id" TEXT NOT NULL,
+
+    CONSTRAINT "unit_medias_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -543,22 +573,6 @@ CREATE TABLE "shared"."price_components" (
     "amount_id" TEXT,
 
     CONSTRAINT "price_components_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "shared"."medias" (
-    "id" TEXT NOT NULL,
-    "uri" TEXT NOT NULL,
-    "type" "shared"."media_type" NOT NULL DEFAULT 'IMAGE',
-    "title" TEXT,
-    "description" TEXT,
-    "mime_type" TEXT,
-    "sort_order" INTEGER,
-    "primary" BOOLEAN,
-    "property_id" TEXT NOT NULL,
-    "unit_id" TEXT NOT NULL,
-
-    CONSTRAINT "medias_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -737,6 +751,9 @@ CREATE INDEX "units_property_id_idx" ON "property"."units"("property_id");
 CREATE INDEX "units_price_id_idx" ON "property"."units"("price_id");
 
 -- CreateIndex
+CREATE INDEX "medias_property_id_idx" ON "property"."medias"("property_id");
+
+-- CreateIndex
 CREATE INDEX "rate_overrides_unit_id_idx" ON "property"."rate_overrides"("unit_id");
 
 -- CreateIndex
@@ -759,6 +776,9 @@ CREATE INDEX "fees_amount_id_idx" ON "property"."fees"("amount_id");
 
 -- CreateIndex
 CREATE INDEX "taxes_unit_id_idx" ON "property"."taxes"("unit_id");
+
+-- CreateIndex
+CREATE INDEX "unit_medias_unit_id_idx" ON "property"."unit_medias"("unit_id");
 
 -- CreateIndex
 CREATE INDEX "units_link_unit_id_idx" ON "property"."units_link"("unit_id");
@@ -819,12 +839,6 @@ CREATE INDEX "price_components_booking_id_idx" ON "shared"."price_components"("b
 
 -- CreateIndex
 CREATE INDEX "price_components_amount_id_idx" ON "shared"."price_components"("amount_id");
-
--- CreateIndex
-CREATE INDEX "medias_property_id_idx" ON "shared"."medias"("property_id");
-
--- CreateIndex
-CREATE INDEX "medias_unit_id_idx" ON "shared"."medias"("unit_id");
 
 -- AddForeignKey
 ALTER TABLE "booking"."resource" ADD CONSTRAINT "resource_unit_fkey" FOREIGN KEY ("unit") REFERENCES "property"."units"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -929,6 +943,9 @@ ALTER TABLE "property"."units" ADD CONSTRAINT "units_property_id_fkey" FOREIGN K
 ALTER TABLE "property"."units" ADD CONSTRAINT "units_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "common"."moneys"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "property"."medias" ADD CONSTRAINT "medias_property_id_fkey" FOREIGN KEY ("property_id") REFERENCES "property"."properties"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "property"."rate_overrides" ADD CONSTRAINT "rate_overrides_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "property"."units"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -951,6 +968,9 @@ ALTER TABLE "property"."fees" ADD CONSTRAINT "fees_amount_id_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "property"."taxes" ADD CONSTRAINT "taxes_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "property"."units"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "property"."unit_medias" ADD CONSTRAINT "unit_medias_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "property"."units"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "property"."units_link" ADD CONSTRAINT "units_link_property_id_fkey" FOREIGN KEY ("property_id") REFERENCES "property"."properties"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1005,9 +1025,3 @@ ALTER TABLE "shared"."price_components" ADD CONSTRAINT "price_components_booking
 
 -- AddForeignKey
 ALTER TABLE "shared"."price_components" ADD CONSTRAINT "price_components_amount_id_fkey" FOREIGN KEY ("amount_id") REFERENCES "common"."moneys"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "shared"."medias" ADD CONSTRAINT "medias_property_id_fkey" FOREIGN KEY ("property_id") REFERENCES "property"."properties"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "shared"."medias" ADD CONSTRAINT "medias_unit_id_fkey" FOREIGN KEY ("unit_id") REFERENCES "property"."units"("id") ON DELETE CASCADE ON UPDATE CASCADE;

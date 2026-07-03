@@ -5,12 +5,14 @@ package propertyql
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/policiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitslinkql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	"github.com/oh-tarnished/generateql/runtime/go/runtime"
@@ -19,26 +21,32 @@ import (
 // Model type aliases for this domain, re-exported from its schema package.
 type DeletePropertyFeesByIdResponse = schemaql.DeletePropertyFeesByIdResponse
 type DeletePropertyLosDiscountsByIdResponse = schemaql.DeletePropertyLosDiscountsByIdResponse
+type DeletePropertyMediasByIdResponse = schemaql.DeletePropertyMediasByIdResponse
 type DeletePropertyPoliciesByIdResponse = schemaql.DeletePropertyPoliciesByIdResponse
 type DeletePropertyPropertiesByIdResponse = schemaql.DeletePropertyPropertiesByIdResponse
 type DeletePropertyRateOverridesByIdResponse = schemaql.DeletePropertyRateOverridesByIdResponse
 type DeletePropertyTaxesByIdResponse = schemaql.DeletePropertyTaxesByIdResponse
 type DeletePropertyUnitApplicablePromoCodesByIdResponse = schemaql.DeletePropertyUnitApplicablePromoCodesByIdResponse
+type DeletePropertyUnitMediasByIdResponse = schemaql.DeletePropertyUnitMediasByIdResponse
 type DeletePropertyUnitsByIdResponse = schemaql.DeletePropertyUnitsByIdResponse
 type DeletePropertyUnitsLinkByIdResponse = schemaql.DeletePropertyUnitsLinkByIdResponse
 type InsertPropertyFeesResponse = schemaql.InsertPropertyFeesResponse
 type InsertPropertyLosDiscountsResponse = schemaql.InsertPropertyLosDiscountsResponse
+type InsertPropertyMediasResponse = schemaql.InsertPropertyMediasResponse
 type InsertPropertyPoliciesResponse = schemaql.InsertPropertyPoliciesResponse
 type InsertPropertyPropertiesResponse = schemaql.InsertPropertyPropertiesResponse
 type InsertPropertyRateOverridesResponse = schemaql.InsertPropertyRateOverridesResponse
 type InsertPropertyTaxesResponse = schemaql.InsertPropertyTaxesResponse
 type InsertPropertyUnitApplicablePromoCodesResponse = schemaql.InsertPropertyUnitApplicablePromoCodesResponse
+type InsertPropertyUnitMediasResponse = schemaql.InsertPropertyUnitMediasResponse
 type InsertPropertyUnitsLinkResponse = schemaql.InsertPropertyUnitsLinkResponse
 type InsertPropertyUnitsResponse = schemaql.InsertPropertyUnitsResponse
 type PropertyFees = schemaql.PropertyFees
 type PropertyFeesAggExp = schemaql.PropertyFeesAggExp
 type PropertyLosDiscounts = schemaql.PropertyLosDiscounts
 type PropertyLosDiscountsAggExp = schemaql.PropertyLosDiscountsAggExp
+type PropertyMedias = schemaql.PropertyMedias
+type PropertyMediasAggExp = schemaql.PropertyMediasAggExp
 type PropertyPolicies = schemaql.PropertyPolicies
 type PropertyPoliciesAggExp = schemaql.PropertyPoliciesAggExp
 type PropertyProperties = schemaql.PropertyProperties
@@ -49,17 +57,21 @@ type PropertyTaxes = schemaql.PropertyTaxes
 type PropertyTaxesAggExp = schemaql.PropertyTaxesAggExp
 type PropertyUnitApplicablePromoCodes = schemaql.PropertyUnitApplicablePromoCodes
 type PropertyUnitApplicablePromoCodesAggExp = schemaql.PropertyUnitApplicablePromoCodesAggExp
+type PropertyUnitMedias = schemaql.PropertyUnitMedias
+type PropertyUnitMediasAggExp = schemaql.PropertyUnitMediasAggExp
 type PropertyUnits = schemaql.PropertyUnits
 type PropertyUnitsAggExp = schemaql.PropertyUnitsAggExp
 type PropertyUnitsLink = schemaql.PropertyUnitsLink
 type PropertyUnitsLinkAggExp = schemaql.PropertyUnitsLinkAggExp
 type UpdatePropertyFeesByIdResponse = schemaql.UpdatePropertyFeesByIdResponse
 type UpdatePropertyLosDiscountsByIdResponse = schemaql.UpdatePropertyLosDiscountsByIdResponse
+type UpdatePropertyMediasByIdResponse = schemaql.UpdatePropertyMediasByIdResponse
 type UpdatePropertyPoliciesByIdResponse = schemaql.UpdatePropertyPoliciesByIdResponse
 type UpdatePropertyPropertiesByIdResponse = schemaql.UpdatePropertyPropertiesByIdResponse
 type UpdatePropertyRateOverridesByIdResponse = schemaql.UpdatePropertyRateOverridesByIdResponse
 type UpdatePropertyTaxesByIdResponse = schemaql.UpdatePropertyTaxesByIdResponse
 type UpdatePropertyUnitApplicablePromoCodesByIdResponse = schemaql.UpdatePropertyUnitApplicablePromoCodesByIdResponse
+type UpdatePropertyUnitMediasByIdResponse = schemaql.UpdatePropertyUnitMediasByIdResponse
 type UpdatePropertyUnitsByIdResponse = schemaql.UpdatePropertyUnitsByIdResponse
 type UpdatePropertyUnitsLinkByIdResponse = schemaql.UpdatePropertyUnitsLinkByIdResponse
 
@@ -67,11 +79,13 @@ type UpdatePropertyUnitsLinkByIdResponse = schemaql.UpdatePropertyUnitsLinkByIdR
 type QueryHandler struct {
 	Fees                     feesql.QueryHandler
 	LosDiscounts             losdiscountsql.QueryHandler
+	Medias                   mediasql.QueryHandler
 	Policies                 policiesql.QueryHandler
 	Properties               propertiesql.QueryHandler
 	RateOverrides            rateoverridesql.QueryHandler
 	Taxes                    taxesql.QueryHandler
 	UnitApplicablePromoCodes unitapplicablepromocodesql.QueryHandler
+	UnitMedias               unitmediasql.QueryHandler
 	Units                    unitsql.QueryHandler
 	UnitsLink                unitslinkql.QueryHandler
 }
@@ -81,11 +95,13 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
 		Fees:                     feesql.NewQuery(gql),
 		LosDiscounts:             losdiscountsql.NewQuery(gql),
+		Medias:                   mediasql.NewQuery(gql),
 		Policies:                 policiesql.NewQuery(gql),
 		Properties:               propertiesql.NewQuery(gql),
 		RateOverrides:            rateoverridesql.NewQuery(gql),
 		Taxes:                    taxesql.NewQuery(gql),
 		UnitApplicablePromoCodes: unitapplicablepromocodesql.NewQuery(gql),
+		UnitMedias:               unitmediasql.NewQuery(gql),
 		Units:                    unitsql.NewQuery(gql),
 		UnitsLink:                unitslinkql.NewQuery(gql),
 	}
@@ -95,11 +111,13 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 type MutationHandler struct {
 	Fees                     feesql.MutationHandler
 	LosDiscounts             losdiscountsql.MutationHandler
+	Medias                   mediasql.MutationHandler
 	Policies                 policiesql.MutationHandler
 	Properties               propertiesql.MutationHandler
 	RateOverrides            rateoverridesql.MutationHandler
 	Taxes                    taxesql.MutationHandler
 	UnitApplicablePromoCodes unitapplicablepromocodesql.MutationHandler
+	UnitMedias               unitmediasql.MutationHandler
 	Units                    unitsql.MutationHandler
 	UnitsLink                unitslinkql.MutationHandler
 }
@@ -109,11 +127,13 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
 		Fees:                     feesql.NewMutation(gql),
 		LosDiscounts:             losdiscountsql.NewMutation(gql),
+		Medias:                   mediasql.NewMutation(gql),
 		Policies:                 policiesql.NewMutation(gql),
 		Properties:               propertiesql.NewMutation(gql),
 		RateOverrides:            rateoverridesql.NewMutation(gql),
 		Taxes:                    taxesql.NewMutation(gql),
 		UnitApplicablePromoCodes: unitapplicablepromocodesql.NewMutation(gql),
+		UnitMedias:               unitmediasql.NewMutation(gql),
 		Units:                    unitsql.NewMutation(gql),
 		UnitsLink:                unitslinkql.NewMutation(gql),
 	}
@@ -123,11 +143,13 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 type SubscriptionHandler struct {
 	Fees                     feesql.SubscriptionHandler
 	LosDiscounts             losdiscountsql.SubscriptionHandler
+	Medias                   mediasql.SubscriptionHandler
 	Policies                 policiesql.SubscriptionHandler
 	Properties               propertiesql.SubscriptionHandler
 	RateOverrides            rateoverridesql.SubscriptionHandler
 	Taxes                    taxesql.SubscriptionHandler
 	UnitApplicablePromoCodes unitapplicablepromocodesql.SubscriptionHandler
+	UnitMedias               unitmediasql.SubscriptionHandler
 	Units                    unitsql.SubscriptionHandler
 	UnitsLink                unitslinkql.SubscriptionHandler
 }
@@ -137,11 +159,13 @@ func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
 		Fees:                     feesql.NewSubscription(gql),
 		LosDiscounts:             losdiscountsql.NewSubscription(gql),
+		Medias:                   mediasql.NewSubscription(gql),
 		Policies:                 policiesql.NewSubscription(gql),
 		Properties:               propertiesql.NewSubscription(gql),
 		RateOverrides:            rateoverridesql.NewSubscription(gql),
 		Taxes:                    taxesql.NewSubscription(gql),
 		UnitApplicablePromoCodes: unitapplicablepromocodesql.NewSubscription(gql),
+		UnitMedias:               unitmediasql.NewSubscription(gql),
 		Units:                    unitsql.NewSubscription(gql),
 		UnitsLink:                unitslinkql.NewSubscription(gql),
 	}

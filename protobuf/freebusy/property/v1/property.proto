@@ -17,6 +17,7 @@ import "google/protobuf/timestamp.proto";
 import "google/type/money.proto";
 import "google/type/postal_address.proto";
 import "google/type/timeofday.proto";
+import "orm/v1/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1;propertypbv1";
 option java_multiple_files = true;
@@ -61,7 +62,7 @@ message Property {
 
   // Showcase gallery and documents (images, video, floor plans, PDFs).
   // Documents are Media with type DOCUMENT.
-  repeated freebusy.shared.v1.Media media = 7 [(google.api.field_behavior) = OPTIONAL];
+  repeated Media media = 7 [(google.api.field_behavior) = OPTIONAL];
 
   // Guest-facing informational policy (display only). The enforced rules
   // (cancellation, stay constraints, buffers) live per-Unit in the schedule
@@ -186,7 +187,7 @@ message Unit {
   repeated Tax taxes = 15 [(google.api.field_behavior) = OPTIONAL];
 
   // Showcase gallery and documents for this unit (images, video, floor plans).
-  repeated freebusy.shared.v1.Media media = 16 [(google.api.field_behavior) = OPTIONAL];
+  repeated UnitMedia media = 16 [(google.api.field_behavior) = OPTIONAL];
 
   // Promo codes advertised as applicable to this unit (an allow-list shown to
   // guests). Actual eligibility/validation still happens at booking time.
@@ -264,6 +265,65 @@ message Fee {
 
   // Whether this fee is included in the taxable base.
   bool taxable = 6 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// A media asset in a Property's showcase gallery — an image, video, floor plan,
+// virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes
+// live in object storage (S3 or any HTTP-reachable host); this message only
+// carries the link and its presentation metadata. `UnitMedia` is the identical
+// per-Unit gallery; they are separate messages so the ORM materializes each as a
+// child table with a single owning parent.
+message Media {
+  option (orm.v1.table) = {id: ID_STRATEGY_ULID};
+
+  // Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+  string uri = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+  freebusy.shared.v1.MediaType type = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Short human-readable caption/title for display.
+  string title = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Longer description or alt text.
+  string description = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+  string mime_type = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Ordering hint within a gallery; lower sorts first.
+  int32 sort_order = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // Whether this is the primary/hero asset of its gallery.
+  bool primary = 7 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// A media asset in a Unit's gallery. Identical in shape to `Media`; kept a
+// separate message so the ORM gives it its own child table owned solely by the
+// Unit (a single unit_id foreign key).
+message UnitMedia {
+  option (orm.v1.table) = {id: ID_STRATEGY_ULID};
+
+  // Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+  string uri = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+  freebusy.shared.v1.MediaType type = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Short human-readable caption/title for display.
+  string title = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Longer description or alt text.
+  string description = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+  string mime_type = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // Ordering hint within a gallery; lower sorts first.
+  int32 sort_order = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // Whether this is the primary/hero asset of its gallery.
+  bool primary = 7 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces

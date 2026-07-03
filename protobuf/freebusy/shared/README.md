@@ -35,20 +35,6 @@ Contact details for the person a booking is for. When a booking carries a `custo
 | `email` | `string` | `OPTIONAL` | Email address for the confirmation and any follow-ups. |
 | `phone_number` | `string` | `OPTIONAL` | Phone number in E.164 form (e.g. "+14155552671"). |
 
-### Media
-
-A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `uri` | `string` | `REQUIRED` | Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL). |
-| `type` | `MediaType` | `REQUIRED` | What kind of asset this is; DOCUMENT covers PDFs/policies/house rules. |
-| `title` | `string` | `OPTIONAL` | Short human-readable caption/title for display. |
-| `description` | `string` | `OPTIONAL` | Longer description or alt text. |
-| `mime_type` | `string` | `OPTIONAL` | MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known. |
-| `sort_order` | `int32` | `OPTIONAL` | Ordering hint within a gallery; lower sorts first. |
-| `primary` | `bool` | `OPTIONAL` | Whether this is the primary/hero asset of its gallery. |
-
 ### PriceComponent
 
 One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).

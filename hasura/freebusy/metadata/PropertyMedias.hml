@@ -2,7 +2,7 @@
 kind: ObjectType
 version: v1
 definition:
-  name: SharedMedias
+  name: PropertyMedias
   fields:
     - name: description
       type: String_1
@@ -20,16 +20,14 @@ definition:
       type: String_1
     - name: type
       type: Enum!
-    - name: unitId
-      type: String_1!
     - name: uri
       type: String_1!
   graphql:
-    typeName: SharedMedias
-    inputTypeName: SharedMediasInput
+    typeName: PropertyMedias
+    inputTypeName: PropertyMediasInput
   dataConnectorTypeMapping:
     - dataConnectorName: freebusy_pgsql
-      dataConnectorObjectType: shared_medias
+      dataConnectorObjectType: property_medias
       fieldMapping:
         description:
           column:
@@ -55,9 +53,6 @@ definition:
         type:
           column:
             name: type
-        unitId:
-          column:
-            name: unit_id
         uri:
           column:
             name: uri
@@ -66,7 +61,7 @@ definition:
 kind: TypePermissions
 version: v1
 definition:
-  typeName: SharedMedias
+  typeName: PropertyMedias
   permissions:
     - role: admin
       output:
@@ -79,17 +74,16 @@ definition:
           - sortOrder
           - title
           - type
-          - unitId
           - uri
 
 ---
 kind: BooleanExpressionType
 version: v1
 definition:
-  name: SharedMediasBoolExp
+  name: PropertyMediasBoolExp
   operand:
     object:
-      type: SharedMedias
+      type: PropertyMedias
       comparableFields:
         - fieldName: description
           booleanExpressionType: TextBoolExp
@@ -106,9 +100,7 @@ definition:
         - fieldName: title
           booleanExpressionType: TextBoolExp
         - fieldName: type
-          booleanExpressionType: SharedMediaTypeBoolExp
-        - fieldName: unitId
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PropertyMediaTypeBoolExp
         - fieldName: uri
           booleanExpressionType: TextBoolExp
       comparableRelationships: []
@@ -117,16 +109,16 @@ definition:
   isNull:
     enable: true
   graphql:
-    typeName: SharedMediasBoolExp
+    typeName: PropertyMediasBoolExp
 
 ---
 kind: AggregateExpression
 version: v1
 definition:
-  name: SharedMediasAggExp
+  name: PropertyMediasAggExp
   operand:
     object:
-      aggregatedType: SharedMedias
+      aggregatedType: PropertyMedias
       aggregatableFields:
         - fieldName: description
           aggregateExpression: TextAggExp
@@ -143,25 +135,23 @@ definition:
         - fieldName: title
           aggregateExpression: TextAggExp
         - fieldName: type
-          aggregateExpression: SharedMediaTypeAggExp
-        - fieldName: unitId
-          aggregateExpression: TextAggExp
+          aggregateExpression: PropertyMediaTypeAggExp
         - fieldName: uri
           aggregateExpression: TextAggExp
   count:
     enable: true
     returnType: Int64
   graphql:
-    selectTypeName: SharedMediasAggExp
+    selectTypeName: PropertyMediasAggExp
 
 ---
 kind: OrderByExpression
 version: v1
 definition:
-  name: SharedMediasOrderByExp
+  name: PropertyMediasOrderByExp
   operand:
     object:
-      orderedType: SharedMedias
+      orderedType: PropertyMedias
       orderableFields:
         - fieldName: description
           orderByExpression: String1OrderByExp
@@ -179,48 +169,46 @@ definition:
           orderByExpression: String1OrderByExp
         - fieldName: type
           orderByExpression: EnumOrderByExp
-        - fieldName: unitId
-          orderByExpression: String1OrderByExp
         - fieldName: uri
           orderByExpression: String1OrderByExp
       orderableRelationships: []
   graphql:
-    expressionTypeName: SharedMediasOrderByExp
+    expressionTypeName: PropertyMediasOrderByExp
 
 ---
 kind: Model
 version: v2
 definition:
-  name: SharedMedias
-  objectType: SharedMedias
+  name: PropertyMedias
+  objectType: PropertyMedias
   source:
     dataConnectorName: freebusy_pgsql
-    collection: shared_medias
-  filterExpressionType: SharedMediasBoolExp
-  aggregateExpression: SharedMediasAggExp
-  orderByExpression: SharedMediasOrderByExp
+    collection: property_medias
+  filterExpressionType: PropertyMediasBoolExp
+  aggregateExpression: PropertyMediasAggExp
+  orderByExpression: PropertyMediasOrderByExp
   graphql:
     selectMany:
-      queryRootField: sharedMedias
+      queryRootField: propertyMedias
       subscription:
-        rootField: sharedMedias
+        rootField: propertyMedias
     selectUniques:
-      - queryRootField: sharedMediasById
+      - queryRootField: propertyMediasById
         uniqueIdentifier:
           - id
         subscription:
-          rootField: sharedMediasById
-    filterInputTypeName: SharedMediasFilterInput
+          rootField: propertyMediasById
+    filterInputTypeName: PropertyMediasFilterInput
     aggregate:
-      queryRootField: sharedMediasAggregate
+      queryRootField: propertyMediasAggregate
       subscription:
-        rootField: sharedMediasAggregate
+        rootField: propertyMediasAggregate
 
 ---
 kind: ModelPermissions
 version: v1
 definition:
-  modelName: SharedMedias
+  modelName: PropertyMedias
   permissions:
     - role: admin
       select:

@@ -83,7 +83,7 @@ func (x PriceComponent_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use PriceComponent_Type.Descriptor instead.
 func (PriceComponent_Type) EnumDescriptor() ([]byte, []int) {
-	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{4, 0}
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{3, 0}
 }
 
 // A half-open time interval [start_time, end_time). Used for query windows and
@@ -268,110 +268,6 @@ func (x *Contact) GetPhoneNumber() string {
 	return ""
 }
 
-// A reference to a media asset — a showcase image, video, floor plan, virtual
-// tour, or a document (PDF fact sheet, policy, house rules). The bytes live in
-// object storage (S3 or any HTTP-reachable host); this message only carries the
-// link and its presentation metadata. Attached wherever a resource wants a
-// gallery, e.g. a Property (hotel) or a Unit (room).
-type Media struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
-	Uri string `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
-	// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
-	Type MediaType `protobuf:"varint,2,opt,name=type,proto3,enum=freebusy.shared.v1.MediaType" json:"type,omitempty"`
-	// Short human-readable caption/title for display.
-	Title string `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
-	// Longer description or alt text.
-	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
-	MimeType string `protobuf:"bytes,5,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
-	// Ordering hint within a gallery; lower sorts first.
-	SortOrder int32 `protobuf:"varint,6,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
-	// Whether this is the primary/hero asset of its gallery.
-	Primary       bool `protobuf:"varint,7,opt,name=primary,proto3" json:"primary,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Media) Reset() {
-	*x = Media{}
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Media) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Media) ProtoMessage() {}
-
-func (x *Media) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Media.ProtoReflect.Descriptor instead.
-func (*Media) Descriptor() ([]byte, []int) {
-	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *Media) GetUri() string {
-	if x != nil {
-		return x.Uri
-	}
-	return ""
-}
-
-func (x *Media) GetType() MediaType {
-	if x != nil {
-		return x.Type
-	}
-	return MediaType_MEDIA_TYPE_UNSPECIFIED
-}
-
-func (x *Media) GetTitle() string {
-	if x != nil {
-		return x.Title
-	}
-	return ""
-}
-
-func (x *Media) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *Media) GetMimeType() string {
-	if x != nil {
-		return x.MimeType
-	}
-	return ""
-}
-
-func (x *Media) GetSortOrder() int32 {
-	if x != nil {
-		return x.SortOrder
-	}
-	return 0
-}
-
-func (x *Media) GetPrimary() bool {
-	if x != nil {
-		return x.Primary
-	}
-	return false
-}
-
 // One line in a price breakdown: a base charge, a fee, a tax, or a discount.
 // Clients branch on `type` and `code`; the signed `amount` rolls up to the
 // booking total (charges positive, discounts negative).
@@ -393,7 +289,7 @@ type PriceComponent struct {
 
 func (x *PriceComponent) Reset() {
 	*x = PriceComponent{}
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[4]
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -405,7 +301,7 @@ func (x *PriceComponent) String() string {
 func (*PriceComponent) ProtoMessage() {}
 
 func (x *PriceComponent) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_shared_v1_types_proto_msgTypes[4]
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -418,7 +314,7 @@ func (x *PriceComponent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PriceComponent.ProtoReflect.Descriptor instead.
 func (*PriceComponent) Descriptor() ([]byte, []int) {
-	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{4}
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PriceComponent) GetType() PriceComponent_Type {
@@ -466,16 +362,7 @@ const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\aContact\x12&\n" +
 	"\fdisplay_name\x18\x01 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x19\n" +
 	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x01R\x05email\x12&\n" +
-	"\fphone_number\x18\x03 \x01(\tB\x03\xe0A\x01R\vphoneNumber\"\xfd\x01\n" +
-	"\x05Media\x12\x15\n" +
-	"\x03uri\x18\x01 \x01(\tB\x03\xe0A\x02R\x03uri\x126\n" +
-	"\x04type\x18\x02 \x01(\x0e2\x1d.freebusy.shared.v1.MediaTypeB\x03\xe0A\x02R\x04type\x12\x19\n" +
-	"\x05title\x18\x03 \x01(\tB\x03\xe0A\x01R\x05title\x12%\n" +
-	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x12 \n" +
-	"\tmime_type\x18\x05 \x01(\tB\x03\xe0A\x01R\bmimeType\x12\"\n" +
-	"\n" +
-	"sort_order\x18\x06 \x01(\x05B\x03\xe0A\x01R\tsortOrder\x12\x1d\n" +
-	"\aprimary\x18\a \x01(\bB\x03\xe0A\x01R\aprimary\"\x8c\x02\n" +
+	"\fphone_number\x18\x03 \x01(\tB\x03\xe0A\x01R\vphoneNumber\"\x8c\x02\n" +
 	"\x0ePriceComponent\x12;\n" +
 	"\x04type\x18\x01 \x01(\x0e2'.freebusy.shared.v1.PriceComponent.TypeR\x04type\x12\x12\n" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x12!\n" +
@@ -503,32 +390,29 @@ func file_freebusy_shared_v1_types_proto_rawDescGZIP() []byte {
 }
 
 var file_freebusy_shared_v1_types_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_freebusy_shared_v1_types_proto_goTypes = []any{
 	(PriceComponent_Type)(0),      // 0: freebusy.shared.v1.PriceComponent.Type
 	(*TimeWindow)(nil),            // 1: freebusy.shared.v1.TimeWindow
 	(*DateRange)(nil),             // 2: freebusy.shared.v1.DateRange
 	(*Contact)(nil),               // 3: freebusy.shared.v1.Contact
-	(*Media)(nil),                 // 4: freebusy.shared.v1.Media
-	(*PriceComponent)(nil),        // 5: freebusy.shared.v1.PriceComponent
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
-	(*date.Date)(nil),             // 7: google.type.Date
-	(MediaType)(0),                // 8: freebusy.shared.v1.MediaType
-	(*money.Money)(nil),           // 9: google.type.Money
+	(*PriceComponent)(nil),        // 4: freebusy.shared.v1.PriceComponent
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*date.Date)(nil),             // 6: google.type.Date
+	(*money.Money)(nil),           // 7: google.type.Money
 }
 var file_freebusy_shared_v1_types_proto_depIdxs = []int32{
-	6, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
-	6, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
-	7, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
-	7, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
-	8, // 4: freebusy.shared.v1.Media.type:type_name -> freebusy.shared.v1.MediaType
-	0, // 5: freebusy.shared.v1.PriceComponent.type:type_name -> freebusy.shared.v1.PriceComponent.Type
-	9, // 6: freebusy.shared.v1.PriceComponent.amount:type_name -> google.type.Money
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	5, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
+	5, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
+	6, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
+	6, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
+	0, // 4: freebusy.shared.v1.PriceComponent.type:type_name -> freebusy.shared.v1.PriceComponent.Type
+	7, // 5: freebusy.shared.v1.PriceComponent.amount:type_name -> google.type.Money
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_shared_v1_types_proto_init() }
@@ -543,7 +427,7 @@ func file_freebusy_shared_v1_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_shared_v1_types_proto_rawDesc), len(file_freebusy_shared_v1_types_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

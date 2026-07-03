@@ -1854,6 +1854,100 @@
         },
         "description": null
       },
+      "property_medias": {
+        "schemaName": "property",
+        "tableName": "medias",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "mime_type": {
+            "name": "mime_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "primary": {
+            "name": "primary",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "property_id": {
+            "name": "property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "sort_order": {
+            "name": "sort_order",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "title": {
+            "name": "title",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "property_media_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "uri": {
+            "name": "uri",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "medias_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "medias_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
+            "columnMapping": {
+              "property_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "property_policies": {
         "schemaName": "property",
         "tableName": "policies",
@@ -2238,6 +2332,100 @@
             }
           },
           "unit_applicable_promo_codes_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "property_unit_medias": {
+        "schemaName": "property",
+        "tableName": "unit_medias",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "mime_type": {
+            "name": "mime_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "primary": {
+            "name": "primary",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "sort_order": {
+            "name": "sort_order",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "title": {
+            "name": "title",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "property_media_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "uri": {
+            "name": "uri",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "unit_medias_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "unit_medias_unit_id_fkey": {
             "foreignSchema": "property",
             "foreignTable": "units",
             "columnMapping": {
@@ -3119,115 +3307,6 @@
           ]
         },
         "foreignRelations": {},
-        "description": null
-      },
-      "shared_medias": {
-        "schemaName": "shared",
-        "tableName": "medias",
-        "columns": {
-          "description": {
-            "name": "description",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "mime_type": {
-            "name": "mime_type",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "primary": {
-            "name": "primary",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "property_id": {
-            "name": "property_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "sort_order": {
-            "name": "sort_order",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "title": {
-            "name": "title",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "shared_media_type"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
-          "unit_id": {
-            "name": "unit_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "uri": {
-            "name": "uri",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "medias_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "medias_property_id_fkey": {
-            "foreignSchema": "property",
-            "foreignTable": "properties",
-            "columnMapping": {
-              "property_id": "id"
-            }
-          },
-          "medias_unit_id_fkey": {
-            "foreignSchema": "property",
-            "foreignTable": "units",
-            "columnMapping": {
-              "unit_id": "id"
-            }
-          }
-        },
         "description": null
       },
       "shared_price_components": {
@@ -4655,6 +4734,72 @@
             ]
           }
         },
+        "property_media_type": {
+          "typeName": "media_type",
+          "schemaName": "property",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "property_media_type"
+            },
+            "min": {
+              "returnType": "property_media_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "property_media_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "IMAGE",
+              "VIDEO",
+              "DOCUMENT",
+              "FLOORPLAN",
+              "VIRTUAL_TOUR"
+            ]
+          }
+        },
         "property_pricing_unit": {
           "typeName": "pricing_unit",
           "schemaName": "property",
@@ -5034,72 +5179,6 @@
             "enum": [
               "CLOSURE",
               "EXTRA_HOURS"
-            ]
-          }
-        },
-        "shared_media_type": {
-          "typeName": "media_type",
-          "schemaName": "shared",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "shared_media_type"
-            },
-            "min": {
-              "returnType": "shared_media_type"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "greaterThan",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "greaterThanOrEqual",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "lessThan",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "lessThanOrEqual",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "!=",
-              "operatorKind": "custom",
-              "argumentType": "shared_media_type",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": {
-            "enum": [
-              "IMAGE",
-              "VIDEO",
-              "DOCUMENT",
-              "FLOORPLAN",
-              "VIRTUAL_TOUR"
             ]
           }
         },

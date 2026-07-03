@@ -6451,6 +6451,52 @@
     },
     {
       "kind": "OBJECT",
+      "name": "DeletePropertyMediasByIdResponse",
+      "description": "Responses from the 'delete_property_medias_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyMedias",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
       "name": "DeletePropertyPoliciesByIdResponse",
       "description": "Responses from the 'delete_property_policies_by_id' procedure",
       "fields": [
@@ -6668,6 +6714,52 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "PropertyUnitApplicablePromoCodes",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "DeletePropertyUnitMediasByIdResponse",
+      "description": "Responses from the 'delete_property_unit_medias_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyUnitMedias",
                   "ofType": null
                 }
               }
@@ -7220,52 +7312,6 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "SharedDateRanges",
-                  "ofType": null
-                }
-              }
-            }
-          }
-        }
-      ],
-      "inputFields": null,
-      "enumValues": null,
-      "interfaces": []
-    },
-    {
-      "kind": "OBJECT",
-      "name": "DeleteSharedMediasByIdResponse",
-      "description": "Responses from the 'delete_shared_medias_by_id' procedure",
-      "fields": [
-        {
-          "name": "affectedRows",
-          "description": "The number of rows affected by the mutation",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Int32",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "returning",
-          "description": "Data from rows affected by the mutation",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "LIST",
-              "name": "",
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "SharedMedias",
                   "ofType": null
                 }
               }
@@ -11325,6 +11371,164 @@
     },
     {
       "kind": "INPUT_OBJECT",
+      "name": "InsertPropertyMediasObjectInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "description",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int32",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "InsertPropertyMediasResponse",
+      "description": "Responses from the 'insert_property_medias' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyMedias",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
       "name": "InsertPropertyPoliciesObjectInput",
       "description": "",
       "fields": null,
@@ -11988,6 +12192,164 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "PropertyUnitApplicablePromoCodes",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "InsertPropertyUnitMediasObjectInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "description",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int32",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "InsertPropertyUnitMediasResponse",
+      "description": "Responses from the 'insert_property_unit_medias' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyUnitMedias",
                   "ofType": null
                 }
               }
@@ -13544,178 +13906,6 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "SharedDateRanges",
-                  "ofType": null
-                }
-              }
-            }
-          }
-        }
-      ],
-      "inputFields": null,
-      "enumValues": null,
-      "interfaces": []
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "InsertSharedMediasObjectInput",
-      "description": "",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "description",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "id",
-          "description": "",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "mimeType",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "primary",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Boolean1",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "propertyId",
-          "description": "",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "sortOrder",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Int32",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "title",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "type",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "unitId",
-          "description": "",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "uri",
-          "description": "",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "OBJECT",
-      "name": "InsertSharedMediasResponse",
-      "description": "Responses from the 'insert_shared_medias' procedure",
-      "fields": [
-        {
-          "name": "affectedRows",
-          "description": "The number of rows affected by the mutation",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Int32",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "returning",
-          "description": "Data from rows affected by the mutation",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "LIST",
-              "name": "",
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "SharedMedias",
                   "ofType": null
                 }
               }
@@ -15607,6 +15797,45 @@
           }
         },
         {
+          "name": "deletePropertyMediasById",
+          "description": "Delete any row on the 'property_medias' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Delete permission predicate over the 'property_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DeletePropertyMediasByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "deletePropertyPoliciesById",
           "description": "Delete any row on the 'property_policies' collection using the 'id' key",
           "args": [
@@ -15797,6 +16026,45 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "DeletePropertyUnitApplicablePromoCodesByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "deletePropertyUnitMediasById",
+          "description": "Delete any row on the 'property_unit_medias' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Delete permission predicate over the 'property_unit_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DeletePropertyUnitMediasByIdResponse",
               "ofType": null
             }
           }
@@ -16265,45 +16533,6 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "DeleteSharedDateRangesByIdResponse",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "deleteSharedMediasById",
-          "description": "Delete any row on the 'shared_medias' collection using the 'id' key",
-          "args": [
-            {
-              "name": "keyId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String1",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "preCheck",
-              "description": "Delete permission predicate over the 'shared_medias' collection",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "DeleteSharedMediasByIdResponse",
               "ofType": null
             }
           }
@@ -17327,6 +17556,53 @@
           }
         },
         {
+          "name": "insertPropertyMedias",
+          "description": "Insert into the property_medias table",
+          "args": [
+            {
+              "name": "objects",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "LIST",
+                  "name": "",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": "",
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InsertPropertyMediasObjectInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Insert permission predicate over the 'property_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "InsertPropertyMediasResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "insertPropertyPolicies",
           "description": "Insert into the property_policies table",
           "args": [
@@ -17557,6 +17833,53 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "InsertPropertyUnitApplicablePromoCodesResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "insertPropertyUnitMedias",
+          "description": "Insert into the property_unit_medias table",
+          "args": [
+            {
+              "name": "objects",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "LIST",
+                  "name": "",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": "",
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InsertPropertyUnitMediasObjectInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Insert permission predicate over the 'property_unit_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "InsertPropertyUnitMediasResponse",
               "ofType": null
             }
           }
@@ -18121,53 +18444,6 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "InsertSharedDateRangesResponse",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "insertSharedMedias",
-          "description": "Insert into the shared_medias table",
-          "args": [
-            {
-              "name": "objects",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "LIST",
-                  "name": "",
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": "",
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "InsertSharedMediasObjectInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "postCheck",
-              "description": "Insert permission predicate over the 'shared_medias' collection",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "InsertSharedMediasResponse",
               "ofType": null
             }
           }
@@ -19527,6 +19803,69 @@
           }
         },
         {
+          "name": "updatePropertyMediasById",
+          "description": "Update any row on the 'property_medias' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Update permission post-condition predicate over the 'property_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Update permission pre-condition predicate over the 'property_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "updateColumns",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UpdatePropertyMediasByIdUpdateColumnsInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "UpdatePropertyMediasByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "updatePropertyPoliciesById",
           "description": "Update any row on the 'property_policies' collection using the 'id' key",
           "args": [
@@ -19837,6 +20176,69 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "UpdatePropertyUnitApplicablePromoCodesByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updatePropertyUnitMediasById",
+          "description": "Update any row on the 'property_unit_medias' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Update permission post-condition predicate over the 'property_unit_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Update permission pre-condition predicate over the 'property_unit_medias' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "updateColumns",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UpdatePropertyUnitMediasByIdUpdateColumnsInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "UpdatePropertyUnitMediasByIdResponse",
               "ofType": null
             }
           }
@@ -20593,69 +20995,6 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "UpdateSharedDateRangesByIdResponse",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "updateSharedMediasById",
-          "description": "Update any row on the 'shared_medias' collection using the 'id' key",
-          "args": [
-            {
-              "name": "keyId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String1",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "postCheck",
-              "description": "Update permission post-condition predicate over the 'shared_medias' collection",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "preCheck",
-              "description": "Update permission pre-condition predicate over the 'shared_medias' collection",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "updateColumns",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "UpdateSharedMediasByIdUpdateColumnsInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "UpdateSharedMediasByIdResponse",
               "ofType": null
             }
           }
@@ -27997,6 +28336,778 @@
     },
     {
       "kind": "OBJECT",
+      "name": "PropertyMediaTypeAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "_count_distinct",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "max",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        },
+        {
+          "name": "min",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyMediaTypeBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediaTypeBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_eq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_in",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Enum",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_is_null",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_neq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyMediaTypeBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediaTypeBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyMedias",
+      "description": "",
+      "fields": [
+        {
+          "name": "description",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int32",
+            "ofType": null
+          }
+        },
+        {
+          "name": "title",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyMediasAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "description",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "BoolAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Int4AggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "title",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "PropertyMediaTypeAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyMediasBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyMediasBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "BoolBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "Int4BoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyMediaTypeBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyMediasFilterInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "limit",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "offset",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "order_by",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasOrderByExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "where",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyMediasBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyMediasOrderByExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "description",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
       "name": "PropertyPolicies",
       "description": "",
       "fields": [
@@ -30597,6 +31708,576 @@
         },
         {
           "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyUnitMedias",
+      "description": "",
+      "fields": [
+        {
+          "name": "description",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int32",
+            "ofType": null
+          }
+        },
+        {
+          "name": "title",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyUnitMediasAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "description",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "BoolAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Int4AggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "title",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "PropertyMediaTypeAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyUnitMediasBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyUnitMediasBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "description",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "BoolBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "Int4BoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyMediaTypeBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyUnitMediasFilterInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "limit",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "offset",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "order_by",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasOrderByExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "where",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyUnitMediasBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyUnitMediasOrderByExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "description",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
           "description": "",
           "type": {
             "kind": "ENUM",
@@ -34629,6 +36310,119 @@
           }
         },
         {
+          "name": "propertyMedias",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyMediasOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyMedias",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyMediasAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyMediasAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyMediasById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyMedias",
+            "ofType": null
+          }
+        },
+        {
           "name": "propertyPolicies",
           "description": "",
           "args": [
@@ -35190,6 +36984,119 @@
           "type": {
             "kind": "OBJECT",
             "name": "PropertyUnitApplicablePromoCodes",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitMedias",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyUnitMediasOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyUnitMedias",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyUnitMediasAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitMediasAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitMediasById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitMedias",
             "ofType": null
           }
         },
@@ -36546,119 +38453,6 @@
           "type": {
             "kind": "OBJECT",
             "name": "SharedDateRanges",
-            "ofType": null
-          }
-        },
-        {
-          "name": "sharedMedias",
-          "description": "",
-          "args": [
-            {
-              "name": "limit",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "offset",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "order_by",
-              "description": "",
-              "type": {
-                "kind": "LIST",
-                "name": "",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": "",
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "SharedMediasOrderByExp",
-                    "ofType": null
-                  }
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "where",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SharedMedias",
-                "ofType": null
-              }
-            }
-          }
-        },
-        {
-          "name": "sharedMediasAggregate",
-          "description": "",
-          "args": [
-            {
-              "name": "filter_input",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasFilterInput",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "OBJECT",
-            "name": "SharedMediasAggExp",
-            "ofType": null
-          }
-        },
-        {
-          "name": "sharedMediasById",
-          "description": "",
-          "args": [
-            {
-              "name": "id",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String1",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "OBJECT",
-            "name": "SharedMedias",
             "ofType": null
           }
         },
@@ -41231,826 +43025,6 @@
     },
     {
       "kind": "OBJECT",
-      "name": "SharedMediaTypeAggExp",
-      "description": "",
-      "fields": [
-        {
-          "name": "_count",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Int64",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "_count_distinct",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Int64",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "max",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          }
-        },
-        {
-          "name": "min",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          }
-        }
-      ],
-      "inputFields": null,
-      "enumValues": null,
-      "interfaces": []
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "SharedMediaTypeBoolExp",
-      "description": "",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "_and",
-          "description": "",
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediaTypeBoolExp",
-                "ofType": null
-              }
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_eq",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_gt",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_gte",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_in",
-          "description": "",
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Enum",
-                "ofType": null
-              }
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_is_null",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Boolean",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_lt",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_lte",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_neq",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Enum",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_not",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "SharedMediaTypeBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_or",
-          "description": "",
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediaTypeBoolExp",
-                "ofType": null
-              }
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "OBJECT",
-      "name": "SharedMedias",
-      "description": "",
-      "fields": [
-        {
-          "name": "description",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          }
-        },
-        {
-          "name": "id",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "mimeType",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          }
-        },
-        {
-          "name": "primary",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "Boolean1",
-            "ofType": null
-          }
-        },
-        {
-          "name": "propertyId",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "sortOrder",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "Int32",
-            "ofType": null
-          }
-        },
-        {
-          "name": "title",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          }
-        },
-        {
-          "name": "type",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Enum",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "unitId",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "uri",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          }
-        }
-      ],
-      "inputFields": null,
-      "enumValues": null,
-      "interfaces": []
-    },
-    {
-      "kind": "OBJECT",
-      "name": "SharedMediasAggExp",
-      "description": "",
-      "fields": [
-        {
-          "name": "_count",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Int64",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "description",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "id",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "mimeType",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "primary",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "BoolAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "propertyId",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "sortOrder",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "Int4AggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "title",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "type",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "SharedMediaTypeAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "unitId",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "uri",
-          "description": "",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "OBJECT",
-              "name": "TextAggExp",
-              "ofType": null
-            }
-          }
-        }
-      ],
-      "inputFields": null,
-      "enumValues": null,
-      "interfaces": []
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "SharedMediasBoolExp",
-      "description": "",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "_and",
-          "description": "",
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              }
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_not",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "SharedMediasBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "_or",
-          "description": "",
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              }
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "description",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "id",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "mimeType",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "primary",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "BoolBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "propertyId",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "sortOrder",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "Int4BoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "title",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "type",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "SharedMediaTypeBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "unitId",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "uri",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "TextBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "SharedMediasFilterInput",
-      "description": "",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "limit",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Int",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "offset",
-          "description": "",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Int",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "order_by",
-          "description": "",
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasOrderByExp",
-                "ofType": null
-              }
-            }
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "where",
-          "description": "",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "SharedMediasBoolExp",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "SharedMediasOrderByExp",
-      "description": "",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "description",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "id",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "mimeType",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "primary",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "propertyId",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "sortOrder",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "title",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "type",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "unitId",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "uri",
-          "description": "",
-          "type": {
-            "kind": "ENUM",
-            "name": "OrderBy",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "OBJECT",
       "name": "SharedPriceComponents",
       "description": "",
       "fields": [
@@ -45267,6 +46241,119 @@
           }
         },
         {
+          "name": "propertyMedias",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyMediasOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyMedias",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyMediasAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyMediasFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyMediasAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyMediasById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyMedias",
+            "ofType": null
+          }
+        },
+        {
           "name": "propertyPolicies",
           "description": "",
           "args": [
@@ -45828,6 +46915,119 @@
           "type": {
             "kind": "OBJECT",
             "name": "PropertyUnitApplicablePromoCodes",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitMedias",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyUnitMediasOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyUnitMedias",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyUnitMediasAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitMediasFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitMediasAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitMediasById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitMedias",
             "ofType": null
           }
         },
@@ -47184,119 +48384,6 @@
           "type": {
             "kind": "OBJECT",
             "name": "SharedDateRanges",
-            "ofType": null
-          }
-        },
-        {
-          "name": "sharedMedias",
-          "description": "",
-          "args": [
-            {
-              "name": "limit",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "offset",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "order_by",
-              "description": "",
-              "type": {
-                "kind": "LIST",
-                "name": "",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": "",
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "SharedMediasOrderByExp",
-                    "ofType": null
-                  }
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "where",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasBoolExp",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "LIST",
-            "name": "",
-            "ofType": {
-              "kind": "NON_NULL",
-              "name": "",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SharedMedias",
-                "ofType": null
-              }
-            }
-          }
-        },
-        {
-          "name": "sharedMediasAggregate",
-          "description": "",
-          "args": [
-            {
-              "name": "filter_input",
-              "description": "",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "SharedMediasFilterInput",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "OBJECT",
-            "name": "SharedMediasAggExp",
-            "ofType": null
-          }
-        },
-        {
-          "name": "sharedMediasById",
-          "description": "",
-          "args": [
-            {
-              "name": "id",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String1",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "type": {
-            "kind": "OBJECT",
-            "name": "SharedMedias",
             "ofType": null
           }
         },
@@ -52628,6 +53715,202 @@
     },
     {
       "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasDescriptionInput",
+      "description": "Update the 'description' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasIdInput",
+      "description": "Update the 'id' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasMimeTypeInput",
+      "description": "Update the 'mime_type' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasPrimaryInput",
+      "description": "Update the 'primary' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasPropertyIdInput",
+      "description": "Update the 'property_id' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasSortOrderInput",
+      "description": "Update the 'sort_order' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int32",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasTitleInput",
+      "description": "Update the 'title' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasTypeInput",
+      "description": "Update the 'type' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyMediasUriInput",
+      "description": "Update the 'uri' column in the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
       "name": "UpdateColumnPropertyPoliciesCheckinTimeInput",
       "description": "Update the 'checkin_time' column in the 'property_policies' collection",
       "fields": null,
@@ -53326,6 +54609,202 @@
       "kind": "INPUT_OBJECT",
       "name": "UpdateColumnPropertyUnitApplicablePromoCodesUnitIdInput",
       "description": "Update the 'unit_id' column in the 'property_unit_applicable_promo_codes' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasDescriptionInput",
+      "description": "Update the 'description' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasIdInput",
+      "description": "Update the 'id' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasMimeTypeInput",
+      "description": "Update the 'mime_type' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasPrimaryInput",
+      "description": "Update the 'primary' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasSortOrderInput",
+      "description": "Update the 'sort_order' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int32",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasTitleInput",
+      "description": "Update the 'title' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasTypeInput",
+      "description": "Update the 'type' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasUnitIdInput",
+      "description": "Update the 'unit_id' column in the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitMediasUriInput",
+      "description": "Update the 'uri' column in the 'property_unit_medias' collection",
       "fields": null,
       "inputFields": [
         {
@@ -54981,226 +56460,6 @@
             "ofType": {
               "kind": "SCALAR",
               "name": "Date",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasDescriptionInput",
-      "description": "Update the 'description' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasIdInput",
-      "description": "Update the 'id' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasMimeTypeInput",
-      "description": "Update the 'mime_type' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasPrimaryInput",
-      "description": "Update the 'primary' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Boolean1",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasPropertyIdInput",
-      "description": "Update the 'property_id' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasSortOrderInput",
-      "description": "Update the 'sort_order' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "SCALAR",
-            "name": "Int32",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasTitleInput",
-      "description": "Update the 'title' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "SCALAR",
-            "name": "String1",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasTypeInput",
-      "description": "Update the 'type' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Enum",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasUnitIdInput",
-      "description": "Update the 'unit_id' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
-              "ofType": null
-            }
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateColumnSharedMediasUriInput",
-      "description": "Update the 'uri' column in the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "set",
-          "description": "Set the column to this value",
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "String1",
               "ofType": null
             }
           },
@@ -57418,6 +58677,152 @@
     },
     {
       "kind": "OBJECT",
+      "name": "UpdatePropertyMediasByIdResponse",
+      "description": "Responses from the 'update_property_medias_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyMedias",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdatePropertyMediasByIdUpdateColumnsInput",
+      "description": "Update the columns of the 'property_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "description",
+          "description": "Update the 'description' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasDescriptionInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "Update the 'id' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "Update the 'mime_type' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasMimeTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "Update the 'primary' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasPrimaryInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "Update the 'property_id' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasPropertyIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "Update the 'sort_order' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasSortOrderInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "Update the 'title' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasTitleInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "Update the 'type' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "Update the 'uri' column in the 'property_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyMediasUriInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
       "name": "UpdatePropertyPoliciesByIdResponse",
       "description": "Responses from the 'update_property_policies_by_id' procedure",
       "fields": [
@@ -58008,6 +59413,152 @@
           "type": {
             "kind": "INPUT_OBJECT",
             "name": "UpdateColumnPropertyUnitApplicablePromoCodesUnitIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "UpdatePropertyUnitMediasByIdResponse",
+      "description": "Responses from the 'update_property_unit_medias_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyUnitMedias",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdatePropertyUnitMediasByIdUpdateColumnsInput",
+      "description": "Update the columns of the 'property_unit_medias' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "description",
+          "description": "Update the 'description' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasDescriptionInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "Update the 'id' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "Update the 'mime_type' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasMimeTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "primary",
+          "description": "Update the 'primary' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasPrimaryInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sortOrder",
+          "description": "Update the 'sort_order' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasSortOrderInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "title",
+          "description": "Update the 'title' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasTitleInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "Update the 'type' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "Update the 'unit_id' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasUnitIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "Update the 'uri' column in the 'property_unit_medias' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitMediasUriInput",
             "ofType": null
           },
           "defaultValue": null
@@ -59420,162 +60971,6 @@
           "type": {
             "kind": "INPUT_OBJECT",
             "name": "UpdateColumnSharedDateRangesStartDateInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        }
-      ],
-      "enumValues": null,
-      "interfaces": null
-    },
-    {
-      "kind": "OBJECT",
-      "name": "UpdateSharedMediasByIdResponse",
-      "description": "Responses from the 'update_shared_medias_by_id' procedure",
-      "fields": [
-        {
-          "name": "affectedRows",
-          "description": "The number of rows affected by the mutation",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "SCALAR",
-              "name": "Int32",
-              "ofType": null
-            }
-          }
-        },
-        {
-          "name": "returning",
-          "description": "Data from rows affected by the mutation",
-          "args": [],
-          "type": {
-            "kind": "NON_NULL",
-            "name": "",
-            "ofType": {
-              "kind": "LIST",
-              "name": "",
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": "",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "SharedMedias",
-                  "ofType": null
-                }
-              }
-            }
-          }
-        }
-      ],
-      "inputFields": null,
-      "enumValues": null,
-      "interfaces": []
-    },
-    {
-      "kind": "INPUT_OBJECT",
-      "name": "UpdateSharedMediasByIdUpdateColumnsInput",
-      "description": "Update the columns of the 'shared_medias' collection",
-      "fields": null,
-      "inputFields": [
-        {
-          "name": "description",
-          "description": "Update the 'description' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasDescriptionInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "id",
-          "description": "Update the 'id' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasIdInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "mimeType",
-          "description": "Update the 'mime_type' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasMimeTypeInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "primary",
-          "description": "Update the 'primary' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasPrimaryInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "propertyId",
-          "description": "Update the 'property_id' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasPropertyIdInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "sortOrder",
-          "description": "Update the 'sort_order' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasSortOrderInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "title",
-          "description": "Update the 'title' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasTitleInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "type",
-          "description": "Update the 'type' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasTypeInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "unitId",
-          "description": "Update the 'unit_id' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasUnitIdInput",
-            "ofType": null
-          },
-          "defaultValue": null
-        },
-        {
-          "name": "uri",
-          "description": "Update the 'uri' column in the 'shared_medias' collection.",
-          "type": {
-            "kind": "INPUT_OBJECT",
-            "name": "UpdateColumnSharedMediasUriInput",
             "ofType": null
           },
           "defaultValue": null

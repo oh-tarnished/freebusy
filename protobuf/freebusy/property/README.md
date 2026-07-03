@@ -80,7 +80,7 @@ A bookable unit type within a property: a pool of `capacity` interchangeable roo
 | `los_discounts` | `repeated LosDiscount` | `OPTIONAL` | Length-of-stay discounts applied to the NIGHTLY subtotal when a stay is at least `min_nights` long. The most generous matching discount applies. |
 | `fees` | `repeated Fee` | `OPTIONAL` | Fees added on top of the base subtotal (e.g. cleaning, service). Each surfaces as a TYPE_FEE line in a booking's price_components. |
 | `taxes` | `repeated Tax` | `OPTIONAL` | Taxes applied to the taxable base (subtotal plus taxable fees). Each surfaces as a TYPE_TAX line in a booking's price_components. |
-| `media` | `repeated Media` | `OPTIONAL` | Showcase gallery and documents for this unit (images, video, floor plans). |
+| `media` | `repeated UnitMedia` | `OPTIONAL` | Showcase gallery and documents for this unit (images, video, floor plans). |
 | `applicable_promo_codes` | `repeated string` | `OPTIONAL` | Promo codes advertised as applicable to this unit (an allow-list shown to guests). Actual eligibility/validation still happens at booking time. Format: promo-codes/{promo_code} |
 | `tags` | `repeated string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
@@ -121,6 +121,34 @@ A fee added on top of a unit's base subtotal. Exactly one of `amount` or `percen
 | `percent` | `int32` | `OPTIONAL` | Percent of the base subtotal (1-100), when charging a proportional fee. |
 | `pricing_unit` | `PricingUnit` | `OPTIONAL` | What the fee is charged per (per booking, per night, per person). Defaults to per booking. |
 | `taxable` | `bool` | `OPTIONAL` | Whether this fee is included in the taxable base. |
+
+### Media
+
+A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `uri` | `string` | `REQUIRED` | Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL). |
+| `type` | `MediaType` | `REQUIRED` | What kind of asset this is; DOCUMENT covers PDFs/policies/house rules. |
+| `title` | `string` | `OPTIONAL` | Short human-readable caption/title for display. |
+| `description` | `string` | `OPTIONAL` | Longer description or alt text. |
+| `mime_type` | `string` | `OPTIONAL` | MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known. |
+| `sort_order` | `int32` | `OPTIONAL` | Ordering hint within a gallery; lower sorts first. |
+| `primary` | `bool` | `OPTIONAL` | Whether this is the primary/hero asset of its gallery. |
+
+### UnitMedia
+
+A media asset in a Unit's gallery. Identical in shape to `Media`; kept a separate message so the ORM gives it its own child table owned solely by the Unit (a single unit_id foreign key).
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `uri` | `string` | `REQUIRED` | Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL). |
+| `type` | `MediaType` | `REQUIRED` | What kind of asset this is; DOCUMENT covers PDFs/policies/house rules. |
+| `title` | `string` | `OPTIONAL` | Short human-readable caption/title for display. |
+| `description` | `string` | `OPTIONAL` | Longer description or alt text. |
+| `mime_type` | `string` | `OPTIONAL` | MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known. |
+| `sort_order` | `int32` | `OPTIONAL` | Ordering hint within a gallery; lower sorts first. |
+| `primary` | `bool` | `OPTIONAL` | Whether this is the primary/hero asset of its gallery. |
 
 ### Tax
 

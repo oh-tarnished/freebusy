@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 9 | 0 |
+| 11 | 0 |
 
 ## Entity relationships
 
@@ -22,6 +22,10 @@ erDiagram
         string id PK
         string unit_id FK
         string amount_off_id FK
+    }
+    Media {
+        string id PK
+        string property_id FK
     }
     Policy {
         string id PK
@@ -57,6 +61,10 @@ erDiagram
         string unit_id FK
         string promo_code_id FK
     }
+    UnitMedia {
+        string id PK
+        string unit_id FK
+    }
     DateRange {
         string externalStub PK
     }
@@ -76,6 +84,7 @@ erDiagram
     Fee }o--|| Money : "amount_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
+    Media }o--|| Property : "property_id"
     Property }o--|| Organisation : "organisation"
     Property }o--|| PostalAddress : "address_id"
     Property }o--|| Policy : "policy_id"
@@ -89,6 +98,7 @@ erDiagram
     Unit }o--|| Money : "price_id"
     UnitApplicablePromoCodes }o--|| Unit : "unit_id"
     UnitApplicablePromoCodes }o--|| PromoCode : "promo_code_id"
+    UnitMedia }o--|| Unit : "unit_id"
 ```
 
 Schema file: [`property.postgres.prisma`](./property.postgres.prisma)
@@ -139,6 +149,22 @@ A bookable unit type within a property: a pool of `capacity` interchangeable roo
 | `etag` | `VARCHAR(255)` | nullable |
 | `property_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
+
+### `Media` → `medias`
+
+A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `uri` | `VARCHAR(255)` | not null |
+| `type` | `MediaType` | not null |
+| `title` | `VARCHAR(255)` | nullable |
+| `description` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `sort_order` | `INTEGER` | nullable |
+| `primary` | `BOOLEAN` | nullable |
+| `property_id` | `CHAR(26)` | not null |
 
 ### `Policy` → `policies`
 
@@ -201,6 +227,22 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
 | `percent` | `DOUBLE PRECISION` | not null |
+| `unit_id` | `CHAR(26)` | not null |
+
+### `UnitMedia` → `unit_medias`
+
+A media asset in a Unit's gallery. Identical in shape to `Media`; kept a separate message so the ORM gives it its own child table owned solely by the Unit (a single unit_id foreign key).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `uri` | `VARCHAR(255)` | not null |
+| `type` | `MediaType` | not null |
+| `title` | `VARCHAR(255)` | nullable |
+| `description` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `sort_order` | `INTEGER` | nullable |
+| `primary` | `BOOLEAN` | nullable |
 | `unit_id` | `CHAR(26)` | not null |
 
 ### `PropertyUnits` → `units_link`

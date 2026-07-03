@@ -1663,6 +1663,80 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
+  name: PropertyMediaTypeBoolExp
+  operand:
+    scalar:
+      type: Enum
+      comparisonOperators:
+        - name: _eq
+          argumentType: Enum!
+        - name: _gt
+          argumentType: Enum!
+        - name: _gte
+          argumentType: Enum!
+        - name: _in
+          argumentType: "[Enum!]!"
+        - name: _lt
+          argumentType: Enum!
+        - name: _lte
+          argumentType: Enum!
+        - name: _neq
+          argumentType: Enum!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: property_media_type
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: PropertyMediaTypeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: freebusy_pgsql
+  dataConnectorScalarType: property_media_type
+  representation: Enum
+  graphql:
+    comparisonExpressionTypeName: EnumComparisonExp_11
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: PropertyMediaTypeAggExp
+  operand:
+    scalar:
+      aggregatedType: Enum
+      aggregationFunctions:
+        - name: max
+          returnType: Enum
+        - name: min
+          returnType: Enum
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: property_media_type
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+    returnType: Int64
+  countDistinct:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: PropertyMediaTypeAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
   name: TimeBoolExp
   operand:
     scalar:
@@ -1827,7 +1901,7 @@ definition:
   dataConnectorScalarType: property_property_state
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_11
+    comparisonExpressionTypeName: EnumComparisonExp_12
 
 ---
 kind: AggregateExpression
@@ -2028,7 +2102,7 @@ definition:
   dataConnectorScalarType: property_booking_mode
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_12
+    comparisonExpressionTypeName: EnumComparisonExp_13
 
 ---
 kind: BooleanExpressionType
@@ -2072,7 +2146,7 @@ definition:
   dataConnectorScalarType: property_unit_state
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_13
+    comparisonExpressionTypeName: EnumComparisonExp_14
 
 ---
 kind: BooleanExpressionType
@@ -2116,7 +2190,7 @@ definition:
   dataConnectorScalarType: property_unit_type
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_14
+    comparisonExpressionTypeName: EnumComparisonExp_15
 
 ---
 kind: AggregateExpression
@@ -2250,7 +2324,7 @@ definition:
   dataConnectorScalarType: schedule_exception_kind
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_15
+    comparisonExpressionTypeName: EnumComparisonExp_16
 
 ---
 kind: BooleanExpressionType
@@ -2294,7 +2368,7 @@ definition:
   dataConnectorScalarType: schedule_availability_exception_span_case
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_16
+    comparisonExpressionTypeName: EnumComparisonExp_17
 
 ---
 kind: AggregateExpression
@@ -2450,80 +2524,6 @@ definition:
         enableAll: true
   graphql:
     expressionTypeName: DateOrderByExp
-
----
-kind: BooleanExpressionType
-version: v1
-definition:
-  name: SharedMediaTypeBoolExp
-  operand:
-    scalar:
-      type: Enum
-      comparisonOperators:
-        - name: _eq
-          argumentType: Enum!
-        - name: _gt
-          argumentType: Enum!
-        - name: _gte
-          argumentType: Enum!
-        - name: _in
-          argumentType: "[Enum!]!"
-        - name: _lt
-          argumentType: Enum!
-        - name: _lte
-          argumentType: Enum!
-        - name: _neq
-          argumentType: Enum!
-      dataConnectorOperatorMapping:
-        - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: shared_media_type
-          operatorMapping: {}
-  logicalOperators:
-    enable: true
-  isNull:
-    enable: true
-  graphql:
-    typeName: SharedMediaTypeBoolExp
-
----
-kind: DataConnectorScalarRepresentation
-version: v1
-definition:
-  dataConnectorName: freebusy_pgsql
-  dataConnectorScalarType: shared_media_type
-  representation: Enum
-  graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_17
-
----
-kind: AggregateExpression
-version: v1
-definition:
-  name: SharedMediaTypeAggExp
-  operand:
-    scalar:
-      aggregatedType: Enum
-      aggregationFunctions:
-        - name: max
-          returnType: Enum
-        - name: min
-          returnType: Enum
-      dataConnectorAggregationFunctionMapping:
-        - dataConnectorName: freebusy_pgsql
-          dataConnectorScalarType: shared_media_type
-          functionMapping:
-            max:
-              name: max
-            min:
-              name: min
-  count:
-    enable: true
-    returnType: Int64
-  countDistinct:
-    enable: true
-    returnType: Int64
-  graphql:
-    selectTypeName: SharedMediaTypeAggExp
 
 ---
 kind: BooleanExpressionType

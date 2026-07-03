@@ -5,7 +5,7 @@
 // source: freebusy/shared/v1/enums.proto
 //
 // database: freebusy
-// schemas:  property, shared
+// schemas:  property
 //
 // orm — https://github.com/the-protobuf-project/orm
 
@@ -42,6 +42,6 @@ enum MediaType {
 
   /// Maps the enum to the "media_type" type in the database.
   @@map("media_type")
-  /// Maps the enum to the "shared" schema in the database.
-  @@schema("shared")
+  /// Maps the enum to the "property" schema in the database.
+  @@schema("property")
 }

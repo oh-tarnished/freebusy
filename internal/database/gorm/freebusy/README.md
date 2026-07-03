@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 39 | 19 |
+| 40 | 19 |
 
 ## Entity relationships
 
@@ -70,7 +70,6 @@ erDiagram
     Media {
         string id PK
         string property_id FK
-        string unit_id FK
     }
     Member {
         string id PK
@@ -188,6 +187,10 @@ erDiagram
         string unit FK
         string channel_id FK
     }
+    UnitMedia {
+        string id PK
+        string unit_id FK
+    }
     UsageLimits {
         string id PK
     }
@@ -214,7 +217,6 @@ erDiagram
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"
-    Media }o--|| Unit : "unit_id"
     Member }o--|| User : "user"
     Member }o--|| User : "inviter"
     Member }o--|| Organisation : "organisation_id"
@@ -256,6 +258,7 @@ erDiagram
     UnitApplicablePromoCodes }o--|| PromoCode : "promo_code_id"
     UnitMapping }o--|| Unit : "unit"
     UnitMapping }o--|| Channel : "channel_id"
+    UnitMedia }o--|| Unit : "unit_id"
 ```
 
 ## Output
@@ -582,6 +585,22 @@ A bookable unit type within a property: a pool of `capacity` interchangeable roo
 | `property_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
 
+### `Media` → `medias`
+
+A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `uri` | `VARCHAR(255)` | not null |
+| `type` | `MediaType` | not null |
+| `title` | `VARCHAR(255)` | nullable |
+| `description` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `sort_order` | `INTEGER` | nullable |
+| `primary` | `BOOLEAN` | nullable |
+| `property_id` | `CHAR(26)` | not null |
+
 ### `Policy` → `policies`
 
 Guest-facing, informational property policy: what to *display* to a guest (check-in/out hours, house rules). The enforced refund/stay rules that gate bookability live on each Unit's Schedule (freebusy.schedule.v1), not here, so there is a single source of truth for enforcement.
@@ -645,6 +664,22 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `percent` | `DOUBLE PRECISION` | not null |
 | `unit_id` | `CHAR(26)` | not null |
 
+### `UnitMedia` → `unit_medias`
+
+A media asset in a Unit's gallery. Identical in shape to `Media`; kept a separate message so the ORM gives it its own child table owned solely by the Unit (a single unit_id foreign key).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `uri` | `VARCHAR(255)` | not null |
+| `type` | `MediaType` | not null |
+| `title` | `VARCHAR(255)` | nullable |
+| `description` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `sort_order` | `INTEGER` | nullable |
+| `primary` | `BOOLEAN` | nullable |
+| `unit_id` | `CHAR(26)` | not null |
+
 ### `PropertyUnits` → `units_link`
 
 Join table for the many-to-many relation Property.units ↔ Unit.
@@ -673,6 +708,7 @@ Join table for the many-to-many relation Unit.applicable_promo_codes ↔ PromoCo
 - `BookingMode`: TIME_SLOT, NIGHTLY
 - `PricingUnit`: PER_BOOKING, PER_NIGHT, PER_PERSON
 - `UnitState`: ACTIVE, ARCHIVED
+- `MediaType`: IMAGE, VIDEO, DOCUMENT, FLOORPLAN, VIRTUAL_TOUR
 
 ## Schema `schedule`
 
@@ -817,23 +853,6 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `booking_id` | `CHAR(26)` | not null |
 | `amount_id` | `CHAR(26)` | nullable |
 
-### `Media` → `medias`
-
-A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `uri` | `VARCHAR(255)` | not null |
-| `type` | `MediaType` | not null |
-| `title` | `VARCHAR(255)` | nullable |
-| `description` | `VARCHAR(255)` | nullable |
-| `mime_type` | `VARCHAR(255)` | nullable |
-| `sort_order` | `INTEGER` | nullable |
-| `primary` | `BOOLEAN` | nullable |
-| `property_id` | `CHAR(26)` | not null |
-| `unit_id` | `CHAR(26)` | not null |
-
 ### `DateRange` → `date_ranges`
 
 A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
@@ -847,7 +866,6 @@ A half-open range of calendar dates [start_date, end_date), evaluated in the res
 ### Enums
 
 - `Type`: BASE, FEE, TAX, DISCOUNT
-- `MediaType`: IMAGE, VIDEO, DOCUMENT, FLOORPLAN, VIRTUAL_TOUR
 
 ## Schema `common`
 
