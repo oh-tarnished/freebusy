@@ -16,8 +16,8 @@ import (
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableofferingsql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableresourcesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/generateql/runtime/go/graphql"
@@ -76,13 +76,13 @@ func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.Prom
 	if g.scope != nil {
 		var sRes pcschema.InsertPromocodeScopesResponse
 		tx.Add(r.svc.Mutation.Promocode.Scopes.CreateOp(*g.scope, &sRes))
-		resRes := make([]pcschema.InsertPromocodeScopeApplicableResourcesResponse, len(g.resources))
-		for i, row := range g.resources {
-			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableResources.CreateOp(row, &resRes[i]))
+		resRes := make([]pcschema.InsertPromocodeScopeApplicablePropertiesResponse, len(g.properties))
+		for i, row := range g.properties {
+			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableProperties.CreateOp(row, &resRes[i]))
 		}
-		offRes := make([]pcschema.InsertPromocodeScopeApplicableOfferingsResponse, len(g.offerings))
-		for i, row := range g.offerings {
-			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableOfferings.CreateOp(row, &offRes[i]))
+		offRes := make([]pcschema.InsertPromocodeScopeApplicableUnitsResponse, len(g.units))
+		for i, row := range g.units {
+			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableUnits.CreateOp(row, &offRes[i]))
 		}
 	}
 	var resourceRes pcschema.InsertPromocodeResourceResponse
@@ -223,21 +223,21 @@ func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.Prom
 			p.minSub = m
 			refs.moneyIDs = append(refs.moneyIDs, *s.MinSubtotalId)
 		}
-		resRows, err := r.svc.Query.Promocode.ScopeApplicableResources.List(ctx,
-			scopeapplicableresourcesql.List().Where(scopeapplicableresourcesql.ScopeId.Eq(*res.ScopeId)))
+		resRows, err := r.svc.Query.Promocode.ScopeApplicableProperties.List(ctx,
+			scopeapplicablepropertiesql.List().Where(scopeapplicablepropertiesql.ScopeId.Eq(*res.ScopeId)))
 		if err != nil {
 			return parts{}, promoRefs{}, mapHasuraErr(err)
 		}
-		p.resources = resRows
+		p.properties = resRows
 		for i := range resRows {
 			refs.resourceJoinIDs = append(refs.resourceJoinIDs, resRows[i].Id)
 		}
-		offRows, err := r.svc.Query.Promocode.ScopeApplicableOfferings.List(ctx,
-			scopeapplicableofferingsql.List().Where(scopeapplicableofferingsql.ScopeId.Eq(*res.ScopeId)))
+		offRows, err := r.svc.Query.Promocode.ScopeApplicableUnits.List(ctx,
+			scopeapplicableunitsql.List().Where(scopeapplicableunitsql.ScopeId.Eq(*res.ScopeId)))
 		if err != nil {
 			return parts{}, promoRefs{}, mapHasuraErr(err)
 		}
-		p.offerings = offRows
+		p.units = offRows
 		for i := range offRows {
 			refs.offeringJoinIDs = append(refs.offeringJoinIDs, offRows[i].Id)
 		}

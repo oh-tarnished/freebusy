@@ -14,6 +14,8 @@ definition:
       type: String_1!
     - name: name
       type: String_1!
+    - name: propertyId
+      type: String_1!
     - name: stayConstraintsId
       type: String_1
   graphql:
@@ -38,6 +40,9 @@ definition:
         name:
           column:
             name: name
+        propertyId:
+          column:
+            name: property_id
         stayConstraintsId:
           column:
             name: stay_constraints_id
@@ -56,6 +61,7 @@ definition:
           - etag
           - id
           - name
+          - propertyId
           - stayConstraintsId
 
 ---

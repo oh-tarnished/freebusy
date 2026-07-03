@@ -83,13 +83,13 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 	if g.scope != nil {
 		var sRes pcschema.InsertPromocodeScopesResponse
 		tx.Add(r.svc.Mutation.Promocode.Scopes.CreateOp(*g.scope, &sRes))
-		resRes := make([]pcschema.InsertPromocodeScopeApplicableResourcesResponse, len(g.resources))
-		for i, row := range g.resources {
-			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableResources.CreateOp(row, &resRes[i]))
+		resRes := make([]pcschema.InsertPromocodeScopeApplicablePropertiesResponse, len(g.properties))
+		for i, row := range g.properties {
+			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableProperties.CreateOp(row, &resRes[i]))
 		}
-		offRes := make([]pcschema.InsertPromocodeScopeApplicableOfferingsResponse, len(g.offerings))
-		for i, row := range g.offerings {
-			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableOfferings.CreateOp(row, &offRes[i]))
+		offRes := make([]pcschema.InsertPromocodeScopeApplicableUnitsResponse, len(g.units))
+		for i, row := range g.units {
+			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableUnits.CreateOp(row, &offRes[i]))
 		}
 	}
 
@@ -153,12 +153,12 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 // discount, then the Money rows those children referenced.
 func queueChildDeletes(tx *runtime.Tx, r *PromoCodeRepository, refs promoRefs) {
 	for _, jid := range refs.resourceJoinIDs {
-		var out pcschema.DeletePromocodeScopeApplicableResourcesByIdResponse
-		tx.Add(r.svc.Mutation.Promocode.ScopeApplicableResources.DeleteOp(jid, &out))
+		var out pcschema.DeletePromocodeScopeApplicablePropertiesByIdResponse
+		tx.Add(r.svc.Mutation.Promocode.ScopeApplicableProperties.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.offeringJoinIDs {
-		var out pcschema.DeletePromocodeScopeApplicableOfferingsByIdResponse
-		tx.Add(r.svc.Mutation.Promocode.ScopeApplicableOfferings.DeleteOp(jid, &out))
+		var out pcschema.DeletePromocodeScopeApplicableUnitsByIdResponse
+		tx.Add(r.svc.Mutation.Promocode.ScopeApplicableUnits.DeleteOp(jid, &out))
 	}
 	if refs.scopeID != nil {
 		var out pcschema.DeletePromocodeScopesByIdResponse

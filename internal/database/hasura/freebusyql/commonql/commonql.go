@@ -4,6 +4,7 @@ package commonql
 
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/generateql/runtime/go/runtime"
 )
@@ -11,42 +12,53 @@ import (
 // Model type aliases for this domain, re-exported from its schema package.
 type CommonMoneys = schemaql.CommonMoneys
 type CommonMoneysAggExp = schemaql.CommonMoneysAggExp
+type CommonPostalAddress = schemaql.CommonPostalAddress
+type CommonPostalAddressAggExp = schemaql.CommonPostalAddressAggExp
 type DeleteCommonMoneysByIdResponse = schemaql.DeleteCommonMoneysByIdResponse
+type DeleteCommonPostalAddressByIdResponse = schemaql.DeleteCommonPostalAddressByIdResponse
 type InsertCommonMoneysResponse = schemaql.InsertCommonMoneysResponse
+type InsertCommonPostalAddressResponse = schemaql.InsertCommonPostalAddressResponse
 type UpdateCommonMoneysByIdResponse = schemaql.UpdateCommonMoneysByIdResponse
+type UpdateCommonPostalAddressByIdResponse = schemaql.UpdateCommonPostalAddressByIdResponse
 
 // QueryHandler aggregates query handlers for the commonql domain.
 type QueryHandler struct {
-	Moneys moneysql.QueryHandler
+	Moneys        moneysql.QueryHandler
+	PostalAddress postaladdressql.QueryHandler
 }
 
 // NewQuery wires every query handler in the domain.
 func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
-		Moneys: moneysql.NewQuery(gql),
+		Moneys:        moneysql.NewQuery(gql),
+		PostalAddress: postaladdressql.NewQuery(gql),
 	}
 }
 
 // MutationHandler aggregates mutation handlers for the commonql domain.
 type MutationHandler struct {
-	Moneys moneysql.MutationHandler
+	Moneys        moneysql.MutationHandler
+	PostalAddress postaladdressql.MutationHandler
 }
 
 // NewMutation wires every mutation handler in the domain.
 func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
-		Moneys: moneysql.NewMutation(gql),
+		Moneys:        moneysql.NewMutation(gql),
+		PostalAddress: postaladdressql.NewMutation(gql),
 	}
 }
 
 // SubscriptionHandler aggregates subscription handlers for the commonql domain.
 type SubscriptionHandler struct {
-	Moneys moneysql.SubscriptionHandler
+	Moneys        moneysql.SubscriptionHandler
+	PostalAddress postaladdressql.SubscriptionHandler
 }
 
 // NewSubscription wires every subscription handler in the domain.
 func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
-		Moneys: moneysql.NewSubscription(gql),
+		Moneys:        moneysql.NewSubscription(gql),
+		PostalAddress: postaladdressql.NewSubscription(gql),
 	}
 }

@@ -14,12 +14,14 @@ definition:
       type: Enum!
     - name: name
       type: String_1!
+    - name: propertyId
+      type: String_1!
     - name: reason
       type: String_1
-    - name: resourceId
-      type: String_1!
     - name: spanCase
       type: Enum
+    - name: unitId
+      type: String_1!
     - name: windowId
       type: String_1
   graphql:
@@ -44,15 +46,18 @@ definition:
         name:
           column:
             name: name
+        propertyId:
+          column:
+            name: property_id
         reason:
           column:
             name: reason
-        resourceId:
-          column:
-            name: resource_id
         spanCase:
           column:
             name: span_case
+        unitId:
+          column:
+            name: unit_id
         windowId:
           column:
             name: window_id
@@ -71,9 +76,10 @@ definition:
           - id
           - kind
           - name
+          - propertyId
           - reason
-          - resourceId
           - spanCase
+          - unitId
           - windowId
 
 ---
@@ -95,12 +101,14 @@ definition:
           booleanExpressionType: ScheduleExceptionKindBoolExp
         - fieldName: name
           booleanExpressionType: TextBoolExp
-        - fieldName: reason
+        - fieldName: propertyId
           booleanExpressionType: TextBoolExp
-        - fieldName: resourceId
+        - fieldName: reason
           booleanExpressionType: TextBoolExp
         - fieldName: spanCase
           booleanExpressionType: ScheduleAvailabilityExceptionSpanCaseBoolExp
+        - fieldName: unitId
+          booleanExpressionType: TextBoolExp
         - fieldName: windowId
           booleanExpressionType: TextBoolExp
       comparableRelationships: []
@@ -130,12 +138,14 @@ definition:
           aggregateExpression: ScheduleExceptionKindAggExp
         - fieldName: name
           aggregateExpression: TextAggExp
-        - fieldName: reason
+        - fieldName: propertyId
           aggregateExpression: TextAggExp
-        - fieldName: resourceId
+        - fieldName: reason
           aggregateExpression: TextAggExp
         - fieldName: spanCase
           aggregateExpression: ScheduleAvailabilityExceptionSpanCaseAggExp
+        - fieldName: unitId
+          aggregateExpression: TextAggExp
         - fieldName: windowId
           aggregateExpression: TextAggExp
   count:
@@ -163,12 +173,14 @@ definition:
           orderByExpression: EnumOrderByExp
         - fieldName: name
           orderByExpression: String1OrderByExp
-        - fieldName: reason
+        - fieldName: propertyId
           orderByExpression: String1OrderByExp
-        - fieldName: resourceId
+        - fieldName: reason
           orderByExpression: String1OrderByExp
         - fieldName: spanCase
           orderByExpression: EnumOrderByExp
+        - fieldName: unitId
+          orderByExpression: String1OrderByExp
         - fieldName: windowId
           orderByExpression: String1OrderByExp
       orderableRelationships: []

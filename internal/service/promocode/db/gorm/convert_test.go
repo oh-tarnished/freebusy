@@ -36,11 +36,11 @@ func roundTrip(in *promocodepbv1.PromoCode) *promocodepbv1.PromoCode {
 		if g.scope.MinSubtotalID != nil {
 			g.scope.MinSubtotal = moneyByID[*g.scope.MinSubtotalID]
 		}
-		for _, row := range g.resources {
-			g.scope.ScopeApplicableResources = append(g.scope.ScopeApplicableResources, *row)
+		for _, row := range g.properties {
+			g.scope.ScopeApplicableProperties = append(g.scope.ScopeApplicableProperties, *row)
 		}
-		for _, row := range g.offerings {
-			g.scope.ScopeApplicableOfferings = append(g.scope.ScopeApplicableOfferings, *row)
+		for _, row := range g.units {
+			g.scope.ScopeApplicableUnits = append(g.scope.ScopeApplicableUnits, *row)
 		}
 	}
 	return fromModel(g.promo)
@@ -60,9 +60,9 @@ func TestPromoConvertPercentageRoundTrip(t *testing.T) {
 			PerCustomerLimit: wrapperspb.Int32(2),
 		},
 		Scope: &promocodepbv1.Scope{
-			MinSubtotal:         &money.Money{CurrencyCode: "USD", Units: 50},
-			ApplicableResources: []string{"resources/room-1"},
-			ApplicableOfferings: []string{"resources/room-1/offerings/night"},
+			MinSubtotal:          &money.Money{CurrencyCode: "USD", Units: 50},
+			ApplicableProperties: []string{"properties/room-1"},
+			ApplicableUnits:      []string{"properties/room-1/units/night"},
 		},
 	}
 
@@ -80,11 +80,11 @@ func TestPromoConvertPercentageRoundTrip(t *testing.T) {
 	if out.GetScope().GetMinSubtotal().GetUnits() != 50 || out.GetScope().GetMinSubtotal().GetCurrencyCode() != "USD" {
 		t.Fatalf("min subtotal not preserved: %+v", out.GetScope().GetMinSubtotal())
 	}
-	if got := out.GetScope().GetApplicableResources(); len(got) != 1 || got[0] != "resources/room-1" {
-		t.Fatalf("applicable resources = %v", got)
+	if got := out.GetScope().GetApplicableProperties(); len(got) != 1 || got[0] != "properties/room-1" {
+		t.Fatalf("applicable properties = %v", got)
 	}
-	if got := out.GetScope().GetApplicableOfferings(); len(got) != 1 || got[0] != "resources/room-1/offerings/night" {
-		t.Fatalf("applicable offerings = %v", got)
+	if got := out.GetScope().GetApplicableUnits(); len(got) != 1 || got[0] != "properties/room-1/units/night" {
+		t.Fatalf("applicable units = %v", got)
 	}
 	if !out.GetWindow().GetStartTime().AsTime().Equal(start) {
 		t.Fatalf("window start = %v, want %v", out.GetWindow().GetStartTime().AsTime(), start)

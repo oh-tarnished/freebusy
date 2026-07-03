@@ -11,9 +11,10 @@ type DeleteScheduleAvailabilityExceptionsByIdResponse struct {
 		Id          string  `graphql:"id"`
 		Kind        string  `graphql:"kind"`
 		Name        string  `graphql:"name"`
+		PropertyId  string  `graphql:"propertyId"`
 		Reason      *string `graphql:"reason"`
-		ResourceId  string  `graphql:"resourceId"`
 		SpanCase    *string `graphql:"spanCase"`
+		UnitId      string  `graphql:"unitId"`
 		WindowId    *string `graphql:"windowId"`
 	} `graphql:"returning"`
 }

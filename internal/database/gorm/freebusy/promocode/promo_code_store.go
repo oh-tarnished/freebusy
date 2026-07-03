@@ -19,7 +19,7 @@ import (
 )
 
 // PromoCodeStore provides typed CRUD access to PromoCode records.
-// A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of resources / offerings it applies to.
+// A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of properties / units it applies to.
 type PromoCodeStore struct{ DB *gorm.DB }
 
 // Compile-time proof that PromoCodeStore satisfies the generic gormx.Store, so the

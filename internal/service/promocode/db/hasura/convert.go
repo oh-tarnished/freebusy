@@ -10,8 +10,8 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/redemptionwindowsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
 	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableofferingsql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableresourcesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/usagelimitsql"
 	"github.com/oh-tarnished/freebusy/internal/service/promocode/discount"
@@ -118,8 +118,8 @@ type graph struct {
 	limits    *usagelimitsql.CreateInput
 	scope     *scopesql.CreateInput
 	moneys    []moneysql.CreateInput
-	resources []scopeapplicableresourcesql.CreateInput
-	offerings []scopeapplicableofferingsql.CreateInput
+	properties []scopeapplicablepropertiesql.CreateInput
+	units []scopeapplicableunitsql.CreateInput
 }
 
 // buildGraph turns a proto PromoCode into the insert graph that backs it, minting
@@ -191,19 +191,19 @@ func buildGraph(pc *promocodepbv1.PromoCode, now time.Time) *graph {
 		}
 		g.scope = &scp
 		g.resource.ScopeId = sID
-		for _, name := range sc.GetApplicableResources() {
-			g.resources = append(g.resources, scopeapplicableresourcesql.CreateInput{
+		for _, name := range sc.GetApplicableProperties() {
+			g.properties = append(g.properties, scopeapplicablepropertiesql.CreateInput{
 				Id:         ulid.GenerateString(),
 				ScopeId:    sID,
-				ResourceId: name,
+				PropertyId: name,
 			})
 		}
-		for _, name := range sc.GetApplicableOfferings() {
-			g.offerings = append(g.offerings, scopeapplicableofferingsql.CreateInput{
+		for _, name := range sc.GetApplicableUnits() {
+			g.units = append(g.units, scopeapplicableunitsql.CreateInput{
 				Id:           ulid.GenerateString(),
 				ScopeId:      sID,
-				OfferingId:   lastSegment(name),
-				OfferingName: name,
+				UnitId:   lastSegment(name),
+				UnitName: name,
 			})
 		}
 	}
@@ -220,8 +220,8 @@ type parts struct {
 	limits    *pcschema.PromocodeUsageLimits
 	scope     *pcschema.PromocodeScopes
 	minSub    *commonschema.CommonMoneys
-	resources []pcschema.PromocodeScopeApplicableResources
-	offerings []pcschema.PromocodeScopeApplicableOfferings
+	properties []pcschema.PromocodeScopeApplicableProperties
+	units []pcschema.PromocodeScopeApplicableUnits
 }
 
 // fromParts assembles the protobuf PromoCode from a stored resource row and its
@@ -236,7 +236,7 @@ func fromParts(p parts) *promocodepbv1.PromoCode {
 		Discount:        discountFromModel(p.discount, p.amountOff),
 		Window:          windowFromModel(p.window),
 		Limits:          limitsFromModel(p.limits),
-		Scope:           scopeFromParts(p.scope, p.minSub, p.resources, p.offerings),
+		Scope:           scopeFromParts(p.scope, p.minSub, p.properties, p.units),
 		RedemptionCount: int64(deref(res.RedemptionCount)),
 		Disabled:        deref(res.Disabled),
 		CreateTime:      strToTS(&res.CreateTime),
@@ -286,16 +286,16 @@ func limitsFromModel(l *pcschema.PromocodeUsageLimits) *promocodepbv1.UsageLimit
 	return out
 }
 
-func scopeFromParts(s *pcschema.PromocodeScopes, minSub *commonschema.CommonMoneys, res []pcschema.PromocodeScopeApplicableResources, off []pcschema.PromocodeScopeApplicableOfferings) *promocodepbv1.Scope {
+func scopeFromParts(s *pcschema.PromocodeScopes, minSub *commonschema.CommonMoneys, res []pcschema.PromocodeScopeApplicableProperties, off []pcschema.PromocodeScopeApplicableUnits) *promocodepbv1.Scope {
 	if s == nil {
 		return nil
 	}
 	out := &promocodepbv1.Scope{MinSubtotal: moneyFromModel(minSub)}
 	for i := range res {
-		out.ApplicableResources = append(out.ApplicableResources, res[i].ResourceId)
+		out.ApplicableProperties = append(out.ApplicableProperties, res[i].PropertyId)
 	}
 	for i := range off {
-		out.ApplicableOfferings = append(out.ApplicableOfferings, off[i].OfferingName)
+		out.ApplicableUnits = append(out.ApplicableUnits, off[i].UnitName)
 	}
 	return out
 }

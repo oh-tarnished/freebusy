@@ -9,9 +9,9 @@ definition:
     - name: advanceMinDays
       type: Int32
     - name: checkinWeekdays
-      type: "[String_1]"
+      type: String_1
     - name: checkoutWeekdays
-      type: "[String_1]"
+      type: String_1
     - name: id
       type: String_1!
     - name: maxNights
@@ -77,6 +77,10 @@ definition:
           booleanExpressionType: Int4BoolExp
         - fieldName: advanceMinDays
           booleanExpressionType: Int4BoolExp
+        - fieldName: checkinWeekdays
+          booleanExpressionType: TextBoolExp
+        - fieldName: checkoutWeekdays
+          booleanExpressionType: TextBoolExp
         - fieldName: id
           booleanExpressionType: TextBoolExp
         - fieldName: maxNights
@@ -104,6 +108,10 @@ definition:
           aggregateExpression: Int4AggExp
         - fieldName: advanceMinDays
           aggregateExpression: Int4AggExp
+        - fieldName: checkinWeekdays
+          aggregateExpression: TextAggExp
+        - fieldName: checkoutWeekdays
+          aggregateExpression: TextAggExp
         - fieldName: id
           aggregateExpression: TextAggExp
         - fieldName: maxNights
@@ -129,6 +137,10 @@ definition:
           orderByExpression: Int32OrderByExp
         - fieldName: advanceMinDays
           orderByExpression: Int32OrderByExp
+        - fieldName: checkinWeekdays
+          orderByExpression: String1OrderByExp
+        - fieldName: checkoutWeekdays
+          orderByExpression: String1OrderByExp
         - fieldName: id
           orderByExpression: String1OrderByExp
         - fieldName: maxNights

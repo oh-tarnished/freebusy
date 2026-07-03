@@ -35,7 +35,7 @@ func (s *Server) ValidatePromoCode(ctx context.Context, req *promocodepbv1.Valid
 			return toStatusErr(err)
 		}
 
-		result := discount.Evaluate(pc, req.GetSubtotal(), req.GetResource(), req.GetOffering(), time.Now().UTC())
+		result := discount.Evaluate(pc, req.GetSubtotal(), req.GetProperty(), req.GetUnit(), time.Now().UTC())
 		if !result.Valid {
 			return status.Error(reasonCode(result.Reason), result.Reason.Message())
 		}

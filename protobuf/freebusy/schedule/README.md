@@ -9,21 +9,21 @@
 
 ### ScheduleService
 
-ScheduleService is the write side of availability configuration: a resource's recurring working hours, blackout/holiday exceptions, buffers, and stay rules. These are the inputs the freebusy engine consumes to compute availability.
+ScheduleService is the write side of availability configuration: a unit's recurring working hours, blackout/holiday exceptions, buffers, and stay rules. These are the inputs the freebusy engine consumes to compute availability.
 
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
-| `GetSchedule` | `GetScheduleRequest` | `Schedule` | Reads the full availability configuration for a resource. |
-| `UpdateSchedule` | `UpdateScheduleRequest` | `Schedule` | Updates a resource's availability configuration. Set update_mask to the section(s) to replace: recurring_rules, buffers, stay_constraints, and/or cancellation_policy. |
-| `ListAvailabilityExceptions` | `ListAvailabilityExceptionsRequest` | `ListAvailabilityExceptionsResponse` | Lists the exceptions configured for a resource. |
+| `GetSchedule` | `GetScheduleRequest` | `Schedule` | Reads the full availability configuration for a unit. |
+| `UpdateSchedule` | `UpdateScheduleRequest` | `Schedule` | Updates a unit's availability configuration. Set update_mask to the section(s) to replace: recurring_rules, buffers, stay_constraints, and/or cancellation_policy. |
+| `ListAvailabilityExceptions` | `ListAvailabilityExceptionsRequest` | `ListAvailabilityExceptionsResponse` | Lists the exceptions configured for a unit. |
 | `GetAvailabilityException` | `GetAvailabilityExceptionRequest` | `AvailabilityException` | Gets a single availability exception. |
-| `CreateAvailabilityException` | `CreateAvailabilityExceptionRequest` | `AvailabilityException` | Adds an availability exception to a resource. |
+| `CreateAvailabilityException` | `CreateAvailabilityExceptionRequest` | `AvailabilityException` | Adds an availability exception to a unit. |
 
 ## Messages
 
 ### RecurringRule
 
-A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
+A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the unit's timezone.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -45,7 +45,7 @@ Buffer and notice settings applied around bookings.
 
 ### StayConstraints
 
-Stay rules that affect bookability for NIGHTLY resources.
+Stay rules that affect bookability for NIGHTLY units.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -58,29 +58,29 @@ Stay rules that affect bookability for NIGHTLY resources.
 
 ### AvailabilityException
 
-An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
+An override of a unit's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
-| `kind` | `ExceptionKind` | `REQUIRED` | Whether this span closes the resource or adds extra availability. |
-| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
-| `date_range` | `DateRange` | - | A range of whole calendar dates in the resource's timezone, the natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26"). |
+| `name` | `string` | `IDENTIFIER` | The exception name. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception} |
+| `kind` | `ExceptionKind` | `REQUIRED` | Whether this span closes the unit or adds extra availability. |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT units. |
+| `date_range` | `DateRange` | - | A range of whole calendar dates in the unit's timezone, the natural form for NIGHTLY blackouts (e.g. "closed Dec 24 through Dec 26"). |
 | `reason` | `string` | `OPTIONAL` | Human-readable reason (e.g. "Public holiday"). |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 
 ### Schedule
 
-Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+Aggregate read view of a unit's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per unit.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `IDENTIFIER` | The schedule name. Format: resources/{resource}/schedule |
+| `name` | `string` | `IDENTIFIER` | The schedule name. Format: properties/{property}/units/{unit}/schedule |
 | `recurring_rules` | `repeated RecurringRule` | `OPTIONAL` | Recurring working hours. |
 | `buffers` | `BufferSettings` | `OPTIONAL` | Buffer and notice settings. |
-| `stay_constraints` | `StayConstraints` | `OPTIONAL` | Stay rules (NIGHTLY resources). |
-| `exceptions` | `repeated string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
-| `cancellation_policy` | `CancellationPolicy` | `OPTIONAL` | Refund rules applied when a booking on this resource is cancelled. Unset means cancellations are non-refundable by default. |
+| `stay_constraints` | `StayConstraints` | `OPTIONAL` | Stay rules (NIGHTLY units). |
+| `exceptions` | `repeated string` | `OUTPUT_ONLY` | Resource names of the active exceptions; manage them with the AvailabilityException standard methods. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception} |
+| `cancellation_policy` | `CancellationPolicy` | `OPTIONAL` | Refund rules applied when a booking on this unit is cancelled. Unset means cancellations are non-refundable by default. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update. |
 
 ### CancellationPolicy
@@ -106,7 +106,7 @@ Request message for GetSchedule.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The schedule to read. Format: resources/{resource}/schedule |
+| `name` | `string` | `REQUIRED` | The schedule to read. Format: properties/{property}/units/{unit}/schedule |
 
 ### UpdateScheduleRequest
 
@@ -123,7 +123,7 @@ Request message for ListAvailabilityExceptions.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `parent` | `string` | `REQUIRED` | The resource whose exceptions to list. Format: resources/{resource} |
+| `parent` | `string` | `REQUIRED` | The unit whose exceptions to list. Format: properties/{property}/units/{unit} |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of exceptions to return. |
 | `page_token` | `string` | `OPTIONAL` | Token for the page of results to return. Empty for the first page. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `kind = EXCEPTION_KIND_CLOSURE`. |
@@ -144,7 +144,7 @@ Request message for GetAvailabilityException.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The exception to retrieve. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+| `name` | `string` | `REQUIRED` | The exception to retrieve. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception} |
 
 ### CreateAvailabilityExceptionRequest
 
@@ -152,7 +152,7 @@ Request message for CreateAvailabilityException.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `parent` | `string` | `REQUIRED` | The resource to add the exception to. Format: resources/{resource} |
+| `parent` | `string` | `REQUIRED` | The unit to add the exception to. Format: properties/{property}/units/{unit} |
 | `availability_exception` | `AvailabilityException` | `REQUIRED` | The exception to add. Its name field is ignored. |
 | `availability_exception_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the exception; the server generates one if unset. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
@@ -163,7 +163,7 @@ Request message for DeleteAvailabilityException.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `name` | `string` | `REQUIRED` | The exception to remove. Format: resources/{resource}/availabilityExceptions/{availability_exception} |
+| `name` | `string` | `REQUIRED` | The exception to remove. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception} |
 
 ## Enums
 

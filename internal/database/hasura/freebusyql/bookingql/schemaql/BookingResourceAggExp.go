@@ -97,12 +97,6 @@ type BookingResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"notes"`
-	Offering struct {
-		Count         graphql.Int64 `graphql:"_count"`
-		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
-		Max           *string       `graphql:"max"`
-		Min           *string       `graphql:"min"`
-	} `graphql:"offering"`
 	PriceId struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
@@ -138,12 +132,6 @@ type BookingResourceAggExp struct {
 		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
 		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"refundPercent"`
-	Resource struct {
-		Count         graphql.Int64 `graphql:"_count"`
-		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
-		Max           *string       `graphql:"max"`
-		Min           *string       `graphql:"min"`
-	} `graphql:"resource"`
 	State struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
@@ -156,6 +144,12 @@ type BookingResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"totalId"`
+	Unit struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"unit"`
 	Units struct {
 		Count         graphql.Int64       `graphql:"_count"`
 		CountDistinct graphql.Int64       `graphql:"_count_distinct"`

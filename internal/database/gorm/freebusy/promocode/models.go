@@ -41,7 +41,7 @@ const (
 	DiscountAmountCaseAmountOff DiscountAmountCase = "AMOUNT_OFF"
 )
 
-// A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of resources / offerings it applies to.
+// A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of properties / units it applies to.
 type PromoCode struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`

@@ -1,0 +1,229 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SharedMedias
+  fields:
+    - name: description
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: mimeType
+      type: String_1
+    - name: primary
+      type: Boolean_1
+    - name: propertyId
+      type: String_1!
+    - name: sortOrder
+      type: Int32
+    - name: title
+      type: String_1
+    - name: type
+      type: Enum!
+    - name: unitId
+      type: String_1!
+    - name: uri
+      type: String_1!
+  graphql:
+    typeName: SharedMedias
+    inputTypeName: SharedMediasInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: shared_medias
+      fieldMapping:
+        description:
+          column:
+            name: description
+        id:
+          column:
+            name: id
+        mimeType:
+          column:
+            name: mime_type
+        primary:
+          column:
+            name: primary
+        propertyId:
+          column:
+            name: property_id
+        sortOrder:
+          column:
+            name: sort_order
+        title:
+          column:
+            name: title
+        type:
+          column:
+            name: type
+        unitId:
+          column:
+            name: unit_id
+        uri:
+          column:
+            name: uri
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SharedMedias
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - id
+          - mimeType
+          - primary
+          - propertyId
+          - sortOrder
+          - title
+          - type
+          - unitId
+          - uri
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SharedMediasBoolExp
+  operand:
+    object:
+      type: SharedMedias
+      comparableFields:
+        - fieldName: description
+          booleanExpressionType: TextBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: mimeType
+          booleanExpressionType: TextBoolExp
+        - fieldName: primary
+          booleanExpressionType: BoolBoolExp
+        - fieldName: propertyId
+          booleanExpressionType: TextBoolExp
+        - fieldName: sortOrder
+          booleanExpressionType: Int4BoolExp
+        - fieldName: title
+          booleanExpressionType: TextBoolExp
+        - fieldName: type
+          booleanExpressionType: SharedMediaTypeBoolExp
+        - fieldName: unitId
+          booleanExpressionType: TextBoolExp
+        - fieldName: uri
+          booleanExpressionType: TextBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SharedMediasBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SharedMediasAggExp
+  operand:
+    object:
+      aggregatedType: SharedMedias
+      aggregatableFields:
+        - fieldName: description
+          aggregateExpression: TextAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: mimeType
+          aggregateExpression: TextAggExp
+        - fieldName: primary
+          aggregateExpression: BoolAggExp
+        - fieldName: propertyId
+          aggregateExpression: TextAggExp
+        - fieldName: sortOrder
+          aggregateExpression: Int4AggExp
+        - fieldName: title
+          aggregateExpression: TextAggExp
+        - fieldName: type
+          aggregateExpression: SharedMediaTypeAggExp
+        - fieldName: unitId
+          aggregateExpression: TextAggExp
+        - fieldName: uri
+          aggregateExpression: TextAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: SharedMediasAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SharedMediasOrderByExp
+  operand:
+    object:
+      orderedType: SharedMedias
+      orderableFields:
+        - fieldName: description
+          orderByExpression: String1OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: mimeType
+          orderByExpression: String1OrderByExp
+        - fieldName: primary
+          orderByExpression: Boolean1OrderByExp
+        - fieldName: propertyId
+          orderByExpression: String1OrderByExp
+        - fieldName: sortOrder
+          orderByExpression: Int32OrderByExp
+        - fieldName: title
+          orderByExpression: String1OrderByExp
+        - fieldName: type
+          orderByExpression: EnumOrderByExp
+        - fieldName: unitId
+          orderByExpression: String1OrderByExp
+        - fieldName: uri
+          orderByExpression: String1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SharedMediasOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SharedMedias
+  objectType: SharedMedias
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: shared_medias
+  filterExpressionType: SharedMediasBoolExp
+  aggregateExpression: SharedMediasAggExp
+  orderByExpression: SharedMediasOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: sharedMedias
+      subscription:
+        rootField: sharedMedias
+    selectUniques:
+      - queryRootField: sharedMediasById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: sharedMediasById
+    filterInputTypeName: SharedMediasFilterInput
+    aggregate:
+      queryRootField: sharedMediasAggregate
+      subscription:
+        rootField: sharedMediasAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SharedMedias
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

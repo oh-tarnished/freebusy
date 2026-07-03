@@ -33,7 +33,7 @@ const (
 type IdentityServiceClient interface {
 	// Returns a user. Use "users/me" for the signed-in caller.
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
-	// Lists users sharing an organisation with the caller.
+	// Lists users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	// Updates the signed-in user's profile.
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
@@ -86,7 +86,7 @@ func (c *identityServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRe
 type IdentityServiceServer interface {
 	// Returns a user. Use "users/me" for the signed-in caller.
 	GetUser(context.Context, *GetUserRequest) (*User, error)
-	// Lists users sharing an organisation with the caller.
+	// Lists users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	// Updates the signed-in user's profile.
 	UpdateUser(context.Context, *UpdateUserRequest) (*User, error)

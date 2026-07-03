@@ -72,7 +72,7 @@ Arguments for the "invite_member" prompt.
 
 ### Organisation
 
-A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
+A chain: the hotel brand/company that owns one or more properties, and the unit of multi-tenancy. The shell enforces isolation with row-level security keyed off the caller's organisation. Each Property references the Organisation it belongs to; members here are the chain's administrators, not its guests (guests relate to a property only through bookings).
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |

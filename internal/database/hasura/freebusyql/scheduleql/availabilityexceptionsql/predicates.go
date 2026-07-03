@@ -14,9 +14,10 @@ var (
 	Id          = graphql.StringField{Col: "id"}
 	Kind        = graphql.StringField{Col: "kind"}
 	Name        = graphql.StringField{Col: "name"}
+	PropertyId  = graphql.StringField{Col: "propertyId"}
 	Reason      = graphql.StringField{Col: "reason"}
-	ResourceId  = graphql.StringField{Col: "resourceId"}
 	SpanCase    = graphql.StringField{Col: "spanCase"}
+	UnitId      = graphql.StringField{Col: "unitId"}
 	WindowId    = graphql.StringField{Col: "windowId"}
 )
 

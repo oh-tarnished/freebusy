@@ -27,8 +27,8 @@ const (
 )
 
 // A redeemable discount applied to a booking's subtotal. Scoped by a redemption
-// window, usage caps, a minimum subtotal, and an optional set of resources /
-// offerings it applies to.
+// window, usage caps, a minimum subtotal, and an optional set of properties /
+// units it applies to.
 type PromoCode struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The promo code name.

@@ -14,6 +14,7 @@ var (
 	Etag                 = graphql.StringField{Col: "etag"}
 	Id                   = graphql.StringField{Col: "id"}
 	Name                 = graphql.StringField{Col: "name"}
+	PropertyId           = graphql.StringField{Col: "propertyId"}
 	StayConstraintsId    = graphql.StringField{Col: "stayConstraintsId"}
 )
 

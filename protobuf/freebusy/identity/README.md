@@ -14,7 +14,7 @@ IdentityService is the thin "who am I" surface. Login itself is an OIDC redirect
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
 | `GetUser` | `GetUserRequest` | `User` | Returns a user. Use "users/me" for the signed-in caller. |
-| `ListUsers` | `ListUsersRequest` | `ListUsersResponse` | Lists users sharing an organisation with the caller. |
+| `ListUsers` | `ListUsersRequest` | `ListUsersResponse` | Lists users. |
 | `UpdateUser` | `UpdateUserRequest` | `User` | Updates the signed-in user's profile. |
 
 ## Messages
@@ -31,20 +31,9 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `avatar_url` | `string` | `OPTIONAL` | Avatar image URL. |
 | `locale` | `string` | `OPTIONAL` | BCP 47 locale (e.g. "en-US"). |
 | `time_zone` | `string` | `OPTIONAL` | IANA time zone (e.g. "America/New_York"). |
-| `memberships` | `repeated MembershipSummary` | `OUTPUT_ONLY` | The organisations this user belongs to, with role. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update. |
-
-### MembershipSummary
-
-A compact view of an organisation the user belongs to.
-
-| Field | Type | Behavior | Description |
-| --- | --- | --- | --- |
-| `organisation` | `string` | `OUTPUT_ONLY` | The organisation. Format: organisations/{organisation} |
-| `org_display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the organisation. |
-| `role` | `string` | `OUTPUT_ONLY` | The user's role in the organisation (an OrganisationRole value name). |
 
 ### GetUserRequest
 
@@ -65,13 +54,13 @@ Request message for UpdateUser.
 
 ### ListUsersRequest
 
-Request message for ListUsers. Users are global, so the visible set is every user sharing at least one organisation with the caller; use `organisation = "organisations/{organisation}"` in filter to narrow to one organisation, or OrganisationService.ListMembers for a single organisation's roster with roles.
+Request message for ListUsers. Users are global; use OrganisationService and the booking/property services to relate a user to a chain or property.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of users to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListUsers call's next_page_token. |
-| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `organisation = "organisations/7"` or a match on display_name. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. a match on display_name or email. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
 
 ### ListUsersResponse

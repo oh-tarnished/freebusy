@@ -9,40 +9,40 @@
 
 ### AvailabilityService
 
-AvailabilityService is the read-only, cacheable surface over the pure freebusy engine. It has no side effects: given a resource and a window it returns what is bookable, in the shape matching the resource's booking_mode.  Its operations are custom methods (AIP-136): they compute results rather than fetch or list a resource, so they intentionally do not use the Get/List/Batch standard-method names or shapes.
+AvailabilityService is the read-only, cacheable surface over the pure freebusy engine. It has no side effects: given a unit and a window it returns what is bookable, in the shape matching the unit's booking_mode.  Its operations are custom methods (AIP-136): they compute results rather than fetch or list a resource, so they intentionally do not use the Get/List/Batch standard-method names or shapes.
 
 | Method | Request | Response | Description |
 | --- | --- | --- | --- |
-| `ComputeAvailability` | `ComputeAvailabilityRequest` | `ComputeAvailabilityResponse` | Computes availability for a resource over a window. |
+| `ComputeAvailability` | `ComputeAvailabilityRequest` | `ComputeAvailabilityResponse` | Computes availability for a unit over a window. |
 | `CheckAvailability` | `CheckAvailabilityRequest` | `CheckAvailabilityResponse` | Tests whether one exact span is bookable. |
 | `ComputeBookableRanges` | `ComputeBookableRangesRequest` | `ComputeBookableRangesResponse` | Computes contiguous bookable ranges within a window. |
-| `BatchComputeAvailability` | `BatchComputeAvailabilityRequest` | `BatchComputeAvailabilityResponse` | Computes availability for several resources at once. |
-| `SearchAvailability` | `SearchAvailabilityRequest` | `SearchAvailabilityResponse` | Searches the catalog for resources bookable over a period. |
+| `BatchComputeAvailability` | `BatchComputeAvailabilityRequest` | `BatchComputeAvailabilityResponse` | Computes availability for several units at once. |
+| `SearchAvailability` | `SearchAvailabilityRequest` | `SearchAvailabilityResponse` | Searches the catalog for units bookable over a period. |
 
 ## Messages
 
 ### Slot
 
-A discrete bookable time slot, produced for TIME_SLOT resources.
+A discrete bookable time slot, produced for TIME_SLOT units.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `start_time` | `Timestamp` | - | Inclusive start of the slot. |
-| `end_time` | `Timestamp` | - | Exclusive end of the slot (start + offering/requested duration). |
+| `end_time` | `Timestamp` | - | Exclusive end of the slot (start + unit/requested duration). |
 | `free_count` | `int32` | - | Number of units free in this slot (capacity minus overlapping bookings). |
 | `bookable` | `bool` | - | Whether the slot can actually be booked (free and passes policy). |
-| `price` | `Money` | - | Price for booking this slot, when an offering was supplied. |
+| `price` | `Money` | - | Price for booking this slot, derived from the unit's pricing. |
 
 ### NightAvailability
 
-Per-night availability, produced for NIGHTLY resources.
+Per-night availability, produced for NIGHTLY units.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `night` | `Date` | - | The night, in the resource's local timezone. |
+| `night` | `Date` | - | The night, in the unit's local timezone. |
 | `free_units` | `int32` | - | Number of units of the pool free that night. |
-| `closed` | `bool` | - | Whether the resource is closed that night (exception/blackout). |
-| `price` | `Money` | - | Nightly price, when an offering was supplied. |
+| `closed` | `bool` | - | Whether the unit is closed that night (exception/blackout). |
+| `price` | `Money` | - | Nightly price, derived from the unit's pricing. |
 
 ### BookableRange
 
@@ -53,14 +53,14 @@ A contiguous span that is bookable end to end.
 | `window` | `TimeWindow` | - | The bookable span. |
 | `bookable` | `bool` | - | Whether the whole span is bookable. |
 
-### ResourceAvailability
+### UnitAvailability
 
-Availability for one resource, used in batch responses.
+Availability for one unit, used in batch responses.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | - | The resource these results are for. Format: resources/{resource} |
-| `mode` | `BookingMode` | - | Which shape is populated, matching the resource's booking_mode. |
+| `unit` | `string` | - | The unit these results are for. Format: properties/{property}/units/{unit} |
+| `mode` | `BookingMode` | - | Which shape is populated, matching the unit's booking_mode. |
 | `slots` | `repeated Slot` | - | Slots, when mode is TIME_SLOT. |
 | `nights` | `repeated NightAvailability` | - | Per-night availability, when mode is NIGHTLY. |
 
@@ -70,11 +70,10 @@ Request message for ComputeAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource to compute availability for. Format: resources/{resource} |
-| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
-| `date_range` | `DateRange` | - | A calendar-date range in the resource's timezone, the natural form for NIGHTLY resources; end_date is the check-out date. |
-| `duration` | `Duration` | `OPTIONAL` | Slot length for TIME_SLOT resources. Ignored when offering is set or for NIGHTLY resources. |
-| `offering` | `string` | `OPTIONAL` | Offering to derive duration and price from. Takes precedence over duration. Format: resources/{resource}/offerings/{offering} |
+| `unit` | `string` | `REQUIRED` | The unit to compute availability for. Format: properties/{property}/units/{unit} |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT units. |
+| `date_range` | `DateRange` | - | A calendar-date range in the unit's timezone, the natural form for NIGHTLY units; end_date is the check-out date. |
+| `duration` | `Duration` | `OPTIONAL` | Slot length for TIME_SLOT units. Overrides the unit's default duration when set; ignored for NIGHTLY units. |
 | `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
 
 ### ComputeAvailabilityResponse
@@ -83,7 +82,7 @@ Response message for ComputeAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `mode` | `BookingMode` | - | Which shape is populated, matching the resource's booking_mode. |
+| `mode` | `BookingMode` | - | Which shape is populated, matching the unit's booking_mode. |
 | `slots` | `repeated Slot` | - | Slots, when mode is TIME_SLOT. |
 | `nights` | `repeated NightAvailability` | - | Per-night availability, when mode is NIGHTLY. |
 
@@ -93,11 +92,10 @@ Request message for CheckAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource to test. Format: resources/{resource} |
-| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
-| `date_range` | `DateRange` | - | A calendar-date range in the resource's timezone, the natural form for NIGHTLY stays; end_date is the check-out date. |
+| `unit` | `string` | `REQUIRED` | The unit to test. Format: properties/{property}/units/{unit} |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT units. |
+| `date_range` | `DateRange` | - | A calendar-date range in the unit's timezone, the natural form for NIGHTLY stays; end_date is the check-out date. |
 | `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
-| `offering` | `string` | `OPTIONAL` | Offering whose duration/rules apply, when relevant. Format: resources/{resource}/offerings/{offering} |
 
 ### UnbookableReason
 
@@ -124,11 +122,10 @@ Request message for ComputeBookableRanges.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | The resource to compute bookable ranges for. Format: resources/{resource} |
-| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
-| `date_range` | `DateRange` | - | A calendar-date range in the resource's timezone, the natural form for NIGHTLY resources. |
-| `duration` | `Duration` | `OPTIONAL` | Minimum span length for TIME_SLOT resources. |
-| `offering` | `string` | `OPTIONAL` | Offering to derive duration/rules from. Format: resources/{resource}/offerings/{offering} |
+| `unit` | `string` | `REQUIRED` | The unit to compute bookable ranges for. Format: properties/{property}/units/{unit} |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT units. |
+| `date_range` | `DateRange` | - | A calendar-date range in the unit's timezone, the natural form for NIGHTLY units. |
+| `duration` | `Duration` | `OPTIONAL` | Minimum span length for TIME_SLOT units. |
 | `units` | `int32` | `OPTIONAL` | Number of units required to be free. Defaults to 1. |
 
 ### ComputeBookableRangesResponse
@@ -141,7 +138,7 @@ Response message for ComputeBookableRanges.
 
 ### BatchComputeAvailabilityRequest
 
-Request message for BatchComputeAvailability. Each entry is a full ComputeAvailabilityRequest (AIP-231), so per-resource duration, offering, and units all work in batch exactly as they do in the single call.
+Request message for BatchComputeAvailability. Each entry is a full ComputeAvailabilityRequest (AIP-231), so per-unit duration and units all work in batch exactly as they do in the single call.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -153,33 +150,35 @@ Response message for BatchComputeAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resources` | `repeated ResourceAvailability` | - | Availability per request, in request order. |
+| `units` | `repeated UnitAvailability` | - | Availability per request, in request order. |
 
 ### SearchAvailabilityRequest
 
-Request message for SearchAvailability. Sweeps the catalog for resources that are bookable over a period for a given party size, narrowed by a resource filter and sorted for presentation. This is the storefront query: one call returns the matching resources with a lead price, rather than the caller listing resources and computing availability for each.
+Request message for SearchAvailability. Sweeps the catalog for units that are bookable over a period for a given party size, narrowed by a filter and optionally scoped to one property (hotel) or organisation (chain), and sorted for presentation. This is the storefront query: one call returns the matching units with a lead price, rather than the caller listing units and computing availability for each.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT resources. |
-| `date_range` | `DateRange` | - | A calendar-date range in each resource's timezone, the natural form for NIGHTLY resources; end_date is the check-out date. |
+| `window` | `TimeWindow` | - | An exact time window, the natural form for TIME_SLOT units. |
+| `date_range` | `DateRange` | - | A calendar-date range in each unit's timezone, the natural form for NIGHTLY units; end_date is the check-out date. |
 | `units` | `int32` | `OPTIONAL` | Number of units / party size required free. Defaults to 1. |
-| `filter` | `string` | `OPTIONAL` | Filter (AIP-160) over resource fields to narrow the catalog, e.g. `type = RESOURCE_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match. |
+| `filter` | `string` | `OPTIONAL` | Filter (AIP-160) over unit fields to narrow the catalog, e.g. `type = UNIT_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match. |
 | `order_by` | `string` | `OPTIONAL` | Sort order for matches, e.g. "price" or "price desc". Defaults to price ascending. |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of matches to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous SearchAvailability call's next_page_token. |
-| `include_unavailable` | `bool` | `OPTIONAL` | If true, include resources that matched the filter but are not bookable for the period (with bookable=false), instead of dropping them. |
+| `include_unavailable` | `bool` | `OPTIONAL` | If true, include units that matched the filter but are not bookable for the period (with bookable=false), instead of dropping them. |
+| `property` | `string` | `OPTIONAL` | Scope the search to a single property (hotel). Empty searches all properties. Format: properties/{property} |
+| `organisation` | `string` | `OPTIONAL` | Scope the search to a single organisation (chain). Empty searches all organisations the caller can see. Format: organisations/{organisation} |
 
 ### AvailabilityMatch
 
-One resource matched by SearchAvailability, with a lead price for the period. Detailed slots/nights are fetched per resource via ComputeAvailability.
+One unit matched by SearchAvailability, with a lead price for the period. Detailed slots/nights are fetched per unit via ComputeAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | - | The matching resource. Format: resources/{resource} |
-| `display_name` | `string` | - | Cached display name of the resource, for convenience. |
-| `mode` | `BookingMode` | - | The resource's booking mode. |
-| `bookable` | `bool` | - | Whether the resource is bookable for the requested period and units. |
+| `unit` | `string` | - | The matching unit. Format: properties/{property}/units/{unit} |
+| `display_name` | `string` | - | Cached display name of the unit, for convenience. |
+| `mode` | `BookingMode` | - | The unit's booking mode. |
+| `bookable` | `bool` | - | Whether the unit is bookable for the requested period and units. |
 | `price` | `Money` | - | Lead price for the requested period: the stay total for NIGHTLY, or the slot price for TIME_SLOT. Used for sorting and display. |
 
 ### SearchAvailabilityResponse
@@ -188,7 +187,7 @@ Response message for SearchAvailability.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `matches` | `repeated AvailabilityMatch` | - | The matching resources, ordered per order_by. |
+| `matches` | `repeated AvailabilityMatch` | - | The matching units, ordered per order_by. |
 | `next_page_token` | `string` | - | Token to pass as page_token to retrieve the next page; empty when no more. |
 
 ## Enums

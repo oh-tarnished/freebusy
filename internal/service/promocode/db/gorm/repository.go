@@ -42,8 +42,8 @@ func preloadGraph(db *gorm.DB) *gorm.DB {
 		Preload("Window").
 		Preload("Limits").
 		Preload("Scope.MinSubtotal").
-		Preload("Scope.ScopeApplicableResources").
-		Preload("Scope.ScopeApplicableOfferings")
+		Preload("Scope.ScopeApplicableProperties").
+		Preload("Scope.ScopeApplicableUnits")
 }
 
 // persistChildren inserts the Money rows and belongs-to children in foreign-key
@@ -74,15 +74,15 @@ func (g *promoGraph) persistChildren(ctx context.Context, tx *gorm.DB) error {
 		if e := promocode.NewScopeStore(tx).Create(ctx, g.scope); e != nil {
 			return e
 		}
-		res := promocode.NewScopeApplicableResourcesStore(tx)
-		for _, row := range g.resources {
-			if e := res.Create(ctx, row); e != nil {
+		props := promocode.NewScopeApplicablePropertiesStore(tx)
+		for _, row := range g.properties {
+			if e := props.Create(ctx, row); e != nil {
 				return e
 			}
 		}
-		off := promocode.NewScopeApplicableOfferingsStore(tx)
-		for _, row := range g.offerings {
-			if e := off.Create(ctx, row); e != nil {
+		units := promocode.NewScopeApplicableUnitsStore(tx)
+		for _, row := range g.units {
+			if e := units.Create(ctx, row); e != nil {
 				return e
 			}
 		}

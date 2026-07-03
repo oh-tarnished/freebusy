@@ -14,12 +14,14 @@ definition:
       type: Enum
     - name: name
       type: String_1!
+    - name: propertyId
+      type: String_1!
     - name: reason
       type: String_1
-    - name: resourceId
-      type: String_1!
     - name: spanCase
       type: Enum
+    - name: unitId
+      type: String_1!
     - name: windowId
       type: String_1
   graphql:
@@ -44,15 +46,18 @@ definition:
         name:
           column:
             name: name
+        propertyId:
+          column:
+            name: property_id
         reason:
           column:
             name: reason
-        resourceId:
-          column:
-            name: resource_id
         spanCase:
           column:
             name: span_case
+        unitId:
+          column:
+            name: unit_id
         windowId:
           column:
             name: window_id
@@ -71,9 +76,10 @@ definition:
           - id
           - kind
           - name
+          - propertyId
           - reason
-          - resourceId
           - spanCase
+          - unitId
           - windowId
 
 ---

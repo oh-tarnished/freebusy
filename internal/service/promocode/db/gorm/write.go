@@ -122,10 +122,10 @@ func collectRefs(m *promocode.PromoCode) promoRefs {
 // Money rows those children referenced.
 func deleteChildren(ctx context.Context, tx *gorm.DB, refs promoRefs) error {
 	if refs.scopeID != nil {
-		if e := tx.WithContext(ctx).Where("scope_id = ?", *refs.scopeID).Delete(&promocode.ScopeApplicableResources{}).Error; e != nil {
+		if e := tx.WithContext(ctx).Where("scope_id = ?", *refs.scopeID).Delete(&promocode.ScopeApplicableProperties{}).Error; e != nil {
 			return e
 		}
-		if e := tx.WithContext(ctx).Where("scope_id = ?", *refs.scopeID).Delete(&promocode.ScopeApplicableOfferings{}).Error; e != nil {
+		if e := tx.WithContext(ctx).Where("scope_id = ?", *refs.scopeID).Delete(&promocode.ScopeApplicableUnits{}).Error; e != nil {
 			return e
 		}
 		if e := promocode.NewScopeStore(tx).DeleteByID(ctx, *refs.scopeID); e != nil {

@@ -220,14 +220,6 @@
             "nullable": "nullable",
             "description": null
           },
-          "offering": {
-            "name": "offering",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
           "price_id": {
             "name": "price_id",
             "type": {
@@ -260,14 +252,6 @@
             "nullable": "nullable",
             "description": null
           },
-          "resource": {
-            "name": "resource",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
           "state": {
             "name": "state",
             "type": {
@@ -282,6 +266,14 @@
               "scalarType": "text"
             },
             "nullable": "nullable",
+            "description": null
+          },
+          "unit": {
+            "name": "unit",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
             "description": null
           },
           "units": {
@@ -336,13 +328,6 @@
               "discount_id": "id"
             }
           },
-          "resource_offering_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
-            "columnMapping": {
-              "offering": "id"
-            }
-          },
           "resource_price_id_fkey": {
             "foreignSchema": "common",
             "foreignTable": "moneys",
@@ -364,13 +349,6 @@
               "refund_amount_id": "id"
             }
           },
-          "resource_resource_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "entity",
-            "columnMapping": {
-              "resource": "id"
-            }
-          },
           "resource_total_id_fkey": {
             "foreignSchema": "common",
             "foreignTable": "moneys",
@@ -378,11 +356,315 @@
               "total_id": "id"
             }
           },
+          "resource_unit_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit": "id"
+            }
+          },
           "resource_window_id_fkey": {
             "foreignSchema": "shared",
             "foreignTable": "time_windows",
             "columnMapping": {
               "window_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "channel_resource": {
+        "schemaName": "channel",
+        "tableName": "resource",
+        "columns": {
+          "create_time": {
+            "name": "create_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "credential_ref": {
+            "name": "credential_ref",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "etag": {
+            "name": "etag",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "external_property_id": {
+            "name": "external_property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "last_sync_time": {
+            "name": "last_sync_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "property": {
+            "name": "property",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "channel_channel_state"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "channel_channel_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "update_time": {
+            "name": "update_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "resource_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "resource_property_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
+            "columnMapping": {
+              "property": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "channel_sync_statuses": {
+        "schemaName": "channel",
+        "tableName": "sync_statuses",
+        "columns": {
+          "failed_count": {
+            "name": "failed_count",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "last_error": {
+            "name": "last_error",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "last_sync_time": {
+            "name": "last_sync_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "pending_count": {
+            "name": "pending_count",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "channel_channel_state"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "sync_statuses_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "channel_unit_mappings": {
+        "schemaName": "channel",
+        "tableName": "unit_mappings",
+        "columns": {
+          "channel_id": {
+            "name": "channel_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "create_time": {
+            "name": "create_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "etag": {
+            "name": "etag",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "external_rate_plan_id": {
+            "name": "external_rate_plan_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "external_room_type_id": {
+            "name": "external_room_type_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "channel_mapping_state"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "unit": {
+            "name": "unit",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "update_time": {
+            "name": "update_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "unit_mappings_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "unit_mappings_channel_id_fkey": {
+            "foreignSchema": "channel",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "channel_id": "id"
+            }
+          },
+          "unit_mappings_unit_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit": "id"
             }
           }
         },
@@ -433,10 +715,28 @@
         "foreignRelations": {},
         "description": null
       },
-      "identity_membership_summaries": {
-        "schemaName": "identity",
-        "tableName": "membership_summaries",
+      "common_postal_address": {
+        "schemaName": "common",
+        "tableName": "postal_address",
         "columns": {
+          "address_lines": {
+            "name": "address_lines",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "administrative_area": {
+            "name": "administrative_area",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "id": {
             "name": "id",
             "type": {
@@ -445,60 +745,87 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "org_display_name": {
-            "name": "org_display_name",
+          "language_code": {
+            "name": "language_code",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
           },
-          "organisation": {
-            "name": "organisation",
+          "locality": {
+            "name": "locality",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
           },
-          "role": {
-            "name": "role",
+          "organization": {
+            "name": "organization",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
           },
-          "user_id": {
-            "name": "user_id",
+          "postal_code": {
+            "name": "postal_code",
             "type": {
               "scalarType": "text"
             },
-            "nullable": "nonNullable",
+            "nullable": "nullable",
+            "description": null
+          },
+          "recipients": {
+            "name": "recipients",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "region_code": {
+            "name": "region_code",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "revision": {
+            "name": "revision",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "sorting_code": {
+            "name": "sorting_code",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "sublocality": {
+            "name": "sublocality",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
             "description": null
           }
         },
         "uniquenessConstraints": {
-          "membership_summaries_pkey": [
+          "postal_address_pkey": [
             "id"
           ]
         },
-        "foreignRelations": {
-          "membership_summaries_organisation_fkey": {
-            "foreignSchema": "organisation",
-            "foreignTable": "resource",
-            "columnMapping": {
-              "organisation": "id"
-            }
-          },
-          "membership_summaries_user_id_fkey": {
-            "foreignSchema": "identity",
-            "foreignTable": "users",
-            "columnMapping": {
-              "user_id": "id"
-            }
-          }
-        },
+        "foreignRelations": {},
         "description": null
       },
       "identity_users": {
@@ -1181,9 +1508,9 @@
         },
         "description": null
       },
-      "promocode_scope_applicable_offerings": {
+      "promocode_scope_applicable_properties": {
         "schemaName": "promocode",
-        "tableName": "scope_applicable_offerings",
+        "tableName": "scope_applicable_properties",
         "columns": {
           "id": {
             "name": "id",
@@ -1193,16 +1520,8 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "offering_id": {
-            "name": "offering_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "offering_name": {
-            "name": "offering_name",
+          "property_id": {
+            "name": "property_id",
             "type": {
               "scalarType": "text"
             },
@@ -1219,19 +1538,19 @@
           }
         },
         "uniquenessConstraints": {
-          "scope_applicable_offerings_pkey": [
+          "scope_applicable_properties_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "scope_applicable_offerings_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
+          "scope_applicable_properties_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
             "columnMapping": {
-              "offering_id": "id"
+              "property_id": "id"
             }
           },
-          "scope_applicable_offerings_scope_id_fkey": {
+          "scope_applicable_properties_scope_id_fkey": {
             "foreignSchema": "promocode",
             "foreignTable": "scopes",
             "columnMapping": {
@@ -1241,20 +1560,12 @@
         },
         "description": null
       },
-      "promocode_scope_applicable_resources": {
+      "promocode_scope_applicable_units": {
         "schemaName": "promocode",
-        "tableName": "scope_applicable_resources",
+        "tableName": "scope_applicable_units",
         "columns": {
           "id": {
             "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "resource_id": {
-            "name": "resource_id",
             "type": {
               "scalarType": "text"
             },
@@ -1268,26 +1579,42 @@
             },
             "nullable": "nonNullable",
             "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "unit_name": {
+            "name": "unit_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
           }
         },
         "uniquenessConstraints": {
-          "scope_applicable_resources_pkey": [
+          "scope_applicable_units_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "scope_applicable_resources_resource_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "entity",
-            "columnMapping": {
-              "resource_id": "id"
-            }
-          },
-          "scope_applicable_resources_scope_id_fkey": {
+          "scope_applicable_units_scope_id_fkey": {
             "foreignSchema": "promocode",
             "foreignTable": "scopes",
             "columnMapping": {
               "scope_id": "id"
+            }
+          },
+          "scope_applicable_units_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
             }
           }
         },
@@ -1367,31 +1694,237 @@
         "foreignRelations": {},
         "description": null
       },
-      "resource_entity": {
-        "schemaName": "resource",
-        "tableName": "entity",
+      "property_fees": {
+        "schemaName": "property",
+        "tableName": "fees",
         "columns": {
-          "attributes": {
-            "name": "attributes",
+          "amount_id": {
+            "name": "amount_id",
             "type": {
-              "scalarType": "jsonb"
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
           },
-          "booking_mode": {
-            "name": "booking_mode",
+          "code": {
+            "name": "code",
             "type": {
-              "scalarType": "resource_booking_mode"
+              "scalarType": "text"
             },
             "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
             "description": null
           },
-          "capacity": {
-            "name": "capacity",
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "percent": {
+            "name": "percent",
             "type": {
               "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "pricing_unit": {
+            "name": "pricing_unit",
+            "type": {
+              "scalarType": "property_pricing_unit"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "taxable": {
+            "name": "taxable",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "fees_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "fees_amount_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_id": "id"
+            }
+          },
+          "fees_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "property_los_discounts": {
+        "schemaName": "property",
+        "tableName": "los_discounts",
+        "columns": {
+          "amount_off_id": {
+            "name": "amount_off_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "min_nights": {
+            "name": "min_nights",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "percent_off": {
+            "name": "percent_off",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "los_discounts_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "los_discounts_amount_off_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "amount_off_id": "id"
+            }
+          },
+          "los_discounts_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "property_policies": {
+        "schemaName": "property",
+        "tableName": "policies",
+        "columns": {
+          "checkin_time": {
+            "name": "checkin_time",
+            "type": {
+              "scalarType": "time"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "checkout_time": {
+            "name": "checkout_time",
+            "type": {
+              "scalarType": "time"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "house_rules": {
+            "name": "house_rules",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "notes": {
+            "name": "notes",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "policies_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "property_properties": {
+        "schemaName": "property",
+        "tableName": "properties",
+        "columns": {
+          "address_id": {
+            "name": "address_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "attributes": {
+            "name": "attributes",
+            "type": {
+              "scalarType": "jsonb"
             },
             "nullable": "nullable",
             "description": null
@@ -1445,10 +1978,26 @@
             "nullable": "nonNullable",
             "description": null
           },
+          "organisation": {
+            "name": "organisation",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "policy_id": {
+            "name": "policy_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "state": {
             "name": "state",
             "type": {
-              "scalarType": "resource_resource_state"
+              "scalarType": "property_property_state"
             },
             "nullable": "nullable",
             "description": null
@@ -1471,15 +2020,6 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "type": {
-            "name": "type",
-            "type": {
-              "scalarType": "resource_resource_type"
-            },
-            "nullable": "nonNullable",
-            "hasDefault": "hasDefault",
-            "description": null
-          },
           "update_time": {
             "name": "update_time",
             "type": {
@@ -1490,25 +2030,114 @@
           }
         },
         "uniquenessConstraints": {
-          "entity_pkey": [
+          "properties_pkey": [
             "id"
           ]
         },
-        "foreignRelations": {},
+        "foreignRelations": {
+          "properties_address_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "postal_address",
+            "columnMapping": {
+              "address_id": "id"
+            }
+          },
+          "properties_organisation_fkey": {
+            "foreignSchema": "organisation",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "organisation": "id"
+            }
+          },
+          "properties_policy_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "policies",
+            "columnMapping": {
+              "policy_id": "id"
+            }
+          }
+        },
         "description": null
       },
-      "resource_fees": {
-        "schemaName": "resource",
-        "tableName": "fees",
+      "property_rate_overrides": {
+        "schemaName": "property",
+        "tableName": "rate_overrides",
         "columns": {
-          "amount_id": {
-            "name": "amount_id",
+          "date_range_id": {
+            "name": "date_range_id",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
           },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "price_id": {
+            "name": "price_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "weekdays": {
+            "name": "weekdays",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "rate_overrides_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "rate_overrides_date_range_id_fkey": {
+            "foreignSchema": "shared",
+            "foreignTable": "date_ranges",
+            "columnMapping": {
+              "date_range_id": "id"
+            }
+          },
+          "rate_overrides_price_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "moneys",
+            "columnMapping": {
+              "price_id": "id"
+            }
+          },
+          "rate_overrides_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "property_taxes": {
+        "schemaName": "property",
+        "tableName": "taxes",
+        "columns": {
           "code": {
             "name": "code",
             "type": {
@@ -1533,74 +2162,43 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "offering_id": {
-            "name": "offering_id",
+          "percent": {
+            "name": "percent",
+            "type": {
+              "scalarType": "float8"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nonNullable",
             "description": null
-          },
-          "percent": {
-            "name": "percent",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "pricing_unit": {
-            "name": "pricing_unit",
-            "type": {
-              "scalarType": "resource_pricing_unit"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "taxable": {
-            "name": "taxable",
-            "type": {
-              "scalarType": "bool"
-            },
-            "nullable": "nullable",
-            "description": null
           }
         },
         "uniquenessConstraints": {
-          "fees_pkey": [
+          "taxes_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "fees_amount_id_fkey": {
-            "foreignSchema": "common",
-            "foreignTable": "moneys",
+          "taxes_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
             "columnMapping": {
-              "amount_id": "id"
-            }
-          },
-          "fees_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
-            "columnMapping": {
-              "offering_id": "id"
+              "unit_id": "id"
             }
           }
         },
         "description": null
       },
-      "resource_los_discounts": {
-        "schemaName": "resource",
-        "tableName": "los_discounts",
+      "property_unit_applicable_promo_codes": {
+        "schemaName": "property",
+        "tableName": "unit_applicable_promo_codes",
         "columns": {
-          "amount_off_id": {
-            "name": "amount_off_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
           "id": {
             "name": "id",
             "type": {
@@ -1609,58 +2207,75 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "min_nights": {
-            "name": "min_nights",
-            "type": {
-              "scalarType": "int4"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "offering_id": {
-            "name": "offering_id",
+          "promo_code_id": {
+            "name": "promo_code_id",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nonNullable",
             "description": null
           },
-          "percent_off": {
-            "name": "percent_off",
+          "unit_id": {
+            "name": "unit_id",
             "type": {
-              "scalarType": "int4"
+              "scalarType": "text"
             },
-            "nullable": "nullable",
+            "nullable": "nonNullable",
             "description": null
           }
         },
         "uniquenessConstraints": {
-          "los_discounts_pkey": [
+          "unit_applicable_promo_codes_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "los_discounts_amount_off_id_fkey": {
-            "foreignSchema": "common",
-            "foreignTable": "moneys",
+          "unit_applicable_promo_codes_promo_code_id_fkey": {
+            "foreignSchema": "promocode",
+            "foreignTable": "resource",
             "columnMapping": {
-              "amount_off_id": "id"
+              "promo_code_id": "id"
             }
           },
-          "los_discounts_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
+          "unit_applicable_promo_codes_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
             "columnMapping": {
-              "offering_id": "id"
+              "unit_id": "id"
             }
           }
         },
         "description": null
       },
-      "resource_offerings": {
-        "schemaName": "resource",
-        "tableName": "offerings",
+      "property_units": {
+        "schemaName": "property",
+        "tableName": "units",
         "columns": {
+          "attributes": {
+            "name": "attributes",
+            "type": {
+              "scalarType": "jsonb"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "booking_mode": {
+            "name": "booking_mode",
+            "type": {
+              "scalarType": "property_booking_mode"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "capacity": {
+            "name": "capacity",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "create_time": {
             "name": "create_time",
             "type": {
@@ -1710,6 +2325,14 @@
             "nullable": "nonNullable",
             "description": null
           },
+          "max_occupancy": {
+            "name": "max_occupancy",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "name": {
             "name": "name",
             "type": {
@@ -1729,13 +2352,13 @@
           "pricing_unit": {
             "name": "pricing_unit",
             "type": {
-              "scalarType": "resource_pricing_unit"
+              "scalarType": "property_pricing_unit"
             },
             "nullable": "nullable",
             "description": null
           },
-          "resource_id": {
-            "name": "resource_id",
+          "property_id": {
+            "name": "property_id",
             "type": {
               "scalarType": "text"
             },
@@ -1745,9 +2368,36 @@
           "state": {
             "name": "state",
             "type": {
-              "scalarType": "resource_offering_state"
+              "scalarType": "property_unit_state"
             },
             "nullable": "nullable",
+            "description": null
+          },
+          "tags": {
+            "name": "tags",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "time_zone": {
+            "name": "time_zone",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "property_unit_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
             "description": null
           },
           "update_time": {
@@ -1760,31 +2410,31 @@
           }
         },
         "uniquenessConstraints": {
-          "offerings_pkey": [
+          "units_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "offerings_price_id_fkey": {
+          "units_price_id_fkey": {
             "foreignSchema": "common",
             "foreignTable": "moneys",
             "columnMapping": {
               "price_id": "id"
             }
           },
-          "offerings_resource_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "entity",
+          "units_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
             "columnMapping": {
-              "resource_id": "id"
+              "property_id": "id"
             }
           }
         },
         "description": null
       },
-      "resource_offerings_link": {
-        "schemaName": "resource",
-        "tableName": "offerings_link",
+      "property_units_link": {
+        "schemaName": "property",
+        "tableName": "units_link",
         "columns": {
           "id": {
             "name": "id",
@@ -1794,187 +2444,49 @@
             "nullable": "nonNullable",
             "description": null
           },
-          "offering_id": {
-            "name": "offering_id",
+          "property_id": {
+            "name": "property_id",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nonNullable",
             "description": null
           },
-          "offering_name": {
-            "name": "offering_name",
+          "unit_id": {
+            "name": "unit_id",
             "type": {
               "scalarType": "text"
             },
             "nullable": "nonNullable",
             "description": null
           },
-          "resource_id": {
-            "name": "resource_id",
+          "unit_name": {
+            "name": "unit_name",
             "type": {
               "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "offerings_link_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "offerings_link_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
-            "columnMapping": {
-              "offering_id": "id"
-            }
-          },
-          "offerings_link_resource_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "entity",
-            "columnMapping": {
-              "resource_id": "id"
-            }
-          }
-        },
-        "description": null
-      },
-      "resource_rate_overrides": {
-        "schemaName": "resource",
-        "tableName": "rate_overrides",
-        "columns": {
-          "date_range_id": {
-            "name": "date_range_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "offering_id": {
-            "name": "offering_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "price_id": {
-            "name": "price_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "weekdays": {
-            "name": "weekdays",
-            "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
-            },
-            "nullable": "nullable",
-            "description": null
-          }
-        },
-        "uniquenessConstraints": {
-          "rate_overrides_pkey": [
-            "id"
-          ]
-        },
-        "foreignRelations": {
-          "rate_overrides_date_range_id_fkey": {
-            "foreignSchema": "shared",
-            "foreignTable": "date_ranges",
-            "columnMapping": {
-              "date_range_id": "id"
-            }
-          },
-          "rate_overrides_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
-            "columnMapping": {
-              "offering_id": "id"
-            }
-          },
-          "rate_overrides_price_id_fkey": {
-            "foreignSchema": "common",
-            "foreignTable": "moneys",
-            "columnMapping": {
-              "price_id": "id"
-            }
-          }
-        },
-        "description": null
-      },
-      "resource_taxes": {
-        "schemaName": "resource",
-        "tableName": "taxes",
-        "columns": {
-          "code": {
-            "name": "code",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "display_name": {
-            "name": "display_name",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nullable",
-            "description": null
-          },
-          "id": {
-            "name": "id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "offering_id": {
-            "name": "offering_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
-          "percent": {
-            "name": "percent",
-            "type": {
-              "scalarType": "float8"
             },
             "nullable": "nonNullable",
             "description": null
           }
         },
         "uniquenessConstraints": {
-          "taxes_pkey": [
+          "units_link_pkey": [
             "id"
           ]
         },
         "foreignRelations": {
-          "taxes_offering_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "offerings",
+          "units_link_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
             "columnMapping": {
-              "offering_id": "id"
+              "property_id": "id"
+            }
+          },
+          "units_link_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
             }
           }
         },
@@ -2026,6 +2538,14 @@
             "nullable": "nonNullable",
             "description": null
           },
+          "property_id": {
+            "name": "property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
           "reason": {
             "name": "reason",
             "type": {
@@ -2034,20 +2554,20 @@
             "nullable": "nullable",
             "description": null
           },
-          "resource_id": {
-            "name": "resource_id",
-            "type": {
-              "scalarType": "text"
-            },
-            "nullable": "nonNullable",
-            "description": null
-          },
           "span_case": {
             "name": "span_case",
             "type": {
               "scalarType": "schedule_availability_exception_span_case"
             },
             "nullable": "nullable",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
             "description": null
           },
           "window_id": {
@@ -2072,11 +2592,18 @@
               "date_range_id": "id"
             }
           },
-          "availability_exceptions_resource_id_fkey": {
-            "foreignSchema": "resource",
-            "foreignTable": "entity",
+          "availability_exceptions_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
             "columnMapping": {
-              "resource_id": "id"
+              "property_id": "id"
+            }
+          },
+          "availability_exceptions_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
             }
           },
           "availability_exceptions_window_id_fkey": {
@@ -2389,6 +2916,14 @@
             "nullable": "nonNullable",
             "description": null
           },
+          "property_id": {
+            "name": "property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
           "stay_constraints_id": {
             "name": "stay_constraints_id",
             "type": {
@@ -2416,6 +2951,13 @@
             "foreignTable": "cancellation_policies",
             "columnMapping": {
               "cancellation_policy_id": "id"
+            }
+          },
+          "resource_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
+            "columnMapping": {
+              "property_id": "id"
             }
           },
           "resource_stay_constraints_id_fkey": {
@@ -2451,9 +2993,7 @@
           "checkin_weekdays": {
             "name": "checkin_weekdays",
             "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -2461,9 +3001,7 @@
           "checkout_weekdays": {
             "name": "checkout_weekdays",
             "type": {
-              "arrayType": {
-                "scalarType": "text"
-              }
+              "scalarType": "text"
             },
             "nullable": "nullable",
             "description": null
@@ -2581,6 +3119,115 @@
           ]
         },
         "foreignRelations": {},
+        "description": null
+      },
+      "shared_medias": {
+        "schemaName": "shared",
+        "tableName": "medias",
+        "columns": {
+          "description": {
+            "name": "description",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "mime_type": {
+            "name": "mime_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "primary": {
+            "name": "primary",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "property_id": {
+            "name": "property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "sort_order": {
+            "name": "sort_order",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "title": {
+            "name": "title",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "shared_media_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "uri": {
+            "name": "uri",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "medias_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "medias_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
+            "columnMapping": {
+              "property_id": "id"
+            }
+          },
+          "medias_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
+            }
+          }
+        },
         "description": null
       },
       "shared_price_components": {
@@ -2892,6 +3539,202 @@
             }
           },
           "typeRepresentation": "boolean"
+        },
+        "channel_channel_state": {
+          "typeName": "channel_state",
+          "schemaName": "channel",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "channel_channel_state"
+            },
+            "min": {
+              "returnType": "channel_channel_state"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "channel_channel_state",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "CONNECTED",
+              "DISABLED",
+              "ERROR"
+            ]
+          }
+        },
+        "channel_channel_type": {
+          "typeName": "channel_type",
+          "schemaName": "channel",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "channel_channel_type"
+            },
+            "min": {
+              "returnType": "channel_channel_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "channel_channel_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "AGODA",
+              "BOOKING_COM",
+              "EXPEDIA",
+              "AIRBNB",
+              "MAKEMYTRIP",
+              "GOIBIBO",
+              "GDS",
+              "DIRECT"
+            ]
+          }
+        },
+        "channel_mapping_state": {
+          "typeName": "mapping_state",
+          "schemaName": "channel",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "channel_mapping_state"
+            },
+            "min": {
+              "returnType": "channel_mapping_state"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "channel_mapping_state",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "MAPPED",
+              "UNMAPPED"
+            ]
+          }
         },
         "date": {
           "typeName": "date",
@@ -3214,6 +4057,70 @@
             }
           },
           "typeRepresentation": "int64AsString"
+        },
+        "interval": {
+          "typeName": "interval",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "interval"
+            },
+            "max": {
+              "returnType": "interval"
+            },
+            "min": {
+              "returnType": "interval"
+            },
+            "sum": {
+              "returnType": "interval"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "interval",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "interval",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": null
         },
         "jsonb": {
           "typeName": "jsonb",
@@ -3685,59 +4592,59 @@
             ]
           }
         },
-        "resource_booking_mode": {
+        "property_booking_mode": {
           "typeName": "booking_mode",
-          "schemaName": "resource",
+          "schemaName": "property",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "resource_booking_mode"
+              "returnType": "property_booking_mode"
             },
             "min": {
-              "returnType": "resource_booking_mode"
+              "returnType": "property_booking_mode"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "greaterThan",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "greaterThanOrEqual",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "lessThan",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "lessThanOrEqual",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             },
             "_neq": {
               "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "resource_booking_mode",
+              "argumentType": "property_booking_mode",
               "isInfix": true
             }
           },
@@ -3748,122 +4655,59 @@
             ]
           }
         },
-        "resource_offering_state": {
-          "typeName": "offering_state",
-          "schemaName": "resource",
-          "description": null,
-          "aggregateFunctions": {
-            "max": {
-              "returnType": "resource_offering_state"
-            },
-            "min": {
-              "returnType": "resource_offering_state"
-            }
-          },
-          "comparisonOperators": {
-            "_eq": {
-              "operatorName": "=",
-              "operatorKind": "equal",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            },
-            "_gt": {
-              "operatorName": ">",
-              "operatorKind": "greaterThan",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            },
-            "_gte": {
-              "operatorName": ">=",
-              "operatorKind": "greaterThanOrEqual",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            },
-            "_in": {
-              "operatorName": "IN",
-              "operatorKind": "in",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            },
-            "_lt": {
-              "operatorName": "<",
-              "operatorKind": "lessThan",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            },
-            "_lte": {
-              "operatorName": "<=",
-              "operatorKind": "lessThanOrEqual",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            },
-            "_neq": {
-              "operatorName": "!=",
-              "operatorKind": "custom",
-              "argumentType": "resource_offering_state",
-              "isInfix": true
-            }
-          },
-          "typeRepresentation": {
-            "enum": [
-              "ACTIVE",
-              "INACTIVE"
-            ]
-          }
-        },
-        "resource_pricing_unit": {
+        "property_pricing_unit": {
           "typeName": "pricing_unit",
-          "schemaName": "resource",
+          "schemaName": "property",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "resource_pricing_unit"
+              "returnType": "property_pricing_unit"
             },
             "min": {
-              "returnType": "resource_pricing_unit"
+              "returnType": "property_pricing_unit"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "greaterThan",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "greaterThanOrEqual",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "lessThan",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "lessThanOrEqual",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             },
             "_neq": {
               "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "resource_pricing_unit",
+              "argumentType": "property_pricing_unit",
               "isInfix": true
             }
           },
@@ -3875,59 +4719,59 @@
             ]
           }
         },
-        "resource_resource_state": {
-          "typeName": "resource_state",
-          "schemaName": "resource",
+        "property_property_state": {
+          "typeName": "property_state",
+          "schemaName": "property",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "resource_resource_state"
+              "returnType": "property_property_state"
             },
             "min": {
-              "returnType": "resource_resource_state"
+              "returnType": "property_property_state"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "greaterThan",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "greaterThanOrEqual",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "lessThan",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "lessThanOrEqual",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             },
             "_neq": {
               "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "resource_resource_state",
+              "argumentType": "property_property_state",
               "isInfix": true
             }
           },
@@ -3938,59 +4782,122 @@
             ]
           }
         },
-        "resource_resource_type": {
-          "typeName": "resource_type",
-          "schemaName": "resource",
+        "property_unit_state": {
+          "typeName": "unit_state",
+          "schemaName": "property",
           "description": null,
           "aggregateFunctions": {
             "max": {
-              "returnType": "resource_resource_type"
+              "returnType": "property_unit_state"
             },
             "min": {
-              "returnType": "resource_resource_type"
+              "returnType": "property_unit_state"
             }
           },
           "comparisonOperators": {
             "_eq": {
               "operatorName": "=",
               "operatorKind": "equal",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
               "isInfix": true
             },
             "_gt": {
               "operatorName": ">",
               "operatorKind": "greaterThan",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
               "isInfix": true
             },
             "_gte": {
               "operatorName": ">=",
               "operatorKind": "greaterThanOrEqual",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
               "isInfix": true
             },
             "_in": {
               "operatorName": "IN",
               "operatorKind": "in",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
               "isInfix": true
             },
             "_lt": {
               "operatorName": "<",
               "operatorKind": "lessThan",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
               "isInfix": true
             },
             "_lte": {
               "operatorName": "<=",
               "operatorKind": "lessThanOrEqual",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
               "isInfix": true
             },
             "_neq": {
               "operatorName": "!=",
               "operatorKind": "custom",
-              "argumentType": "resource_resource_type",
+              "argumentType": "property_unit_state",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "ARCHIVED"
+            ]
+          }
+        },
+        "property_unit_type": {
+          "typeName": "unit_type",
+          "schemaName": "property",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "property_unit_type"
+            },
+            "min": {
+              "returnType": "property_unit_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "property_unit_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "property_unit_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "property_unit_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "property_unit_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "property_unit_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "property_unit_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "property_unit_type",
               "isInfix": true
             }
           },
@@ -3999,7 +4906,7 @@
               "PROVIDER",
               "ROOM",
               "EQUIPMENT",
-              "UNIT_TYPE",
+              "LODGING",
               "SPACE"
             ]
           }
@@ -4127,6 +5034,72 @@
             "enum": [
               "CLOSURE",
               "EXTRA_HOURS"
+            ]
+          }
+        },
+        "shared_media_type": {
+          "typeName": "media_type",
+          "schemaName": "shared",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "shared_media_type"
+            },
+            "min": {
+              "returnType": "shared_media_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "shared_media_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "IMAGE",
+              "VIDEO",
+              "DOCUMENT",
+              "FLOORPLAN",
+              "VIRTUAL_TOUR"
             ]
           }
         },
@@ -4312,6 +5285,70 @@
             }
           },
           "typeRepresentation": "string"
+        },
+        "time": {
+          "typeName": "time",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "avg": {
+              "returnType": "interval"
+            },
+            "max": {
+              "returnType": "time"
+            },
+            "min": {
+              "returnType": "time"
+            },
+            "sum": {
+              "returnType": "interval"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "time",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "time",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "time",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "time",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "time",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "time",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "time",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": "time"
         },
         "timestamptz": {
           "typeName": "timestamptz",

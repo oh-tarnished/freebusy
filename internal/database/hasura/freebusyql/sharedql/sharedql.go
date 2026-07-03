@@ -5,6 +5,7 @@ package sharedql
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/contactsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/mediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/pricecomponentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
@@ -14,22 +15,27 @@ import (
 // Model type aliases for this domain, re-exported from its schema package.
 type DeleteSharedContactsByIdResponse = schemaql.DeleteSharedContactsByIdResponse
 type DeleteSharedDateRangesByIdResponse = schemaql.DeleteSharedDateRangesByIdResponse
+type DeleteSharedMediasByIdResponse = schemaql.DeleteSharedMediasByIdResponse
 type DeleteSharedPriceComponentsByIdResponse = schemaql.DeleteSharedPriceComponentsByIdResponse
 type DeleteSharedTimeWindowsByIdResponse = schemaql.DeleteSharedTimeWindowsByIdResponse
 type InsertSharedContactsResponse = schemaql.InsertSharedContactsResponse
 type InsertSharedDateRangesResponse = schemaql.InsertSharedDateRangesResponse
+type InsertSharedMediasResponse = schemaql.InsertSharedMediasResponse
 type InsertSharedPriceComponentsResponse = schemaql.InsertSharedPriceComponentsResponse
 type InsertSharedTimeWindowsResponse = schemaql.InsertSharedTimeWindowsResponse
 type SharedContacts = schemaql.SharedContacts
 type SharedContactsAggExp = schemaql.SharedContactsAggExp
 type SharedDateRanges = schemaql.SharedDateRanges
 type SharedDateRangesAggExp = schemaql.SharedDateRangesAggExp
+type SharedMedias = schemaql.SharedMedias
+type SharedMediasAggExp = schemaql.SharedMediasAggExp
 type SharedPriceComponents = schemaql.SharedPriceComponents
 type SharedPriceComponentsAggExp = schemaql.SharedPriceComponentsAggExp
 type SharedTimeWindows = schemaql.SharedTimeWindows
 type SharedTimeWindowsAggExp = schemaql.SharedTimeWindowsAggExp
 type UpdateSharedContactsByIdResponse = schemaql.UpdateSharedContactsByIdResponse
 type UpdateSharedDateRangesByIdResponse = schemaql.UpdateSharedDateRangesByIdResponse
+type UpdateSharedMediasByIdResponse = schemaql.UpdateSharedMediasByIdResponse
 type UpdateSharedPriceComponentsByIdResponse = schemaql.UpdateSharedPriceComponentsByIdResponse
 type UpdateSharedTimeWindowsByIdResponse = schemaql.UpdateSharedTimeWindowsByIdResponse
 
@@ -37,6 +43,7 @@ type UpdateSharedTimeWindowsByIdResponse = schemaql.UpdateSharedTimeWindowsByIdR
 type QueryHandler struct {
 	Contacts        contactsql.QueryHandler
 	DateRanges      daterangesql.QueryHandler
+	Medias          mediasql.QueryHandler
 	PriceComponents pricecomponentsql.QueryHandler
 	TimeWindows     timewindowsql.QueryHandler
 }
@@ -46,6 +53,7 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
 		Contacts:        contactsql.NewQuery(gql),
 		DateRanges:      daterangesql.NewQuery(gql),
+		Medias:          mediasql.NewQuery(gql),
 		PriceComponents: pricecomponentsql.NewQuery(gql),
 		TimeWindows:     timewindowsql.NewQuery(gql),
 	}
@@ -55,6 +63,7 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 type MutationHandler struct {
 	Contacts        contactsql.MutationHandler
 	DateRanges      daterangesql.MutationHandler
+	Medias          mediasql.MutationHandler
 	PriceComponents pricecomponentsql.MutationHandler
 	TimeWindows     timewindowsql.MutationHandler
 }
@@ -64,6 +73,7 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
 		Contacts:        contactsql.NewMutation(gql),
 		DateRanges:      daterangesql.NewMutation(gql),
+		Medias:          mediasql.NewMutation(gql),
 		PriceComponents: pricecomponentsql.NewMutation(gql),
 		TimeWindows:     timewindowsql.NewMutation(gql),
 	}
@@ -73,6 +83,7 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 type SubscriptionHandler struct {
 	Contacts        contactsql.SubscriptionHandler
 	DateRanges      daterangesql.SubscriptionHandler
+	Medias          mediasql.SubscriptionHandler
 	PriceComponents pricecomponentsql.SubscriptionHandler
 	TimeWindows     timewindowsql.SubscriptionHandler
 }
@@ -82,6 +93,7 @@ func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
 		Contacts:        contactsql.NewSubscription(gql),
 		DateRanges:      daterangesql.NewSubscription(gql),
+		Medias:          mediasql.NewSubscription(gql),
 		PriceComponents: pricecomponentsql.NewSubscription(gql),
 		TimeWindows:     timewindowsql.NewSubscription(gql),
 	}

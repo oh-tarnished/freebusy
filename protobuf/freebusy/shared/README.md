@@ -35,6 +35,20 @@ Contact details for the person a booking is for. When a booking carries a `custo
 | `email` | `string` | `OPTIONAL` | Email address for the confirmation and any follow-ups. |
 | `phone_number` | `string` | `OPTIONAL` | Phone number in E.164 form (e.g. "+14155552671"). |
 
+### Media
+
+A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `uri` | `string` | `REQUIRED` | Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL). |
+| `type` | `MediaType` | `REQUIRED` | What kind of asset this is; DOCUMENT covers PDFs/policies/house rules. |
+| `title` | `string` | `OPTIONAL` | Short human-readable caption/title for display. |
+| `description` | `string` | `OPTIONAL` | Longer description or alt text. |
+| `mime_type` | `string` | `OPTIONAL` | MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known. |
+| `sort_order` | `int32` | `OPTIONAL` | Ordering hint within a gallery; lower sorts first. |
+| `primary` | `bool` | `OPTIONAL` | Whether this is the primary/hero asset of its gallery. |
+
 ### PriceComponent
 
 One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clients branch on `type` and `code`; the signed `amount` rolls up to the booking total (charges positive, discounts negative).
@@ -82,6 +96,19 @@ How a resource is booked, which decides the availability shape it produces.
 | `BOOKING_MODE_UNSPECIFIED` | 0 | Unset; the server treats this as TIME_SLOT. |
 | `BOOKING_MODE_TIME_SLOT` | 1 | Duration-based discrete slots (appointments, hourly rentals). |
 | `BOOKING_MODE_NIGHTLY` | 2 | Date-range stays over a pool of interchangeable units (lodging). |
+
+### MediaType
+
+Kind of media asset a Media reference points at. Documents (PDFs, house rules, fact sheets) are just media with type DOCUMENT — they are not a separate type.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `MEDIA_TYPE_UNSPECIFIED` | 0 | Unset. |
+| `MEDIA_TYPE_IMAGE` | 1 | A photo (e.g. a room or property showcase image). |
+| `MEDIA_TYPE_VIDEO` | 2 | A video clip. |
+| `MEDIA_TYPE_DOCUMENT` | 3 | A document such as a PDF fact sheet, policy, or house rules. |
+| `MEDIA_TYPE_FLOORPLAN` | 4 | A floor plan diagram. |
+| `MEDIA_TYPE_VIRTUAL_TOUR` | 5 | A 360°/virtual-tour asset. |
 
 ---
 

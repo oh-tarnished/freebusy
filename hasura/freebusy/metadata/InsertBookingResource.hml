@@ -34,8 +34,6 @@ definition:
       type: String_1!
     - name: notes
       type: String_1
-    - name: offering
-      type: String_1
     - name: priceId
       type: String_1
     - name: promoCode
@@ -44,12 +42,12 @@ definition:
       type: String_1
     - name: refundPercent
       type: Int32
-    - name: resource
-      type: String_1!
     - name: state
       type: Enum
     - name: totalId
       type: String_1
+    - name: unit
+      type: String_1!
     - name: units
       type: Int32
     - name: updateTime
@@ -108,9 +106,6 @@ definition:
         notes:
           column:
             name: notes
-        offering:
-          column:
-            name: offering
         priceId:
           column:
             name: price_id
@@ -123,15 +118,15 @@ definition:
         refundPercent:
           column:
             name: refund_percent
-        resource:
-          column:
-            name: resource
         state:
           column:
             name: state
         totalId:
           column:
             name: total_id
+        unit:
+          column:
+            name: unit
         units:
           column:
             name: units
@@ -166,14 +161,13 @@ definition:
           - id
           - name
           - notes
-          - offering
           - priceId
           - promoCode
           - refundAmountId
           - refundPercent
-          - resource
           - state
           - totalId
+          - unit
           - units
           - updateTime
           - windowId

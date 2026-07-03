@@ -26,10 +26,10 @@ var File_freebusy_identity_v1_identity_service_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_service_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/identity/v1/identity_service.proto\x12\x14freebusy.identity.v1\x1a#freebusy/identity/v1/identity.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\x85\x06\n" +
-	"\x0fIdentityService\x12\xd6\x01\n" +
-	"\aGetUser\x12$.freebusy.identity.v1.GetUserRequest\x1a\x1a.freebusy.identity.v1.User\"\x88\x01\xdaA\x04name\xca\xf3\x18c\x12aGet a user (\"users/me\" for the signed-in caller), including profile and organisation memberships.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/{name=users/*}\x12\xd0\x01\n" +
-	"\tListUsers\x12&.freebusy.identity.v1.ListUsersRequest\x1a'.freebusy.identity.v1.ListUsersResponse\"r\xca\xf3\x18]\x12[List users sharing an organisation with the caller; filter by organisation or display name.\x82\xd3\xe4\x93\x02\v\x12\t/v1/users\x12\xe2\x01\n" +
+	"+freebusy/identity/v1/identity_service.proto\x12\x14freebusy.identity.v1\x1a#freebusy/identity/v1/identity.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1emcp/protobuf/annotations.proto2\xc4\x05\n" +
+	"\x0fIdentityService\x12\xc4\x01\n" +
+	"\aGetUser\x12$.freebusy.identity.v1.GetUserRequest\x1a\x1a.freebusy.identity.v1.User\"w\xdaA\x04name\xca\xf3\x18R\x12PGet a user (\"users/me\" for the signed-in caller), including profile preferences.\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/{name=users/*}\x12\xa1\x01\n" +
+	"\tListUsers\x12&.freebusy.identity.v1.ListUsersRequest\x1a'.freebusy.identity.v1.ListUsersResponse\"C\xca\xf3\x18.\x12,List users; filter by display name or email.\x82\xd3\xe4\x93\x02\v\x12\t/v1/users\x12\xe2\x01\n" +
 	"\n" +
 	"UpdateUser\x12'.freebusy.identity.v1.UpdateUserRequest\x1a\x1a.freebusy.identity.v1.User\"\x8e\x01\xdaA\x10user,update_mask\xca\xf3\x18R\x12PUpdate the signed-in user's profile: display name, avatar, locale, or time zone.\x82\xd3\xe4\x93\x02\x1f:\x04user2\x17/v1/{user.name=users/*}\x1aa\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18B\n" +
 	"@\n" +

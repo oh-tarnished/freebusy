@@ -37,8 +37,8 @@ const (
 	ReasonLimitReached
 	ReasonCurrencyMismatch
 	ReasonBelowMinimum
-	ReasonNotApplicableResource
-	ReasonNotApplicableOffering
+	ReasonNotApplicableProperty
+	ReasonNotApplicableUnit
 )
 
 // Message returns the human-readable explanation for r ("" when ReasonNone).
@@ -56,10 +56,10 @@ func (r Reason) Message() string {
 		return "promo code currency does not match the booking subtotal"
 	case ReasonBelowMinimum:
 		return "subtotal is below the required minimum"
-	case ReasonNotApplicableResource:
-		return "promo code is not applicable to this resource"
-	case ReasonNotApplicableOffering:
-		return "promo code is not applicable to this offering"
+	case ReasonNotApplicableProperty:
+		return "promo code is not applicable to this property"
+	case ReasonNotApplicableUnit:
+		return "promo code is not applicable to this unit"
 	default:
 		return ""
 	}
@@ -73,11 +73,11 @@ func (r Reason) String() string {
 	return "redeemable"
 }
 
-// Evaluate applies pc's redemption window, caps, minimum subtotal, and resource /
-// offering scope to a prospective booking, then computes the discount and final
+// Evaluate applies pc's redemption window, caps, minimum subtotal, and property /
+// unit scope to a prospective booking, then computes the discount and final
 // total. now is injected so the caller (and tests) control the clock.
-func Evaluate(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, offering string, now time.Time) Result {
-	if reason := redeemable(pc, subtotal, resource, offering, now); reason != ReasonNone {
+func Evaluate(pc *promocodepbv1.PromoCode, subtotal *money.Money, property, unit string, now time.Time) Result {
+	if reason := redeemable(pc, subtotal, property, unit, now); reason != ReasonNone {
 		return Result{Valid: false, Reason: reason}
 	}
 	discount := computeDiscount(pc, subtotal)
@@ -90,7 +90,7 @@ func Evaluate(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, offe
 
 // redeemable reports why pc may not be redeemed for this request, returning
 // ReasonNone when it is redeemable.
-func redeemable(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, offering string, now time.Time) Reason {
+func redeemable(pc *promocodepbv1.PromoCode, subtotal *money.Money, property, unit string, now time.Time) Reason {
 	if pc.GetDisabled() {
 		return ReasonDisabled
 	}
@@ -120,11 +120,11 @@ func redeemable(pc *promocodepbv1.PromoCode, subtotal *money.Money, resource, of
 	if amt := pc.GetDiscount().GetAmountOff(); amt != nil && !sameCurrency(amt, subtotal) {
 		return ReasonCurrencyMismatch
 	}
-	if res := pc.GetScope().GetApplicableResources(); len(res) > 0 && !contains(res, resource) {
-		return ReasonNotApplicableResource
+	if props := pc.GetScope().GetApplicableProperties(); len(props) > 0 && !contains(props, property) {
+		return ReasonNotApplicableProperty
 	}
-	if off := pc.GetScope().GetApplicableOfferings(); len(off) > 0 && !contains(off, offering) {
-		return ReasonNotApplicableOffering
+	if units := pc.GetScope().GetApplicableUnits(); len(units) > 0 && !contains(units, unit) {
+		return ReasonNotApplicableUnit
 	}
 	return ReasonNone
 }

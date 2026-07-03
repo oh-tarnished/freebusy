@@ -11,13 +11,14 @@ Every protobuf module under `protobuf/`. Each row links to that module's generat
 | --- | --- | --- | --- | --- | --- |
 | Availability | `freebusy.availability.v1` | 1 | 16 | 1 | [README](freebusy/availability/README.md) |
 | Booking | `freebusy.booking.v1` | 1 | 11 | 2 | [README](freebusy/booking/README.md) |
-| Identity | `freebusy.identity.v1` | 1 | 6 | 0 | [README](freebusy/identity/README.md) |
+| Channel | `freebusy.channel.v1` | 1 | 28 | 6 | [README](freebusy/channel/README.md) |
+| Identity | `freebusy.identity.v1` | 1 | 5 | 0 | [README](freebusy/identity/README.md) |
 | Organisation | `freebusy.organisation.v1` | 1 | 16 | 3 | [README](freebusy/organisation/README.md) |
 | Promocode | `freebusy.promocode.v1` | 1 | 17 | 3 | [README](freebusy/promocode/README.md) |
-| Resource | `freebusy.resource.v1` | 1 | 20 | 4 | [README](freebusy/resource/README.md) |
+| Property | `freebusy.property.v1` | 1 | 22 | 4 | [README](freebusy/property/README.md) |
 | Schedule | `freebusy.schedule.v1` | 1 | 14 | 1 | [README](freebusy/schedule/README.md) |
-| Shared | `freebusy.shared.v1` | 0 | 4 | 3 | [README](freebusy/shared/README.md) |
-| **Total** | _8 modules_ | 7 | 104 | 17 | |
+| Shared | `freebusy.shared.v1` | 0 | 5 | 4 | [README](freebusy/shared/README.md) |
+| **Total** | _9 modules_ | 8 | 134 | 24 | |
 
 ## Dependency graph
 
@@ -27,15 +28,17 @@ Local (`freebusy.*`) import relationships between modules. External deps (`googl
 graph LR
     freebusy_availability_v1["Availability<br/>freebusy.availability.v1"]
     freebusy_booking_v1["Booking<br/>freebusy.booking.v1"]
+    freebusy_channel_v1["Channel<br/>freebusy.channel.v1"]
     freebusy_identity_v1["Identity<br/>freebusy.identity.v1"]
     freebusy_organisation_v1["Organisation<br/>freebusy.organisation.v1"]
     freebusy_promocode_v1["Promocode<br/>freebusy.promocode.v1"]
-    freebusy_resource_v1["Resource<br/>freebusy.resource.v1"]
+    freebusy_property_v1["Property<br/>freebusy.property.v1"]
     freebusy_schedule_v1["Schedule<br/>freebusy.schedule.v1"]
     freebusy_shared_v1["Shared<br/>freebusy.shared.v1"]
     freebusy_availability_v1 --> freebusy_shared_v1
     freebusy_booking_v1 --> freebusy_shared_v1
-    freebusy_resource_v1 --> freebusy_shared_v1
+    freebusy_channel_v1 --> freebusy_shared_v1
+    freebusy_property_v1 --> freebusy_shared_v1
     freebusy_schedule_v1 --> freebusy_shared_v1
 ```
 

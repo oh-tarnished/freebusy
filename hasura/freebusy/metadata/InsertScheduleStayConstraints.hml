@@ -9,9 +9,9 @@ definition:
     - name: advanceMinDays
       type: Int32
     - name: checkinWeekdays
-      type: "[String_1]"
+      type: String_1
     - name: checkoutWeekdays
-      type: "[String_1]"
+      type: String_1
     - name: id
       type: String_1!
     - name: maxNights

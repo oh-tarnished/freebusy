@@ -24,14 +24,13 @@ var (
 	Id             = graphql.StringField{Col: "id"}
 	Name           = graphql.StringField{Col: "name"}
 	Notes          = graphql.StringField{Col: "notes"}
-	Offering       = graphql.StringField{Col: "offering"}
 	PriceId        = graphql.StringField{Col: "priceId"}
 	PromoCode      = graphql.StringField{Col: "promoCode"}
 	RefundAmountId = graphql.StringField{Col: "refundAmountId"}
 	RefundPercent  = graphql.Int64Field{Col: "refundPercent"}
-	Resource       = graphql.StringField{Col: "resource"}
 	State          = graphql.StringField{Col: "state"}
 	TotalId        = graphql.StringField{Col: "totalId"}
+	Unit           = graphql.StringField{Col: "unit"}
 	Units          = graphql.Int64Field{Col: "units"}
 	UpdateTime     = graphql.StringField{Col: "updateTime"}
 	WindowId       = graphql.StringField{Col: "windowId"}

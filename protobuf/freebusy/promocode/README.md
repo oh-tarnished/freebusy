@@ -25,7 +25,7 @@ PromoCodeService manages redeemable discount codes and validates them against a 
 
 ### PromoCode
 
-A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of resources / offerings it applies to.
+A redeemable discount applied to a booking's subtotal. Scoped by a redemption window, usage caps, a minimum subtotal, and an optional set of properties / units it applies to.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -78,8 +78,8 @@ Scope restricts which bookings a code applies to. Nested value object → belong
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `min_subtotal` | `Money` | `OPTIONAL` | Minimum subtotal required for the code to apply. Normalized into the shared common.moneys table (belongs-to via min_subtotal_id). |
-| `applicable_resources` | `repeated string` | `OPTIONAL` | Resources the code applies to. Empty means all resources. Format: resources/{resource} |
-| `applicable_offerings` | `repeated string` | `OPTIONAL` | Offerings the code applies to. Empty means all offerings. Format: resources/{resource}/offerings/{offering} |
+| `applicable_properties` | `repeated string` | `OPTIONAL` | Properties the code applies to. Empty means all properties. Format: properties/{property} |
+| `applicable_units` | `repeated string` | `OPTIONAL` | Units the code applies to. Empty means all units. Format: properties/{property}/units/{unit} |
 
 ### Redemption
 
@@ -162,8 +162,8 @@ Request message for ValidatePromoCode. Computes the discount a code would apply 
 | --- | --- | --- | --- |
 | `code` | `string` | `REQUIRED` | The human-entered code to validate (e.g. "SUMMER25"). |
 | `subtotal` | `Money` | `REQUIRED` | Subtotal the discount would apply to. |
-| `resource` | `string` | `OPTIONAL` | Resource being booked, for scope checks. Format: resources/{resource} |
-| `offering` | `string` | `OPTIONAL` | Offering being booked, for scope checks. Format: resources/{resource}/offerings/{offering} |
+| `property` | `string` | `OPTIONAL` | Property being booked, for scope checks. Format: properties/{property} |
+| `unit` | `string` | `OPTIONAL` | Unit being booked, for scope checks. Format: properties/{property}/units/{unit} |
 | `customer` | `string` | `OPTIONAL` | Customer redeeming the code, for per-customer limit checks. Format: users/{user} |
 
 ### ValidatePromoCodeResponse
@@ -236,7 +236,7 @@ Why a promo code failed validation, returned on ValidatePromoCodeResponse. Each 
 | `PROMO_CODE_INVALID_REASON_OUT_OF_REDEMPTIONS` | 5 | The code hit its total redemption cap (limits.max_redemptions). |
 | `PROMO_CODE_INVALID_REASON_PER_CUSTOMER_LIMIT_REACHED` | 6 | The customer hit their per-customer cap (limits.per_customer_limit). |
 | `PROMO_CODE_INVALID_REASON_BELOW_MIN_SUBTOTAL` | 7 | The subtotal is below scope.min_subtotal. |
-| `PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE` | 8 | The booked resource/offering is outside scope.applicable_resources/offerings. |
+| `PROMO_CODE_INVALID_REASON_OUT_OF_SCOPE` | 8 | The booked property/unit is outside scope.applicable_properties/units. |
 
 ### CodeGeneration
 

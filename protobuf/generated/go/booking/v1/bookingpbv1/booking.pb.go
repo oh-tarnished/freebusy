@@ -48,7 +48,7 @@ type Booking struct {
 	Contact *sharedpbv1.Contact `protobuf:"bytes,24,opt,name=contact,proto3" json:"contact,omitempty"`
 	// Number of units / party size reserved. Defaults to 1.
 	Units int32 `protobuf:"varint,6,opt,name=units,proto3" json:"units,omitempty"`
-	// The reserved span. For NIGHTLY resources this spans check-in to check-out.
+	// The reserved span. For NIGHTLY units this spans check-in to check-out.
 	Window *sharedpbv1.TimeWindow `protobuf:"bytes,7,opt,name=window,proto3" json:"window,omitempty"`
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
 	AssignedUnit string `protobuf:"bytes,8,opt,name=assigned_unit,json=assignedUnit,proto3" json:"assigned_unit,omitempty"`

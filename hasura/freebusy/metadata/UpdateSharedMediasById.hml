@@ -1,0 +1,496 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasDescription
+  description: Update the 'description' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasDescription
+    inputTypeName: UpdateColumnSharedMediasDescriptionInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_description
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasDescription
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasId
+  description: Update the 'id' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasId
+    inputTypeName: UpdateColumnSharedMediasIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasMimeType
+  description: Update the 'mime_type' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasMimeType
+    inputTypeName: UpdateColumnSharedMediasMimeTypeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_mime_type
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasMimeType
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasPrimary
+  description: Update the 'primary' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: Boolean_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasPrimary
+    inputTypeName: UpdateColumnSharedMediasPrimaryInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_primary
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasPrimary
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasPropertyId
+  description: Update the 'property_id' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasPropertyId
+    inputTypeName: UpdateColumnSharedMediasPropertyIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_property_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasPropertyId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasSortOrder
+  description: Update the 'sort_order' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: Int32
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasSortOrder
+    inputTypeName: UpdateColumnSharedMediasSortOrderInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_sort_order
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasSortOrder
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasTitle
+  description: Update the 'title' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasTitle
+    inputTypeName: UpdateColumnSharedMediasTitleInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_title
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasTitle
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasType
+  description: Update the 'type' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: Enum!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasType
+    inputTypeName: UpdateColumnSharedMediasTypeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_type
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasType
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasUnitId
+  description: Update the 'unit_id' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasUnitId
+    inputTypeName: UpdateColumnSharedMediasUnitIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_unit_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasUnitId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedMediasUri
+  description: Update the 'uri' column in the 'shared_medias' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedMediasUri
+    inputTypeName: UpdateColumnSharedMediasUriInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_medias_uri
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedMediasUri
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateSharedMediasByIdUpdateColumns
+  description: Update the columns of the 'shared_medias' collection
+  fields:
+    - name: description
+      type: UpdateColumnSharedMediasDescription
+      description: Update the 'description' column in the 'shared_medias' collection.
+    - name: id
+      type: UpdateColumnSharedMediasId
+      description: Update the 'id' column in the 'shared_medias' collection.
+    - name: mimeType
+      type: UpdateColumnSharedMediasMimeType
+      description: Update the 'mime_type' column in the 'shared_medias' collection.
+    - name: primary
+      type: UpdateColumnSharedMediasPrimary
+      description: Update the 'primary' column in the 'shared_medias' collection.
+    - name: propertyId
+      type: UpdateColumnSharedMediasPropertyId
+      description: Update the 'property_id' column in the 'shared_medias' collection.
+    - name: sortOrder
+      type: UpdateColumnSharedMediasSortOrder
+      description: Update the 'sort_order' column in the 'shared_medias' collection.
+    - name: title
+      type: UpdateColumnSharedMediasTitle
+      description: Update the 'title' column in the 'shared_medias' collection.
+    - name: type
+      type: UpdateColumnSharedMediasType
+      description: Update the 'type' column in the 'shared_medias' collection.
+    - name: unitId
+      type: UpdateColumnSharedMediasUnitId
+      description: Update the 'unit_id' column in the 'shared_medias' collection.
+    - name: uri
+      type: UpdateColumnSharedMediasUri
+      description: Update the 'uri' column in the 'shared_medias' collection.
+  graphql:
+    typeName: UpdateSharedMediasByIdUpdateColumns
+    inputTypeName: UpdateSharedMediasByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_shared_medias_by_id_update_columns
+      fieldMapping:
+        description:
+          column:
+            name: description
+        id:
+          column:
+            name: id
+        mimeType:
+          column:
+            name: mime_type
+        primary:
+          column:
+            name: primary
+        propertyId:
+          column:
+            name: property_id
+        sortOrder:
+          column:
+            name: sort_order
+        title:
+          column:
+            name: title
+        type:
+          column:
+            name: type
+        unitId:
+          column:
+            name: unit_id
+        uri:
+          column:
+            name: uri
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateSharedMediasByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - description
+          - id
+          - mimeType
+          - primary
+          - propertyId
+          - sortOrder
+          - title
+          - type
+          - unitId
+          - uri
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateSharedMediasByIdResponse
+  description: Responses from the 'update_shared_medias_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[SharedMedias!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdateSharedMediasByIdResponse
+    inputTypeName: UpdateSharedMediasByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_shared_medias_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateSharedMediasByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateSharedMediasById
+  outputType: UpdateSharedMediasByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: SharedMediasBoolExp
+      description: Update permission post-condition predicate over the 'shared_medias'
+        collection
+    - name: preCheck
+      type: SharedMediasBoolExp
+      description: Update permission pre-condition predicate over the 'shared_medias'
+        collection
+    - name: updateColumns
+      type: UpdateSharedMediasByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_shared_medias_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updateSharedMediasById
+    rootFieldKind: Mutation
+  description: Update any row on the 'shared_medias' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateSharedMediasById
+  permissions:
+    - role: admin
+      allowExecution: true
+

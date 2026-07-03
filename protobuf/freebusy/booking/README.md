@@ -25,17 +25,16 @@ BookingService is the transactional heart. CreateBooking carries the idempotency
 
 ### Booking
 
-A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
+A reservation against a unit. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The booking name. Format: bookings/{booking} |
-| `resource` | `string` | `REQUIRED` | The resource being booked. Format: resources/{resource} |
-| `offering` | `string` | `OPTIONAL` | The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering} |
+| `unit` | `string` | `REQUIRED` | The unit being booked. Format: properties/{property}/units/{unit} |
 | `customer` | `string` | `OPTIONAL` | The user the booking is for. Format: users/{user} |
 | `contact` | `Contact` | `OPTIONAL` | Contact details for the booker. Required when `customer` is unset (a guest / walk-in booking); when `customer` is set these supplement or override the user's profile contact for this booking. |
 | `units` | `int32` | `OPTIONAL` | Number of units / party size reserved. Defaults to 1. |
-| `window` | `TimeWindow` | `REQUIRED` | The reserved span. For NIGHTLY resources this spans check-in to check-out. |
+| `window` | `TimeWindow` | `REQUIRED` | The reserved span. For NIGHTLY units this spans check-in to check-out. |
 | `assigned_unit` | `string` | `OUTPUT_ONLY` | Which specific unit of the pool was assigned (the shell's atomic pick). |
 | `state` | `BookingState` | `OUTPUT_ONLY` | Current lifecycle state. |
 | `hold_expire_time` | `Timestamp` | `OUTPUT_ONLY` | When the pending hold lapses, if not confirmed first. |
@@ -51,7 +50,7 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `confirm_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was confirmed, if at all. |
 | `cancel_time` | `Timestamp` | `OUTPUT_ONLY` | When the booking was cancelled, if at all. |
-| `refund_amount` | `Money` | `OUTPUT_ONLY` | Amount refunded on cancellation, computed from the resource's cancellation policy and how far ahead of the booking start it was cancelled. Set only once the booking is CANCELLED. Use PreviewCancellation to see this before committing. |
+| `refund_amount` | `Money` | `OUTPUT_ONLY` | Amount refunded on cancellation, computed from the unit's cancellation policy and how far ahead of the booking start it was cancelled. Set only once the booking is CANCELLED. Use PreviewCancellation to see this before committing. |
 | `refund_percent` | `int32` | `OUTPUT_ONLY` | Percentage of the total that `refund_amount` represents (0-100). |
 | `hold_ttl` | `Duration` | `IMMUTABLE` | Requested time-to-live of the hold, set at creation. The server caps this and reflects the effective expiry in hold_expire_time. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
@@ -79,18 +78,18 @@ Request message for CancelBooking.
 
 ### RescheduleBookingRequest
 
-Request message for RescheduleBooking. Atomically moves a booking to a new span (and optionally offering), re-running availability and the exclusion check on the new window.
+Request message for RescheduleBooking. Atomically moves a booking to a new span (and optionally unit), re-running availability and the exclusion check on the new window.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The booking to reschedule. Format: bookings/{booking} |
 | `window` | `TimeWindow` | `REQUIRED` | The new reserved span. |
-| `offering` | `string` | `OPTIONAL` | The new offering, when changing it as part of the reschedule. Format: resources/{resource}/offerings/{offering} |
+| `unit` | `string` | `OPTIONAL` | The new unit, when changing it as part of the reschedule. Format: properties/{property}/units/{unit} |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this reschedule. |
 
 ### PreviewCancellationRequest
 
-Request message for PreviewCancellation. Computes the refund a cancellation would yield right now, under the resource's cancellation policy, without cancelling the booking.
+Request message for PreviewCancellation. Computes the refund a cancellation would yield right now, under the unit's cancellation policy, without cancelling the booking.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
@@ -114,8 +113,7 @@ Arguments for the "book_slot" prompt.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `resource` | `string` | `REQUIRED` | Resource to book, as a resource name ("resources/42") or a display name. |
-| `offering` | `string` | `OPTIONAL` | Offering to book, as a resource name or a display name (e.g. "30-min consult"). |
+| `unit` | `string` | `REQUIRED` | Unit to book, as a resource name ("properties/9/units/42") or a display name. |
 | `start_time` | `Timestamp` | `REQUIRED` | Start of the booking (RFC 3339, e.g. "2026-07-01T14:00:00Z"). |
 | `units` | `int32` | `OPTIONAL` | Number of units / party size. Defaults to 1. |
 | `promo_code` | `string` | `OPTIONAL` | Promo code to apply, if any. |
@@ -126,7 +124,7 @@ Request message for CreateBooking. This places a hold transactionally; the reque
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `booking` | `Booking` | `REQUIRED` | The booking to create. Supply resource, window, and optionally offering, units, customer, contact, notes, attributes, promo_code, and hold_ttl. Provide contact when there is no customer (a guest booking). Output-only fields are ignored. |
+| `booking` | `Booking` | `REQUIRED` | The booking to create. Supply unit, window, and optionally units, customer, contact, notes, attributes, promo_code, and hold_ttl. Provide contact when there is no customer (a guest booking). Output-only fields are ignored. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this create. Reusing an id returns the booking created by the first call. |
 | `booking_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the booking; the server generates one if unset. |
 | `validate_only` | `bool` | `OPTIONAL` | If true, validate the request (availability + policy) and report what would happen, but place no hold. |
@@ -147,7 +145,7 @@ Request message for ListBookings.
 | --- | --- | --- | --- |
 | `page_size` | `int32` | `OPTIONAL` | Maximum number of bookings to return. The server may cap this. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListBookings call's next_page_token. |
-| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `resource = "resources/42"`, `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `unit = "properties/9/units/42"`, `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc" or "window.start_time". |
 
 ### ListBookingsResponse

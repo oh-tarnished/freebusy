@@ -9,5 +9,6 @@ type ScheduleResource struct {
 	Etag                 *string `graphql:"etag"`
 	Id                   string  `graphql:"id"`
 	Name                 string  `graphql:"name"`
+	PropertyId           string  `graphql:"propertyId"`
 	StayConstraintsId    *string `graphql:"stayConstraintsId"`
 }

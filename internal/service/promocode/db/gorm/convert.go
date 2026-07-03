@@ -118,9 +118,9 @@ type promoGraph struct {
 	window    *promocode.RedemptionWindow
 	limits    *promocode.UsageLimits
 	scope     *promocode.Scope
-	moneys    []*common.Money
-	resources []*promocode.ScopeApplicableResources
-	offerings []*promocode.ScopeApplicableOfferings
+	moneys     []*common.Money
+	properties []*promocode.ScopeApplicableProperties
+	units      []*promocode.ScopeApplicableUnits
 }
 
 // buildGraph turns a proto PromoCode into the row graph that backs it, minting a
@@ -179,19 +179,19 @@ func buildGraph(pc *promocodepbv1.PromoCode) *promoGraph {
 			g.moneys = append(g.moneys, min)
 			g.scope.MinSubtotalID = &min.ID
 		}
-		for _, name := range sc.GetApplicableResources() {
-			g.resources = append(g.resources, &promocode.ScopeApplicableResources{
+		for _, name := range sc.GetApplicableProperties() {
+			g.properties = append(g.properties, &promocode.ScopeApplicableProperties{
 				ID:         ulid.GenerateString(),
 				ScopeID:    g.scope.ID,
-				ResourceID: name,
+				PropertyID: name,
 			})
 		}
-		for _, name := range sc.GetApplicableOfferings() {
-			g.offerings = append(g.offerings, &promocode.ScopeApplicableOfferings{
-				ID:           ulid.GenerateString(),
-				ScopeID:      g.scope.ID,
-				OfferingID:   lastSegment(name),
-				OfferingName: name,
+		for _, name := range sc.GetApplicableUnits() {
+			g.units = append(g.units, &promocode.ScopeApplicableUnits{
+				ID:       ulid.GenerateString(),
+				ScopeID:  g.scope.ID,
+				UnitID:   lastSegment(name),
+				UnitName: name,
 			})
 		}
 		g.promo.ScopeID = &g.scope.ID
@@ -267,11 +267,11 @@ func scopeFromModel(s *promocode.Scope) *promocodepbv1.Scope {
 		return nil
 	}
 	out := &promocodepbv1.Scope{MinSubtotal: moneyFromModel(s.MinSubtotal)}
-	for i := range s.ScopeApplicableResources {
-		out.ApplicableResources = append(out.ApplicableResources, s.ScopeApplicableResources[i].ResourceID)
+	for i := range s.ScopeApplicableProperties {
+		out.ApplicableProperties = append(out.ApplicableProperties, s.ScopeApplicableProperties[i].PropertyID)
 	}
-	for i := range s.ScopeApplicableOfferings {
-		out.ApplicableOfferings = append(out.ApplicableOfferings, s.ScopeApplicableOfferings[i].OfferingName)
+	for i := range s.ScopeApplicableUnits {
+		out.ApplicableUnits = append(out.ApplicableUnits, s.ScopeApplicableUnits[i].UnitName)
 	}
 	return out
 }

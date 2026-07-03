@@ -27,7 +27,7 @@ var File_freebusy_promocode_v1_promocode_service_proto protoreflect.FileDescript
 
 const file_freebusy_promocode_v1_promocode_service_proto_rawDesc = "" +
 	"\n" +
-	"-freebusy/promocode/v1/promocode_service.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a.freebusy/promocode/v1/promocode_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xca\x10\n" +
+	"-freebusy/promocode/v1/promocode_service.proto\x12\x15freebusy.promocode.v1\x1a%freebusy/promocode/v1/promocode.proto\x1a.freebusy/promocode/v1/promocode_messages.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1emcp/protobuf/annotations.proto2\xc6\x10\n" +
 	"\x10PromoCodeService\x12\xd6\x01\n" +
 	"\x0eListPromoCodes\x12,.freebusy.promocode.v1.ListPromoCodesRequest\x1a-.freebusy.promocode.v1.ListPromoCodesResponse\"g\xca\xf3\x18C\x12AList promo codes. Filter by status, search by code, and paginate.\x82\xd3\xe4\x93\x02\x1a\x12\x18/promocode/v1/promoCodes\x12\xe7\x01\n" +
 	"\fGetPromoCode\x12*.freebusy.promocode.v1.GetPromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\x88\x01\xdaA\x04name\xca\xf3\x18T\x12RGet a single promo code by resource name, including its caps and redemption count.\x82\xd3\xe4\x93\x02#\x12!/promocode/v1/{name=promoCodes/*}\x12\x96\x02\n" +
@@ -35,8 +35,8 @@ const file_freebusy_promocode_v1_promocode_service_proto_rawDesc = "" +
 	"promo_code\"\x18/promocode/v1/promoCodes\x12\x83\x02\n" +
 	"\x0fUpdatePromoCode\x12-.freebusy.promocode.v1.UpdatePromoCodeRequest\x1a .freebusy.promocode.v1.PromoCode\"\x9e\x01\xdaA\x16promo_code,update_mask\xca\xf3\x18A\x12?Update a promo code's discount, window, caps, scope, or status.\x82\xd3\xe4\x93\x02::\n" +
 	"promo_code2,/promocode/v1/{promo_code.name=promoCodes/*}\x12\xb5\x01\n" +
-	"\x0fDeletePromoCode\x12-.freebusy.promocode.v1.DeletePromoCodeRequest\x1a\x16.google.protobuf.Empty\"[\xdaA\x04name\xca\xf3\x18'\x12%Delete a promo code by resource name.\x82\xd3\xe4\x93\x02#*!/promocode/v1/{name=promoCodes/*}\x12\xbd\x02\n" +
-	"\x11ValidatePromoCode\x12/.freebusy.promocode.v1.ValidatePromoCodeRequest\x1a0.freebusy.promocode.v1.ValidatePromoCodeResponse\"\xc4\x01\xdaA\rcode,subtotal\xca\xf3\x18{\x12yCheck whether a code applies to a booking (resource/offering/subtotal/customer) and compute the discount and final total.\x82\xd3\xe4\x93\x02/:\x01*\"*/promocode/v1/promoCodes:validatePromoCode\x12\x8c\x02\n" +
+	"\x0fDeletePromoCode\x12-.freebusy.promocode.v1.DeletePromoCodeRequest\x1a\x16.google.protobuf.Empty\"[\xdaA\x04name\xca\xf3\x18'\x12%Delete a promo code by resource name.\x82\xd3\xe4\x93\x02#*!/promocode/v1/{name=promoCodes/*}\x12\xb9\x02\n" +
+	"\x11ValidatePromoCode\x12/.freebusy.promocode.v1.ValidatePromoCodeRequest\x1a0.freebusy.promocode.v1.ValidatePromoCodeResponse\"\xc0\x01\xdaA\rcode,subtotal\xca\xf3\x18w\x12uCheck whether a code applies to a booking (property/unit/subtotal/customer) and compute the discount and final total.\x82\xd3\xe4\x93\x02/:\x01*\"*/promocode/v1/promoCodes:validatePromoCode\x12\x8c\x02\n" +
 	"\x0fListRedemptions\x12-.freebusy.promocode.v1.ListRedemptionsRequest\x1a..freebusy.promocode.v1.ListRedemptionsResponse\"\x99\x01\xdaA\x06parent\xca\xf3\x18U\x12SList the redemptions of a promo code, paginated and filterable by customer or time.\x82\xd3\xe4\x93\x021\x12//promocode/v1/{parent=promoCodes/*}/redemptions\x12\xd9\x01\n" +
 	"\rGetRedemption\x12+.freebusy.promocode.v1.GetRedemptionRequest\x1a!.freebusy.promocode.v1.Redemption\"x\xdaA\x04name\xca\xf3\x186\x124Get a single promo code redemption by resource name.\x82\xd3\xe4\x93\x021\x12//promocode/v1/{name=promoCodes/*/redemptions/*}\x1aq\xcaA\x18freebusy.ohtarnished.dev\xc2\xf3\x18R\n" +
 	"P\n" +

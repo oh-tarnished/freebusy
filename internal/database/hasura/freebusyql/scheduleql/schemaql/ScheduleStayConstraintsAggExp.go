@@ -43,6 +43,18 @@ type ScheduleStayConstraintsAggExp struct {
 		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
 		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"advanceMinDays"`
+	CheckinWeekdays struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"checkinWeekdays"`
+	CheckoutWeekdays struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"checkoutWeekdays"`
 	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`

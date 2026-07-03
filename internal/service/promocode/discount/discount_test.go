@@ -92,15 +92,15 @@ func TestEvaluateRedeemability(t *testing.T) {
 		{"below minimum", func(p *promocodepbv1.PromoCode) {
 			scope(p).MinSubtotal = usd(50, 0)
 		}, ReasonBelowMinimum},
-		{"resource scope", func(p *promocodepbv1.PromoCode) {
-			scope(p).ApplicableResources = []string{"resources/allowed"}
-		}, ReasonNotApplicableResource},
+		{"property scope", func(p *promocodepbv1.PromoCode) {
+			scope(p).ApplicableProperties = []string{"properties/allowed"}
+		}, ReasonNotApplicableProperty},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			pc := activePercent(10)
 			tc.mutate(pc)
-			got := Evaluate(pc, usd(40, 0), "resources/other", "", now)
+			got := Evaluate(pc, usd(40, 0), "properties/other", "", now)
 			if got.Valid {
 				t.Fatalf("expected invalid, got valid")
 			}
@@ -168,8 +168,8 @@ func TestEffectiveState(t *testing.T) {
 
 func TestEvaluateScopeMatchPasses(t *testing.T) {
 	pc := activePercent(20)
-	scope(pc).ApplicableOfferings = []string{"resources/r/offerings/o"}
-	got := Evaluate(pc, usd(50, 0), "resources/r", "resources/r/offerings/o", now)
+	scope(pc).ApplicableUnits = []string{"properties/p/units/u"}
+	got := Evaluate(pc, usd(50, 0), "properties/p", "properties/p/units/u", now)
 	assertValid(t, got, 10, 0, 40, 0)
 }
 
