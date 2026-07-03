@@ -5,6 +5,10 @@ default:
 [group('codegen')]
 mod gen 'tools/just/gen.just'
 
+# Hasura DDN metadata regeneration after a DB schema change.
+[group('hasura')]
+mod hasura 'tools/just/hasura.just'
+
 # Envoy grpc-web proxy runtime (up/down).
 [group('proxy')]
 mod envoy 'tools/just/envoy.just'

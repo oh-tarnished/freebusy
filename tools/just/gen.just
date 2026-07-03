@@ -115,9 +115,3 @@ gapic:
 [group('codegen')]
 docs:
     go run ./tools/protobuf/docs protobuf
-
-# Regenerate Hasura DDN metadata after a DB schema change. Pass a domain to
-# drop+regenerate its changed models, e.g. `just gen hasura promocode`.
-[group('codegen')]
-hasura domain="":
-    tools/db/hasura/regen.sh {{ domain }}
