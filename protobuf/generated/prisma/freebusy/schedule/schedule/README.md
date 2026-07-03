@@ -15,7 +15,8 @@ erDiagram
     direction LR
     AvailabilityException {
         string id PK
-        string resource_id FK
+        string property_id FK
+        string unit_id FK
         string window_id FK
         string date_range_id FK
     }
@@ -35,6 +36,7 @@ erDiagram
     }
     Schedule {
         string id PK
+        string property_id FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -50,17 +52,22 @@ erDiagram
     DateRange {
         string externalStub PK
     }
-    Resource {
+    Property {
         string externalStub PK
     }
     TimeWindow {
         string externalStub PK
     }
-    AvailabilityException }o--|| Resource : "resource_id"
+    Unit {
+        string externalStub PK
+    }
+    AvailabilityException }o--|| Property : "property_id"
+    AvailabilityException }o--|| Unit : "unit_id"
     AvailabilityException }o--|| TimeWindow : "window_id"
     AvailabilityException }o--|| DateRange : "date_range_id"
     RecurringRule }o--|| Schedule : "schedule_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
+    Schedule }o--|| Property : "property_id"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
@@ -72,7 +79,7 @@ Schema file: [`schedule.postgres.prisma`](./schedule.postgres.prisma)
 
 ### `AvailabilityException` → `availability_exceptions`
 
-An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
+An override of a unit's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -82,26 +89,28 @@ An override of a resource's normal hours on a specific span: a blackout / holida
 | `reason` | `VARCHAR(255)` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `span_case` | `AvailabilityExceptionSpanCase` | nullable |
-| `resource_id` | `CHAR(26)` | not null |
+| `property_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 | `window_id` | `CHAR(26)` | nullable |
 | `date_range_id` | `CHAR(26)` | nullable |
 
 ### `Schedule` → `resource`
 
-Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+Aggregate read view of a unit's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per unit.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `property_id` | `CHAR(26)` | not null |
 | `buffers_id` | `CHAR(26)` | nullable |
 | `stay_constraints_id` | `CHAR(26)` | nullable |
 | `cancellation_policy_id` | `CHAR(26)` | nullable |
 
 ### `RecurringRule` → `recurring_rules`
 
-A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
+A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the unit's timezone.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -126,7 +135,7 @@ Buffer and notice settings applied around bookings.
 
 ### `StayConstraints` → `stay_constraints`
 
-Stay rules that affect bookability for NIGHTLY resources.
+Stay rules that affect bookability for NIGHTLY units.
 
 | Column | Type | Null |
 | --- | --- | --- |

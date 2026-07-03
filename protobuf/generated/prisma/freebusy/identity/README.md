@@ -6,26 +6,16 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 2 | 0 |
+| 1 | 0 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
-    MembershipSummary {
-        string id PK
-        string organisation FK
-        string user_id FK
-    }
     User {
         string id PK
     }
-    Organisation {
-        string externalStub PK
-    }
-    MembershipSummary }o--|| Organisation : "organisation"
-    MembershipSummary }o--|| User : "user_id"
 ```
 
 ## Subfolders

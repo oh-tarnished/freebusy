@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 33 | 15 |
+| 39 | 19 |
 
 ## Entity relationships
 
@@ -15,14 +15,14 @@ erDiagram
     direction LR
     AvailabilityException {
         string id PK
-        string resource_id FK
+        string property_id FK
+        string unit_id FK
         string window_id FK
         string date_range_id FK
     }
     Booking {
         string id PK
-        string resource FK
-        string offering FK
+        string unit FK
         string customer FK
         string promo_code FK
         string contact_id FK
@@ -38,6 +38,13 @@ erDiagram
     CancellationPolicy {
         string id PK
     }
+    Channel {
+        string id PK
+        string property FK
+    }
+    ChannelSyncStatus {
+        string id PK
+    }
     Contact {
         string id PK
     }
@@ -50,13 +57,18 @@ erDiagram
     }
     Fee {
         string id PK
-        string offering_id FK
+        string unit_id FK
         string amount_id FK
     }
     LosDiscount {
         string id PK
-        string offering_id FK
+        string unit_id FK
         string amount_off_id FK
+    }
+    Media {
+        string id PK
+        string property_id FK
+        string unit_id FK
     }
     Member {
         string id PK
@@ -64,20 +76,16 @@ erDiagram
         string inviter FK
         string organisation_id FK
     }
-    MembershipSummary {
-        string id PK
-        string organisation FK
-        string user_id FK
-    }
     Money {
         string id PK
     }
-    Offering {
-        string id PK
-        string resource_id FK
-        string price_id FK
-    }
     Organisation {
+        string id PK
+    }
+    Policy {
+        string id PK
+    }
+    PostalAddress {
         string id PK
     }
     PriceComponent {
@@ -92,9 +100,20 @@ erDiagram
         string limits_id FK
         string scope_id FK
     }
+    Property {
+        string id PK
+        string organisation FK
+        string address_id FK
+        string policy_id FK
+    }
+    PropertyUnits {
+        string id PK
+        string property_id FK
+        string unit_id FK
+    }
     RateOverride {
         string id PK
-        string offering_id FK
+        string unit_id FK
         string date_range_id FK
         string price_id FK
     }
@@ -116,16 +135,9 @@ erDiagram
         string id PK
         string cancellation_policy_id FK
     }
-    Resource {
-        string id PK
-    }
-    ResourceOfferings {
-        string id PK
-        string resource_id FK
-        string offering_id FK
-    }
     Schedule {
         string id PK
+        string property_id FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -139,25 +151,40 @@ erDiagram
         string id PK
         string min_subtotal_id FK
     }
-    ScopeApplicableOfferings {
+    ScopeApplicableProperties {
         string id PK
         string scope_id FK
-        string offering_id FK
+        string property_id FK
     }
-    ScopeApplicableResources {
+    ScopeApplicableUnits {
         string id PK
         string scope_id FK
-        string resource_id FK
+        string unit_id FK
     }
     StayConstraints {
         string id PK
     }
     Tax {
         string id PK
-        string offering_id FK
+        string unit_id FK
     }
     TimeWindow {
         string id PK
+    }
+    Unit {
+        string id PK
+        string property_id FK
+        string price_id FK
+    }
+    UnitApplicablePromoCodes {
+        string id PK
+        string unit_id FK
+        string promo_code_id FK
+    }
+    UnitMapping {
+        string id PK
+        string unit FK
+        string channel_id FK
     }
     UsageLimits {
         string id PK
@@ -165,11 +192,11 @@ erDiagram
     User {
         string id PK
     }
-    AvailabilityException }o--|| Resource : "resource_id"
+    AvailabilityException }o--|| Property : "property_id"
+    AvailabilityException }o--|| Unit : "unit_id"
     AvailabilityException }o--|| TimeWindow : "window_id"
     AvailabilityException }o--|| DateRange : "date_range_id"
-    Booking }o--|| Resource : "resource"
-    Booking }o--|| Offering : "offering"
+    Booking }o--|| Unit : "unit"
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
@@ -178,25 +205,29 @@ erDiagram
     Booking }o--|| Money : "discount_id"
     Booking }o--|| Money : "total_id"
     Booking }o--|| Money : "refund_amount_id"
+    Channel }o--|| Property : "property"
     Discount }o--|| Money : "amount_off_id"
-    Fee }o--|| Offering : "offering_id"
+    Fee }o--|| Unit : "unit_id"
     Fee }o--|| Money : "amount_id"
-    LosDiscount }o--|| Offering : "offering_id"
+    LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
+    Media }o--|| Property : "property_id"
+    Media }o--|| Unit : "unit_id"
     Member }o--|| User : "user"
     Member }o--|| User : "inviter"
     Member }o--|| Organisation : "organisation_id"
-    MembershipSummary }o--|| Organisation : "organisation"
-    MembershipSummary }o--|| User : "user_id"
-    Offering }o--|| Resource : "resource_id"
-    Offering }o--|| Money : "price_id"
     PriceComponent }o--|| Booking : "booking_id"
     PriceComponent }o--|| Money : "amount_id"
     PromoCode }o--|| Discount : "discount_id"
     PromoCode }o--|| RedemptionWindow : "window_id"
     PromoCode }o--|| UsageLimits : "limits_id"
     PromoCode }o--|| Scope : "scope_id"
-    RateOverride }o--|| Offering : "offering_id"
+    Property }o--|| Organisation : "organisation"
+    Property }o--|| PostalAddress : "address_id"
+    Property }o--|| Policy : "policy_id"
+    PropertyUnits }o--|| Property : "property_id"
+    PropertyUnits }o--|| Unit : "unit_id"
+    RateOverride }o--|| Unit : "unit_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RateOverride }o--|| Money : "price_id"
     RecurringRule }o--|| Schedule : "schedule_id"
@@ -205,28 +236,34 @@ erDiagram
     Redemption }o--|| PromoCode : "promo_code_id"
     Redemption }o--|| Money : "amount_applied_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
-    ResourceOfferings }o--|| Resource : "resource_id"
-    ResourceOfferings }o--|| Offering : "offering_id"
+    Schedule }o--|| Property : "property_id"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
     ScheduleExceptions }o--|| Schedule : "schedule_id"
     ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
     Scope }o--|| Money : "min_subtotal_id"
-    ScopeApplicableOfferings }o--|| Scope : "scope_id"
-    ScopeApplicableOfferings }o--|| Offering : "offering_id"
-    ScopeApplicableResources }o--|| Scope : "scope_id"
-    ScopeApplicableResources }o--|| Resource : "resource_id"
-    Tax }o--|| Offering : "offering_id"
+    ScopeApplicableProperties }o--|| Scope : "scope_id"
+    ScopeApplicableProperties }o--|| Property : "property_id"
+    ScopeApplicableUnits }o--|| Scope : "scope_id"
+    ScopeApplicableUnits }o--|| Unit : "unit_id"
+    Tax }o--|| Unit : "unit_id"
+    Unit }o--|| Property : "property_id"
+    Unit }o--|| Money : "price_id"
+    UnitApplicablePromoCodes }o--|| Unit : "unit_id"
+    UnitApplicablePromoCodes }o--|| PromoCode : "promo_code_id"
+    UnitMapping }o--|| Unit : "unit"
+    UnitMapping }o--|| Channel : "channel_id"
 ```
 
 ## Subfolders
 
 - [`booking/`](./booking/README.md)
+- [`channel/`](./channel/README.md)
 - [`identity/`](./identity/README.md)
 - [`organisation/`](./organisation/README.md)
 - [`promocode/`](./promocode/README.md)
-- [`resource/`](./resource/README.md)
+- [`property/`](./property/README.md)
 - [`schedule/`](./schedule/README.md)
 - [`shared/`](./shared/README.md)
 - [`type/`](./type/README.md)

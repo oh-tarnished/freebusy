@@ -159,38 +159,38 @@ type Scope struct {
 	MinSubtotal   *common.Money `gorm:"foreignKey:MinSubtotalID;constraint:OnDelete:SET NULL" json:"minsubtotal,omitempty"`
 	// Back-relation: PromoCode records that reference this via scope_id.
 	Resource []PromoCode `gorm:"foreignKey:ScopeID" json:"resource,omitempty"`
-	// Back-relation: ScopeApplicableResources records that reference this via scope_id.
-	ScopeApplicableResources []ScopeApplicableResources `gorm:"foreignKey:ScopeID" json:"scopeapplicableresources,omitempty"`
-	// Back-relation: ScopeApplicableOfferings records that reference this via scope_id.
-	ScopeApplicableOfferings []ScopeApplicableOfferings `gorm:"foreignKey:ScopeID" json:"scopeapplicableofferings,omitempty"`
+	// Back-relation: ScopeApplicableProperties records that reference this via scope_id.
+	ScopeApplicableProperties []ScopeApplicableProperties `gorm:"foreignKey:ScopeID" json:"scopeapplicableproperties,omitempty"`
+	// Back-relation: ScopeApplicableUnits records that reference this via scope_id.
+	ScopeApplicableUnits []ScopeApplicableUnits `gorm:"foreignKey:ScopeID" json:"scopeapplicableunits,omitempty"`
 }
 
 func (*Scope) TableName() string { return "promocode.scopes" }
 
-// Join table for the many-to-many relation Scope.applicable_resources ↔ Resource.
-type ScopeApplicableResources struct {
+// Join table for the many-to-many relation Scope.applicable_properties ↔ Property.
+type ScopeApplicableProperties struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Foreign key to Scope.
-	ScopeID string `gorm:"column:scope_id;not null;uniqueIndex:idx_scope_applicable_resources_scope_id_resource_id,priority:1" json:"scope_id" validate:"required"`
+	ScopeID string `gorm:"column:scope_id;not null;uniqueIndex:idx_scope_applicable_properties_scope_id_property_id,priority:1" json:"scope_id" validate:"required"`
 	Scope   *Scope `gorm:"foreignKey:ScopeID;constraint:OnDelete:CASCADE" json:"scope,omitempty"`
-	// Foreign key to Resource.
-	ResourceID string `gorm:"column:resource_id;not null;uniqueIndex:idx_scope_applicable_resources_scope_id_resource_id,priority:2;index:idx_scope_applicable_resources_resource_id" json:"resource_id" validate:"required"`
+	// Foreign key to Property.
+	PropertyID string `gorm:"column:property_id;not null;uniqueIndex:idx_scope_applicable_properties_scope_id_property_id,priority:2;index:idx_scope_applicable_properties_property_id" json:"property_id" validate:"required"`
 }
 
-func (*ScopeApplicableResources) TableName() string { return "promocode.scope_applicable_resources" }
+func (*ScopeApplicableProperties) TableName() string { return "promocode.scope_applicable_properties" }
 
-// Join table for the many-to-many relation Scope.applicable_offerings ↔ Offering.
-type ScopeApplicableOfferings struct {
+// Join table for the many-to-many relation Scope.applicable_units ↔ Unit.
+type ScopeApplicableUnits struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// Foreign key to Scope.
-	ScopeID string `gorm:"column:scope_id;not null;uniqueIndex:idx_scope_applicable_offerings_scope_id_offering_id,priority:1" json:"scope_id" validate:"required"`
+	ScopeID string `gorm:"column:scope_id;not null;uniqueIndex:idx_scope_applicable_units_scope_id_unit_id,priority:1" json:"scope_id" validate:"required"`
 	Scope   *Scope `gorm:"foreignKey:ScopeID;constraint:OnDelete:CASCADE" json:"scope,omitempty"`
-	// Foreign key to Offering.
-	OfferingID string `gorm:"column:offering_id;not null;uniqueIndex:idx_scope_applicable_offerings_scope_id_offering_id,priority:2;index:idx_scope_applicable_offerings_offering_id" json:"offering_id" validate:"required"`
-	// Full resource name of the referenced Offering, capturing the parent hierarchy the offering_id id alone omits.
-	OfferingName string `gorm:"column:offering_name;not null" json:"offering_name" validate:"required"`
+	// Foreign key to Unit.
+	UnitID string `gorm:"column:unit_id;not null;uniqueIndex:idx_scope_applicable_units_scope_id_unit_id,priority:2;index:idx_scope_applicable_units_unit_id" json:"unit_id" validate:"required"`
+	// Full resource name of the referenced Unit, capturing the parent hierarchy the unit_id id alone omits.
+	UnitName string `gorm:"column:unit_name;not null" json:"unit_name" validate:"required"`
 }
 
-func (*ScopeApplicableOfferings) TableName() string { return "promocode.scope_applicable_offerings" }
+func (*ScopeApplicableUnits) TableName() string { return "promocode.scope_applicable_units" }

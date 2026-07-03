@@ -5,7 +5,7 @@
 // source: freebusy/shared/v1/enums.proto
 //
 // database: freebusy
-// schemas:  resource
+// schemas:  property, shared
 //
 // orm — https://github.com/the-protobuf-project/orm
 
@@ -19,6 +19,29 @@ enum BookingMode {
 
   /// Maps the enum to the "booking_mode" type in the database.
   @@map("booking_mode")
-  /// Maps the enum to the "resource" schema in the database.
-  @@schema("resource")
+  /// Maps the enum to the "property" schema in the database.
+  @@schema("property")
+}
+
+/// Kind of media asset a Media reference points at. Documents (PDFs, house rules, fact sheets) are just media with type DOCUMENT — they are not a separate type.
+enum MediaType {
+  /// A photo (e.g. a room or property showcase image).
+  IMAGE
+
+  /// A video clip.
+  VIDEO
+
+  /// A document such as a PDF fact sheet, policy, or house rules.
+  DOCUMENT
+
+  /// A floor plan diagram.
+  FLOORPLAN
+
+  /// A 360°/virtual-tour asset.
+  VIRTUAL_TOUR
+
+  /// Maps the enum to the "media_type" type in the database.
+  @@map("media_type")
+  /// Maps the enum to the "shared" schema in the database.
+  @@schema("shared")
 }

@@ -2,14 +2,14 @@
 // versions:
 // 	protoc-gen-orm 1.2.0
 // 	protoc (unknown)
-// source: freebusy/resource/v1/resource.proto
+// source: freebusy/property/v1/property.proto
 //
 // database: freebusy
-// schema:   resource
+// schema:   property
 //
 // orm — https://github.com/the-protobuf-project/orm
 
-package resource
+package property
 
 import (
 	"context"
@@ -19,7 +19,7 @@ import (
 )
 
 // RateOverrideStore provides typed CRUD access to RateOverride records.
-// A price override for a span of dates and/or specific weekdays, layered over an offering's base `price`. The price is still interpreted per the offering's pricing_unit (per night, per booking, per person).
+// A price override for a span of dates and/or specific weekdays, layered over a unit's base `price`. The price is still interpreted per the unit's pricing_unit (per night, per booking, per person).
 type RateOverrideStore struct{ DB *gorm.DB }
 
 // Compile-time proof that RateOverrideStore satisfies the generic gormx.Store, so the
@@ -76,10 +76,10 @@ func (s *RateOverrideStore) DeleteByID(ctx context.Context, id string) error {
 	return s.DB.WithContext(ctx).Delete(&RateOverride{}, "id = ?", id).Error
 }
 
-// ListByOfferingID returns the RateOverride records whose offering_id matches id, with opts applied.
-func (s *RateOverrideStore) ListByOfferingID(ctx context.Context, id string, opts gormx.ListOptions) ([]RateOverride, error) {
+// ListByUnitID returns the RateOverride records whose unit_id matches id, with opts applied.
+func (s *RateOverrideStore) ListByUnitID(ctx context.Context, id string, opts gormx.ListOptions) ([]RateOverride, error) {
 	var out []RateOverride
-	q := opts.Apply(s.DB.WithContext(ctx).Where("offering_id = ?", id))
+	q := opts.Apply(s.DB.WithContext(ctx).Where("unit_id = ?", id))
 	if err := q.Find(&out).Error; err != nil {
 		return nil, err
 	}

@@ -19,7 +19,7 @@ import (
 )
 
 // RecurringRuleStore provides typed CRUD access to RecurringRule records.
-// A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
+// A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the unit's timezone.
 type RecurringRuleStore struct{ DB *gorm.DB }
 
 // Compile-time proof that RecurringRuleStore satisfies the generic gormx.Store, so the

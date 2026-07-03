@@ -44,9 +44,6 @@ model User {
   /// Back-relation: Booking records that reference this model via customer.
   resource Booking[]
 
-  /// Back-relation: MembershipSummary records that reference this model via user_id.
-  membershipSummaries MembershipSummary[]
-
   /// Back-relation: Member records that reference this model via user.
   members Member[] @relation("MemberUser")
 
@@ -58,39 +55,6 @@ model User {
 
   /// Maps the model to the "users" table in the database.
   @@map("users")
-  /// Maps the model to the "identity" schema in the database.
-  @@schema("identity")
-}
-
-/// A compact view of an organisation the user belongs to.
-model MembershipSummary {
-  /// Unique identifier for the record.
-  id String @id @default(ulid()) @map("id")
-
-  /// The organisation. Format: organisations/{organisation}
-  organisationID String? @map("organisation")
-
-  /// Relation to Organisation via organisation.
-  organisation Organisation? @relation(fields: [organisationID], references: [id])
-
-  /// Cached display name of the organisation.
-  orgDisplayName String? @map("org_display_name")
-
-  /// The user's role in the organisation (an OrganisationRole value name).
-  role String? @map("role")
-
-  /// Foreign key to User.
-  userID String @map("user_id")
-
-  /// Relation to User via user_id.
-  user User @relation(fields: [userID], references: [id], onDelete: Cascade)
-
-  /// Composite index on [organisation].
-  @@index([organisationID])
-  /// Composite index on [user_id].
-  @@index([userID])
-  /// Maps the model to the "membership_summaries" table in the database.
-  @@map("membership_summaries")
   /// Maps the model to the "identity" schema in the database.
   @@schema("identity")
 }

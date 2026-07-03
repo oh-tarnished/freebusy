@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 4 | 1 |
+| 5 | 1 |
 
 ## Entity relationships
 
@@ -18,6 +18,11 @@ erDiagram
     }
     DateRange {
         string id PK
+    }
+    Media {
+        string id PK
+        string property_id FK
+        string unit_id FK
     }
     PriceComponent {
         string id PK
@@ -33,6 +38,14 @@ erDiagram
     Money {
         string externalStub PK
     }
+    Property {
+        string externalStub PK
+    }
+    Unit {
+        string externalStub PK
+    }
+    Media }o--|| Property : "property_id"
+    Media }o--|| Unit : "unit_id"
     PriceComponent }o--|| Booking : "booking_id"
     PriceComponent }o--|| Money : "amount_id"
 ```
@@ -72,6 +85,23 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `display_name` | `VARCHAR(255)` | nullable |
 | `booking_id` | `CHAR(26)` | not null |
 | `amount_id` | `CHAR(26)` | nullable |
+
+### `Media` → `medias`
+
+A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `uri` | `VARCHAR(255)` | not null |
+| `type` | `MediaType` | not null |
+| `title` | `VARCHAR(255)` | nullable |
+| `description` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `sort_order` | `INTEGER` | nullable |
+| `primary` | `BOOLEAN` | nullable |
+| `property_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 
 ### `DateRange` → `date_ranges`
 

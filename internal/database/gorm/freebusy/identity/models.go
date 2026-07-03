@@ -37,25 +37,6 @@ type User struct {
 	UpdateTime time.Time `gorm:"column:update_time;type:timestamptz;not null;autoUpdateTime" json:"update_time"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
-	// Back-relation: MembershipSummary records that reference this via user_id.
-	MembershipSummaries []MembershipSummary `gorm:"foreignKey:UserID" json:"membershipsummaries,omitempty"`
 }
 
 func (*User) TableName() string { return "identity.users" }
-
-// A compact view of an organisation the user belongs to.
-type MembershipSummary struct {
-	// Unique identifier for the record.
-	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
-	// The organisation. Format: organisations/{organisation}
-	OrganisationID *string `gorm:"column:organisation;index:idx_membership_summaries_organisation" json:"organisation,omitempty"`
-	// Cached display name of the organisation.
-	OrgDisplayName *string `gorm:"column:org_display_name" json:"org_display_name,omitempty"`
-	// The user's role in the organisation (an OrganisationRole value name).
-	Role *string `gorm:"column:role" json:"role,omitempty"`
-	// Foreign key to User.
-	UserID string `gorm:"column:user_id;not null;index:idx_membership_summaries_user_id" json:"user_id" validate:"required"`
-	User   *User  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"user,omitempty"`
-}
-
-func (*MembershipSummary) TableName() string { return "identity.membership_summaries" }

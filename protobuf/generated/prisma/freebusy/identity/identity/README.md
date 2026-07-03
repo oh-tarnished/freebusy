@@ -6,26 +6,16 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 2 | 0 |
+| 1 | 0 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
-    MembershipSummary {
-        string id PK
-        string organisation FK
-        string user_id FK
-    }
     User {
         string id PK
     }
-    Organisation {
-        string externalStub PK
-    }
-    MembershipSummary }o--|| Organisation : "organisation"
-    MembershipSummary }o--|| User : "user_id"
 ```
 
 Schema file: [`identity.postgres.prisma`](./identity.postgres.prisma)
@@ -46,15 +36,3 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
-
-### `MembershipSummary` → `membership_summaries`
-
-A compact view of an organisation the user belongs to.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `organisation` | `CHAR(26)` | nullable |
-| `org_display_name` | `VARCHAR(255)` | nullable |
-| `role` | `VARCHAR(255)` | nullable |
-| `user_id` | `CHAR(26)` | not null |

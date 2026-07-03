@@ -19,7 +19,7 @@ import (
 )
 
 // AvailabilityExceptionStore provides typed CRUD access to AvailabilityException records.
-// An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
+// An override of a unit's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 type AvailabilityExceptionStore struct{ DB *gorm.DB }
 
 // Compile-time proof that AvailabilityExceptionStore satisfies the generic gormx.Store, so the
@@ -87,10 +87,20 @@ func (s *AvailabilityExceptionStore) GetByName(ctx context.Context, v string) (*
 	return &m, nil
 }
 
-// ListByResourceID returns the AvailabilityException records whose resource_id matches id, with opts applied.
-func (s *AvailabilityExceptionStore) ListByResourceID(ctx context.Context, id string, opts gormx.ListOptions) ([]AvailabilityException, error) {
+// ListByPropertyID returns the AvailabilityException records whose property_id matches id, with opts applied.
+func (s *AvailabilityExceptionStore) ListByPropertyID(ctx context.Context, id string, opts gormx.ListOptions) ([]AvailabilityException, error) {
 	var out []AvailabilityException
-	q := opts.Apply(s.DB.WithContext(ctx).Where("resource_id = ?", id))
+	q := opts.Apply(s.DB.WithContext(ctx).Where("property_id = ?", id))
+	if err := q.Find(&out).Error; err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ListByUnitID returns the AvailabilityException records whose unit_id matches id, with opts applied.
+func (s *AvailabilityExceptionStore) ListByUnitID(ctx context.Context, id string, opts gormx.ListOptions) ([]AvailabilityException, error) {
+	var out []AvailabilityException
+	q := opts.Apply(s.DB.WithContext(ctx).Where("unit_id = ?", id))
 	if err := q.Find(&out).Error; err != nil {
 		return nil, err
 	}

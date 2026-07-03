@@ -39,13 +39,13 @@ const (
 	AvailabilityExceptionSpanCaseDateRange AvailabilityExceptionSpanCase = "DATE_RANGE"
 )
 
-// An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
+// An override of a unit's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 type AvailabilityException struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
-	// The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception}
+	// The exception name. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
-	// Whether this span closes the resource or adds extra availability.
+	// Whether this span closes the unit or adds extra availability.
 	Kind ExceptionKind `gorm:"column:kind;not null;default:'CLOSURE';check:chk_availability_exceptions_kind,kind IN ('CLOSURE','EXTRA_HOURS')" json:"kind" validate:"required"`
 	// Human-readable reason (e.g. "Public holiday").
 	Reason *string `gorm:"column:reason" json:"reason,omitempty"`
@@ -53,8 +53,10 @@ type AvailabilityException struct {
 	CreateTime time.Time `gorm:"column:create_time;type:timestamptz;not null;autoCreateTime" json:"create_time"`
 	// Discriminator: which span oneof member is set (null = none).
 	SpanCase *AvailabilityExceptionSpanCase `gorm:"column:span_case;check:chk_availability_exceptions_span_case,span_case IN ('WINDOW','DATE_RANGE')" json:"span_case,omitempty"`
-	// Parent reference to Resource (from the AIP resource pattern).
-	ResourceID string `gorm:"column:resource_id;not null;index:idx_availability_exceptions_resource_id" json:"resource_id" validate:"required"`
+	// Parent reference to Property (from the AIP resource pattern).
+	PropertyID string `gorm:"column:property_id;not null;index:idx_availability_exceptions_property_id" json:"property_id" validate:"required"`
+	// Parent reference to Unit (from the AIP resource pattern).
+	UnitID string `gorm:"column:unit_id;not null;index:idx_availability_exceptions_unit_id" json:"unit_id" validate:"required"`
 	// Foreign key to TimeWindow.
 	WindowID *string            `gorm:"column:window_id;index:idx_availability_exceptions_window_id" json:"window_id,omitempty"`
 	Window   *shared.TimeWindow `gorm:"foreignKey:WindowID;constraint:OnDelete:SET NULL" json:"window,omitempty"`
@@ -67,14 +69,16 @@ type AvailabilityException struct {
 
 func (*AvailabilityException) TableName() string { return "schedule.availability_exceptions" }
 
-// Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+// Aggregate read view of a unit's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per unit.
 type Schedule struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
-	// The schedule name. Format: resources/{resource}/schedule
+	// The schedule name. Format: properties/{property}/units/{unit}/schedule
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update.
 	Etag *string `gorm:"column:etag" json:"etag,omitempty"`
+	// Parent reference to Property (from the AIP resource pattern).
+	PropertyID string `gorm:"column:property_id;not null;index:idx_resource_property_id" json:"property_id" validate:"required"`
 	// Foreign key to BufferSettings.
 	BuffersID *string         `gorm:"column:buffers_id;index:idx_resource_buffers_id" json:"buffers_id,omitempty"`
 	Buffers   *BufferSettings `gorm:"foreignKey:BuffersID;constraint:OnDelete:SET NULL" json:"buffers,omitempty"`
@@ -92,7 +96,7 @@ type Schedule struct {
 
 func (*Schedule) TableName() string { return "schedule.resource" }
 
-// A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
+// A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the unit's timezone.
 type RecurringRule struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
@@ -129,7 +133,7 @@ type BufferSettings struct {
 
 func (*BufferSettings) TableName() string { return "schedule.buffer_settings" }
 
-// Stay rules that affect bookability for NIGHTLY resources.
+// Stay rules that affect bookability for NIGHTLY units.
 type StayConstraints struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`

@@ -4,7 +4,7 @@
 // 	protoc (unknown)
 //
 // database: freebusy
-// schemas:  booking, identity, organisation, promocode, resource, schedule, shared, common
+// schemas:  booking, channel, identity, organisation, promocode, property, schedule, shared, common
 //
 // Connection URLs live in freebusy.config.ts (Prisma 7 convention).
 //
@@ -12,7 +12,7 @@
 
 datasource freebusy {
   provider = "postgresql"
-  schemas  = ["booking", "identity", "organisation", "promocode", "resource", "schedule", "shared", "common"]
+  schemas  = ["booking", "channel", "identity", "organisation", "promocode", "property", "schedule", "shared", "common"]
 }
 
 generator client {

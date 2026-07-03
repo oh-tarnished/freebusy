@@ -19,7 +19,7 @@ import (
 )
 
 // ScheduleStore provides typed CRUD access to Schedule records.
-// Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+// Aggregate read view of a unit's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per unit.
 type ScheduleStore struct{ DB *gorm.DB }
 
 // Compile-time proof that ScheduleStore satisfies the generic gormx.Store, so the
@@ -83,6 +83,16 @@ func (s *ScheduleStore) GetByName(ctx context.Context, v string) (*Schedule, err
 		return nil, err
 	}
 	return &m, nil
+}
+
+// ListByPropertyID returns the Schedule records whose property_id matches id, with opts applied.
+func (s *ScheduleStore) ListByPropertyID(ctx context.Context, id string, opts gormx.ListOptions) ([]Schedule, error) {
+	var out []Schedule
+	q := opts.Apply(s.DB.WithContext(ctx).Where("property_id = ?", id))
+	if err := q.Find(&out).Error; err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 // ListByBuffersID returns the Schedule records whose buffers_id matches id, with opts applied.

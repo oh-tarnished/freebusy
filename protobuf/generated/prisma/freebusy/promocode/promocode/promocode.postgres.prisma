@@ -88,6 +88,9 @@ model PromoCode {
   /// Back-relation: Redemption records that reference this model via promo_code_id.
   redemptions Redemption[]
 
+  /// Back-relation: UnitApplicablePromoCodes records that reference this model via promo_code_id.
+  unitApplicablePromoCodes UnitApplicablePromoCodes[]
+
   /// Composite index on [discount_id].
   @@index([discountID])
   /// Composite index on [window_id].
@@ -233,11 +236,11 @@ model Scope {
   /// Back-relation: PromoCode records that reference this model via scope_id.
   resource PromoCode[]
 
-  /// Back-relation: ScopeApplicableResources records that reference this model via scope_id.
-  scopeApplicableResources ScopeApplicableResources[]
+  /// Back-relation: ScopeApplicableProperties records that reference this model via scope_id.
+  scopeApplicableProperties ScopeApplicableProperties[]
 
-  /// Back-relation: ScopeApplicableOfferings records that reference this model via scope_id.
-  scopeApplicableOfferings ScopeApplicableOfferings[]
+  /// Back-relation: ScopeApplicableUnits records that reference this model via scope_id.
+  scopeApplicableUnits ScopeApplicableUnits[]
 
   /// Composite index on [min_subtotal_id].
   @@index([minSubtotalID])
@@ -247,8 +250,8 @@ model Scope {
   @@schema("promocode")
 }
 
-/// Join table for the many-to-many relation Scope.applicable_resources ↔ Resource.
-model ScopeApplicableResources {
+/// Join table for the many-to-many relation Scope.applicable_properties ↔ Property.
+model ScopeApplicableProperties {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
 
@@ -258,24 +261,24 @@ model ScopeApplicableResources {
   /// Relation to Scope via scope_id.
   scope Scope @relation(fields: [scopeID], references: [id], onDelete: Cascade)
 
-  /// Foreign key to Resource.
-  resourceID String @map("resource_id")
+  /// Foreign key to Property.
+  propertyID String @map("property_id")
 
-  /// Relation to Resource via resource_id.
-  resource Resource @relation(fields: [resourceID], references: [id], onDelete: Cascade)
+  /// Relation to Property via property_id.
+  property Property @relation(fields: [propertyID], references: [id], onDelete: Cascade)
 
-  /// Unique constraint on [scope_id, resource_id].
-  @@unique([scopeID, resourceID])
-  /// Composite index on [resource_id].
-  @@index([resourceID])
-  /// Maps the model to the "scope_applicable_resources" table in the database.
-  @@map("scope_applicable_resources")
+  /// Unique constraint on [scope_id, property_id].
+  @@unique([scopeID, propertyID])
+  /// Composite index on [property_id].
+  @@index([propertyID])
+  /// Maps the model to the "scope_applicable_properties" table in the database.
+  @@map("scope_applicable_properties")
   /// Maps the model to the "promocode" schema in the database.
   @@schema("promocode")
 }
 
-/// Join table for the many-to-many relation Scope.applicable_offerings ↔ Offering.
-model ScopeApplicableOfferings {
+/// Join table for the many-to-many relation Scope.applicable_units ↔ Unit.
+model ScopeApplicableUnits {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
 
@@ -285,21 +288,21 @@ model ScopeApplicableOfferings {
   /// Relation to Scope via scope_id.
   scope Scope @relation(fields: [scopeID], references: [id], onDelete: Cascade)
 
-  /// Foreign key to Offering.
-  offeringID String @map("offering_id")
+  /// Foreign key to Unit.
+  unitID String @map("unit_id")
 
-  /// Relation to Offering via offering_id.
-  offering Offering @relation(fields: [offeringID], references: [id], onDelete: Cascade)
+  /// Relation to Unit via unit_id.
+  unit Unit @relation(fields: [unitID], references: [id], onDelete: Cascade)
 
-  /// Full resource name of the referenced Offering, capturing the parent hierarchy the offering_id id alone omits.
-  offeringName String @map("offering_name")
+  /// Full resource name of the referenced Unit, capturing the parent hierarchy the unit_id id alone omits.
+  unitName String @map("unit_name")
 
-  /// Unique constraint on [scope_id, offering_id].
-  @@unique([scopeID, offeringID])
-  /// Composite index on [offering_id].
-  @@index([offeringID])
-  /// Maps the model to the "scope_applicable_offerings" table in the database.
-  @@map("scope_applicable_offerings")
+  /// Unique constraint on [scope_id, unit_id].
+  @@unique([scopeID, unitID])
+  /// Composite index on [unit_id].
+  @@index([unitID])
+  /// Maps the model to the "scope_applicable_units" table in the database.
+  @@map("scope_applicable_units")
   /// Maps the model to the "promocode" schema in the database.
   @@schema("promocode")
 }

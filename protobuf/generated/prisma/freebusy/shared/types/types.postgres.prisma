@@ -111,6 +111,54 @@ model PriceComponent {
   @@schema("shared")
 }
 
+/// A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
+model Media {
+  /// Unique identifier for the record.
+  id String @id @default(ulid()) @map("id")
+
+  /// Publicly reachable URL of the asset (an S3/CDN link or any HTTPS URL).
+  uri String @map("uri")
+
+  /// What kind of asset this is; DOCUMENT covers PDFs/policies/house rules.
+  type MediaType @default(IMAGE) @map("type")
+
+  /// Short human-readable caption/title for display.
+  title String? @map("title")
+
+  /// Longer description or alt text.
+  description String? @map("description")
+
+  /// MIME type of the asset (e.g. "image/jpeg", "application/pdf"), when known.
+  mimeType String? @map("mime_type")
+
+  /// Ordering hint within a gallery; lower sorts first.
+  sortOrder Int? @map("sort_order")
+
+  /// Whether this is the primary/hero asset of its gallery.
+  primary Boolean? @map("primary")
+
+  /// Foreign key to Property.
+  propertyID String @map("property_id")
+
+  /// Relation to Property via property_id.
+  property Property @relation(fields: [propertyID], references: [id], onDelete: Cascade)
+
+  /// Foreign key to Unit.
+  unitID String @map("unit_id")
+
+  /// Relation to Unit via unit_id.
+  unit Unit @relation(fields: [unitID], references: [id], onDelete: Cascade)
+
+  /// Composite index on [property_id].
+  @@index([propertyID])
+  /// Composite index on [unit_id].
+  @@index([unitID])
+  /// Maps the model to the "medias" table in the database.
+  @@map("medias")
+  /// Maps the model to the "shared" schema in the database.
+  @@schema("shared")
+}
+
 /// A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
 model DateRange {
   /// Unique identifier for the record.

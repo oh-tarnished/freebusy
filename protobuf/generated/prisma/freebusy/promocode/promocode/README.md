@@ -38,15 +38,15 @@ erDiagram
         string id PK
         string min_subtotal_id FK
     }
-    ScopeApplicableOfferings {
+    ScopeApplicableProperties {
         string id PK
         string scope_id FK
-        string offering_id FK
+        string property_id FK
     }
-    ScopeApplicableResources {
+    ScopeApplicableUnits {
         string id PK
         string scope_id FK
-        string resource_id FK
+        string unit_id FK
     }
     UsageLimits {
         string id PK
@@ -57,10 +57,10 @@ erDiagram
     Money {
         string externalStub PK
     }
-    Offering {
+    Property {
         string externalStub PK
     }
-    Resource {
+    Unit {
         string externalStub PK
     }
     User {
@@ -76,10 +76,10 @@ erDiagram
     Redemption }o--|| PromoCode : "promo_code_id"
     Redemption }o--|| Money : "amount_applied_id"
     Scope }o--|| Money : "min_subtotal_id"
-    ScopeApplicableOfferings }o--|| Scope : "scope_id"
-    ScopeApplicableOfferings }o--|| Offering : "offering_id"
-    ScopeApplicableResources }o--|| Scope : "scope_id"
-    ScopeApplicableResources }o--|| Resource : "resource_id"
+    ScopeApplicableProperties }o--|| Scope : "scope_id"
+    ScopeApplicableProperties }o--|| Property : "property_id"
+    ScopeApplicableUnits }o--|| Scope : "scope_id"
+    ScopeApplicableUnits }o--|| Unit : "unit_id"
 ```
 
 Schema file: [`promocode.postgres.prisma`](./promocode.postgres.prisma)
@@ -160,26 +160,26 @@ Scope restricts which bookings a code applies to. Nested value object → belong
 | `id` | `CHAR(26)` | not null |
 | `min_subtotal_id` | `CHAR(26)` | nullable |
 
-### `ScopeApplicableResources` → `scope_applicable_resources`
+### `ScopeApplicableProperties` → `scope_applicable_properties`
 
-Join table for the many-to-many relation Scope.applicable_resources ↔ Resource.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `scope_id` | `CHAR(26)` | not null |
-| `resource_id` | `CHAR(26)` | not null |
-
-### `ScopeApplicableOfferings` → `scope_applicable_offerings`
-
-Join table for the many-to-many relation Scope.applicable_offerings ↔ Offering.
+Join table for the many-to-many relation Scope.applicable_properties ↔ Property.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `scope_id` | `CHAR(26)` | not null |
-| `offering_id` | `CHAR(26)` | not null |
-| `offering_name` | `TEXT` | not null |
+| `property_id` | `CHAR(26)` | not null |
+
+### `ScopeApplicableUnits` → `scope_applicable_units`
+
+Join table for the many-to-many relation Scope.applicable_units ↔ Unit.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `scope_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
+| `unit_name` | `TEXT` | not null |
 
 ### Enums
 

@@ -19,7 +19,7 @@ import (
 )
 
 // BookingStore provides typed CRUD access to Booking records.
-// A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
+// A reservation against a unit. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 type BookingStore struct{ DB *gorm.DB }
 
 // Compile-time proof that BookingStore satisfies the generic gormx.Store, so the
@@ -85,20 +85,10 @@ func (s *BookingStore) GetByName(ctx context.Context, v string) (*Booking, error
 	return &m, nil
 }
 
-// ListByResourceID returns the Booking records whose resource matches id, with opts applied.
-func (s *BookingStore) ListByResourceID(ctx context.Context, id string, opts gormx.ListOptions) ([]Booking, error) {
+// ListByUnitID returns the Booking records whose unit matches id, with opts applied.
+func (s *BookingStore) ListByUnitID(ctx context.Context, id string, opts gormx.ListOptions) ([]Booking, error) {
 	var out []Booking
-	q := opts.Apply(s.DB.WithContext(ctx).Where("resource = ?", id))
-	if err := q.Find(&out).Error; err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ListByOfferingID returns the Booking records whose offering matches id, with opts applied.
-func (s *BookingStore) ListByOfferingID(ctx context.Context, id string, opts gormx.ListOptions) ([]Booking, error) {
-	var out []Booking
-	q := opts.Apply(s.DB.WithContext(ctx).Where("offering = ?", id))
+	q := opts.Apply(s.DB.WithContext(ctx).Where("unit = ?", id))
 	if err := q.Find(&out).Error; err != nil {
 		return nil, err
 	}

@@ -2,14 +2,14 @@
 // versions:
 // 	protoc-gen-orm 1.2.0
 // 	protoc (unknown)
-// source: freebusy/resource/v1/resource.proto
+// source: freebusy/property/v1/property.proto
 //
 // database: freebusy
-// schema:   resource
+// schema:   property
 //
 // orm — https://github.com/the-protobuf-project/orm
 
-package resource
+package property
 
 import (
 	"context"
@@ -19,7 +19,7 @@ import (
 )
 
 // FeeStore provides typed CRUD access to Fee records.
-// A fee added on top of an offering's base subtotal. Exactly one of `amount` or `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
+// A fee added on top of a unit's base subtotal. Exactly one of `amount` or `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
 type FeeStore struct{ DB *gorm.DB }
 
 // Compile-time proof that FeeStore satisfies the generic gormx.Store, so the
@@ -76,10 +76,10 @@ func (s *FeeStore) DeleteByID(ctx context.Context, id string) error {
 	return s.DB.WithContext(ctx).Delete(&Fee{}, "id = ?", id).Error
 }
 
-// ListByOfferingID returns the Fee records whose offering_id matches id, with opts applied.
-func (s *FeeStore) ListByOfferingID(ctx context.Context, id string, opts gormx.ListOptions) ([]Fee, error) {
+// ListByUnitID returns the Fee records whose unit_id matches id, with opts applied.
+func (s *FeeStore) ListByUnitID(ctx context.Context, id string, opts gormx.ListOptions) ([]Fee, error) {
 	var out []Fee
-	q := opts.Apply(s.DB.WithContext(ctx).Where("offering_id = ?", id))
+	q := opts.Apply(s.DB.WithContext(ctx).Where("unit_id = ?", id))
 	if err := q.Find(&out).Error; err != nil {
 		return nil, err
 	}

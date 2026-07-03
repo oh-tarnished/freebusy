@@ -55,16 +55,14 @@ const (
 	CancelReasonOther CancelReason = "OTHER"
 )
 
-// A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
+// A reservation against a unit. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 type Booking struct {
 	// Unique identifier for the record.
 	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
 	// The booking name. Format: bookings/{booking}
 	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
-	// The resource being booked. Format: resources/{resource}
-	ResourceID string `gorm:"column:resource;not null;index:idx_resource_resource" json:"resource" validate:"required"`
-	// The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}
-	OfferingID *string `gorm:"column:offering;index:idx_resource_offering" json:"offering,omitempty"`
+	// The unit being booked. Format: properties/{property}/units/{unit}
+	UnitID string `gorm:"column:unit;not null;index:idx_resource_unit" json:"unit" validate:"required"`
 	// The user the booking is for. Format: users/{user}
 	CustomerID *string `gorm:"column:customer;index:idx_resource_customer" json:"customer,omitempty"`
 	// Number of units / party size reserved. Defaults to 1.

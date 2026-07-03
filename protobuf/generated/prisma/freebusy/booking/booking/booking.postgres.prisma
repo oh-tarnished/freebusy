@@ -9,7 +9,7 @@
 //
 // orm — https://github.com/the-protobuf-project/orm
 
-/// A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
+/// A reservation against a unit. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 model Booking {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
@@ -17,17 +17,11 @@ model Booking {
   /// The booking name. Format: bookings/{booking}
   name String @unique @map("name")
 
-  /// The resource being booked. Format: resources/{resource}
-  resourceID String @map("resource")
+  /// The unit being booked. Format: properties/{property}/units/{unit}
+  unitID String @map("unit")
 
-  /// Relation to Resource via resource.
-  resource Resource @relation(fields: [resourceID], references: [id])
-
-  /// The offering being booked, when applicable. Format: resources/{resource}/offerings/{offering}
-  offeringID String? @map("offering")
-
-  /// Relation to Offering via offering.
-  offering Offering? @relation(fields: [offeringID], references: [id])
+  /// Relation to Unit via unit.
+  unit Unit @relation(fields: [unitID], references: [id])
 
   /// The user the booking is for. Format: users/{user}
   customerID String? @map("customer")
@@ -125,10 +119,8 @@ model Booking {
   /// Back-relation: PriceComponent records that reference this model via booking_id.
   priceComponents PriceComponent[]
 
-  /// Composite index on [resource].
-  @@index([resourceID])
-  /// Composite index on [offering].
-  @@index([offeringID])
+  /// Composite index on [unit].
+  @@index([unitID])
   /// Composite index on [customer].
   @@index([customerID])
   /// Composite index on [promo_code].

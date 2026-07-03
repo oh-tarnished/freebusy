@@ -4,7 +4,7 @@
 // 	protoc (unknown)
 //
 // database: freebusy
-// schemas:  booking, identity, organisation, promocode, resource, schedule, shared, common
+// schemas:  booking, channel, identity, organisation, promocode, property, schedule, shared, common
 //
 // Migration aggregator: every model in one factory Registry.
 //
@@ -18,11 +18,12 @@ package freebusy
 
 import (
 	booking "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
+	channel "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/channel"
 	common "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	identity "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/identity"
 	organisation "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/organisation"
 	promocode "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
-	resource "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/resource"
+	property "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	schedule "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	shared "github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 
@@ -41,10 +42,11 @@ type Migrator interface {
 // EnsureSchemas can create them before AutoMigrate builds schema-qualified tables.
 var schemas = []string{
 	"booking",
+	"channel",
 	"identity",
 	"organisation",
 	"promocode",
-	"resource",
+	"property",
 	"schedule",
 	"shared",
 	"common",
@@ -103,8 +105,10 @@ func (*Registry) EnsureSchemas(db *gorm.DB) error {
 //	freebusy.Default.Register(&MyModel{})
 var Default = New().Register(
 	&booking.Booking{},
+	&channel.Channel{},
+	&channel.UnitMapping{},
+	&channel.ChannelSyncStatus{},
 	&identity.User{},
-	&identity.MembershipSummary{},
 	&organisation.Organisation{},
 	&organisation.Member{},
 	&promocode.PromoCode{},
@@ -113,15 +117,17 @@ var Default = New().Register(
 	&promocode.RedemptionWindow{},
 	&promocode.UsageLimits{},
 	&promocode.Scope{},
-	&promocode.ScopeApplicableResources{},
-	&promocode.ScopeApplicableOfferings{},
-	&resource.Resource{},
-	&resource.Offering{},
-	&resource.RateOverride{},
-	&resource.LosDiscount{},
-	&resource.Fee{},
-	&resource.Tax{},
-	&resource.ResourceOfferings{},
+	&promocode.ScopeApplicableProperties{},
+	&promocode.ScopeApplicableUnits{},
+	&property.Property{},
+	&property.Unit{},
+	&property.Policy{},
+	&property.RateOverride{},
+	&property.LosDiscount{},
+	&property.Fee{},
+	&property.Tax{},
+	&property.PropertyUnits{},
+	&property.UnitApplicablePromoCodes{},
 	&schedule.AvailabilityException{},
 	&schedule.Schedule{},
 	&schedule.RecurringRule{},
@@ -133,8 +139,10 @@ var Default = New().Register(
 	&shared.Contact{},
 	&shared.TimeWindow{},
 	&shared.PriceComponent{},
+	&shared.Media{},
 	&shared.DateRange{},
 	&common.Money{},
+	&common.PostalAddress{},
 )
 
 // Instrument installs the OpenTelemetry GORM plugin on db, so every query the

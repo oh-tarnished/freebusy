@@ -6,10 +6,11 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 0 | 1 |
+| 0 | 2 |
 
 Schema file: [`enums.postgres.prisma`](./enums.postgres.prisma)
 
 ### Enums
 
 - `BookingMode`: TIME_SLOT, NIGHTLY
+- `MediaType`: IMAGE, VIDEO, DOCUMENT, FLOORPLAN, VIRTUAL_TOUR

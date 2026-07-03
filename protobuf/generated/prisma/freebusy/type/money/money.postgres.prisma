@@ -44,8 +44,8 @@ model Money {
   /// Back-relation: Scope records that reference this model via min_subtotal_id.
   scopes Scope[]
 
-  /// Back-relation: Offering records that reference this model via price_id.
-  offerings Offering[]
+  /// Back-relation: Unit records that reference this model via price_id.
+  units2 Unit[]
 
   /// Back-relation: RateOverride records that reference this model via price_id.
   rateOverrides RateOverride[]

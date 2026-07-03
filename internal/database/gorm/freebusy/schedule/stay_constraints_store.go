@@ -19,7 +19,7 @@ import (
 )
 
 // StayConstraintsStore provides typed CRUD access to StayConstraints records.
-// Stay rules that affect bookability for NIGHTLY resources.
+// Stay rules that affect bookability for NIGHTLY units.
 type StayConstraintsStore struct{ DB *gorm.DB }
 
 // Compile-time proof that StayConstraintsStore satisfies the generic gormx.Store, so the

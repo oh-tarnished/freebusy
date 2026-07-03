@@ -2,14 +2,14 @@
 // versions:
 // 	protoc-gen-orm 1.2.0
 // 	protoc (unknown)
-// source: freebusy/resource/v1/resource.proto
+// source: freebusy/property/v1/property.proto
 //
 // database: freebusy
-// schema:   resource
+// schema:   property
 //
 // orm — https://github.com/the-protobuf-project/orm
 
-package resource
+package property
 
 import (
 	"context"
@@ -76,10 +76,10 @@ func (s *LosDiscountStore) DeleteByID(ctx context.Context, id string) error {
 	return s.DB.WithContext(ctx).Delete(&LosDiscount{}, "id = ?", id).Error
 }
 
-// ListByOfferingID returns the LosDiscount records whose offering_id matches id, with opts applied.
-func (s *LosDiscountStore) ListByOfferingID(ctx context.Context, id string, opts gormx.ListOptions) ([]LosDiscount, error) {
+// ListByUnitID returns the LosDiscount records whose unit_id matches id, with opts applied.
+func (s *LosDiscountStore) ListByUnitID(ctx context.Context, id string, opts gormx.ListOptions) ([]LosDiscount, error) {
 	var out []LosDiscount
-	q := opts.Apply(s.DB.WithContext(ctx).Where("offering_id = ?", id))
+	q := opts.Apply(s.DB.WithContext(ctx).Where("unit_id = ?", id))
 	if err := q.Find(&out).Error; err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-orm 1.2.0
 // 	protoc (unknown)
-// source: google/type/money.proto
+// source: google/type/money.proto, google/type/postal_address.proto
 //
 // database: freebusy
 // schema:   common

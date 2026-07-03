@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 33 | 15 |
+| 39 | 19 |
 
 ## Entity relationships
 
@@ -17,14 +17,14 @@ erDiagram
     direction LR
     AvailabilityException {
         string id PK
-        string resource_id FK
+        string property_id FK
+        string unit_id FK
         string window_id FK
         string date_range_id FK
     }
     Booking {
         string id PK
-        string resource FK
-        string offering FK
+        string unit FK
         string customer FK
         string promo_code FK
         string contact_id FK
@@ -40,6 +40,13 @@ erDiagram
     CancellationPolicy {
         string id PK
     }
+    Channel {
+        string id PK
+        string property FK
+    }
+    ChannelSyncStatus {
+        string id PK
+    }
     Contact {
         string id PK
     }
@@ -52,13 +59,18 @@ erDiagram
     }
     Fee {
         string id PK
-        string offering_id FK
+        string unit_id FK
         string amount_id FK
     }
     LosDiscount {
         string id PK
-        string offering_id FK
+        string unit_id FK
         string amount_off_id FK
+    }
+    Media {
+        string id PK
+        string property_id FK
+        string unit_id FK
     }
     Member {
         string id PK
@@ -66,20 +78,16 @@ erDiagram
         string inviter FK
         string organisation_id FK
     }
-    MembershipSummary {
-        string id PK
-        string organisation FK
-        string user_id FK
-    }
     Money {
         string id PK
     }
-    Offering {
-        string id PK
-        string resource_id FK
-        string price_id FK
-    }
     Organisation {
+        string id PK
+    }
+    Policy {
+        string id PK
+    }
+    PostalAddress {
         string id PK
     }
     PriceComponent {
@@ -94,9 +102,20 @@ erDiagram
         string limits_id FK
         string scope_id FK
     }
+    Property {
+        string id PK
+        string organisation FK
+        string address_id FK
+        string policy_id FK
+    }
+    PropertyUnits {
+        string id PK
+        string property_id FK
+        string unit_id FK
+    }
     RateOverride {
         string id PK
-        string offering_id FK
+        string unit_id FK
         string date_range_id FK
         string price_id FK
     }
@@ -118,16 +137,9 @@ erDiagram
         string id PK
         string cancellation_policy_id FK
     }
-    Resource {
-        string id PK
-    }
-    ResourceOfferings {
-        string id PK
-        string resource_id FK
-        string offering_id FK
-    }
     Schedule {
         string id PK
+        string property_id FK
         string buffers_id FK
         string stay_constraints_id FK
         string cancellation_policy_id FK
@@ -141,25 +153,40 @@ erDiagram
         string id PK
         string min_subtotal_id FK
     }
-    ScopeApplicableOfferings {
+    ScopeApplicableProperties {
         string id PK
         string scope_id FK
-        string offering_id FK
+        string property_id FK
     }
-    ScopeApplicableResources {
+    ScopeApplicableUnits {
         string id PK
         string scope_id FK
-        string resource_id FK
+        string unit_id FK
     }
     StayConstraints {
         string id PK
     }
     Tax {
         string id PK
-        string offering_id FK
+        string unit_id FK
     }
     TimeWindow {
         string id PK
+    }
+    Unit {
+        string id PK
+        string property_id FK
+        string price_id FK
+    }
+    UnitApplicablePromoCodes {
+        string id PK
+        string unit_id FK
+        string promo_code_id FK
+    }
+    UnitMapping {
+        string id PK
+        string unit FK
+        string channel_id FK
     }
     UsageLimits {
         string id PK
@@ -167,11 +194,11 @@ erDiagram
     User {
         string id PK
     }
-    AvailabilityException }o--|| Resource : "resource_id"
+    AvailabilityException }o--|| Property : "property_id"
+    AvailabilityException }o--|| Unit : "unit_id"
     AvailabilityException }o--|| TimeWindow : "window_id"
     AvailabilityException }o--|| DateRange : "date_range_id"
-    Booking }o--|| Resource : "resource"
-    Booking }o--|| Offering : "offering"
+    Booking }o--|| Unit : "unit"
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
@@ -180,25 +207,29 @@ erDiagram
     Booking }o--|| Money : "discount_id"
     Booking }o--|| Money : "total_id"
     Booking }o--|| Money : "refund_amount_id"
+    Channel }o--|| Property : "property"
     Discount }o--|| Money : "amount_off_id"
-    Fee }o--|| Offering : "offering_id"
+    Fee }o--|| Unit : "unit_id"
     Fee }o--|| Money : "amount_id"
-    LosDiscount }o--|| Offering : "offering_id"
+    LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
+    Media }o--|| Property : "property_id"
+    Media }o--|| Unit : "unit_id"
     Member }o--|| User : "user"
     Member }o--|| User : "inviter"
     Member }o--|| Organisation : "organisation_id"
-    MembershipSummary }o--|| Organisation : "organisation"
-    MembershipSummary }o--|| User : "user_id"
-    Offering }o--|| Resource : "resource_id"
-    Offering }o--|| Money : "price_id"
     PriceComponent }o--|| Booking : "booking_id"
     PriceComponent }o--|| Money : "amount_id"
     PromoCode }o--|| Discount : "discount_id"
     PromoCode }o--|| RedemptionWindow : "window_id"
     PromoCode }o--|| UsageLimits : "limits_id"
     PromoCode }o--|| Scope : "scope_id"
-    RateOverride }o--|| Offering : "offering_id"
+    Property }o--|| Organisation : "organisation"
+    Property }o--|| PostalAddress : "address_id"
+    Property }o--|| Policy : "policy_id"
+    PropertyUnits }o--|| Property : "property_id"
+    PropertyUnits }o--|| Unit : "unit_id"
+    RateOverride }o--|| Unit : "unit_id"
     RateOverride }o--|| DateRange : "date_range_id"
     RateOverride }o--|| Money : "price_id"
     RecurringRule }o--|| Schedule : "schedule_id"
@@ -207,19 +238,24 @@ erDiagram
     Redemption }o--|| PromoCode : "promo_code_id"
     Redemption }o--|| Money : "amount_applied_id"
     RefundTier }o--|| CancellationPolicy : "cancellation_policy_id"
-    ResourceOfferings }o--|| Resource : "resource_id"
-    ResourceOfferings }o--|| Offering : "offering_id"
+    Schedule }o--|| Property : "property_id"
     Schedule }o--|| BufferSettings : "buffers_id"
     Schedule }o--|| StayConstraints : "stay_constraints_id"
     Schedule }o--|| CancellationPolicy : "cancellation_policy_id"
     ScheduleExceptions }o--|| Schedule : "schedule_id"
     ScheduleExceptions }o--|| AvailabilityException : "availability_exception_id"
     Scope }o--|| Money : "min_subtotal_id"
-    ScopeApplicableOfferings }o--|| Scope : "scope_id"
-    ScopeApplicableOfferings }o--|| Offering : "offering_id"
-    ScopeApplicableResources }o--|| Scope : "scope_id"
-    ScopeApplicableResources }o--|| Resource : "resource_id"
-    Tax }o--|| Offering : "offering_id"
+    ScopeApplicableProperties }o--|| Scope : "scope_id"
+    ScopeApplicableProperties }o--|| Property : "property_id"
+    ScopeApplicableUnits }o--|| Scope : "scope_id"
+    ScopeApplicableUnits }o--|| Unit : "unit_id"
+    Tax }o--|| Unit : "unit_id"
+    Unit }o--|| Property : "property_id"
+    Unit }o--|| Money : "price_id"
+    UnitApplicablePromoCodes }o--|| Unit : "unit_id"
+    UnitApplicablePromoCodes }o--|| PromoCode : "promo_code_id"
+    UnitMapping }o--|| Unit : "unit"
+    UnitMapping }o--|| Channel : "channel_id"
 ```
 
 ## Output
@@ -236,14 +272,13 @@ erDiagram
 
 ### `Booking` → `resource`
 
-A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
+A reservation against a unit. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
-| `resource` | `CHAR(26)` | not null |
-| `offering` | `CHAR(26)` | nullable |
+| `unit` | `CHAR(26)` | not null |
 | `customer` | `CHAR(26)` | nullable |
 | `units` | `INTEGER` | nullable |
 | `assigned_unit` | `VARCHAR(255)` | nullable |
@@ -272,6 +307,64 @@ A reservation against a resource. The hold lifecycle lives here as states rather
 - `BookingState`: PENDING_HOLD, CONFIRMED, CANCELLED, EXPIRED, COMPLETED, NO_SHOW
 - `CancelReason`: REQUESTED_BY_CUSTOMER, REQUESTED_BY_OPERATOR, PAYMENT_FAILED, NO_SHOW, OTHER
 
+## Schema `channel`
+
+### `Channel` → `resource`
+
+A connection between one property and one distribution channel (OTA/GDS). It is the anchor for 2-way ARI: availability/rates/inventory are pushed out per mapped unit, and reservations made on the channel are pulled in as bookings. Credentials are never carried in the API — only an opaque handle to where they are stored.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `property` | `CHAR(26)` | not null |
+| `type` | `ChannelType` | not null |
+| `display_name` | `VARCHAR(255)` | nullable |
+| `external_property_id` | `VARCHAR(255)` | nullable |
+| `credential_ref` | `VARCHAR(255)` | nullable |
+| `state` | `ChannelState` | nullable |
+| `last_sync_time` | `TIMESTAMPTZ` | nullable |
+| `create_time` | `TIMESTAMPTZ` | not null |
+| `update_time` | `TIMESTAMPTZ` | not null |
+| `etag` | `VARCHAR(255)` | nullable |
+
+### `UnitMapping` → `unit_mappings`
+
+Maps a freebusy Unit to its counterpart on the channel. ARI for a unit only flows once a MAPPED mapping exists: the external room-type and rate-plan ids key the availability/rate/restriction push and resolve inbound reservations back to the right unit.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `unit` | `CHAR(26)` | not null |
+| `external_room_type_id` | `VARCHAR(255)` | not null |
+| `external_rate_plan_id` | `VARCHAR(255)` | nullable |
+| `state` | `MappingState` | nullable |
+| `create_time` | `TIMESTAMPTZ` | not null |
+| `update_time` | `TIMESTAMPTZ` | not null |
+| `etag` | `VARCHAR(255)` | nullable |
+| `channel_id` | `CHAR(26)` | not null |
+
+### `ChannelSyncStatus` → `sync_statuses`
+
+A rollup of a channel's sync health, modeled as a singleton sub-resource of the channel (one per channel) and read via GetChannelSyncStatus.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `state` | `ChannelState` | nullable |
+| `last_sync_time` | `TIMESTAMPTZ` | nullable |
+| `pending_count` | `INTEGER` | nullable |
+| `failed_count` | `INTEGER` | nullable |
+| `last_error` | `VARCHAR(255)` | nullable |
+
+### Enums
+
+- `ChannelType`: AGODA, BOOKING_COM, EXPEDIA, AIRBNB, MAKEMYTRIP, GOIBIBO, GDS, DIRECT
+- `ChannelState`: CONNECTED, DISABLED, ERROR
+- `MappingState`: MAPPED, UNMAPPED
+
 ## Schema `identity`
 
 ### `User` → `users`
@@ -291,23 +384,11 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
 
-### `MembershipSummary` → `membership_summaries`
-
-A compact view of an organisation the user belongs to.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `organisation` | `CHAR(26)` | nullable |
-| `org_display_name` | `VARCHAR(255)` | nullable |
-| `role` | `VARCHAR(255)` | nullable |
-| `user_id` | `CHAR(26)` | not null |
-
 ## Schema `organisation`
 
 ### `Organisation` → `resource`
 
-A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
+A chain: the hotel brand/company that owns one or more properties, and the unit of multi-tenancy. The shell enforces isolation with row-level security keyed off the caller's organisation. Each Property references the Organisation it belongs to; members here are the chain's administrators, not its guests (guests relate to a property only through bookings).
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -426,58 +507,58 @@ Scope restricts which bookings a code applies to. Nested value object → belong
 | `id` | `CHAR(26)` | not null |
 | `min_subtotal_id` | `CHAR(26)` | nullable |
 
-### `ScopeApplicableResources` → `scope_applicable_resources`
+### `ScopeApplicableProperties` → `scope_applicable_properties`
 
-Join table for the many-to-many relation Scope.applicable_resources ↔ Resource.
-
-| Column | Type | Null |
-| --- | --- | --- |
-| `id` | `CHAR(26)` | not null |
-| `scope_id` | `CHAR(26)` | not null |
-| `resource_id` | `CHAR(26)` | not null |
-
-### `ScopeApplicableOfferings` → `scope_applicable_offerings`
-
-Join table for the many-to-many relation Scope.applicable_offerings ↔ Offering.
+Join table for the many-to-many relation Scope.applicable_properties ↔ Property.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `scope_id` | `CHAR(26)` | not null |
-| `offering_id` | `CHAR(26)` | not null |
-| `offering_name` | `TEXT` | not null |
+| `property_id` | `CHAR(26)` | not null |
+
+### `ScopeApplicableUnits` → `scope_applicable_units`
+
+Join table for the many-to-many relation Scope.applicable_units ↔ Unit.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `scope_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
+| `unit_name` | `TEXT` | not null |
 
 ### Enums
 
 - `PromoCodeState`: ACTIVE, DISABLED, EXPIRED
 - `DiscountAmountCase`: PERCENT_OFF, AMOUNT_OFF
 
-## Schema `resource`
+## Schema `property`
 
-### `Resource` → `entity`
+### `Property` → `properties`
 
-A bookable thing: a provider, room, piece of equipment, or a unit type. A resource is a pool of `capacity` interchangeable units; the freebusy engine computes how many are free for a given window. Its booking_mode decides whether availability is produced as time slots or per-night counts.
+A hotel (or other lodging property): the guest-facing venue a chain operates. A Property belongs to an Organisation (the chain/brand) and carries the showcase media, address, and informational policies shown to guests. Its bookable inventory lives in child Units (room types); pricing and availability are modeled there, not here.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
+| `organisation` | `CHAR(26)` | not null |
 | `display_name` | `VARCHAR(255)` | not null |
 | `description` | `VARCHAR(255)` | nullable |
-| `type` | `ResourceType` | not null |
-| `booking_mode` | `BookingMode` | not null |
-| `capacity` | `INTEGER` | nullable |
 | `time_zone` | `VARCHAR(255)` | not null |
 | `tags` | `VARCHAR(255)[]` | nullable |
 | `attributes` | `JSONB` | nullable |
-| `state` | `ResourceState` | nullable |
+| `state` | `PropertyState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `address_id` | `CHAR(26)` | nullable |
+| `policy_id` | `CHAR(26)` | nullable |
 
-### `Offering` → `offerings`
+### `Unit` → `units`
 
-A specific way a resource can be booked, carrying its duration and price. A "30-min consult" and a "60-min session" are two offerings on the same provider. For NIGHTLY resources the duration is unused and price is per-night.
+A bookable unit type within a property: a pool of `capacity` interchangeable rooms/units of the same kind (e.g. "Deluxe King", capacity 12). A Unit carries its own pricing, media, occupancy limit, and the promo codes advertised for it. The freebusy engine computes how many units are free for a window; its booking_mode decides whether availability is time slots or per-night counts.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -485,24 +566,43 @@ A specific way a resource can be booked, carrying its duration and price. A "30-
 | `name` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | not null |
 | `description` | `VARCHAR(255)` | nullable |
-| `duration` | `INTERVAL` | nullable |
+| `type` | `UnitType` | not null |
+| `booking_mode` | `BookingMode` | not null |
+| `capacity` | `INTEGER` | nullable |
+| `max_occupancy` | `INTEGER` | nullable |
+| `time_zone` | `VARCHAR(255)` | not null |
 | `pricing_unit` | `PricingUnit` | nullable |
-| `state` | `OfferingState` | nullable |
+| `duration` | `INTERVAL` | nullable |
+| `tags` | `VARCHAR(255)[]` | nullable |
+| `attributes` | `JSONB` | nullable |
+| `state` | `UnitState` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
-| `resource_id` | `CHAR(26)` | not null |
+| `property_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
+
+### `Policy` → `policies`
+
+Guest-facing, informational property policy: what to *display* to a guest (check-in/out hours, house rules). The enforced refund/stay rules that gate bookability live on each Unit's Schedule (freebusy.schedule.v1), not here, so there is a single source of truth for enforcement.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `checkin_time` | `TIME` | nullable |
+| `checkout_time` | `TIME` | nullable |
+| `house_rules` | `VARCHAR(255)[]` | nullable |
+| `notes` | `VARCHAR(255)` | nullable |
 
 ### `RateOverride` → `rate_overrides`
 
-A price override for a span of dates and/or specific weekdays, layered over an offering's base `price`. The price is still interpreted per the offering's pricing_unit (per night, per booking, per person).
+A price override for a span of dates and/or specific weekdays, layered over a unit's base `price`. The price is still interpreted per the unit's pricing_unit (per night, per booking, per person).
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `weekdays` | `` | nullable |
-| `offering_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 | `date_range_id` | `CHAR(26)` | nullable |
 | `price_id` | `CHAR(26)` | not null |
 
@@ -515,12 +615,12 @@ A discount applied to a NIGHTLY subtotal once the stay reaches a minimum length.
 | `id` | `CHAR(26)` | not null |
 | `min_nights` | `INTEGER` | not null |
 | `percent_off` | `INTEGER` | nullable |
-| `offering_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 | `amount_off_id` | `CHAR(26)` | nullable |
 
 ### `Fee` → `fees`
 
-A fee added on top of an offering's base subtotal. Exactly one of `amount` or `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
+A fee added on top of a unit's base subtotal. Exactly one of `amount` or `percent` is set. Surfaces as a TYPE_FEE line in a booking's price_components.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -530,7 +630,7 @@ A fee added on top of an offering's base subtotal. Exactly one of `amount` or `p
 | `percent` | `INTEGER` | nullable |
 | `pricing_unit` | `PricingUnit` | nullable |
 | `taxable` | `BOOLEAN` | nullable |
-| `offering_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 | `amount_id` | `CHAR(26)` | nullable |
 
 ### `Tax` → `taxes`
@@ -543,32 +643,42 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `code` | `VARCHAR(255)` | not null |
 | `display_name` | `VARCHAR(255)` | nullable |
 | `percent` | `DOUBLE PRECISION` | not null |
-| `offering_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 
-### `ResourceOfferings` → `offerings_link`
+### `PropertyUnits` → `units_link`
 
-Join table for the many-to-many relation Resource.offerings ↔ Offering.
+Join table for the many-to-many relation Property.units ↔ Unit.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
-| `resource_id` | `CHAR(26)` | not null |
-| `offering_id` | `CHAR(26)` | not null |
-| `offering_name` | `TEXT` | not null |
+| `property_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
+| `unit_name` | `TEXT` | not null |
+
+### `UnitApplicablePromoCodes` → `unit_applicable_promo_codes`
+
+Join table for the many-to-many relation Unit.applicable_promo_codes ↔ PromoCode.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
+| `promo_code_id` | `CHAR(26)` | not null |
 
 ### Enums
 
-- `ResourceType`: PROVIDER, ROOM, EQUIPMENT, UNIT_TYPE, SPACE
+- `PropertyState`: ACTIVE, ARCHIVED
+- `UnitType`: PROVIDER, ROOM, EQUIPMENT, LODGING, SPACE
 - `BookingMode`: TIME_SLOT, NIGHTLY
-- `ResourceState`: ACTIVE, ARCHIVED
 - `PricingUnit`: PER_BOOKING, PER_NIGHT, PER_PERSON
-- `OfferingState`: ACTIVE, INACTIVE
+- `UnitState`: ACTIVE, ARCHIVED
 
 ## Schema `schedule`
 
 ### `AvailabilityException` → `availability_exceptions`
 
-An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
+An override of a unit's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -578,26 +688,28 @@ An override of a resource's normal hours on a specific span: a blackout / holida
 | `reason` | `VARCHAR(255)` | nullable |
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `span_case` | `AvailabilityExceptionSpanCase` | nullable |
-| `resource_id` | `CHAR(26)` | not null |
+| `property_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
 | `window_id` | `CHAR(26)` | nullable |
 | `date_range_id` | `CHAR(26)` | nullable |
 
 ### `Schedule` → `resource`
 
-Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+Aggregate read view of a unit's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per unit.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+| `property_id` | `CHAR(26)` | not null |
 | `buffers_id` | `CHAR(26)` | nullable |
 | `stay_constraints_id` | `CHAR(26)` | nullable |
 | `cancellation_policy_id` | `CHAR(26)` | nullable |
 
 ### `RecurringRule` → `recurring_rules`
 
-A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
+A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the unit's timezone.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -622,7 +734,7 @@ Buffer and notice settings applied around bookings.
 
 ### `StayConstraints` → `stay_constraints`
 
-Stay rules that affect bookability for NIGHTLY resources.
+Stay rules that affect bookability for NIGHTLY units.
 
 | Column | Type | Null |
 | --- | --- | --- |
@@ -705,6 +817,23 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `booking_id` | `CHAR(26)` | not null |
 | `amount_id` | `CHAR(26)` | nullable |
 
+### `Media` → `medias`
+
+A reference to a media asset — a showcase image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. Attached wherever a resource wants a gallery, e.g. a Property (hotel) or a Unit (room).
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `uri` | `VARCHAR(255)` | not null |
+| `type` | `MediaType` | not null |
+| `title` | `VARCHAR(255)` | nullable |
+| `description` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `sort_order` | `INTEGER` | nullable |
+| `primary` | `BOOLEAN` | nullable |
+| `property_id` | `CHAR(26)` | not null |
+| `unit_id` | `CHAR(26)` | not null |
+
 ### `DateRange` → `date_ranges`
 
 A half-open range of calendar dates [start_date, end_date), evaluated in the resource's local timezone. The natural query and exception shape for NIGHTLY resources: end_date is the check-out date and is not itself included.
@@ -718,6 +847,7 @@ A half-open range of calendar dates [start_date, end_date), evaluated in the res
 ### Enums
 
 - `Type`: BASE, FEE, TAX, DISCOUNT
+- `MediaType`: IMAGE, VIDEO, DOCUMENT, FLOORPLAN, VIRTUAL_TOUR
 
 ## Schema `common`
 
@@ -731,3 +861,22 @@ Represents an amount of money with its currency type.
 | `currency_code` | `VARCHAR(255)` | nullable |
 | `units` | `BIGINT` | nullable |
 | `nanos` | `INTEGER` | nullable |
+
+### `PostalAddress` → `postal_address`
+
+Represents a postal address, such as for postal delivery or payments addresses. With a postal address, a postal service can deliver items to a premise, P.O. box, or similar. A postal address is not intended to model geographical locations like roads, towns, or mountains. In typical usage, an address would be created by user input or from importing existing data, depending on the type of process. Advice on address input or editing: - Use an internationalization-ready address widget such as https://github.com/google/libaddressinput. - Users should not be presented with UI elements for input or editing of fields outside countries where that field is used. For more guidance on how to use this schema, see: https://support.google.com/business/answer/6397478.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `revision` | `INTEGER` | nullable |
+| `region_code` | `VARCHAR(255)` | nullable |
+| `language_code` | `VARCHAR(255)` | nullable |
+| `postal_code` | `VARCHAR(255)` | nullable |
+| `sorting_code` | `VARCHAR(255)` | nullable |
+| `administrative_area` | `VARCHAR(255)` | nullable |
+| `locality` | `VARCHAR(255)` | nullable |
+| `sublocality` | `VARCHAR(255)` | nullable |
+| `address_lines` | `VARCHAR(255)[]` | nullable |
+| `recipients` | `VARCHAR(255)[]` | nullable |
+| `organization` | `VARCHAR(255)` | nullable |

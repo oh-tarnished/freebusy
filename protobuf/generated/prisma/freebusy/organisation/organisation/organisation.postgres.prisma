@@ -9,7 +9,7 @@
 //
 // orm — https://github.com/the-protobuf-project/orm
 
-/// A tenant. Organisation is the unit of multi-tenancy; the shell enforces isolation with row-level security keyed off the caller's organisation, so most resource names stay flat and the organisation appears explicitly only here.
+/// A chain: the hotel brand/company that owns one or more properties, and the unit of multi-tenancy. The shell enforces isolation with row-level security keyed off the caller's organisation. Each Property references the Organisation it belongs to; members here are the chain's administrators, not its guests (guests relate to a property only through bookings).
 model Organisation {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
@@ -44,11 +44,11 @@ model Organisation {
   /// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   etag String? @map("etag")
 
-  /// Back-relation: MembershipSummary records that reference this model via organisation.
-  membershipSummaries MembershipSummary[]
-
   /// Back-relation: Member records that reference this model via organisation_id.
   members Member[]
+
+  /// Back-relation: Property records that reference this model via organisation.
+  properties Property[]
 
   /// Maps the model to the "resource" table in the database.
   @@map("resource")

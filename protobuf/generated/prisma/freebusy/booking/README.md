@@ -15,8 +15,7 @@ erDiagram
     direction LR
     Booking {
         string id PK
-        string resource FK
-        string offering FK
+        string unit FK
         string customer FK
         string promo_code FK
         string contact_id FK
@@ -32,23 +31,19 @@ erDiagram
     Money {
         string externalStub PK
     }
-    Offering {
-        string externalStub PK
-    }
     PromoCode {
-        string externalStub PK
-    }
-    Resource {
         string externalStub PK
     }
     TimeWindow {
         string externalStub PK
     }
+    Unit {
+        string externalStub PK
+    }
     User {
         string externalStub PK
     }
-    Booking }o--|| Resource : "resource"
-    Booking }o--|| Offering : "offering"
+    Booking }o--|| Unit : "unit"
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"

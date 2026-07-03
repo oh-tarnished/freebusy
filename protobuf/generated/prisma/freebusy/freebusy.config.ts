@@ -4,7 +4,7 @@
 // 	protoc (unknown)
 //
 // database: freebusy
-// schemas:  booking, identity, organisation, promocode, resource, schedule, shared, common
+// schemas:  booking, channel, identity, organisation, promocode, property, schedule, shared, common
 //
 // Prisma 7 configuration; connection URLs are environment-driven.
 //

@@ -23,15 +23,15 @@ enum AvailabilityExceptionSpanCase {
   @@schema("schedule")
 }
 
-/// An override of a resource's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
+/// An override of a unit's normal hours on a specific span: a blackout / holiday closure, or extra hours beyond the recurring rules.
 model AvailabilityException {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
 
-  /// The exception name. Format: resources/{resource}/availabilityExceptions/{availability_exception}
+  /// The exception name. Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
   name String @unique @map("name")
 
-  /// Whether this span closes the resource or adds extra availability.
+  /// Whether this span closes the unit or adds extra availability.
   kind ExceptionKind @default(CLOSURE) @map("kind")
 
   /// Human-readable reason (e.g. "Public holiday").
@@ -43,11 +43,17 @@ model AvailabilityException {
   /// Discriminator: which span oneof member is set (null = none).
   spanCase AvailabilityExceptionSpanCase? @map("span_case")
 
-  /// Parent reference to Resource (from the AIP resource pattern).
-  resourceID String @map("resource_id")
+  /// Parent reference to Property (from the AIP resource pattern).
+  propertyID String @map("property_id")
 
-  /// Relation to Resource via resource_id.
-  resource Resource @relation(fields: [resourceID], references: [id], onDelete: Cascade)
+  /// Relation to Property via property_id.
+  property Property @relation(fields: [propertyID], references: [id], onDelete: Cascade)
+
+  /// Parent reference to Unit (from the AIP resource pattern).
+  unitID String @map("unit_id")
+
+  /// Relation to Unit via unit_id.
+  unit Unit @relation(fields: [unitID], references: [id], onDelete: Cascade)
 
   /// Foreign key to TimeWindow.
   windowID String? @map("window_id")
@@ -64,8 +70,10 @@ model AvailabilityException {
   /// Back-relation: ScheduleExceptions records that reference this model via availability_exception_id.
   exceptions ScheduleExceptions[]
 
-  /// Composite index on [resource_id].
-  @@index([resourceID])
+  /// Composite index on [property_id].
+  @@index([propertyID])
+  /// Composite index on [unit_id].
+  @@index([unitID])
   /// Composite index on [window_id].
   @@index([windowID])
   /// Composite index on [date_range_id].
@@ -76,16 +84,22 @@ model AvailabilityException {
   @@schema("schedule")
 }
 
-/// Aggregate read view of a resource's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per resource.
+/// Aggregate read view of a unit's availability configuration: the inputs the freebusy engine consumes. Modeled as a singleton resource, one per unit.
 model Schedule {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
 
-  /// The schedule name. Format: resources/{resource}/schedule
+  /// The schedule name. Format: properties/{property}/units/{unit}/schedule
   name String @unique @map("name")
 
   /// Opaque version for optimistic concurrency (AIP-154); echo on update.
   etag String? @map("etag")
+
+  /// Parent reference to Property (from the AIP resource pattern).
+  propertyID String @map("property_id")
+
+  /// Relation to Property via property_id.
+  property Property @relation(fields: [propertyID], references: [id], onDelete: Cascade)
 
   /// Foreign key to BufferSettings.
   buffersID String? @map("buffers_id")
@@ -111,6 +125,8 @@ model Schedule {
   /// Back-relation: ScheduleExceptions records that reference this model via schedule_id.
   exceptions ScheduleExceptions[]
 
+  /// Composite index on [property_id].
+  @@index([propertyID])
   /// Composite index on [buffers_id].
   @@index([buffersID])
   /// Composite index on [stay_constraints_id].
@@ -123,7 +139,7 @@ model Schedule {
   @@schema("schedule")
 }
 
-/// A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the resource's timezone.
+/// A recurring availability window expressed as an RRULE plus a daily open span. The freebusy engine expands these against the unit's timezone.
 model RecurringRule {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")
@@ -180,7 +196,7 @@ model BufferSettings {
   @@schema("schedule")
 }
 
-/// Stay rules that affect bookability for NIGHTLY resources.
+/// Stay rules that affect bookability for NIGHTLY units.
 model StayConstraints {
   /// Unique identifier for the record.
   id String @id @default(ulid()) @map("id")

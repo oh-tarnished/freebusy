@@ -15,8 +15,7 @@ erDiagram
     direction LR
     Booking {
         string id PK
-        string resource FK
-        string offering FK
+        string unit FK
         string customer FK
         string promo_code FK
         string contact_id FK
@@ -32,23 +31,19 @@ erDiagram
     Money {
         string externalStub PK
     }
-    Offering {
-        string externalStub PK
-    }
     PromoCode {
-        string externalStub PK
-    }
-    Resource {
         string externalStub PK
     }
     TimeWindow {
         string externalStub PK
     }
+    Unit {
+        string externalStub PK
+    }
     User {
         string externalStub PK
     }
-    Booking }o--|| Resource : "resource"
-    Booking }o--|| Offering : "offering"
+    Booking }o--|| Unit : "unit"
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
@@ -63,14 +58,13 @@ Schema file: [`booking.postgres.prisma`](./booking.postgres.prisma)
 
 ### `Booking` → `resource`
 
-A reservation against a resource. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
+A reservation against a unit. The hold lifecycle lives here as states rather than a separate service: CreateBooking places a PENDING_HOLD, confirmation flips it to CONFIRMED, and an internal sweeper expires holds that are never confirmed.
 
 | Column | Type | Null |
 | --- | --- | --- |
 | `id` | `CHAR(26)` | not null |
 | `name` | `VARCHAR(255)` | not null |
-| `resource` | `CHAR(26)` | not null |
-| `offering` | `CHAR(26)` | nullable |
+| `unit` | `CHAR(26)` | not null |
 | `customer` | `CHAR(26)` | nullable |
 | `units` | `INTEGER` | nullable |
 | `assigned_unit` | `VARCHAR(255)` | nullable |
