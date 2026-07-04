@@ -46,6 +46,11 @@ type organisationName struct {
 	ID string   `resource:"organisation"`
 }
 
+type bookingName struct {
+	_  struct{} `resource:"bookings/{booking}"`
+	ID string   `resource:"booking"`
+}
+
 type memberName struct {
 	_            struct{} `resource:"organisations/{organisation}/members/{member}"`
 	Organisation string   `resource:"organisation"`
@@ -178,6 +183,16 @@ func UnitParentID(name string) (string, error) {
 	return n.Property, nil
 }
 
+// ParseUnitParent extracts both the property and unit ids from a unit resource
+// name ("properties/{property}/units/{unit}").
+func ParseUnitParent(name string) (propertyID, unitID string, err error) {
+	var n unitName
+	if err = resourcename.UnmarshalResource(name, &n); err != nil {
+		return "", "", err
+	}
+	return n.Property, n.Unit, nil
+}
+
 // ResolveUnitName returns the parent property id, unit id, and full unit
 // resource name for a write. When name is set it is parsed; otherwise a fresh
 // ULID unit id is minted under the property parsed from parent
@@ -257,6 +272,33 @@ func ResolveMemberName(parent, name string) (organisationID, memberID, full stri
 	memberID = ulid.GenerateString()
 	full, err = MemberName(organisationID, memberID)
 	return organisationID, memberID, full, err
+}
+
+// BookingName builds the resource name "bookings/{id}" from a bare id.
+func BookingName(id string) (string, error) {
+	return resourcename.MarshalResource(&bookingName{ID: id})
+}
+
+// BookingID extracts the bare id from a "bookings/{id}" resource name.
+func BookingID(name string) (string, error) {
+	var n bookingName
+	if err := resourcename.UnmarshalResource(name, &n); err != nil {
+		return "", err
+	}
+	return n.ID, nil
+}
+
+// ResolveBookingName returns the bare id and full resource name for a write.
+func ResolveBookingName(name string) (id, full string, err error) {
+	if name == "" {
+		id = ulid.GenerateString()
+		full, err = BookingName(id)
+		return id, full, err
+	}
+	if id, err = BookingID(name); err != nil {
+		return "", "", err
+	}
+	return id, name, nil
 }
 
 // ScheduleName builds "properties/{property}/units/{unit}/schedule".

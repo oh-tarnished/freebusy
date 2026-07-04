@@ -125,9 +125,8 @@ func (s *Server) CreateAvailabilityException(ctx context.Context, req *schedulep
 	}
 	e = proto.Clone(e).(*schedulepbv1.AvailabilityException)
 	if id := req.GetAvailabilityExceptionId(); id != "" {
-		propertyID, perr := types.UnitParentID(req.GetParent())
-		unitID, uerr := types.UnitID(req.GetParent())
-		if perr != nil || uerr != nil {
+		propertyID, unitID, uerr := types.ParseUnitParent(req.GetParent())
+		if uerr != nil {
 			return nil, status.Error(codes.InvalidArgument, "invalid parent")
 		}
 		name, nerr := types.AvailabilityExceptionName(propertyID, unitID, id)

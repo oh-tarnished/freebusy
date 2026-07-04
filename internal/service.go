@@ -5,6 +5,7 @@
 package internal
 
 import (
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -13,14 +14,14 @@ import (
 
 // Service is the registered gRPC adapter. It embeds the assembled service
 // implementations, so it satisfies each of their gRPC server interfaces
-// (promocodepbv1.PromoCodeServiceServer, propertypbv1.PropertyServiceServer,
-// orgpbv1.OrganisationServiceServer, schedulepbv1.ScheduleServiceServer, and any
-// future service interfaces composed in here).
+// (promocode, property, organisation, schedule, booking, and any future service
+// interfaces composed in here).
 type Service struct {
 	promocodepbv1.PromoCodeServiceServer
 	propertypbv1.PropertyServiceServer
 	orgpbv1.OrganisationServiceServer
 	schedulepbv1.ScheduleServiceServer
+	bookingpbv1.BookingServiceServer
 }
 
 // NewService wraps the assembled service servers as the registered Service.
@@ -29,11 +30,13 @@ func NewService(
 	property propertypbv1.PropertyServiceServer,
 	organisation orgpbv1.OrganisationServiceServer,
 	schedule schedulepbv1.ScheduleServiceServer,
+	booking bookingpbv1.BookingServiceServer,
 ) *Service {
 	return &Service{
 		PromoCodeServiceServer:    promoCode,
 		PropertyServiceServer:     property,
 		OrganisationServiceServer: organisation,
 		ScheduleServiceServer:     schedule,
+		BookingServiceServer:      booking,
 	}
 }

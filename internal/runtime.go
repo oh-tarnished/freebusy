@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/runtime"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -31,7 +32,11 @@ func newServiceInstance() (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewService(promoCode, property, organisation, schedule), nil
+	booking, err := runtime.NewBookingServer()
+	if err != nil {
+		return nil, err
+	}
+	return NewService(promoCode, property, organisation, schedule, booking), nil
 }
 
 // registerGRPCServers returns a server option that registers the freebusy gRPC
@@ -42,6 +47,7 @@ func registerGRPCServers(svc *Service) grpc.Option {
 		propertypbv1.RegisterPropertyServiceServer(s, svc)
 		orgpbv1.RegisterOrganisationServiceServer(s, svc)
 		schedulepbv1.RegisterScheduleServiceServer(s, svc)
+		bookingpbv1.RegisterBookingServiceServer(s, svc)
 	})
 }
 
@@ -58,7 +64,10 @@ func registerHTTPGateways() grpc.Option {
 		if err := orgpbv1.RegisterOrganisationServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 			return err
 		}
-		return schedulepbv1.RegisterScheduleServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+		if err := schedulepbv1.RegisterScheduleServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		return bookingpbv1.RegisterBookingServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 	})
 }
 
@@ -75,6 +84,9 @@ func registerMCPServices(svc *Service) grpc.Option {
 		if err := orgpbv1.ServeOrganisationServiceMCP(ctx, svc, cfg); err != nil {
 			return err
 		}
-		return schedulepbv1.ServeScheduleServiceMCP(ctx, svc, cfg)
+		if err := schedulepbv1.ServeScheduleServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		return bookingpbv1.ServeBookingServiceMCP(ctx, svc, cfg)
 	})
 }
