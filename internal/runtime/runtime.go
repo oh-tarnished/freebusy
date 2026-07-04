@@ -10,12 +10,15 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/runtime/organisation"
 	"github.com/oh-tarnished/freebusy/internal/runtime/promocode"
 	"github.com/oh-tarnished/freebusy/internal/runtime/property"
+	"github.com/oh-tarnished/freebusy/internal/runtime/schedule"
 	organisationdb "github.com/oh-tarnished/freebusy/internal/service/organisation/db"
 	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
+	scheduledb "github.com/oh-tarnished/freebusy/internal/service/schedule/db"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 )
 
 // NewPromoCodeServer opens the configured backend, builds the repository, and
@@ -46,6 +49,16 @@ func NewOrganisationServer() (orgpbv1.OrganisationServiceServer, error) {
 		return nil, err
 	}
 	return organisation.NewServer(organisationdb.New(conn)), nil
+}
+
+// NewScheduleServer opens the configured backend, builds the repository, and
+// returns the schedule gRPC service implementation ready to register.
+func NewScheduleServer() (schedulepbv1.ScheduleServiceServer, error) {
+	conn, err := database.Open()
+	if err != nil {
+		return nil, err
+	}
+	return schedule.NewServer(scheduledb.New(conn)), nil
 }
 
 // Other Services can be added here in the future, following the same pattern: open the database connection, build the repository, and return the service implementation.

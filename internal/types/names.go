@@ -52,6 +52,19 @@ type memberName struct {
 	Member       string   `resource:"member"`
 }
 
+type scheduleName struct {
+	_        struct{} `resource:"properties/{property}/units/{unit}/schedule"`
+	Property string   `resource:"property"`
+	Unit     string   `resource:"unit"`
+}
+
+type availabilityExceptionName struct {
+	_         struct{} `resource:"properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}"`
+	Property  string   `resource:"property"`
+	Unit      string   `resource:"unit"`
+	Exception string   `resource:"availability_exception"`
+}
+
 // PromoCodeName builds the resource name "promoCodes/{id}" from a bare id.
 func PromoCodeName(id string) (string, error) {
 	return resourcename.MarshalResource(&promoCodeName{ID: id})
@@ -244,4 +257,54 @@ func ResolveMemberName(parent, name string) (organisationID, memberID, full stri
 	memberID = ulid.GenerateString()
 	full, err = MemberName(organisationID, memberID)
 	return organisationID, memberID, full, err
+}
+
+// ScheduleName builds "properties/{property}/units/{unit}/schedule".
+func ScheduleName(propertyID, unitID string) (string, error) {
+	return resourcename.MarshalResource(&scheduleName{Property: propertyID, Unit: unitID})
+}
+
+// ParseScheduleName extracts the parent property and unit ids from a schedule
+// resource name.
+func ParseScheduleName(name string) (propertyID, unitID string, err error) {
+	var n scheduleName
+	if err = resourcename.UnmarshalResource(name, &n); err != nil {
+		return "", "", err
+	}
+	return n.Property, n.Unit, nil
+}
+
+// AvailabilityExceptionName builds the full exception resource name from bare ids.
+func AvailabilityExceptionName(propertyID, unitID, exceptionID string) (string, error) {
+	return resourcename.MarshalResource(&availabilityExceptionName{Property: propertyID, Unit: unitID, Exception: exceptionID})
+}
+
+// AvailabilityExceptionID extracts the exception id segment from its resource name.
+func AvailabilityExceptionID(name string) (string, error) {
+	var n availabilityExceptionName
+	if err := resourcename.UnmarshalResource(name, &n); err != nil {
+		return "", err
+	}
+	return n.Exception, nil
+}
+
+// ResolveAvailabilityExceptionName returns the parent property id, unit id,
+// exception id, and full resource name for a write. When name is set it is parsed;
+// otherwise a fresh ULID exception id is minted under the unit parsed from parent
+// ("properties/{property}/units/{unit}").
+func ResolveAvailabilityExceptionName(parent, name string) (propertyID, unitID, exceptionID, full string, err error) {
+	if name != "" {
+		var n availabilityExceptionName
+		if err = resourcename.UnmarshalResource(name, &n); err != nil {
+			return "", "", "", "", err
+		}
+		return n.Property, n.Unit, n.Exception, name, nil
+	}
+	var u unitName
+	if err = resourcename.UnmarshalResource(parent, &u); err != nil {
+		return "", "", "", "", err
+	}
+	exceptionID = ulid.GenerateString()
+	full, err = AvailabilityExceptionName(u.Property, u.Unit, exceptionID)
+	return u.Property, u.Unit, exceptionID, full, err
 }

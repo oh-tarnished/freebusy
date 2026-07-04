@@ -7,6 +7,7 @@ import (
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/grpc"
 )
 
@@ -26,7 +27,11 @@ func newServiceInstance() (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewService(promoCode, property, organisation), nil
+	schedule, err := runtime.NewScheduleServer()
+	if err != nil {
+		return nil, err
+	}
+	return NewService(promoCode, property, organisation, schedule), nil
 }
 
 // registerGRPCServers returns a server option that registers the freebusy gRPC
@@ -36,6 +41,7 @@ func registerGRPCServers(svc *Service) grpc.Option {
 		promocodepbv1.RegisterPromoCodeServiceServer(s, svc)
 		propertypbv1.RegisterPropertyServiceServer(s, svc)
 		orgpbv1.RegisterOrganisationServiceServer(s, svc)
+		schedulepbv1.RegisterScheduleServiceServer(s, svc)
 	})
 }
 
@@ -49,7 +55,10 @@ func registerHTTPGateways() grpc.Option {
 		if err := propertypbv1.RegisterPropertyServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 			return err
 		}
-		return orgpbv1.RegisterOrganisationServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+		if err := orgpbv1.RegisterOrganisationServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		return schedulepbv1.RegisterScheduleServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 	})
 }
 
@@ -63,6 +72,9 @@ func registerMCPServices(svc *Service) grpc.Option {
 		if err := propertypbv1.ServePropertyServiceMCP(ctx, svc, cfg); err != nil {
 			return err
 		}
-		return orgpbv1.ServeOrganisationServiceMCP(ctx, svc, cfg)
+		if err := orgpbv1.ServeOrganisationServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		return schedulepbv1.ServeScheduleServiceMCP(ctx, svc, cfg)
 	})
 }
