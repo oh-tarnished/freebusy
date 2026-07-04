@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/runtime"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
@@ -36,7 +37,11 @@ func newServiceInstance() (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewService(promoCode, property, organisation, schedule, booking), nil
+	availability, err := runtime.NewAvailabilityServer()
+	if err != nil {
+		return nil, err
+	}
+	return NewService(promoCode, property, organisation, schedule, booking, availability), nil
 }
 
 // registerGRPCServers returns a server option that registers the freebusy gRPC
@@ -48,6 +53,7 @@ func registerGRPCServers(svc *Service) grpc.Option {
 		orgpbv1.RegisterOrganisationServiceServer(s, svc)
 		schedulepbv1.RegisterScheduleServiceServer(s, svc)
 		bookingpbv1.RegisterBookingServiceServer(s, svc)
+		availabilitypbv1.RegisterAvailabilityServiceServer(s, svc)
 	})
 }
 
@@ -67,7 +73,10 @@ func registerHTTPGateways() grpc.Option {
 		if err := schedulepbv1.RegisterScheduleServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 			return err
 		}
-		return bookingpbv1.RegisterBookingServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+		if err := bookingpbv1.RegisterBookingServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		return availabilitypbv1.RegisterAvailabilityServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 	})
 }
 
@@ -87,6 +96,9 @@ func registerMCPServices(svc *Service) grpc.Option {
 		if err := schedulepbv1.ServeScheduleServiceMCP(ctx, svc, cfg); err != nil {
 			return err
 		}
-		return bookingpbv1.ServeBookingServiceMCP(ctx, svc, cfg)
+		if err := bookingpbv1.ServeBookingServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		return availabilitypbv1.ServeAvailabilityServiceMCP(ctx, svc, cfg)
 	})
 }

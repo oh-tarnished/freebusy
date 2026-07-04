@@ -7,16 +7,19 @@ package runtime
 
 import (
 	"github.com/oh-tarnished/freebusy/internal/database"
+	"github.com/oh-tarnished/freebusy/internal/runtime/availability"
 	"github.com/oh-tarnished/freebusy/internal/runtime/booking"
 	"github.com/oh-tarnished/freebusy/internal/runtime/organisation"
 	"github.com/oh-tarnished/freebusy/internal/runtime/promocode"
 	"github.com/oh-tarnished/freebusy/internal/runtime/property"
 	"github.com/oh-tarnished/freebusy/internal/runtime/schedule"
+	availabilitydb "github.com/oh-tarnished/freebusy/internal/service/availability/db"
 	bookingdb "github.com/oh-tarnished/freebusy/internal/service/booking/db"
 	organisationdb "github.com/oh-tarnished/freebusy/internal/service/organisation/db"
 	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
 	scheduledb "github.com/oh-tarnished/freebusy/internal/service/schedule/db"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -73,6 +76,16 @@ func NewBookingServer() (*booking.Server, error) {
 		return nil, err
 	}
 	return booking.NewServer(bookingdb.New(conn)), nil
+}
+
+// NewAvailabilityServer opens the configured backend, builds the read port, and
+// returns the availability gRPC service implementation ready to register.
+func NewAvailabilityServer() (availabilitypbv1.AvailabilityServiceServer, error) {
+	conn, err := database.Open()
+	if err != nil {
+		return nil, err
+	}
+	return availability.NewServer(availabilitydb.New(conn)), nil
 }
 
 // Other Services can be added here in the future, following the same pattern: open the database connection, build the repository, and return the service implementation.
