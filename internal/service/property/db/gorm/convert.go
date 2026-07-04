@@ -47,14 +47,6 @@ func strOrNil(s string) *string {
 	return &s
 }
 
-func tsToTime(ts *timestamppb.Timestamp) *time.Time {
-	if ts == nil {
-		return nil
-	}
-	t := ts.AsTime()
-	return &t
-}
-
 func timeToTS(t *time.Time) *timestamppb.Timestamp {
 	if t == nil || t.IsZero() {
 		return nil
