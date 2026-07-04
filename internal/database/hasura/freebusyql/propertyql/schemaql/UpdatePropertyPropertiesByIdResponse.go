@@ -11,7 +11,7 @@ type UpdatePropertyPropertiesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
 		AddressId    *string          `graphql:"addressId"`
-		Attributes   *json.RawMessage `graphql:"attributes"`
+		Attributes   *json.RawMessage `graphql:"attributes" scalar:"true"`
 		CreateTime   string           `graphql:"createTime"`
 		Description  *string          `graphql:"description"`
 		DisplayName  string           `graphql:"displayName"`

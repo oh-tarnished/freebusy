@@ -13,18 +13,18 @@ type PropertyPoliciesAggExp struct {
 	CheckinTime struct {
 		Count         graphql.Int64    `graphql:"_count"`
 		CountDistinct graphql.Int64    `graphql:"_count_distinct"`
-		Avg           *json.RawMessage `graphql:"avg"`
+		Avg           *json.RawMessage `graphql:"avg" scalar:"true"`
 		Max           *string          `graphql:"max"`
 		Min           *string          `graphql:"min"`
-		Sum           *json.RawMessage `graphql:"sum"`
+		Sum           *json.RawMessage `graphql:"sum" scalar:"true"`
 	} `graphql:"checkinTime"`
 	CheckoutTime struct {
 		Count         graphql.Int64    `graphql:"_count"`
 		CountDistinct graphql.Int64    `graphql:"_count_distinct"`
-		Avg           *json.RawMessage `graphql:"avg"`
+		Avg           *json.RawMessage `graphql:"avg" scalar:"true"`
 		Max           *string          `graphql:"max"`
 		Min           *string          `graphql:"min"`
-		Sum           *json.RawMessage `graphql:"sum"`
+		Sum           *json.RawMessage `graphql:"sum" scalar:"true"`
 	} `graphql:"checkoutTime"`
 	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`

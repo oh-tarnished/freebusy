@@ -9,7 +9,7 @@ import (
 // PropertyProperties is the PropertyProperties model.
 type PropertyProperties struct {
 	AddressId    *string          `graphql:"addressId"`
-	Attributes   *json.RawMessage `graphql:"attributes"`
+	Attributes   *json.RawMessage `graphql:"attributes" scalar:"true"`
 	CreateTime   string           `graphql:"createTime"`
 	Description  *string          `graphql:"description"`
 	DisplayName  string           `graphql:"displayName"`

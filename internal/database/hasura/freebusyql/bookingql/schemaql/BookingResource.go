@@ -9,7 +9,7 @@ import (
 // BookingResource is the BookingResource model.
 type BookingResource struct {
 	AssignedUnit   *string          `graphql:"assignedUnit"`
-	Attributes     *json.RawMessage `graphql:"attributes"`
+	Attributes     *json.RawMessage `graphql:"attributes" scalar:"true"`
 	CancelReason   *string          `graphql:"cancelReason"`
 	CancelTime     *string          `graphql:"cancelTime"`
 	ConfirmTime    *string          `graphql:"confirmTime"`

@@ -11,7 +11,7 @@ type DeleteBookingResourceByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
 		AssignedUnit   *string          `graphql:"assignedUnit"`
-		Attributes     *json.RawMessage `graphql:"attributes"`
+		Attributes     *json.RawMessage `graphql:"attributes" scalar:"true"`
 		CancelReason   *string          `graphql:"cancelReason"`
 		CancelTime     *string          `graphql:"cancelTime"`
 		ConfirmTime    *string          `graphql:"confirmTime"`

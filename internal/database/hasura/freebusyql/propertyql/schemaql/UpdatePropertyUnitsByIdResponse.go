@@ -10,7 +10,7 @@ import (
 type UpdatePropertyUnitsByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
-		Attributes   *json.RawMessage `graphql:"attributes"`
+		Attributes   *json.RawMessage `graphql:"attributes" scalar:"true"`
 		BookingMode  string           `graphql:"bookingMode"`
 		Capacity     *int32           `graphql:"capacity"`
 		CreateTime   string           `graphql:"createTime"`

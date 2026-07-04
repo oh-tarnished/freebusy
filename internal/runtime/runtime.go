@@ -7,9 +7,15 @@ package runtime
 
 import (
 	"github.com/oh-tarnished/freebusy/internal/database"
+	"github.com/oh-tarnished/freebusy/internal/runtime/organisation"
 	"github.com/oh-tarnished/freebusy/internal/runtime/promocode"
+	"github.com/oh-tarnished/freebusy/internal/runtime/property"
+	organisationdb "github.com/oh-tarnished/freebusy/internal/service/organisation/db"
 	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
+	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 )
 
 // NewPromoCodeServer opens the configured backend, builds the repository, and
@@ -20,6 +26,26 @@ func NewPromoCodeServer() (promocodepbv1.PromoCodeServiceServer, error) {
 		return nil, err
 	}
 	return promocode.NewServer(promocodedb.New(conn)), nil
+}
+
+// NewPropertyServer opens the configured backend, builds the repository, and
+// returns the property gRPC service implementation ready to register.
+func NewPropertyServer() (propertypbv1.PropertyServiceServer, error) {
+	conn, err := database.Open()
+	if err != nil {
+		return nil, err
+	}
+	return property.NewServer(propertydb.New(conn)), nil
+}
+
+// NewOrganisationServer opens the configured backend, builds the repository, and
+// returns the organisation gRPC service implementation ready to register.
+func NewOrganisationServer() (orgpbv1.OrganisationServiceServer, error) {
+	conn, err := database.Open()
+	if err != nil {
+		return nil, err
+	}
+	return organisation.NewServer(organisationdb.New(conn)), nil
 }
 
 // Other Services can be added here in the future, following the same pattern: open the database connection, build the repository, and return the service implementation.

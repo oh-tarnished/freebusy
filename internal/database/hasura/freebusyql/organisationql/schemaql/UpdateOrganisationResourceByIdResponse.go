@@ -18,7 +18,7 @@ type UpdateOrganisationResourceByIdResponse struct {
 		Id           string           `graphql:"id"`
 		MemberCount  *graphql.Int64   `graphql:"memberCount"`
 		Name         string           `graphql:"name"`
-		Settings     *json.RawMessage `graphql:"settings"`
+		Settings     *json.RawMessage `graphql:"settings" scalar:"true"`
 		Slug         *string          `graphql:"slug"`
 		State        *string          `graphql:"state"`
 		UpdateTime   string           `graphql:"updateTime"`

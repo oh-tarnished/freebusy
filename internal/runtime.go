@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/runtime"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/grpc"
 )
 
@@ -16,29 +18,51 @@ func newServiceInstance() (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewService(promoCode), nil
+	property, err := runtime.NewPropertyServer()
+	if err != nil {
+		return nil, err
+	}
+	organisation, err := runtime.NewOrganisationServer()
+	if err != nil {
+		return nil, err
+	}
+	return NewService(promoCode, property, organisation), nil
 }
 
-// registerGRPCServers returns a server option that registers the PromoCode gRPC
-// server with the hybrid server's gRPC multiplexer.
+// registerGRPCServers returns a server option that registers the freebusy gRPC
+// servers with the hybrid server's gRPC multiplexer.
 func registerGRPCServers(svc *Service) grpc.Option {
 	return grpc.WithGRPCServers(func(s *grpc.GRPCServer) {
 		promocodepbv1.RegisterPromoCodeServiceServer(s, svc)
+		propertypbv1.RegisterPropertyServiceServer(s, svc)
+		orgpbv1.RegisterOrganisationServiceServer(s, svc)
 	})
 }
 
-// registerHTTPGateways returns a server option that registers the PromoCode REST
-// gateway so protobuf RPCs are also reachable over HTTP/JSON.
+// registerHTTPGateways returns a server option that registers the REST gateways
+// so protobuf RPCs are also reachable over HTTP/JSON.
 func registerHTTPGateways() grpc.Option {
 	return grpc.WithHTTPGateways(func(mux *grpc.ServeMux, endpoint string, opts []grpc.DialOption) error {
-		return promocodepbv1.RegisterPromoCodeServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+		if err := promocodepbv1.RegisterPromoCodeServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		if err := propertypbv1.RegisterPropertyServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		return orgpbv1.RegisterOrganisationServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 	})
 }
 
-// registerMCPServices returns a server option that exposes the PromoCode service
-// over the Model Context Protocol, making it discoverable by LLM tool routers.
+// registerMCPServices returns a server option that exposes the freebusy services
+// over the Model Context Protocol, making them discoverable by LLM tool routers.
 func registerMCPServices(svc *Service) grpc.Option {
 	return grpc.WithMCPServices(func(ctx context.Context, cfg *grpc.MCPServerConfig) error {
-		return promocodepbv1.ServePromoCodeServiceMCP(ctx, svc, cfg)
+		if err := promocodepbv1.ServePromoCodeServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		if err := propertypbv1.ServePropertyServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		return orgpbv1.ServeOrganisationServiceMCP(ctx, svc, cfg)
 	})
 }

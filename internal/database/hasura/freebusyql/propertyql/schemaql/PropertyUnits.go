@@ -8,7 +8,7 @@ import (
 
 // PropertyUnits is the PropertyUnits model.
 type PropertyUnits struct {
-	Attributes   *json.RawMessage `graphql:"attributes"`
+	Attributes   *json.RawMessage `graphql:"attributes" scalar:"true"`
 	BookingMode  string           `graphql:"bookingMode"`
 	Capacity     *int32           `graphql:"capacity"`
 	CreateTime   string           `graphql:"createTime"`
