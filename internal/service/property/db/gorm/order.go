@@ -28,7 +28,9 @@ var unitSortColumns = map[string]string{
 	"update_time":  "update_time",
 }
 
-func propertyOrderClause(orderBy string) (string, error) { return orderClause(orderBy, propertySortColumns) }
+func propertyOrderClause(orderBy string) (string, error) {
+	return orderClause(orderBy, propertySortColumns)
+}
 
 func unitOrderClause(orderBy string) (string, error) { return orderClause(orderBy, unitSortColumns) }
 

@@ -18,14 +18,14 @@ import (
 
 // List-request constructors, wrapped so the repository reads uniformly and the
 // per-entity ql imports stay in one place.
-func propertiesList() *propertiesql.ListRequest        { return propertiesql.List() }
-func unitsList() *unitsql.ListRequest                  { return unitsql.List() }
-func mediasList() *mediasql.ListRequest                { return mediasql.List() }
-func unitMediasList() *unitmediasql.ListRequest        { return unitmediasql.List() }
-func rateOverridesList() *rateoverridesql.ListRequest  { return rateoverridesql.List() }
-func losDiscountsList() *losdiscountsql.ListRequest    { return losdiscountsql.List() }
-func feesList() *feesql.ListRequest                    { return feesql.List() }
-func taxesList() *taxesql.ListRequest                  { return taxesql.List() }
+func propertiesList() *propertiesql.ListRequest       { return propertiesql.List() }
+func unitsList() *unitsql.ListRequest                 { return unitsql.List() }
+func mediasList() *mediasql.ListRequest               { return mediasql.List() }
+func unitMediasList() *unitmediasql.ListRequest       { return unitmediasql.List() }
+func rateOverridesList() *rateoverridesql.ListRequest { return rateoverridesql.List() }
+func losDiscountsList() *losdiscountsql.ListRequest   { return losdiscountsql.List() }
+func feesList() *feesql.ListRequest                   { return feesql.List() }
+func taxesList() *taxesql.ListRequest                 { return taxesql.List() }
 func unitPromoCodesList() *unitapplicablepromocodesql.ListRequest {
 	return unitapplicablepromocodesql.List()
 }

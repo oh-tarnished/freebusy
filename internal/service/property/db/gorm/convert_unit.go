@@ -20,7 +20,7 @@ import (
 type unitGraph struct {
 	unit          *property.Unit
 	price         *common.Money
-	moneys        []*common.Money   // child value-object Money rows (rate/los/fee)
+	moneys        []*common.Money // child value-object Money rows (rate/los/fee)
 	dates         []*shared.DateRange
 	rateOverrides []*property.RateOverride
 	losDiscounts  []*property.LosDiscount

@@ -16,7 +16,8 @@ import (
 
 // This file holds the pure conversions between the protobuf Schedule/
 // AvailabilityException domain types and the normalized GORM storage models. A
-// schedule nests recurring rules, buffers, stay constraints, and a cancellation
+// schedule nests recurring rules, buffers, stay constr
+// aints, and a cancellation
 // policy (with refund tiers); an exception carries a TimeWindow or DateRange
 // span. Durations serialize as Go-duration strings, weekday lists as comma-joined
 // enum names, matching the single string columns the ORM generates.

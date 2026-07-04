@@ -23,8 +23,10 @@ var memberSortColumns = map[string]string{
 	"update_time": "update_time",
 }
 
-func orgOrderClause(orderBy string) (string, error)    { return orderClause(orderBy, orgSortColumns) }
-func memberOrderClause(orderBy string) (string, error) { return orderClause(orderBy, memberSortColumns) }
+func orgOrderClause(orderBy string) (string, error) { return orderClause(orderBy, orgSortColumns) }
+func memberOrderClause(orderBy string) (string, error) {
+	return orderClause(orderBy, memberSortColumns)
+}
 
 // orderClause turns an AIP-132 order_by string into a safe "col DIR, ..." clause
 // using the given column allowlist. Unknown fields are rejected.
