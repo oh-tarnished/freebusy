@@ -5,6 +5,9 @@
 package internal
 
 import (
+	"context"
+
+	bookingruntime "github.com/oh-tarnished/freebusy/internal/runtime/booking"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
@@ -22,15 +25,21 @@ type Service struct {
 	orgpbv1.OrganisationServiceServer
 	schedulepbv1.ScheduleServiceServer
 	bookingpbv1.BookingServiceServer
+
+	// booking is the concrete booking server, retained so background tasks (the
+	// hold sweeper) can be started against it in StartBackground.
+	booking *bookingruntime.Server
 }
 
-// NewService wraps the assembled service servers as the registered Service.
+// NewService wraps the assembled service servers as the registered Service. The
+// booking server is passed as its concrete type so its background hold sweeper can
+// be started; it still satisfies bookingpbv1.BookingServiceServer for embedding.
 func NewService(
 	promoCode promocodepbv1.PromoCodeServiceServer,
 	property propertypbv1.PropertyServiceServer,
 	organisation orgpbv1.OrganisationServiceServer,
 	schedule schedulepbv1.ScheduleServiceServer,
-	booking bookingpbv1.BookingServiceServer,
+	booking *bookingruntime.Server,
 ) *Service {
 	return &Service{
 		PromoCodeServiceServer:    promoCode,
@@ -38,5 +47,15 @@ func NewService(
 		OrganisationServiceServer: organisation,
 		ScheduleServiceServer:     schedule,
 		BookingServiceServer:      booking,
+		booking:                   booking,
+	}
+}
+
+// StartBackground launches the service's background tasks, tied to ctx: the
+// booking hold sweeper, which periodically expires lapsed holds. The goroutines
+// exit when ctx is cancelled (on server Stop/Restart).
+func (s *Service) StartBackground(ctx context.Context) {
+	if s.booking != nil {
+		s.booking.StartHoldSweeper(ctx, 0)
 	}
 }

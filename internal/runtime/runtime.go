@@ -17,7 +17,6 @@ import (
 	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
 	scheduledb "github.com/oh-tarnished/freebusy/internal/service/schedule/db"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -65,8 +64,10 @@ func NewScheduleServer() (schedulepbv1.ScheduleServiceServer, error) {
 }
 
 // NewBookingServer opens the configured backend, builds the repository, and
-// returns the booking gRPC service implementation ready to register.
-func NewBookingServer() (bookingpbv1.BookingServiceServer, error) {
+// returns the booking gRPC service implementation ready to register. It returns
+// the concrete *booking.Server (which satisfies bookingpbv1.BookingServiceServer)
+// so the caller can also start its background hold sweeper.
+func NewBookingServer() (*booking.Server, error) {
 	conn, err := database.Open()
 	if err != nil {
 		return nil, err

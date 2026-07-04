@@ -8,15 +8,35 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/money"
 	"gorm.io/gorm"
 )
+
+// ExpireHolds flips every PENDING_HOLD booking whose hold has lapsed to EXPIRED,
+// freeing the capacity it reserved. Returns the number of holds expired. Intended
+// to be called periodically by the hold sweeper.
+func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
+	now := time.Now().UTC()
+	res := r.db.WithContext(ctx).Model(&booking.Booking{}).
+		Where("state = ? AND hold_expire_time IS NOT NULL AND hold_expire_time < ?", booking.BookingStatePendingHold, now).
+		Updates(map[string]any{
+			"state":       booking.BookingStateExpired,
+			"etag":        ulid.GenerateString(),
+			"update_time": now,
+		})
+	if res.Error != nil {
+		return 0, mapGormErr(res.Error)
+	}
+	return res.RowsAffected, nil
+}
 
 // ConfirmBooking flips a PENDING_HOLD booking to CONFIRMED.
 func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*bookingpbv1.Booking, error) {
@@ -118,6 +138,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	if w.GetWindow() == nil {
 		return nil, types.ErrInvalidArgument
 	}
+	var components []*sharedpbv1.PriceComponent
 	err = r.db.Transaction(func(tx *gorm.DB) error {
 		var m booking.Booking
 		if e := preloadBooking(tx.WithContext(ctx)).First(&m, "id = ?", id).Error; e != nil {
@@ -132,8 +153,24 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 			unitID = uid
 		}
 		var unit property.Unit
-		if e := tx.WithContext(ctx).Preload("Price").First(&unit, "id = ?", unitID).Error; e != nil {
+		if e := tx.WithContext(ctx).
+			Preload("Price").
+			Preload("Fees").Preload("Fees.Amount").
+			Preload("Taxes").
+			Preload("LosDiscounts").Preload("LosDiscounts.AmountOff").
+			First(&unit, "id = ?", unitID).Error; e != nil {
 			return e
+		}
+		var promo *promocode.PromoCode
+		if pid := deref(m.PromoCodeID); pid != "" {
+			var p promocode.PromoCode
+			if e := tx.WithContext(ctx).
+				Preload("Discount").Preload("Discount.AmountOff").
+				Preload("Scope").Preload("Scope.MinSubtotal").Preload("Scope.ScopeApplicableUnits").
+				First(&p, "id = ?", pid).Error; e != nil {
+				return e
+			}
+			promo = &p
 		}
 		window := timeWindowToModel(w.GetWindow())
 
@@ -158,18 +195,16 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 			return e
 		}
 		oldWindowID := m.WindowID
-		oldPriceID, oldTotalID := m.PriceID, m.TotalID
+		oldPriceID, oldDiscountID, oldTotalID := m.PriceID, m.DiscountID, m.TotalID
 
-		// Recompute base price for the new window/unit.
-		var priceID, totalID *string
+		// Recompute the full price breakdown for the new window/unit (base, LOS +
+		// promo discounts, fees, taxes), carrying the booking's promo code.
+		var priceID, discountID, totalID *string
 		if unit.Price != nil {
-			qty := int64(1)
-			if unit.BookingMode == property.BookingModeNightly {
-				qty = nightsBetween(w.GetWindow(), unit.TimeZone)
-			}
-			base := moneyMul(moneyFromModel(unit.Price), qty)
-			price := moneyToModel(base)
-			total := moneyToModel(base)
+			nights := nightsBetween(w.GetWindow(), unit.TimeZone)
+			p := computePricing(&unit, nights, int64(requested), promo)
+			price := moneyToModel(p.base)
+			total := moneyToModel(p.total)
 			moneys := common.NewMoneyStore(tx)
 			if e := moneys.Create(ctx, price); e != nil {
 				return e
@@ -178,11 +213,20 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 				return e
 			}
 			priceID, totalID = &price.ID, &total.ID
+			if !isZeroMoney(p.discount) {
+				discount := moneyToModel(p.discount)
+				if e := moneys.Create(ctx, discount); e != nil {
+					return e
+				}
+				discountID = &discount.ID
+			}
+			components = p.components
 		}
 
 		m.UnitID = unitID
 		m.WindowID = window.ID
 		m.PriceID = priceID
+		m.DiscountID = discountID
 		m.TotalID = totalID
 		m.Etag = ptr(ulid.GenerateString())
 		m.Contact, m.Window, m.Price, m.Discount, m.Total, m.RefundAmount = nil, nil, nil, nil, nil, nil
@@ -191,12 +235,12 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		}
 
 		// Drop the superseded window (cascade would remove the booking, so delete
-		// only after repointing) and the old price/total Money rows.
+		// only after repointing) and the old price/discount/total Money rows.
 		if e := shared.NewTimeWindowStore(tx).DeleteByID(ctx, oldWindowID); e != nil {
 			return e
 		}
 		moneys := common.NewMoneyStore(tx)
-		for _, mid := range []*string{oldPriceID, oldTotalID} {
+		for _, mid := range []*string{oldPriceID, oldDiscountID, oldTotalID} {
 			if mid != nil {
 				if e := moneys.DeleteByID(ctx, *mid); e != nil {
 					return e
@@ -208,7 +252,12 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	if err != nil {
 		return nil, mapGormErr(err)
 	}
-	return r.GetBooking(ctx, name)
+	out, err := r.GetBooking(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+	out.PriceComponents = components
+	return out, nil
 }
 
 // computeRefund resolves the unit's cancellation policy (from its schedule) and

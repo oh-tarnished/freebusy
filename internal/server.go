@@ -19,6 +19,9 @@ type Server struct {
 	options options.Options
 	// hybridServer is the running rumtime server instance.
 	hybridServer *grpc.HybridServer
+	// svc is the assembled service, retained so its background tasks (the hold
+	// sweeper) can be started against the server's lifecycle context in Start.
+	svc *Service
 	// ctx and cancel control the server's lifecycle context.
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -54,6 +57,7 @@ func NewServer(name, version string, opts ...options.Options) (*Server, error) {
 	return &Server{
 		options:      serverOpts,
 		hybridServer: grpc.NewHybridServer(serverOpts, serverOptions...),
+		svc:          svc,
 		ctx:          ctx,
 		cancel:       cancel,
 	}, nil
@@ -79,11 +83,13 @@ func serviceOptions(svc *Service) ([]grpc.Option, error) {
 	return opts, nil
 }
 
-// Start begins serving gRPC, HTTP, and MCP traffic. Non-blocking.
+// Start begins serving gRPC, HTTP, and MCP traffic, and launches the service's
+// background tasks (the hold sweeper) tied to the server context. Non-blocking.
 func (s *Server) Start() error {
 	if err := s.hybridServer.Start(); err != nil {
 		return fmt.Errorf("failed to start hybrid server: %w", err)
 	}
+	s.svc.StartBackground(s.ctx)
 	return nil
 }
 
@@ -123,6 +129,7 @@ func (s *Server) Restart() error {
 	if err != nil {
 		return fmt.Errorf("recreate service instance during restart: %w", err)
 	}
+	s.svc = svc
 
 	serverOptions, err := serviceOptions(svc)
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/service/schedule/db/gorm"
+	"github.com/oh-tarnished/freebusy/internal/service/schedule/db/hasura"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 )
@@ -40,13 +41,18 @@ type ScheduleRepository interface {
 	DeleteAvailabilityException(ctx context.Context, name string) error
 }
 
-// Assert the provider implementation satisfies the contract here.
-var _ ScheduleRepository = (*gorm.ScheduleRepository)(nil)
+// Assert the provider implementations satisfy the contract here, so the
+// sub-packages don't need to import this one (which would form an import cycle).
+var (
+	_ ScheduleRepository = (*gorm.ScheduleRepository)(nil)
+	_ ScheduleRepository = (*hasura.ScheduleRepository)(nil)
+)
 
-// New returns the ScheduleRepository for the configured provider. GORM is the
-// default; the Hasura implementation is a follow-up increment (mirroring the
-// property/organisation hasura adapters), so for now every provider resolves to
-// the GORM adapter.
+// New returns the ScheduleRepository for the configured provider, built over the
+// matching handle on conn ([database].provider; GORM by default, Hasura opt-in).
 func New(conn *database.Connection) ScheduleRepository {
+	if database.ProviderFromConfig() == database.ProviderHasura {
+		return hasura.NewScheduleRepository(conn.Hasura)
+	}
 	return gorm.NewScheduleRepository(conn.PgSQLConn)
 }

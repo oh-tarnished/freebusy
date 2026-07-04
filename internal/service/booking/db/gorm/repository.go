@@ -12,10 +12,12 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"gorm.io/gorm"
 )
@@ -83,8 +85,27 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	}
 
 	var unit property.Unit
-	if err := r.db.WithContext(ctx).Preload("Price").First(&unit, "id = ?", unitID).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Preload("Price").
+		Preload("Fees").Preload("Fees.Amount").
+		Preload("Taxes").
+		Preload("LosDiscounts").Preload("LosDiscounts.AmountOff").
+		First(&unit, "id = ?", unitID).Error; err != nil {
 		return nil, mapGormErr(err)
+	}
+
+	// Load the promo code (with its discount and scope) when one is applied, so the
+	// pricing engine can evaluate its scope and discount.
+	var promo *promocode.PromoCode
+	if pid := lastSegment(b.GetPromoCode()); pid != "" {
+		var p promocode.PromoCode
+		if err := r.db.WithContext(ctx).
+			Preload("Discount").Preload("Discount.AmountOff").
+			Preload("Scope").Preload("Scope.MinSubtotal").Preload("Scope.ScopeApplicableUnits").
+			First(&p, "id = ?", pid).Error; err != nil {
+			return nil, mapGormErr(err)
+		}
+		promo = &p
 	}
 
 	requested := b.GetUnits()
@@ -94,17 +115,20 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	window := timeWindowToModel(b.GetWindow())
 	contact := contactToModel(b.GetContact())
 
-	// Base price: unit price × nights (NIGHTLY, counted in the unit's timezone) or
-	// × 1 (TIME_SLOT). Fees, taxes, and promo discounts are a follow-up.
-	var priceModel, totalModel *common.Money
+	// Full price breakdown: base × nights, then LOS + promo discounts, fees, taxes.
+	// Nights are counted in the unit's timezone; the itemized components ride along
+	// on the create response (they are not persisted).
+	var priceModel, discountModel, totalModel *common.Money
+	var components []*sharedpbv1.PriceComponent
 	if unit.Price != nil {
-		qty := int64(1)
-		if unit.BookingMode == property.BookingModeNightly {
-			qty = nightsBetween(b.GetWindow(), unit.TimeZone)
+		nights := nightsBetween(b.GetWindow(), unit.TimeZone)
+		p := computePricing(&unit, nights, int64(requested), promo)
+		priceModel = moneyToModel(p.base)
+		totalModel = moneyToModel(p.total)
+		if !isZeroMoney(p.discount) {
+			discountModel = moneyToModel(p.discount)
 		}
-		base := moneyMul(moneyFromModel(unit.Price), qty)
-		priceModel = moneyToModel(base)
-		totalModel = moneyToModel(base)
+		components = p.components
 	}
 
 	state := booking.BookingStatePendingHold
@@ -134,6 +158,9 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	}
 	if priceModel != nil {
 		m.PriceID = &priceModel.ID
+	}
+	if discountModel != nil {
+		m.DiscountID = &discountModel.ID
 	}
 	if totalModel != nil {
 		m.TotalID = &totalModel.ID
@@ -165,6 +192,11 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 				return e
 			}
 		}
+		if discountModel != nil {
+			if e := moneys.Create(ctx, discountModel); e != nil {
+				return e
+			}
+		}
 		if totalModel != nil {
 			if e := moneys.Create(ctx, totalModel); e != nil {
 				return e
@@ -175,7 +207,13 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	if err != nil {
 		return nil, mapGormErr(err)
 	}
-	return r.GetBooking(ctx, name)
+	out, err := r.GetBooking(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+	// price_components are computed, not persisted; ride them along on the response.
+	out.PriceComponents = components
+	return out, nil
 }
 
 // GetBooking returns the booking addressed by its resource name.
