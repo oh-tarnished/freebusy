@@ -357,3 +357,33 @@ func queueGuestInserts(tx *runtime.Tx, r *BookingRepository, graphs []guestGraph
 		tx.Add(r.svc.Mutation.Identity.Guests.CreateOp(g.guest, &gRes))
 	}
 }
+
+// queueGuestDeletes appends deletes for a booking's existing guest rows and their
+// belongs-to sub-rows (ID documents, foreigner details, preferences, addresses).
+func queueGuestDeletes(tx *runtime.Tx, r *BookingRepository, guests []identityschema.IdentityGuests) {
+	for i := range guests {
+		g := &guests[i]
+		var gRes identityschema.DeleteIdentityGuestsByIdResponse
+		tx.Add(r.svc.Mutation.Identity.Guests.DeleteOp(g.Id, &gRes))
+		if g.IdDocumentId != nil {
+			var res identityschema.DeleteIdentityIdDocumentsByIdResponse
+			tx.Add(r.svc.Mutation.Identity.IdDocuments.DeleteOp(*g.IdDocumentId, &res))
+		}
+		if g.ForeignerId != nil {
+			var res identityschema.DeleteIdentityForeignerDetailsByIdResponse
+			tx.Add(r.svc.Mutation.Identity.ForeignerDetails.DeleteOp(*g.ForeignerId, &res))
+		}
+		if g.PreferencesId != nil {
+			var res identityschema.DeleteIdentityGuestPreferencesByIdResponse
+			tx.Add(r.svc.Mutation.Identity.GuestPreferences.DeleteOp(*g.PreferencesId, &res))
+		}
+		if g.PermanentAddressId != nil {
+			var res commonschema.DeleteCommonPostalAddressByIdResponse
+			tx.Add(r.svc.Mutation.Common.PostalAddress.DeleteOp(*g.PermanentAddressId, &res))
+		}
+		if g.LocalAddressId != nil {
+			var res commonschema.DeleteCommonPostalAddressByIdResponse
+			tx.Add(r.svc.Mutation.Common.PostalAddress.DeleteOp(*g.LocalAddressId, &res))
+		}
+	}
+}

@@ -14,6 +14,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/money"
@@ -36,6 +37,73 @@ func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
 		return 0, mapGormErr(res.Error)
 	}
 	return res.RowsAffected, nil
+}
+
+// UpdateBookingGuests replaces the whole staying party (guests + occupancy) on a
+// booking. It is allowed only while the booking is PENDING_HOLD or CONFIRMED, and
+// re-validates the new party against the unit's max occupancy. Old guest rows and
+// their sub-rows, and the old occupancy, are removed in the same transaction.
+func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string, guests []*identitypbv1.Guest, occupancy *bookingpbv1.Occupancy) (*bookingpbv1.Booking, error) {
+	id, err := types.BookingID(name)
+	if err != nil {
+		return nil, err
+	}
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		var m booking.Booking
+		if e := tx.WithContext(ctx).First(&m, "id = ?", id).Error; e != nil {
+			return e
+		}
+		if m.State == nil || (*m.State != booking.BookingStatePendingHold && *m.State != booking.BookingStateConfirmed) {
+			return types.ErrConflict
+		}
+
+		// Re-validate the party against the unit's max occupancy.
+		var unit property.Unit
+		if e := tx.WithContext(ctx).Select("id", "max_occupancy").First(&unit, "id = ?", m.UnitID).Error; e != nil {
+			return e
+		}
+		units := deref(m.Units)
+		if units < 1 {
+			units = 1
+		}
+		if maxOcc := deref(unit.MaxOccupancy); maxOcc > 0 && partySize(occupancy, guests) > maxOcc*units {
+			return types.ErrInvalidArgument
+		}
+
+		// Drop the old party, then repoint the occupancy and insert the new party.
+		if e := deleteBookingGuests(ctx, tx, id); e != nil {
+			return e
+		}
+		oldOccID := m.OccupancyID
+		newOcc := occupancyToModel(occupancy)
+		if newOcc != nil {
+			if e := booking.NewOccupancyStore(tx).Create(ctx, newOcc); e != nil {
+				return e
+			}
+			m.OccupancyID = &newOcc.ID
+		} else {
+			m.OccupancyID = nil
+		}
+		m.Etag = ptr(ulid.GenerateString())
+		m.Contact, m.Window, m.Price, m.Discount, m.Total, m.RefundAmount, m.Occupancy = nil, nil, nil, nil, nil, nil, nil
+		if e := booking.NewBookingStore(tx).Update(ctx, &m); e != nil {
+			return e
+		}
+		if oldOccID != nil {
+			if e := booking.NewOccupancyStore(tx).DeleteByID(ctx, *oldOccID); e != nil {
+				return e
+			}
+		}
+		graphs := make([]guestGraph, 0, len(guests))
+		for _, g := range guests {
+			graphs = append(graphs, buildGuestGraph(g, id))
+		}
+		return persistGuests(ctx, tx, graphs)
+	})
+	if err != nil {
+		return nil, mapGormErr(err)
+	}
+	return r.GetBooking(ctx, name)
 }
 
 // ConfirmBooking flips a PENDING_HOLD booking to CONFIRMED.

@@ -12,6 +12,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/service/booking/db/hasura"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"google.golang.org/genproto/googleapis/type/money"
 )
 
@@ -48,6 +49,12 @@ type BookingRepository interface {
 	// EXPIRED, freeing the capacity it reserved, and returns how many it expired.
 	// Called periodically by the hold sweeper.
 	ExpireHolds(ctx context.Context) (int64, error)
+
+	// UpdateBookingGuests replaces the whole staying party (guests + occupancy) on
+	// a booking. Allowed only while PENDING_HOLD or CONFIRMED (types.ErrConflict
+	// otherwise); re-validates the party against the unit's max occupancy
+	// (types.ErrInvalidArgument when it overflows).
+	UpdateBookingGuests(ctx context.Context, name string, guests []*identitypbv1.Guest, occupancy *bookingpbv1.Occupancy) (*bookingpbv1.Booking, error)
 }
 
 // Assert the provider implementations satisfy the contract here, so the

@@ -97,4 +97,14 @@ service BookingService {
     option (google.api.method_signature) = "name,window";
     option (mcp.tool) = {description: "Move a booking to a new span (and optionally unit), re-checking availability on the new window."};
   }
+
+  // Replaces the staying party (guests and occupancy) on a booking.
+  rpc UpdateBookingGuests(UpdateBookingGuestsRequest) returns (Booking) {
+    option (google.api.http) = {
+      post: "/v1/{name=bookings/*}:updateGuests"
+      body: "*"
+    };
+    option (google.api.method_signature) = "name,guests";
+    option (mcp.tool) = {description: "Replace the guest party and occupancy on a booking. Allowed only while PENDING_HOLD or CONFIRMED; re-validates the party against the unit's max occupancy."};
+  }
 }

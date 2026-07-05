@@ -160,6 +160,24 @@ func (s *Server) PreviewCancellation(ctx context.Context, req *bookingpbv1.Previ
 	return out, err
 }
 
+// UpdateBookingGuests replaces the staying party (guests + occupancy) on a
+// booking. Allowed only while PENDING_HOLD or CONFIRMED.
+func (s *Server) UpdateBookingGuests(ctx context.Context, req *bookingpbv1.UpdateBookingGuestsRequest) (*bookingpbv1.Booking, error) {
+	if req.GetName() == "" {
+		return nil, status.Error(codes.InvalidArgument, "name is required")
+	}
+	var out *bookingpbv1.Booking
+	err := traced(ctx, "UpdateBookingGuests", func(ctx context.Context) error {
+		b, err := s.repo.UpdateBookingGuests(ctx, req.GetName(), req.GetGuests(), req.GetOccupancy())
+		if err != nil {
+			return toStatusErr(err)
+		}
+		out = b
+		return nil
+	})
+	return out, err
+}
+
 // RescheduleBooking moves a booking to a new span (and optionally unit).
 func (s *Server) RescheduleBooking(ctx context.Context, req *bookingpbv1.RescheduleBookingRequest) (*bookingpbv1.Booking, error) {
 	switch {

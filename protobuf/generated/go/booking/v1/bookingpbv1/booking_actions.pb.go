@@ -7,6 +7,7 @@
 package bookingpbv1
 
 import (
+	identitypbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
@@ -242,6 +243,75 @@ func (x *RescheduleBookingRequest) GetRequestId() string {
 	return ""
 }
 
+// Request message for UpdateBookingGuests. Replaces the whole staying party —
+// the guest list and the occupancy breakdown — on a booking. Allowed only while
+// the booking is PENDING_HOLD or CONFIRMED; the new party is re-validated against
+// the unit's max occupancy.
+type UpdateBookingGuestsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The booking whose party to replace.
+	// Format: bookings/{booking}
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The new guest party. Replaces every existing guest on the booking; an empty
+	// list clears the party.
+	Guests []*identitypbv1.Guest `protobuf:"bytes,2,rep,name=guests,proto3" json:"guests,omitempty"`
+	// The new occupancy breakdown, replacing the existing one.
+	Occupancy     *Occupancy `protobuf:"bytes,3,opt,name=occupancy,proto3" json:"occupancy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateBookingGuestsRequest) Reset() {
+	*x = UpdateBookingGuestsRequest{}
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateBookingGuestsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateBookingGuestsRequest) ProtoMessage() {}
+
+func (x *UpdateBookingGuestsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateBookingGuestsRequest.ProtoReflect.Descriptor instead.
+func (*UpdateBookingGuestsRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UpdateBookingGuestsRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateBookingGuestsRequest) GetGuests() []*identitypbv1.Guest {
+	if x != nil {
+		return x.Guests
+	}
+	return nil
+}
+
+func (x *UpdateBookingGuestsRequest) GetOccupancy() *Occupancy {
+	if x != nil {
+		return x.Occupancy
+	}
+	return nil
+}
+
 // Request message for PreviewCancellation. Computes the refund a cancellation
 // would yield right now, under the unit's cancellation policy, without
 // cancelling the booking.
@@ -256,7 +326,7 @@ type PreviewCancellationRequest struct {
 
 func (x *PreviewCancellationRequest) Reset() {
 	*x = PreviewCancellationRequest{}
-	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[3]
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -268,7 +338,7 @@ func (x *PreviewCancellationRequest) String() string {
 func (*PreviewCancellationRequest) ProtoMessage() {}
 
 func (x *PreviewCancellationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[3]
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -281,7 +351,7 @@ func (x *PreviewCancellationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PreviewCancellationRequest.ProtoReflect.Descriptor instead.
 func (*PreviewCancellationRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{3}
+	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *PreviewCancellationRequest) GetName() string {
@@ -310,7 +380,7 @@ type PreviewCancellationResponse struct {
 
 func (x *PreviewCancellationResponse) Reset() {
 	*x = PreviewCancellationResponse{}
-	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[4]
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -322,7 +392,7 @@ func (x *PreviewCancellationResponse) String() string {
 func (*PreviewCancellationResponse) ProtoMessage() {}
 
 func (x *PreviewCancellationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[4]
+	mi := &file_freebusy_booking_v1_booking_actions_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -335,7 +405,7 @@ func (x *PreviewCancellationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PreviewCancellationResponse.ProtoReflect.Descriptor instead.
 func (*PreviewCancellationResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{4}
+	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PreviewCancellationResponse) GetRefundable() bool {
@@ -377,7 +447,7 @@ var File_freebusy_booking_v1_booking_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a\x17google/type/money.proto\"\xa2\x01\n" +
+	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a\x17google/type/money.proto\"\xa2\x01\n" +
 	"\x15ConfirmBookingRequest\x127\n" +
 	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
 	"\x1bfreebusy.booking.v1/BookingR\x04name\x12$\n" +
@@ -399,7 +469,12 @@ const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\x04unit\x18\x03 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
 	"\x19freebusy.property.v1/UnitR\x04unit\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"U\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xd2\x01\n" +
+	"\x1aUpdateBookingGuestsRequest\x127\n" +
+	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/BookingR\x04name\x128\n" +
+	"\x06guests\x18\x02 \x03(\v2\x1b.freebusy.identity.v1.GuestB\x03\xe0A\x01R\x06guests\x12A\n" +
+	"\toccupancy\x18\x03 \x01(\v2\x1e.freebusy.booking.v1.OccupancyB\x03\xe0A\x01R\toccupancy\"U\n" +
 	"\x1aPreviewCancellationRequest\x127\n" +
 	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
 	"\x1bfreebusy.booking.v1/BookingR\x04name\"\x8c\x02\n" +
@@ -425,27 +500,32 @@ func file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP() []byte {
 	return file_freebusy_booking_v1_booking_actions_proto_rawDescData
 }
 
-var file_freebusy_booking_v1_booking_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_freebusy_booking_v1_booking_actions_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_freebusy_booking_v1_booking_actions_proto_goTypes = []any{
 	(*ConfirmBookingRequest)(nil),       // 0: freebusy.booking.v1.ConfirmBookingRequest
 	(*CancelBookingRequest)(nil),        // 1: freebusy.booking.v1.CancelBookingRequest
 	(*RescheduleBookingRequest)(nil),    // 2: freebusy.booking.v1.RescheduleBookingRequest
-	(*PreviewCancellationRequest)(nil),  // 3: freebusy.booking.v1.PreviewCancellationRequest
-	(*PreviewCancellationResponse)(nil), // 4: freebusy.booking.v1.PreviewCancellationResponse
-	(CancelReason)(0),                   // 5: freebusy.booking.v1.CancelReason
-	(*sharedpbv1.TimeWindow)(nil),       // 6: freebusy.shared.v1.TimeWindow
-	(*money.Money)(nil),                 // 7: google.type.Money
+	(*UpdateBookingGuestsRequest)(nil),  // 3: freebusy.booking.v1.UpdateBookingGuestsRequest
+	(*PreviewCancellationRequest)(nil),  // 4: freebusy.booking.v1.PreviewCancellationRequest
+	(*PreviewCancellationResponse)(nil), // 5: freebusy.booking.v1.PreviewCancellationResponse
+	(CancelReason)(0),                   // 6: freebusy.booking.v1.CancelReason
+	(*sharedpbv1.TimeWindow)(nil),       // 7: freebusy.shared.v1.TimeWindow
+	(*identitypbv1.Guest)(nil),          // 8: freebusy.identity.v1.Guest
+	(*Occupancy)(nil),                   // 9: freebusy.booking.v1.Occupancy
+	(*money.Money)(nil),                 // 10: google.type.Money
 }
 var file_freebusy_booking_v1_booking_actions_proto_depIdxs = []int32{
-	5, // 0: freebusy.booking.v1.CancelBookingRequest.reason:type_name -> freebusy.booking.v1.CancelReason
-	6, // 1: freebusy.booking.v1.RescheduleBookingRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	7, // 2: freebusy.booking.v1.PreviewCancellationResponse.refund_amount:type_name -> google.type.Money
-	7, // 3: freebusy.booking.v1.PreviewCancellationResponse.non_refundable_amount:type_name -> google.type.Money
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	6,  // 0: freebusy.booking.v1.CancelBookingRequest.reason:type_name -> freebusy.booking.v1.CancelReason
+	7,  // 1: freebusy.booking.v1.RescheduleBookingRequest.window:type_name -> freebusy.shared.v1.TimeWindow
+	8,  // 2: freebusy.booking.v1.UpdateBookingGuestsRequest.guests:type_name -> freebusy.identity.v1.Guest
+	9,  // 3: freebusy.booking.v1.UpdateBookingGuestsRequest.occupancy:type_name -> freebusy.booking.v1.Occupancy
+	10, // 4: freebusy.booking.v1.PreviewCancellationResponse.refund_amount:type_name -> google.type.Money
+	10, // 5: freebusy.booking.v1.PreviewCancellationResponse.non_refundable_amount:type_name -> google.type.Money
+	6,  // [6:6] is the sub-list for method output_type
+	6,  // [6:6] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_booking_v1_booking_actions_proto_init() }
@@ -461,7 +541,7 @@ func file_freebusy_booking_v1_booking_actions_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_booking_v1_booking_actions_proto_rawDesc), len(file_freebusy_booking_v1_booking_actions_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

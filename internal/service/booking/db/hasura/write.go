@@ -11,12 +11,14 @@ import (
 	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
 	moneysql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
+	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
 	refundtiersql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
 	schedresourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -51,6 +53,80 @@ func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
 		expired++
 	}
 	return expired, nil
+}
+
+// UpdateBookingGuests replaces the whole staying party (guests + occupancy) on a
+// booking, allowed only while PENDING_HOLD or CONFIRMED and re-validated against
+// the unit's max occupancy. The old occupancy and guest graph are dropped and the
+// new ones inserted in one atomic mutation batch.
+func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string, guests []*identitypbv1.Guest, occupancy *bookingpbv1.Occupancy) (*bookingpbv1.Booking, error) {
+	id, err := types.BookingID(name)
+	if err != nil {
+		return nil, err
+	}
+	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
+	if err != nil {
+		return nil, mapHasuraErr(err)
+	}
+	if res == nil {
+		return nil, types.ErrNotFound
+	}
+	if res.State == nil || (*res.State != "PENDING_HOLD" && *res.State != "CONFIRMED") {
+		return nil, types.ErrConflict
+	}
+
+	// Re-validate the party against the unit's max occupancy.
+	unit, err := r.svc.Query.Property.Units.Get(ctx, res.Unit)
+	if err != nil {
+		return nil, mapHasuraErr(err)
+	}
+	if unit == nil {
+		return nil, types.ErrNotFound
+	}
+	units := deref(res.Units)
+	if units < 1 {
+		units = 1
+	}
+	if unit.MaxOccupancy != nil && *unit.MaxOccupancy > 0 && partySize(occupancy, guests) > *unit.MaxOccupancy*units {
+		return nil, types.ErrInvalidArgument
+	}
+
+	oldGuests, err := r.svc.Query.Identity.Guests.List(ctx, guestsql.List().Where(guestsql.BookingId.Eq(id)))
+	if err != nil {
+		return nil, mapHasuraErr(err)
+	}
+
+	now := time.Now().UTC()
+	newOcc := occupancyInput(occupancy)
+	graphs := make([]guestGraph, 0, len(guests))
+	for _, g := range guests {
+		graphs = append(graphs, buildGuestGraph(g, id))
+	}
+
+	tx := r.svc.Mutation.Tx()
+	occID := ""
+	if newOcc != nil {
+		var oRes bookingschema.InsertBookingOccupanciesResponse
+		tx.Add(r.svc.Mutation.Booking.Occupancies.CreateOp(*newOcc, &oRes))
+		occID = newOcc.Id
+	}
+	patch := resourceql.UpdateInput{
+		OccupancyId: nullableStr(occID),
+		Etag:        graphql.Value(ulid.GenerateString()),
+		UpdateTime:  graphql.Value(tsToStr(timestamppb.New(now))),
+	}
+	var updRes bookingschema.UpdateBookingResourceByIdResponse
+	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes))
+	if res.OccupancyId != nil {
+		var delOcc bookingschema.DeleteBookingOccupanciesByIdResponse
+		tx.Add(r.svc.Mutation.Booking.Occupancies.DeleteOp(*res.OccupancyId, &delOcc))
+	}
+	queueGuestDeletes(tx, r, oldGuests)
+	queueGuestInserts(tx, r, graphs)
+	if err := tx.Commit(ctx); err != nil {
+		return nil, mapHasuraErr(err)
+	}
+	return r.GetBooking(ctx, name)
 }
 
 // ConfirmBooking flips a PENDING_HOLD booking to CONFIRMED.

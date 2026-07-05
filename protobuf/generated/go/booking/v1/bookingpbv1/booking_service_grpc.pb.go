@@ -26,6 +26,7 @@ const (
 	BookingService_CancelBooking_FullMethodName       = "/freebusy.booking.v1.BookingService/CancelBooking"
 	BookingService_PreviewCancellation_FullMethodName = "/freebusy.booking.v1.BookingService/PreviewCancellation"
 	BookingService_RescheduleBooking_FullMethodName   = "/freebusy.booking.v1.BookingService/RescheduleBooking"
+	BookingService_UpdateBookingGuests_FullMethodName = "/freebusy.booking.v1.BookingService/UpdateBookingGuests"
 )
 
 // BookingServiceClient is the client API for BookingService service.
@@ -53,6 +54,8 @@ type BookingServiceClient interface {
 	PreviewCancellation(ctx context.Context, in *PreviewCancellationRequest, opts ...grpc.CallOption) (*PreviewCancellationResponse, error)
 	// Reschedules a booking to a new span.
 	RescheduleBooking(ctx context.Context, in *RescheduleBookingRequest, opts ...grpc.CallOption) (*Booking, error)
+	// Replaces the staying party (guests and occupancy) on a booking.
+	UpdateBookingGuests(ctx context.Context, in *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*Booking, error)
 }
 
 type bookingServiceClient struct {
@@ -133,6 +136,16 @@ func (c *bookingServiceClient) RescheduleBooking(ctx context.Context, in *Resche
 	return out, nil
 }
 
+func (c *bookingServiceClient) UpdateBookingGuests(ctx context.Context, in *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*Booking, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Booking)
+	err := c.cc.Invoke(ctx, BookingService_UpdateBookingGuests_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookingServiceServer is the server API for BookingService service.
 // All implementations must embed UnimplementedBookingServiceServer
 // for forward compatibility.
@@ -158,6 +171,8 @@ type BookingServiceServer interface {
 	PreviewCancellation(context.Context, *PreviewCancellationRequest) (*PreviewCancellationResponse, error)
 	// Reschedules a booking to a new span.
 	RescheduleBooking(context.Context, *RescheduleBookingRequest) (*Booking, error)
+	// Replaces the staying party (guests and occupancy) on a booking.
+	UpdateBookingGuests(context.Context, *UpdateBookingGuestsRequest) (*Booking, error)
 	mustEmbedUnimplementedBookingServiceServer()
 }
 
@@ -188,6 +203,9 @@ func (UnimplementedBookingServiceServer) PreviewCancellation(context.Context, *P
 }
 func (UnimplementedBookingServiceServer) RescheduleBooking(context.Context, *RescheduleBookingRequest) (*Booking, error) {
 	return nil, status.Error(codes.Unimplemented, "method RescheduleBooking not implemented")
+}
+func (UnimplementedBookingServiceServer) UpdateBookingGuests(context.Context, *UpdateBookingGuestsRequest) (*Booking, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateBookingGuests not implemented")
 }
 func (UnimplementedBookingServiceServer) mustEmbedUnimplementedBookingServiceServer() {}
 func (UnimplementedBookingServiceServer) testEmbeddedByValue()                        {}
@@ -336,6 +354,24 @@ func _BookingService_RescheduleBooking_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_UpdateBookingGuests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBookingGuestsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).UpdateBookingGuests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookingService_UpdateBookingGuests_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).UpdateBookingGuests(ctx, req.(*UpdateBookingGuestsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookingService_ServiceDesc is the grpc.ServiceDesc for BookingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -370,6 +406,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RescheduleBooking",
 			Handler:    _BookingService_RescheduleBooking_Handler,
+		},
+		{
+			MethodName: "UpdateBookingGuests",
+			Handler:    _BookingService_UpdateBookingGuests_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

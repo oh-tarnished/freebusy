@@ -23,6 +23,7 @@ var BookingService_GetBookingSchemaJSON = `{"description":"Get a single booking 
 var BookingService_ListBookingsSchemaJSON = `{"description":"List bookings. Filter by unit, customer, status, or overlapping time window, and paginate.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
 var BookingService_PreviewCancellationSchemaJSON = `{"description":"Preview the refund amount and percent a cancellation would yield right now under the unit's cancellation policy, without cancelling.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
 var BookingService_RescheduleBookingSchemaJSON = `{"description":"Move a booking to a new span (and optionally unit), re-checking availability on the new window.","properties":{"name":{"type":"string"},"request_id":{"type":"string"},"unit":{"type":"string"},"window":{"properties":{"end_time":{"format":"date-time","type":["string","null"]},"start_time":{"format":"date-time","type":["string","null"]}},"required":["start_time","end_time"],"type":"object"}},"required":["name","window"],"type":"object"}`
+var BookingService_UpdateBookingGuestsSchemaJSON = `{"description":"Replace the guest party and occupancy on a booking. Allowed only while PENDING_HOLD or CONFIRMED; re-validates the party against the unit's max occupancy.","properties":{"guests":{"items":{"properties":{"age_group":{"enum":["AGE_GROUP_UNSPECIFIED","AGE_GROUP_ADULT","AGE_GROUP_CHILD","AGE_GROUP_INFANT"],"type":"string"},"birth_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"display_name":{"type":"string"},"email":{"type":"string"},"foreigner":{"properties":{"arrival_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"entry_port":{"type":"string"},"next_destination":{"type":"string"},"origin":{"type":"string"},"visa_expiry_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"visa_issue_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"visa_issue_place":{"type":"string"},"visa_number":{"type":"string"},"visa_type":{"type":"string"},"visit_purpose":{"type":"string"}},"required":[],"type":"object"},"gender":{"enum":["GENDER_UNSPECIFIED","GENDER_MALE","GENDER_FEMALE","GENDER_OTHER","GENDER_UNDISCLOSED"],"type":"string"},"id_document":{"properties":{"expiry_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"issue_date":{"properties":{"day":{"type":"integer"},"month":{"type":"integer"},"year":{"type":"integer"}},"required":[],"type":"object"},"issue_place":{"type":"string"},"issuing_country":{"type":"string"},"number":{"type":"string"},"type":{"enum":["ID_DOCUMENT_TYPE_UNSPECIFIED","ID_DOCUMENT_TYPE_PASSPORT","ID_DOCUMENT_TYPE_NATIONAL_ID","ID_DOCUMENT_TYPE_DRIVING_LICENSE","ID_DOCUMENT_TYPE_AADHAAR","ID_DOCUMENT_TYPE_VOTER_ID","ID_DOCUMENT_TYPE_OTHER"],"type":"string"}},"required":["type","number"],"type":"object"},"local_address":{"properties":{"address_lines":{"items":{"type":"string"},"type":"array"},"administrative_area":{"type":"string"},"language_code":{"type":"string"},"locality":{"type":"string"},"organization":{"type":"string"},"postal_code":{"type":"string"},"recipients":{"items":{"type":"string"},"type":"array"},"region_code":{"type":"string"},"revision":{"type":"integer"},"sorting_code":{"type":"string"},"sublocality":{"type":"string"}},"required":[],"type":"object"},"nationality":{"type":"string"},"permanent_address":{"properties":{"address_lines":{"items":{"type":"string"},"type":"array"},"administrative_area":{"type":"string"},"language_code":{"type":"string"},"locality":{"type":"string"},"organization":{"type":"string"},"postal_code":{"type":"string"},"recipients":{"items":{"type":"string"},"type":"array"},"region_code":{"type":"string"},"revision":{"type":"integer"},"sorting_code":{"type":"string"},"sublocality":{"type":"string"}},"required":[],"type":"object"},"phone_number":{"type":"string"},"preferences":{"properties":{"accessibility":{"items":{"type":"string"},"type":"array"},"bed":{"enum":["BED_PREFERENCE_UNSPECIFIED","BED_PREFERENCE_NO_PREFERENCE","BED_PREFERENCE_KING","BED_PREFERENCE_QUEEN","BED_PREFERENCE_TWIN","BED_PREFERENCE_SINGLE"],"type":"string"},"dietary":{"items":{"type":"string"},"type":"array"},"floor_preference":{"type":"integer"},"loyalty_number":{"type":"string"},"notes":{"type":"string"},"smoking":{"enum":["SMOKING_PREFERENCE_UNSPECIFIED","SMOKING_PREFERENCE_NON_SMOKING","SMOKING_PREFERENCE_SMOKING"],"type":"string"},"special_requests":{"items":{"type":"string"},"type":"array"}},"required":[],"type":"object"},"primary":{"type":"boolean"}},"required":["display_name"],"type":"object"},"type":"array"},"name":{"type":"string"},"occupancy":{"properties":{"adults":{"type":"integer"},"children":{"type":"integer"},"infants":{"type":"integer"}},"required":[],"type":"object"}},"required":["name"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.
@@ -34,6 +35,7 @@ var (
 	BookingService_ListBookingsTool        = runtime.MustCreateTool("booking_service-list_bookings_v1", `List bookings. Filter by unit, customer, status, or overlapping time window, and paginate.`, BookingService_ListBookingsSchemaJSON)
 	BookingService_PreviewCancellationTool = runtime.MustCreateTool("booking_service-preview_cancellation_v1", `Preview the refund amount and percent a cancellation would yield right now under the unit's cancellation policy, without cancelling.`, BookingService_PreviewCancellationSchemaJSON)
 	BookingService_RescheduleBookingTool   = runtime.MustCreateTool("booking_service-reschedule_booking_v1", `Move a booking to a new span (and optionally unit), re-checking availability on the new window.`, BookingService_RescheduleBookingSchemaJSON)
+	BookingService_UpdateBookingGuestsTool = runtime.MustCreateTool("booking_service-update_booking_guests_v1", `Replace the guest party and occupancy on a booking. Allowed only while PENDING_HOLD or CONFIRMED; re-validates the party against the unit's max occupancy.`, BookingService_UpdateBookingGuestsSchemaJSON)
 )
 
 // BookingServiceMCPServer is the interface that users implement to handle MCP
@@ -49,6 +51,7 @@ type BookingServiceMCPServer interface {
 	ListBookings(ctx context.Context, req *ListBookingsRequest) (*ListBookingsResponse, error)
 	PreviewCancellation(ctx context.Context, req *PreviewCancellationRequest) (*PreviewCancellationResponse, error)
 	RescheduleBooking(ctx context.Context, req *RescheduleBookingRequest) (*Booking, error)
+	UpdateBookingGuests(ctx context.Context, req *UpdateBookingGuestsRequest) (*Booking, error)
 }
 
 // BookingServiceMCPClient is the gRPC client interface used when forwarding MCP
@@ -61,6 +64,7 @@ type BookingServiceMCPClient interface {
 	ListBookings(ctx context.Context, req *ListBookingsRequest, opts ...grpc.CallOption) (*ListBookingsResponse, error)
 	PreviewCancellation(ctx context.Context, req *PreviewCancellationRequest, opts ...grpc.CallOption) (*PreviewCancellationResponse, error)
 	RescheduleBooking(ctx context.Context, req *RescheduleBookingRequest, opts ...grpc.CallOption) (*Booking, error)
+	UpdateBookingGuests(ctx context.Context, req *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*Booking, error)
 }
 
 // RegisterBookingServiceMCPHandler registers all BookingService RPC methods as MCP
@@ -199,6 +203,26 @@ func RegisterBookingServiceMCPHandler(s *mcp.Server, srv BookingServiceMCPServer
 				return nil, err
 			}
 			resp, err := srv.RescheduleBooking(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(BookingService_UpdateBookingGuestsTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq UpdateBookingGuestsRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			resp, err := srv.UpdateBookingGuests(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}
@@ -409,6 +433,27 @@ func ForwardToBookingServiceMCPClient(s *mcp.Server, client BookingServiceMCPCli
 			}
 			ctx = runtime.ForwardMetadata(ctx)
 			resp, err := client.RescheduleBooking(ctx, &pbReq)
+			if err != nil {
+				return runtime.HandleError(err)
+			}
+			out, err := (protojson.MarshalOptions{UseProtoNames: true, EmitDefaultValues: true}).Marshal(resp)
+			if err != nil {
+				return nil, err
+			}
+			return runtime.TextResult(string(out)), nil
+		})
+	}
+	{
+		tool := runtime.PrepareToolWithExtras(BookingService_UpdateBookingGuestsTool, cfg.ExtraProperties)
+		tool = runtime.SetToolAppMeta(tool, appResourceURI)
+		s.AddTool(tool, func(ctx context.Context, req *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			var pbReq UpdateBookingGuestsRequest
+			args, ctx := runtime.ExtractExtras(ctx, req.Params.Arguments, cfg)
+			if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(args, &pbReq); err != nil {
+				return nil, err
+			}
+			ctx = runtime.ForwardMetadata(ctx)
+			resp, err := client.UpdateBookingGuests(ctx, &pbReq)
 			if err != nil {
 				return runtime.HandleError(err)
 			}

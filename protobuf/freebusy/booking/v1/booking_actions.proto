@@ -7,6 +7,7 @@ import "freebusy/booking/v1/booking.proto";
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
 import "freebusy/booking/v1/enums.proto";
+import "freebusy/identity/v1/guest.proto";
 import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/api/field_info.proto";
@@ -87,6 +88,26 @@ message RescheduleBookingRequest {
     (google.api.field_info).format = UUID4,
     (google.api.field_behavior) = OPTIONAL
   ];
+}
+
+// Request message for UpdateBookingGuests. Replaces the whole staying party —
+// the guest list and the occupancy breakdown — on a booking. Allowed only while
+// the booking is PENDING_HOLD or CONFIRMED; the new party is re-validated against
+// the unit's max occupancy.
+message UpdateBookingGuestsRequest {
+  // The booking whose party to replace.
+  // Format: bookings/{booking}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.booking.v1/Booking"}
+  ];
+
+  // The new guest party. Replaces every existing guest on the booking; an empty
+  // list clears the party.
+  repeated freebusy.identity.v1.Guest guests = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // The new occupancy breakdown, replacing the existing one.
+  Occupancy occupancy = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for PreviewCancellation. Computes the refund a cancellation

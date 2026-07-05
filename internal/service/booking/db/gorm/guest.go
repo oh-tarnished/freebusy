@@ -364,6 +364,58 @@ func persistGuests(ctx context.Context, tx *gorm.DB, graphs []guestGraph) error 
 	return nil
 }
 
+// deleteBookingGuests removes a booking's guest party and the belongs-to sub-rows
+// (ID documents, foreigner details, preferences, addresses) those guests owned.
+// The guest rows are deleted first (they hold the FKs), then the orphaned
+// sub-rows by id.
+func deleteBookingGuests(ctx context.Context, tx *gorm.DB, bookingID string) error {
+	var guests []identity.Guest
+	if err := tx.WithContext(ctx).Where("booking_id = ?", bookingID).Find(&guests).Error; err != nil {
+		return err
+	}
+	if len(guests) == 0 {
+		return nil
+	}
+	var docIDs, forIDs, prefIDs, addrIDs []string
+	for i := range guests {
+		g := &guests[i]
+		if g.IDDocumentID != nil {
+			docIDs = append(docIDs, *g.IDDocumentID)
+		}
+		if g.ForeignerID != nil {
+			forIDs = append(forIDs, *g.ForeignerID)
+		}
+		if g.PreferencesID != nil {
+			prefIDs = append(prefIDs, *g.PreferencesID)
+		}
+		if g.PermanentAddressID != nil {
+			addrIDs = append(addrIDs, *g.PermanentAddressID)
+		}
+		if g.LocalAddressID != nil {
+			addrIDs = append(addrIDs, *g.LocalAddressID)
+		}
+	}
+	if err := tx.WithContext(ctx).Where("booking_id = ?", bookingID).Delete(&identity.Guest{}).Error; err != nil {
+		return err
+	}
+	for _, d := range []struct {
+		ids   []string
+		model any
+	}{
+		{docIDs, &identity.IdDocument{}},
+		{forIDs, &identity.ForeignerDetails{}},
+		{prefIDs, &identity.GuestPreferences{}},
+		{addrIDs, &common.PostalAddress{}},
+	} {
+		if len(d.ids) > 0 {
+			if err := tx.WithContext(ctx).Where("id IN ?", d.ids).Delete(d.model).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 // loadGuests returns a booking's guest party, with each guest's sub-rows
 // preloaded, ordered by id (ULIDs preserve insertion order).
 func (r *BookingRepository) loadGuests(ctx context.Context, bookingID string) ([]*identitypbv1.Guest, error) {
