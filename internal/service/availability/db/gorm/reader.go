@@ -14,6 +14,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/service/availability/engine"
 	"github.com/oh-tarnished/freebusy/internal/types"
+	"github.com/oh-tarnished/freebusy/shared/rrule"
 	"google.golang.org/genproto/googleapis/type/money"
 	"gorm.io/gorm"
 )
@@ -37,6 +38,15 @@ JOIN "shared"."time_windows" w ON w.id = b.window_id
 WHERE b.unit = ? AND b.state IN ('PENDING_HOLD','CONFIRMED')
   AND w.start_time < ? AND w.end_time > ?`
 
+// activeBookingBatchSQL is activeBookingSQL across many units, carrying b.unit so
+// the caller can group the rows by unit.
+const activeBookingBatchSQL = `
+SELECT b.unit AS unit, w.start_time AS start, w.end_time AS "end", COALESCE(b.units, 1) AS units
+FROM "booking"."resource" b
+JOIN "shared"."time_windows" w ON w.id = b.window_id
+WHERE b.unit IN ? AND b.state IN ('PENDING_HOLD','CONFIRMED')
+  AND w.start_time < ? AND w.end_time > ?`
+
 func mapErr(err error) error {
 	switch {
 	case err == nil:
@@ -48,52 +58,93 @@ func mapErr(err error) error {
 	}
 }
 
-// GetUnit loads the unit's config and, from its schedule, the stay/notice policy.
+// unitPreloads returns a query with the unit's price and pricing children (with
+// their Money) preloaded — the data the lead-price computation needs.
+func (r *AvailabilityReader) unitPreloads(ctx context.Context) *gorm.DB {
+	return r.db.WithContext(ctx).
+		Preload("Price").
+		Preload("Fees").Preload("Fees.Amount").
+		Preload("Taxes").
+		Preload("LosDiscounts").Preload("LosDiscounts.AmountOff")
+}
+
+// GetUnit loads the unit's config and, from its schedule, the stay/notice/buffer
+// and open-hours policy.
 func (r *AvailabilityReader) GetUnit(ctx context.Context, unitName string) (*engine.UnitInfo, error) {
 	unitID, err := types.UnitID(unitName)
 	if err != nil {
 		return nil, err
 	}
 	var u property.Unit
-	if err := r.db.WithContext(ctx).Preload("Price").First(&u, "id = ?", unitID).Error; err != nil {
+	if err := r.unitPreloads(ctx).First(&u, "id = ?", unitID).Error; err != nil {
 		return nil, mapErr(err)
 	}
-	info := &engine.UnitInfo{
-		ID:          u.ID,
-		Name:        u.Name,
-		DisplayName: u.DisplayName,
-		Mode:        string(u.BookingMode),
-		Capacity:    1,
-		TimeZone:    u.TimeZone,
-		Duration:    durationFromStr(u.Duration),
-		Price:       moneyFromModel(u.Price),
-		Archived:    u.State != nil && *u.State == property.UnitStateArchived,
-	}
-	if u.Capacity != nil && *u.Capacity > 0 {
-		info.Capacity = *u.Capacity
-	}
-
 	scheduleName, err := types.ScheduleName(u.PropertyID, unitID)
 	if err != nil {
 		return nil, err
 	}
-	var sched schedule.Schedule
-	switch err := r.db.WithContext(ctx).Preload("StayConstraints").Preload("Buffers").First(&sched, "name = ?", scheduleName).Error; {
+	var sched *schedule.Schedule
+	var s schedule.Schedule
+	switch err := schedulePreloads(r.db.WithContext(ctx)).First(&s, "name = ?", scheduleName).Error; {
 	case err == nil:
-		if sc := sched.StayConstraints; sc != nil {
-			info.MinNights = derefInt32(sc.MinNights)
-			info.MaxNights = derefInt32(sc.MaxNights)
-		}
-		if b := sched.Buffers; b != nil {
-			info.MinNotice = durationFromStr(b.MinNotice)
-			info.MaxAdvance = durationFromStr(b.MaxAdvance)
-		}
+		sched = &s
 	case errors.Is(err, gorm.ErrRecordNotFound):
-		// No schedule configured; leave policy zero-valued.
+		// No schedule configured; policy stays zero-valued.
 	default:
 		return nil, err
 	}
-	return info, nil
+	return buildUnitInfo(&u, sched), nil
+}
+
+func schedulePreloads(db *gorm.DB) *gorm.DB {
+	return db.Preload("StayConstraints").Preload("Buffers").Preload("RecurringRules")
+}
+
+// buildUnitInfo assembles the engine UnitInfo from a preloaded unit and its
+// (optional) preloaded schedule.
+func buildUnitInfo(u *property.Unit, sched *schedule.Schedule) *engine.UnitInfo {
+	info := &engine.UnitInfo{
+		ID:           u.ID,
+		Name:         u.Name,
+		DisplayName:  u.DisplayName,
+		Mode:         string(u.BookingMode),
+		Capacity:     1,
+		TimeZone:     u.TimeZone,
+		Duration:     durationFromStr(u.Duration),
+		Price:        moneyFromModel(u.Price),
+		Archived:     u.State != nil && *u.State == property.UnitStateArchived,
+		Fees:         feesOf(u),
+		Taxes:        taxesOf(u),
+		LosDiscounts: losOf(u),
+	}
+	if u.Capacity != nil && *u.Capacity > 0 {
+		info.Capacity = *u.Capacity
+	}
+	if sched == nil {
+		return info
+	}
+	if sc := sched.StayConstraints; sc != nil {
+		info.MinNights = derefInt32(sc.MinNights)
+		info.MaxNights = derefInt32(sc.MaxNights)
+		info.CheckinWeekdays = weekdaysFromStr(sc.CheckinWeekdays)
+		info.CheckoutWeekdays = weekdaysFromStr(sc.CheckoutWeekdays)
+	}
+	if b := sched.Buffers; b != nil {
+		info.MinNotice = durationFromStr(b.MinNotice)
+		info.MaxAdvance = durationFromStr(b.MaxAdvance)
+		info.Gap = durationFromStr(b.Gap)
+		info.StartDelta = durationFromStr(b.StartDelta)
+		info.EndDelta = durationFromStr(b.EndDelta)
+	}
+	for i := range sched.RecurringRules {
+		rr := &sched.RecurringRules[i]
+		info.Recurring = append(info.Recurring, rrule.Rule{
+			RRule:  rr.Rrule,
+			Opens:  deref(rr.Opens),
+			Closes: deref(rr.Closes),
+		})
+	}
+	return info
 }
 
 // ActiveBookings returns the overlapping held/confirmed reservations on unitID.
@@ -135,9 +186,12 @@ func (r *AvailabilityReader) Closures(ctx context.Context, unitID, tz string) ([
 	return out, nil
 }
 
-// SearchUnits returns active units for the storefront search, scoped and filtered.
+// SearchUnits returns active units for the storefront search, scoped and filtered,
+// each fully enriched (pricing children + schedule policy) so the handler can
+// judge bookability and lead price without a per-unit round trip. Schedules are
+// batch-loaded by name in one query.
 func (r *AvailabilityReader) SearchUnits(ctx context.Context, propertyRef, organisation, filter string) ([]*engine.UnitInfo, error) {
-	q := r.db.WithContext(ctx).Preload("Price").
+	q := r.unitPreloads(ctx).
 		Where("state IS NULL OR state <> ?", property.UnitStateArchived)
 
 	if propertyRef != "" {
@@ -164,25 +218,95 @@ func (r *AvailabilityReader) SearchUnits(ctx context.Context, propertyRef, organ
 	if err := q.Find(&units).Error; err != nil {
 		return nil, mapErr(err)
 	}
+
+	// Batch-load the units' schedules by name (one query), keyed for the join.
+	names := make([]string, 0, len(units))
+	for i := range units {
+		if n, err := types.ScheduleName(units[i].PropertyID, units[i].ID); err == nil {
+			names = append(names, n)
+		}
+	}
+	schedByName := map[string]*schedule.Schedule{}
+	if len(names) > 0 {
+		var scheds []schedule.Schedule
+		if err := schedulePreloads(r.db.WithContext(ctx)).Where("name IN ?", names).Find(&scheds).Error; err != nil {
+			return nil, mapErr(err)
+		}
+		for i := range scheds {
+			schedByName[scheds[i].Name] = &scheds[i]
+		}
+	}
+
 	out := make([]*engine.UnitInfo, 0, len(units))
 	for i := range units {
-		u := &units[i]
-		info := &engine.UnitInfo{
-			ID:          u.ID,
-			Name:        u.Name,
-			DisplayName: u.DisplayName,
-			Mode:        string(u.BookingMode),
-			Capacity:    1,
-			TimeZone:    u.TimeZone,
-			Duration:    durationFromStr(u.Duration),
-			Price:       moneyFromModel(u.Price),
-		}
-		if u.Capacity != nil && *u.Capacity > 0 {
-			info.Capacity = *u.Capacity
-		}
-		out = append(out, info)
+		name, _ := types.ScheduleName(units[i].PropertyID, units[i].ID)
+		out = append(out, buildUnitInfo(&units[i], schedByName[name]))
 	}
 	return out, nil
+}
+
+// ActiveBookingsForUnits batches ActiveBookings across many units: it returns the
+// overlapping held/confirmed reservations for each unit id, keyed by unit id.
+func (r *AvailabilityReader) ActiveBookingsForUnits(ctx context.Context, unitIDs []string, start, end time.Time) (map[string][]engine.Reservation, error) {
+	out := map[string][]engine.Reservation{}
+	if len(unitIDs) == 0 {
+		return out, nil
+	}
+	type row struct {
+		Unit  string
+		Start time.Time
+		End   time.Time
+		Units int32
+	}
+	var rows []row
+	if err := r.db.WithContext(ctx).Raw(activeBookingBatchSQL, unitIDs, end.UTC(), start.UTC()).Scan(&rows).Error; err != nil {
+		return nil, mapErr(err)
+	}
+	for i := range rows {
+		out[rows[i].Unit] = append(out[rows[i].Unit], engine.Reservation{Start: rows[i].Start, End: rows[i].End, Units: rows[i].Units})
+	}
+	return out, nil
+}
+
+// ClosuresForUnits batches Closures across many units, expanding each unit's
+// date-range closures in that unit's timezone (from tzByUnit).
+func (r *AvailabilityReader) ClosuresForUnits(ctx context.Context, unitIDs []string, tzByUnit map[string]string) (map[string][]engine.Closure, error) {
+	out := map[string][]engine.Closure{}
+	if len(unitIDs) == 0 {
+		return out, nil
+	}
+	var rows []schedule.AvailabilityException
+	if err := r.db.WithContext(ctx).
+		Preload("Window").Preload("DateRange").
+		Where("unit_id IN ? AND kind = ?", unitIDs, schedule.ExceptionKindClosure).
+		Find(&rows).Error; err != nil {
+		return nil, mapErr(err)
+	}
+	for i := range rows {
+		loc, err := time.LoadLocation(tzByUnit[rows[i].UnitID])
+		if err != nil {
+			loc = time.UTC
+		}
+		if c, ok := closureOf(&rows[i], loc); ok {
+			out[rows[i].UnitID] = append(out[rows[i].UnitID], c)
+		}
+	}
+	return out, nil
+}
+
+// closureOf converts one exception row into an engine.Closure span in loc.
+func closureOf(e *schedule.AvailabilityException, loc *time.Location) (engine.Closure, bool) {
+	switch {
+	case e.Window != nil:
+		return engine.Closure{Start: e.Window.StartTime.UTC(), End: e.Window.EndTime.UTC()}, true
+	case e.DateRange != nil:
+		s, en := e.DateRange.StartDate, e.DateRange.EndDate
+		start := time.Date(s.Year(), s.Month(), s.Day(), 0, 0, 0, 0, loc)
+		end := time.Date(en.Year(), en.Month(), en.Day(), 0, 0, 0, 0, loc)
+		return engine.Closure{Start: start.UTC(), End: end.UTC()}, true
+	default:
+		return engine.Closure{}, false
+	}
 }
 
 // --- helpers -----------------------------------------------------------------

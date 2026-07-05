@@ -51,6 +51,11 @@ type bookingName struct {
 	ID string   `resource:"booking"`
 }
 
+type userName struct {
+	_  struct{} `resource:"users/{user}"`
+	ID string   `resource:"user"`
+}
+
 type memberName struct {
 	_            struct{} `resource:"organisations/{organisation}/members/{member}"`
 	Organisation string   `resource:"organisation"`
@@ -299,6 +304,20 @@ func ResolveBookingName(name string) (id, full string, err error) {
 		return "", "", err
 	}
 	return id, name, nil
+}
+
+// UserName builds the resource name "users/{id}" from a bare id.
+func UserName(id string) (string, error) {
+	return resourcename.MarshalResource(&userName{ID: id})
+}
+
+// UserID extracts the bare id from a "users/{user}" resource name.
+func UserID(name string) (string, error) {
+	var n userName
+	if err := resourcename.UnmarshalResource(name, &n); err != nil {
+		return "", err
+	}
+	return n.ID, nil
 }
 
 // ScheduleName builds "properties/{property}/units/{unit}/schedule".

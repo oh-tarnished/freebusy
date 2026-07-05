@@ -6,6 +6,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/runtime"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -41,7 +42,11 @@ func newServiceInstance() (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewService(promoCode, property, organisation, schedule, booking, availability), nil
+	identity, err := runtime.NewIdentityServer()
+	if err != nil {
+		return nil, err
+	}
+	return NewService(promoCode, property, organisation, schedule, booking, availability, identity), nil
 }
 
 // registerGRPCServers returns a server option that registers the freebusy gRPC
@@ -54,6 +59,7 @@ func registerGRPCServers(svc *Service) grpc.Option {
 		schedulepbv1.RegisterScheduleServiceServer(s, svc)
 		bookingpbv1.RegisterBookingServiceServer(s, svc)
 		availabilitypbv1.RegisterAvailabilityServiceServer(s, svc)
+		identitypbv1.RegisterIdentityServiceServer(s, svc)
 	})
 }
 
@@ -76,7 +82,10 @@ func registerHTTPGateways() grpc.Option {
 		if err := bookingpbv1.RegisterBookingServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 			return err
 		}
-		return availabilitypbv1.RegisterAvailabilityServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+		if err := availabilitypbv1.RegisterAvailabilityServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		return identitypbv1.RegisterIdentityServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 	})
 }
 
@@ -99,6 +108,9 @@ func registerMCPServices(svc *Service) grpc.Option {
 		if err := bookingpbv1.ServeBookingServiceMCP(ctx, svc, cfg); err != nil {
 			return err
 		}
-		return availabilitypbv1.ServeAvailabilityServiceMCP(ctx, svc, cfg)
+		if err := availabilitypbv1.ServeAvailabilityServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		return identitypbv1.ServeIdentityServiceMCP(ctx, svc, cfg)
 	})
 }

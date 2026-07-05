@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
+	"github.com/oh-tarnished/freebusy/shared/rrule"
 	"google.golang.org/genproto/googleapis/type/money"
 )
 
@@ -18,15 +19,6 @@ const (
 	ModeNightly  = "NIGHTLY"
 	ModeTimeSlot = "TIME_SLOT"
 )
-
-// RecurringRule is one open-hours rule: an RFC 5545 RRULE naming the days it
-// recurs, plus the local "HH:MM" open/close window on those days (both empty
-// means the whole day is open). The engine gates TIME_SLOT slots to these hours.
-type RecurringRule struct {
-	RRule  string
-	Opens  string
-	Closes string
-}
 
 // UnitInfo is everything the engine needs about a unit: its booking shape, pool
 // size, timezone, price + pricing rules, slot length, and the stay/notice/buffer
@@ -57,7 +49,7 @@ type UnitInfo struct {
 	EndDelta         time.Duration // turnover time reserved after each booking
 	CheckinWeekdays  []time.Weekday // allowed check-in days (empty = any)
 	CheckoutWeekdays []time.Weekday // allowed check-out days (empty = any)
-	Recurring        []RecurringRule // open-hours rules (empty = always open)
+	Recurring        []rrule.Rule   // open-hours rules (empty = always open)
 }
 
 // Reservation is one active booking's held span and unit count (UTC instants).

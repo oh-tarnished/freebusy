@@ -9,17 +9,20 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/runtime/availability"
 	"github.com/oh-tarnished/freebusy/internal/runtime/booking"
+	"github.com/oh-tarnished/freebusy/internal/runtime/identity"
 	"github.com/oh-tarnished/freebusy/internal/runtime/organisation"
 	"github.com/oh-tarnished/freebusy/internal/runtime/promocode"
 	"github.com/oh-tarnished/freebusy/internal/runtime/property"
 	"github.com/oh-tarnished/freebusy/internal/runtime/schedule"
 	availabilitydb "github.com/oh-tarnished/freebusy/internal/service/availability/db"
 	bookingdb "github.com/oh-tarnished/freebusy/internal/service/booking/db"
+	identitydb "github.com/oh-tarnished/freebusy/internal/service/identity/db"
 	organisationdb "github.com/oh-tarnished/freebusy/internal/service/organisation/db"
 	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
 	scheduledb "github.com/oh-tarnished/freebusy/internal/service/schedule/db"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -86,6 +89,16 @@ func NewAvailabilityServer() (availabilitypbv1.AvailabilityServiceServer, error)
 		return nil, err
 	}
 	return availability.NewServer(availabilitydb.New(conn)), nil
+}
+
+// NewIdentityServer opens the configured backend, builds the repository, and
+// returns the identity gRPC service implementation ready to register.
+func NewIdentityServer() (identitypbv1.IdentityServiceServer, error) {
+	conn, err := database.Open()
+	if err != nil {
+		return nil, err
+	}
+	return identity.NewServer(identitydb.New(conn)), nil
 }
 
 // Other Services can be added here in the future, following the same pattern: open the database connection, build the repository, and return the service implementation.

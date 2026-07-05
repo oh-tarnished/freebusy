@@ -3,8 +3,10 @@ package engine
 import (
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
+	"github.com/oh-tarnished/freebusy/shared/rrule"
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -86,6 +88,7 @@ func ComputeSlots(u *UnitInfo, start, end time.Time, slotDur time.Duration, unit
 	if dur <= 0 {
 		return nil
 	}
+	loc := u.loc()
 	var out []*availabilitypbv1.Slot
 	for s := start.UTC(); !s.Add(dur).After(end.UTC()); s = s.Add(dur) {
 		e := s.Add(dur)
@@ -94,9 +97,10 @@ func ComputeSlots(u *UnitInfo, start, end time.Time, slotDur time.Duration, unit
 			free = 0
 		}
 		bookable := !u.Archived &&
-			free >= unitsReq &&
+			bufferedFree(u, s, e, res) >= unitsReq &&
 			!closedOver(closures, s, e) &&
-			passesNotice(u, s, now)
+			passesNotice(u, s, now) &&
+			rrule.Covers(u.Recurring, s.In(loc), e.In(loc))
 		out = append(out, &availabilitypbv1.Slot{
 			StartTime: timestamppb.New(s),
 			EndTime:   timestamppb.New(e),
@@ -106,6 +110,44 @@ func ComputeSlots(u *UnitInfo, start, end time.Time, slotDur time.Duration, unit
 		})
 	}
 	return out
+}
+
+// bufferedFree is the free count when the candidate span carries its setup/
+// turnover deltas and existing reservations are padded by the required gap — so a
+// booking too close to an adjacent one counts against capacity.
+func bufferedFree(u *UnitInfo, s, e time.Time, res []Reservation) int32 {
+	if u.Gap <= 0 && u.StartDelta <= 0 && u.EndDelta <= 0 {
+		free := u.Capacity - overlapUnits(res, s, e)
+		if free < 0 {
+			free = 0
+		}
+		return free
+	}
+	occStart := s.Add(-u.StartDelta)
+	occEnd := e.Add(u.EndDelta)
+	free := u.Capacity - overlapUnitsPadded(res, occStart, occEnd, u.Gap)
+	if free < 0 {
+		free = 0
+	}
+	return free
+}
+
+// overlapUnitsPadded sums units of reservations overlapping [s,e) after each
+// reservation is padded by pad on both sides (the gap between bookings).
+func overlapUnitsPadded(res []Reservation, s, e time.Time, pad time.Duration) int32 {
+	var sum int32
+	for i := range res {
+		rs := res[i].Start.Add(-pad)
+		re := res[i].End.Add(pad)
+		if rs.Before(e) && re.After(s) {
+			u := res[i].Units
+			if u < 1 {
+				u = 1
+			}
+			sum += u
+		}
+	}
+	return sum
 }
 
 func passesNotice(u *UnitInfo, start, now time.Time) bool {
@@ -143,20 +185,62 @@ func CheckSpan(u *UnitInfo, start, end time.Time, unitsReq int32, nights int32, 
 			add(availabilitypbv1.Code_CODE_MAX_ADVANCE, "the span starts further out than the advance window allows")
 		}
 	}
-	if u.Mode == ModeNightly && nights > 0 {
-		if u.MinNights > 0 && nights < u.MinNights {
+	loc := u.loc()
+	if u.Mode == ModeTimeSlot && !rrule.Covers(u.Recurring, start.In(loc), end.In(loc)) {
+		add(availabilitypbv1.Code_CODE_OUTSIDE_HOURS, "the span falls outside the unit's open hours")
+	}
+	if u.Mode == ModeNightly {
+		if nights > 0 && u.MinNights > 0 && nights < u.MinNights {
 			add(availabilitypbv1.Code_CODE_MIN_NIGHTS, "shorter than the minimum stay")
 		}
-		if u.MaxNights > 0 && nights > u.MaxNights {
+		if nights > 0 && u.MaxNights > 0 && nights > u.MaxNights {
 			add(availabilitypbv1.Code_CODE_MAX_NIGHTS, "longer than the maximum stay")
+		}
+		if len(u.CheckinWeekdays) > 0 && !weekdayAllowed(u.CheckinWeekdays, start.In(loc).Weekday()) {
+			add(availabilitypbv1.Code_CODE_CHECKIN_DAY, "check-in falls on a disallowed weekday")
+		}
+		if len(u.CheckoutWeekdays) > 0 && !weekdayAllowed(u.CheckoutWeekdays, end.In(loc).Weekday()) {
+			add(availabilitypbv1.Code_CODE_CHECKOUT_DAY, "check-out falls on a disallowed weekday")
 		}
 	}
 
+	// Distinguish a true capacity shortfall from a buffer/gap conflict: if the raw
+	// free count is short it is NO_CAPACITY; if only the buffered count is short,
+	// an adjacent booking's buffer is the blocker.
 	free := minFreeOverSpan(u, start.UTC(), end.UTC(), res)
-	if free < unitsReq {
+	switch {
+	case free < unitsReq:
 		add(availabilitypbv1.Code_CODE_NO_CAPACITY, "not enough free units for the requested count")
+	case minBufferedFreeOverSpan(u, start.UTC(), end.UTC(), res) < unitsReq:
+		add(availabilitypbv1.Code_CODE_BUFFER_CONFLICT, "a buffer or gap around an adjacent booking conflicts")
 	}
 	return len(reasons) == 0, free, reasons
+}
+
+// weekdayAllowed reports whether wd is in the allowed set.
+func weekdayAllowed(allowed []time.Weekday, wd time.Weekday) bool {
+	for _, a := range allowed {
+		if a == wd {
+			return true
+		}
+	}
+	return false
+}
+
+// minBufferedFreeOverSpan is minFreeOverSpan using the buffered free count (which
+// accounts for gap and setup/turnover deltas).
+func minBufferedFreeOverSpan(u *UnitInfo, start, end time.Time, res []Reservation) int32 {
+	if u.Mode == ModeNightly {
+		loc := u.loc()
+		min := u.Capacity
+		for cur := start.In(loc); cur.Before(end); cur = cur.AddDate(0, 0, 1) {
+			if f := bufferedFree(u, cur.UTC(), cur.AddDate(0, 0, 1).UTC(), res); f < min {
+				min = f
+			}
+		}
+		return min
+	}
+	return bufferedFree(u, start, end, res)
 }
 
 // minFreeOverSpan returns the minimum free count across the span. For nightly
@@ -243,17 +327,27 @@ func SlotRanges(slots []*availabilitypbv1.Slot) []*availabilitypbv1.BookableRang
 	return out
 }
 
-// LeadPrice is the price used for search sorting/display: the stay total for
-// NIGHTLY (base × nights), or the single slot/unit price for TIME_SLOT.
+// LeadPrice is the full price used for search sorting/display, computed by the
+// shared pricing engine: the stay total for NIGHTLY (base × nights, less LOS
+// discounts, plus fees and taxes), or the single slot total for TIME_SLOT (base
+// plus fees and taxes).
 func LeadPrice(u *UnitInfo, nights int32) *money.Money {
 	if u.Price == nil {
 		return nil
 	}
-	if u.Mode == ModeNightly && nights > 1 {
-		total := (u.Price.GetUnits()*1_000_000_000 + int64(u.Price.GetNanos())) * int64(nights)
-		return &money.Money{CurrencyCode: u.Price.GetCurrencyCode(), Units: total / 1_000_000_000, Nanos: int32(total % 1_000_000_000)}
+	n := nights
+	if n < 1 {
+		n = 1
 	}
-	return cloneMoney(u.Price)
+	return pricing.Compute(pricing.Inputs{
+		Price:        u.Price,
+		BookingMode:  u.Mode,
+		Nights:       int64(n),
+		Units:        1,
+		Fees:         u.Fees,
+		Taxes:        u.Taxes,
+		LosDiscounts: u.LosDiscounts,
+	}, u.ID).Total
 }
 
 // --- date/time helpers -------------------------------------------------------

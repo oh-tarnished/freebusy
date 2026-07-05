@@ -10,6 +10,7 @@ import (
 	bookingruntime "github.com/oh-tarnished/freebusy/internal/runtime/booking"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -27,6 +28,7 @@ type Service struct {
 	schedulepbv1.ScheduleServiceServer
 	bookingpbv1.BookingServiceServer
 	availabilitypbv1.AvailabilityServiceServer
+	identitypbv1.IdentityServiceServer
 
 	// booking is the concrete booking server, retained so background tasks (the
 	// hold sweeper) can be started against it in StartBackground.
@@ -43,6 +45,7 @@ func NewService(
 	schedule schedulepbv1.ScheduleServiceServer,
 	booking *bookingruntime.Server,
 	availability availabilitypbv1.AvailabilityServiceServer,
+	identity identitypbv1.IdentityServiceServer,
 ) *Service {
 	return &Service{
 		PromoCodeServiceServer:    promoCode,
@@ -51,6 +54,7 @@ func NewService(
 		ScheduleServiceServer:     schedule,
 		BookingServiceServer:      booking,
 		AvailabilityServiceServer: availability,
+		IdentityServiceServer:     identity,
 		booking:                   booking,
 	}
 }

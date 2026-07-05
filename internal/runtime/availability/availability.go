@@ -212,22 +212,40 @@ func (s *Server) SearchAvailability(ctx context.Context, req *availabilitypbv1.S
 		if err != nil {
 			return toStatusErr(err)
 		}
-		now := time.Now().UTC()
-		matches := make([]*availabilitypbv1.AvailabilityMatch, 0, len(units))
+
+		// Batch the per-unit reads: one bookings query and one closures query over
+		// the whole candidate set, bounded by the widest period across the units.
+		unitIDs := make([]string, 0, len(units))
+		tzByUnit := make(map[string]string, len(units))
+		var lo, hi time.Time
 		for _, u := range units {
 			p, perr := resolvePeriod(u, req.GetWindow(), req.GetDateRange())
 			if perr != nil {
 				return perr
 			}
-			res, err := s.reader.ActiveBookings(ctx, u.ID, p.start, p.end)
-			if err != nil {
-				return toStatusErr(err)
+			unitIDs = append(unitIDs, u.ID)
+			tzByUnit[u.ID] = u.TimeZone
+			if lo.IsZero() || p.start.Before(lo) {
+				lo = p.start
 			}
-			clo, err := s.reader.Closures(ctx, u.ID, u.TimeZone)
-			if err != nil {
-				return toStatusErr(err)
+			if p.end.After(hi) {
+				hi = p.end
 			}
-			bookable, _, _ := engine.CheckSpan(u, p.start, p.end, req.GetUnits(), p.nights, res, clo, now)
+		}
+		bookingsByUnit, err := s.reader.ActiveBookingsForUnits(ctx, unitIDs, lo, hi)
+		if err != nil {
+			return toStatusErr(err)
+		}
+		closuresByUnit, err := s.reader.ClosuresForUnits(ctx, unitIDs, tzByUnit)
+		if err != nil {
+			return toStatusErr(err)
+		}
+
+		now := time.Now().UTC()
+		matches := make([]*availabilitypbv1.AvailabilityMatch, 0, len(units))
+		for _, u := range units {
+			p, _ := resolvePeriod(u, req.GetWindow(), req.GetDateRange())
+			bookable, _, _ := engine.CheckSpan(u, p.start, p.end, req.GetUnits(), p.nights, bookingsByUnit[u.ID], closuresByUnit[u.ID], now)
 			if !bookable && !req.GetIncludeUnavailable() {
 				continue
 			}
