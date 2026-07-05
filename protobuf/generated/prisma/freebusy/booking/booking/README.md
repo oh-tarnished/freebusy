@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 1 | 0 |
+| 2 | 0 |
 
 ## Entity relationships
 
@@ -19,11 +19,15 @@ erDiagram
         string customer FK
         string promo_code FK
         string contact_id FK
+        string occupancy_id FK
         string window_id FK
         string price_id FK
         string discount_id FK
         string total_id FK
         string refund_amount_id FK
+    }
+    Occupancy {
+        string id PK
     }
     Contact {
         string externalStub PK
@@ -47,6 +51,7 @@ erDiagram
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
+    Booking }o--|| Occupancy : "occupancy_id"
     Booking }o--|| TimeWindow : "window_id"
     Booking }o--|| Money : "price_id"
     Booking }o--|| Money : "discount_id"
@@ -82,8 +87,20 @@ A reservation against a unit. The hold lifecycle lives here as states rather tha
 | `hold_ttl` | `INTERVAL` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `contact_id` | `CHAR(26)` | nullable |
+| `occupancy_id` | `CHAR(26)` | nullable |
 | `window_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
 | `discount_id` | `CHAR(26)` | nullable |
 | `total_id` | `CHAR(26)` | nullable |
 | `refund_amount_id` | `CHAR(26)` | nullable |
+
+### `Occupancy` → `occupancies`
+
+Occupancy is a party-size breakdown by age bracket. `adults + children` is the headcount charged against a unit's `max_occupancy`; infants are typically not counted. When a booking also lists `guests`, these counts must reconcile with that list.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `adults` | `INTEGER` | nullable |
+| `children` | `INTEGER` | nullable |
+| `infants` | `INTEGER` | nullable |

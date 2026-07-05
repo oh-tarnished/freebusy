@@ -23,6 +23,7 @@ type BookingResource struct {
 	Id             string           `graphql:"id"`
 	Name           string           `graphql:"name"`
 	Notes          *string          `graphql:"notes"`
+	OccupancyId    *string          `graphql:"occupancyId"`
 	PriceId        *string          `graphql:"priceId"`
 	PromoCode      *string          `graphql:"promoCode"`
 	RefundAmountId *string          `graphql:"refundAmountId"`

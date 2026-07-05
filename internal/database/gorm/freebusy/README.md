@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 40 | 19 |
+| 45 | 24 |
 
 ## Entity relationships
 
@@ -28,6 +28,7 @@ erDiagram
         string customer FK
         string promo_code FK
         string contact_id FK
+        string occupancy_id FK
         string window_id FK
         string price_id FK
         string discount_id FK
@@ -62,6 +63,24 @@ erDiagram
         string unit_id FK
         string amount_id FK
     }
+    ForeignerDetails {
+        string id PK
+    }
+    Guest {
+        string id PK
+        string booking_id FK
+        string id_document_id FK
+        string permanent_address_id FK
+        string local_address_id FK
+        string foreigner_id FK
+        string preferences_id FK
+    }
+    GuestPreferences {
+        string id PK
+    }
+    IdDocument {
+        string id PK
+    }
     LosDiscount {
         string id PK
         string unit_id FK
@@ -78,6 +97,9 @@ erDiagram
         string organisation_id FK
     }
     Money {
+        string id PK
+    }
+    Occupancy {
         string id PK
     }
     Organisation {
@@ -205,6 +227,7 @@ erDiagram
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
+    Booking }o--|| Occupancy : "occupancy_id"
     Booking }o--|| TimeWindow : "window_id"
     Booking }o--|| Money : "price_id"
     Booking }o--|| Money : "discount_id"
@@ -214,6 +237,12 @@ erDiagram
     Discount }o--|| Money : "amount_off_id"
     Fee }o--|| Unit : "unit_id"
     Fee }o--|| Money : "amount_id"
+    Guest }o--|| Booking : "booking_id"
+    Guest }o--|| IdDocument : "id_document_id"
+    Guest }o--|| PostalAddress : "permanent_address_id"
+    Guest }o--|| PostalAddress : "local_address_id"
+    Guest }o--|| ForeignerDetails : "foreigner_id"
+    Guest }o--|| GuestPreferences : "preferences_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"
@@ -299,11 +328,23 @@ A reservation against a unit. The hold lifecycle lives here as states rather tha
 | `hold_ttl` | `INTERVAL` | nullable |
 | `etag` | `VARCHAR(255)` | nullable |
 | `contact_id` | `CHAR(26)` | nullable |
+| `occupancy_id` | `CHAR(26)` | nullable |
 | `window_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
 | `discount_id` | `CHAR(26)` | nullable |
 | `total_id` | `CHAR(26)` | nullable |
 | `refund_amount_id` | `CHAR(26)` | nullable |
+
+### `Occupancy` → `occupancies`
+
+Occupancy is a party-size breakdown by age bracket. `adults + children` is the headcount charged against a unit's `max_occupancy`; infants are typically not counted. When a booking also lists `guests`, these counts must reconcile with that list.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `adults` | `INTEGER` | nullable |
+| `children` | `INTEGER` | nullable |
+| `infants` | `INTEGER` | nullable |
 
 ### Enums
 
@@ -386,6 +427,84 @@ A signed-in person. Identity is deliberately thin: actual login is an OIDC redir
 | `create_time` | `TIMESTAMPTZ` | not null |
 | `update_time` | `TIMESTAMPTZ` | not null |
 | `etag` | `VARCHAR(255)` | nullable |
+
+### `Guest` → `guests`
+
+A guest is a person who stays under a booking. It is one of three distinct people the system models, all in the identity domain: - User   (identity.proto): the account that signs in and books online. - Guest  (this message):   a person actually staying — the party on a booking. - Member (organisation):   hotel staff who manage the chain/property. The booker (a User, or an anonymous contact) is not necessarily a guest, and a booking has one or more guests. This message captures what a hotel records on a Guest Registration Card at check-in — identity, nationality, and ID — plus the foreigner-registration details required for foreign nationals (e.g. India's Form C / FRRO), and the guest's own stay preferences. It is an embedded value on a booking, not an addressable account resource.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `display_name` | `VARCHAR(255)` | not null |
+| `primary` | `BOOLEAN` | nullable |
+| `gender` | `Gender` | nullable |
+| `birth_date` | `DATE` | nullable |
+| `age_group` | `AgeGroup` | nullable |
+| `nationality` | `VARCHAR(255)` | nullable |
+| `email` | `VARCHAR(255)` | nullable |
+| `phone_number` | `VARCHAR(255)` | nullable |
+| `booking_id` | `CHAR(26)` | not null |
+| `id_document_id` | `CHAR(26)` | nullable |
+| `permanent_address_id` | `CHAR(26)` | nullable |
+| `local_address_id` | `CHAR(26)` | nullable |
+| `foreigner_id` | `CHAR(26)` | nullable |
+| `preferences_id` | `CHAR(26)` | nullable |
+
+### `IdDocument` → `id_documents`
+
+A government identity document. Passport fields are required for foreign nationals; domestic guests may present any accepted document type.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `type` | `IdDocumentType` | not null |
+| `number` | `VARCHAR(255)` | not null |
+| `issuing_country` | `VARCHAR(255)` | nullable |
+| `issue_place` | `VARCHAR(255)` | nullable |
+| `issue_date` | `DATE` | nullable |
+| `expiry_date` | `DATE` | nullable |
+
+### `ForeignerDetails` → `foreigner_details`
+
+Foreigner-registration details a hotel must capture for foreign nationals to file Form C with the FRRO within 24 hours of arrival (India). Nationals of exempt countries (e.g. Nepal, Bhutan) and diplomats may omit these.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `visa_number` | `VARCHAR(255)` | nullable |
+| `visa_type` | `VARCHAR(255)` | nullable |
+| `visa_issue_place` | `VARCHAR(255)` | nullable |
+| `visa_issue_date` | `DATE` | nullable |
+| `visa_expiry_date` | `DATE` | nullable |
+| `arrival_date` | `DATE` | nullable |
+| `entry_port` | `VARCHAR(255)` | nullable |
+| `origin` | `VARCHAR(255)` | nullable |
+| `next_destination` | `VARCHAR(255)` | nullable |
+| `visit_purpose` | `VARCHAR(255)` | nullable |
+
+### `GuestPreferences` → `guest_preferences`
+
+A guest's stay preferences and special requests. All optional; used to guide unit assignment and to surface requests to housekeeping / front desk.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `smoking` | `SmokingPreference` | nullable |
+| `bed` | `BedPreference` | nullable |
+| `dietary` | `VARCHAR(255)[]` | nullable |
+| `accessibility` | `VARCHAR(255)[]` | nullable |
+| `floor_preference` | `INTEGER` | nullable |
+| `loyalty_number` | `VARCHAR(255)` | nullable |
+| `special_requests` | `VARCHAR(255)[]` | nullable |
+| `notes` | `VARCHAR(255)` | nullable |
+
+### Enums
+
+- `Gender`: MALE, FEMALE, OTHER, UNDISCLOSED
+- `AgeGroup`: ADULT, CHILD, INFANT
+- `IdDocumentType`: PASSPORT, NATIONAL_ID, DRIVING_LICENSE, AADHAAR, VOTER_ID, OTHER
+- `SmokingPreference`: NON_SMOKING, SMOKING
+- `BedPreference`: NO_PREFERENCE, KING, QUEEN, TWIN, SINGLE
 
 ## Schema `organisation`
 

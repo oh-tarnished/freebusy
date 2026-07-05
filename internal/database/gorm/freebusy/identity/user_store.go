@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-orm 1.2.1
 // 	protoc (unknown)
-// source: freebusy/identity/v1/identity.proto
+// source: freebusy/identity/v1/guest.proto, freebusy/identity/v1/identity.proto
 //
 // database: freebusy
 // schema:   identity

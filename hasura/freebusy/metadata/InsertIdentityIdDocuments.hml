@@ -1,0 +1,138 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertIdentityIdDocumentsObject
+  fields:
+    - name: expiryDate
+      type: Date
+    - name: id
+      type: String_1!
+    - name: issueDate
+      type: Date
+    - name: issuePlace
+      type: String_1
+    - name: issuingCountry
+      type: String_1
+    - name: number
+      type: String_1!
+    - name: type
+      type: Enum
+  graphql:
+    typeName: InsertIdentityIdDocumentsObject
+    inputTypeName: InsertIdentityIdDocumentsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_identity_id_documents_object
+      fieldMapping:
+        expiryDate:
+          column:
+            name: expiry_date
+        id:
+          column:
+            name: id
+        issueDate:
+          column:
+            name: issue_date
+        issuePlace:
+          column:
+            name: issue_place
+        issuingCountry:
+          column:
+            name: issuing_country
+        number:
+          column:
+            name: number
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertIdentityIdDocumentsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - expiryDate
+          - id
+          - issueDate
+          - issuePlace
+          - issuingCountry
+          - number
+          - type
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertIdentityIdDocumentsResponse
+  description: Responses from the 'insert_identity_id_documents' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[IdentityIdDocuments!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertIdentityIdDocumentsResponse
+    inputTypeName: InsertIdentityIdDocumentsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_identity_id_documents_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertIdentityIdDocumentsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertIdentityIdDocuments
+  outputType: InsertIdentityIdDocumentsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertIdentityIdDocumentsObject!]!"
+    - name: postCheck
+      type: IdentityIdDocumentsBoolExp
+      description: Insert permission predicate over the 'identity_id_documents' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_identity_id_documents
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertIdentityIdDocuments
+    rootFieldKind: Mutation
+  description: Insert into the identity_id_documents table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertIdentityIdDocuments
+  permissions:
+    - role: admin
+      allowExecution: true
+

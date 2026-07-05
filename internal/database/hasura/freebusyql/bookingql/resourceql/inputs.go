@@ -24,6 +24,7 @@ type CreateInput struct {
 	Id             string          `json:"id"`
 	Name           string          `json:"name"`
 	Notes          string          `json:"notes,omitzero"`
+	OccupancyId    string          `json:"occupancyId,omitzero"`
 	PriceId        string          `json:"priceId,omitzero"`
 	PromoCode      string          `json:"promoCode,omitzero"`
 	RefundAmountId string          `json:"refundAmountId,omitzero"`
@@ -53,6 +54,7 @@ type UpdateInput struct {
 	Id             graphql.Nullable[string]          `json:"id"`
 	Name           graphql.Nullable[string]          `json:"name"`
 	Notes          graphql.Nullable[string]          `json:"notes"`
+	OccupancyId    graphql.Nullable[string]          `json:"occupancyId"`
 	PriceId        graphql.Nullable[string]          `json:"priceId"`
 	PromoCode      graphql.Nullable[string]          `json:"promoCode"`
 	RefundAmountId graphql.Nullable[string]          `json:"refundAmountId"`

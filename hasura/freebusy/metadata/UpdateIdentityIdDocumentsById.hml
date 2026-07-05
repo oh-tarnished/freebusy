@@ -1,0 +1,382 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsExpiryDate
+  description: Update the 'expiry_date' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: Date
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsExpiryDate
+    inputTypeName: UpdateColumnIdentityIdDocumentsExpiryDateInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_expiry_date
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsExpiryDate
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsId
+  description: Update the 'id' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsId
+    inputTypeName: UpdateColumnIdentityIdDocumentsIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsIssueDate
+  description: Update the 'issue_date' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: Date
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsIssueDate
+    inputTypeName: UpdateColumnIdentityIdDocumentsIssueDateInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_issue_date
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsIssueDate
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsIssuePlace
+  description: Update the 'issue_place' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsIssuePlace
+    inputTypeName: UpdateColumnIdentityIdDocumentsIssuePlaceInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_issue_place
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsIssuePlace
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsIssuingCountry
+  description: Update the 'issuing_country' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsIssuingCountry
+    inputTypeName: UpdateColumnIdentityIdDocumentsIssuingCountryInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_issuing_country
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsIssuingCountry
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsNumber
+  description: Update the 'number' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsNumber
+    inputTypeName: UpdateColumnIdentityIdDocumentsNumberInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_number
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsNumber
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnIdentityIdDocumentsType
+  description: Update the 'type' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: Enum!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsType
+    inputTypeName: UpdateColumnIdentityIdDocumentsTypeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_type
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsType
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateIdentityIdDocumentsByIdUpdateColumns
+  description: Update the columns of the 'identity_id_documents' collection
+  fields:
+    - name: expiryDate
+      type: UpdateColumnIdentityIdDocumentsExpiryDate
+      description: Update the 'expiry_date' column in the 'identity_id_documents'
+        collection.
+    - name: id
+      type: UpdateColumnIdentityIdDocumentsId
+      description: Update the 'id' column in the 'identity_id_documents' collection.
+    - name: issueDate
+      type: UpdateColumnIdentityIdDocumentsIssueDate
+      description: Update the 'issue_date' column in the 'identity_id_documents' collection.
+    - name: issuePlace
+      type: UpdateColumnIdentityIdDocumentsIssuePlace
+      description: Update the 'issue_place' column in the 'identity_id_documents'
+        collection.
+    - name: issuingCountry
+      type: UpdateColumnIdentityIdDocumentsIssuingCountry
+      description: Update the 'issuing_country' column in the 'identity_id_documents'
+        collection.
+    - name: number
+      type: UpdateColumnIdentityIdDocumentsNumber
+      description: Update the 'number' column in the 'identity_id_documents' collection.
+    - name: type
+      type: UpdateColumnIdentityIdDocumentsType
+      description: Update the 'type' column in the 'identity_id_documents' collection.
+  graphql:
+    typeName: UpdateIdentityIdDocumentsByIdUpdateColumns
+    inputTypeName: UpdateIdentityIdDocumentsByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_identity_id_documents_by_id_update_columns
+      fieldMapping:
+        expiryDate:
+          column:
+            name: expiry_date
+        id:
+          column:
+            name: id
+        issueDate:
+          column:
+            name: issue_date
+        issuePlace:
+          column:
+            name: issue_place
+        issuingCountry:
+          column:
+            name: issuing_country
+        number:
+          column:
+            name: number
+        type:
+          column:
+            name: type
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateIdentityIdDocumentsByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - expiryDate
+          - id
+          - issueDate
+          - issuePlace
+          - issuingCountry
+          - number
+          - type
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateIdentityIdDocumentsByIdResponse
+  description: Responses from the 'update_identity_id_documents_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[IdentityIdDocuments!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdateIdentityIdDocumentsByIdResponse
+    inputTypeName: UpdateIdentityIdDocumentsByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_identity_id_documents_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateIdentityIdDocumentsByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateIdentityIdDocumentsById
+  outputType: UpdateIdentityIdDocumentsByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: IdentityIdDocumentsBoolExp
+      description: Update permission post-condition predicate over the
+        'identity_id_documents' collection
+    - name: preCheck
+      type: IdentityIdDocumentsBoolExp
+      description: Update permission pre-condition predicate over the
+        'identity_id_documents' collection
+    - name: updateColumns
+      type: UpdateIdentityIdDocumentsByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_identity_id_documents_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updateIdentityIdDocumentsById
+    rootFieldKind: Mutation
+  description: Update any row on the 'identity_id_documents' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateIdentityIdDocumentsById
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,186 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertIdentityGuestsObject
+  fields:
+    - name: ageGroup
+      type: Enum
+    - name: birthDate
+      type: Date
+    - name: bookingId
+      type: String_1!
+    - name: displayName
+      type: String_1!
+    - name: email
+      type: String_1
+    - name: foreignerId
+      type: String_1
+    - name: gender
+      type: Enum
+    - name: id
+      type: String_1!
+    - name: idDocumentId
+      type: String_1
+    - name: localAddressId
+      type: String_1
+    - name: nationality
+      type: String_1
+    - name: permanentAddressId
+      type: String_1
+    - name: phoneNumber
+      type: String_1
+    - name: preferencesId
+      type: String_1
+    - name: primary
+      type: Boolean_1
+  graphql:
+    typeName: InsertIdentityGuestsObject
+    inputTypeName: InsertIdentityGuestsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_identity_guests_object
+      fieldMapping:
+        ageGroup:
+          column:
+            name: age_group
+        birthDate:
+          column:
+            name: birth_date
+        bookingId:
+          column:
+            name: booking_id
+        displayName:
+          column:
+            name: display_name
+        email:
+          column:
+            name: email
+        foreignerId:
+          column:
+            name: foreigner_id
+        gender:
+          column:
+            name: gender
+        id:
+          column:
+            name: id
+        idDocumentId:
+          column:
+            name: id_document_id
+        localAddressId:
+          column:
+            name: local_address_id
+        nationality:
+          column:
+            name: nationality
+        permanentAddressId:
+          column:
+            name: permanent_address_id
+        phoneNumber:
+          column:
+            name: phone_number
+        preferencesId:
+          column:
+            name: preferences_id
+        primary:
+          column:
+            name: primary
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertIdentityGuestsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ageGroup
+          - birthDate
+          - bookingId
+          - displayName
+          - email
+          - foreignerId
+          - gender
+          - id
+          - idDocumentId
+          - localAddressId
+          - nationality
+          - permanentAddressId
+          - phoneNumber
+          - preferencesId
+          - primary
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertIdentityGuestsResponse
+  description: Responses from the 'insert_identity_guests' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[IdentityGuests!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertIdentityGuestsResponse
+    inputTypeName: InsertIdentityGuestsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_identity_guests_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertIdentityGuestsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertIdentityGuests
+  outputType: InsertIdentityGuestsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertIdentityGuestsObject!]!"
+    - name: postCheck
+      type: IdentityGuestsBoolExp
+      description: Insert permission predicate over the 'identity_guests' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_identity_guests
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertIdentityGuests
+    rootFieldKind: Mutation
+  description: Insert into the identity_guests table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertIdentityGuests
+  permissions:
+    - role: admin
+      allowExecution: true
+

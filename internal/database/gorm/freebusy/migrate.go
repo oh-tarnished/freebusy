@@ -105,10 +105,15 @@ func (*Registry) EnsureSchemas(db *gorm.DB) error {
 //	freebusy.Default.Register(&MyModel{})
 var Default = New().Register(
 	&booking.Booking{},
+	&booking.Occupancy{},
 	&channel.Channel{},
 	&channel.UnitMapping{},
 	&channel.ChannelSyncStatus{},
 	&identity.User{},
+	&identity.Guest{},
+	&identity.IdDocument{},
+	&identity.ForeignerDetails{},
+	&identity.GuestPreferences{},
 	&organisation.Organisation{},
 	&organisation.Member{},
 	&promocode.PromoCode{},

@@ -6,18 +6,50 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 1 | 0 |
+| 5 | 5 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
+    ForeignerDetails {
+        string id PK
+    }
+    Guest {
+        string id PK
+        string booking_id FK
+        string id_document_id FK
+        string permanent_address_id FK
+        string local_address_id FK
+        string foreigner_id FK
+        string preferences_id FK
+    }
+    GuestPreferences {
+        string id PK
+    }
+    IdDocument {
+        string id PK
+    }
     User {
         string id PK
     }
+    Booking {
+        string externalStub PK
+    }
+    PostalAddress {
+        string externalStub PK
+    }
+    Guest }o--|| Booking : "booking_id"
+    Guest }o--|| IdDocument : "id_document_id"
+    Guest }o--|| PostalAddress : "permanent_address_id"
+    Guest }o--|| PostalAddress : "local_address_id"
+    Guest }o--|| ForeignerDetails : "foreigner_id"
+    Guest }o--|| GuestPreferences : "preferences_id"
 ```
 
 ## Subfolders
 
+- [`enums/`](./enums/README.md)
+- [`guest/`](./guest/README.md)
 - [`identity/`](./identity/README.md)

@@ -47,6 +47,12 @@ model PostalAddress {
   /// Optional. The name of the organization at the address.
   organization String? @map("organization")
 
+  /// Back-relation: Guest records that reference this model via permanent_address_id.
+  guests Guest[] @relation("GuestPermanentAddress")
+
+  /// Back-relation: Guest records that reference this model via local_address_id.
+  guests2 Guest[] @relation("GuestLocalAddress")
+
   /// Back-relation: Property records that reference this model via address_id.
   properties Property[]
 

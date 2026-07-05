@@ -49,7 +49,8 @@ func preloadBooking(db *gorm.DB) *gorm.DB {
 		Preload("Price").
 		Preload("Discount").
 		Preload("Total").
-		Preload("RefundAmount")
+		Preload("RefundAmount").
+		Preload("Occupancy")
 }
 
 // mapGormErr translates GORM sentinel errors into the provider-neutral errors in
@@ -112,6 +113,20 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	if requested < 1 {
 		requested = 1
 	}
+
+	// Occupancy: the staying party must fit the unit's max occupancy across the
+	// reserved units (guests × max_occupancy). Zero max_occupancy means unbounded.
+	if maxOcc := deref(unit.MaxOccupancy); maxOcc > 0 {
+		if partySize(b.GetOccupancy(), b.GetGuests()) > maxOcc*requested {
+			return nil, types.ErrInvalidArgument
+		}
+	}
+	occupancy := occupancyToModel(b.GetOccupancy())
+	guestGraphs := make([]guestGraph, 0, len(b.GetGuests()))
+	for _, g := range b.GetGuests() {
+		guestGraphs = append(guestGraphs, buildGuestGraph(g, id))
+	}
+
 	window := timeWindowToModel(b.GetWindow())
 	contact := contactToModel(b.GetContact())
 
@@ -165,6 +180,9 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	if totalModel != nil {
 		m.TotalID = &totalModel.ID
 	}
+	if occupancy != nil {
+		m.OccupancyID = &occupancy.ID
+	}
 
 	err = r.db.Transaction(func(tx *gorm.DB) error {
 		var reserved int64
@@ -202,7 +220,17 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 				return e
 			}
 		}
-		return booking.NewBookingStore(tx).Create(ctx, m)
+		// Occupancy is belongs-to (created before the booking); guests are has-many
+		// (created after, carrying the booking_id FK).
+		if occupancy != nil {
+			if e := booking.NewOccupancyStore(tx).Create(ctx, occupancy); e != nil {
+				return e
+			}
+		}
+		if e := booking.NewBookingStore(tx).Create(ctx, m); e != nil {
+			return e
+		}
+		return persistGuests(ctx, tx, guestGraphs)
 	})
 	if err != nil {
 		return nil, mapGormErr(err)
@@ -230,7 +258,14 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 	if err != nil {
 		return nil, err
 	}
-	return bookingFromModel(&m, unitName), nil
+	out := bookingFromModel(&m, unitName)
+	out.Occupancy = occupancyFromModel(m.Occupancy)
+	guests, err := r.loadGuests(ctx, m.ID)
+	if err != nil {
+		return nil, err
+	}
+	out.Guests = guests
+	return out, nil
 }
 
 // ListBookings returns a page of bookings ordered by params.OrderBy.
@@ -263,7 +298,14 @@ func (r *BookingRepository) ListBookings(ctx context.Context, params types.ListP
 	}
 	items := make([]*bookingpbv1.Booking, 0, len(models))
 	for i := range models {
-		items = append(items, bookingFromModel(&models[i], unitNames[models[i].UnitID]))
+		out := bookingFromModel(&models[i], unitNames[models[i].UnitID])
+		out.Occupancy = occupancyFromModel(models[i].Occupancy)
+		guests, err := r.loadGuests(ctx, models[i].ID)
+		if err != nil {
+			return nil, "", err
+		}
+		out.Guests = guests
+		items = append(items, out)
 	}
 	return items, next, nil
 }

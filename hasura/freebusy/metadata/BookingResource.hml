@@ -34,6 +34,8 @@ definition:
       type: String_1!
     - name: notes
       type: String_1
+    - name: occupancyId
+      type: String_1
     - name: priceId
       type: String_1
     - name: promoCode
@@ -106,6 +108,9 @@ definition:
         notes:
           column:
             name: notes
+        occupancyId:
+          column:
+            name: occupancy_id
         priceId:
           column:
             name: price_id
@@ -161,6 +166,7 @@ definition:
           - id
           - name
           - notes
+          - occupancyId
           - priceId
           - promoCode
           - refundAmountId
@@ -210,6 +216,8 @@ definition:
         - fieldName: name
           booleanExpressionType: TextBoolExp
         - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: occupancyId
           booleanExpressionType: TextBoolExp
         - fieldName: priceId
           booleanExpressionType: TextBoolExp
@@ -278,6 +286,8 @@ definition:
           aggregateExpression: TextAggExp
         - fieldName: notes
           aggregateExpression: TextAggExp
+        - fieldName: occupancyId
+          aggregateExpression: TextAggExp
         - fieldName: priceId
           aggregateExpression: TextAggExp
         - fieldName: promoCode
@@ -342,6 +352,8 @@ definition:
         - fieldName: name
           orderByExpression: String1OrderByExp
         - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: occupancyId
           orderByExpression: String1OrderByExp
         - fieldName: priceId
           orderByExpression: String1OrderByExp

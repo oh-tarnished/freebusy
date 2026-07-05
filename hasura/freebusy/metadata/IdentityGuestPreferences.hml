@@ -1,0 +1,199 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: IdentityGuestPreferences
+  fields:
+    - name: accessibility
+      type: "[String_1]"
+    - name: bed
+      type: Enum
+    - name: dietary
+      type: "[String_1]"
+    - name: floorPreference
+      type: Int32
+    - name: id
+      type: String_1!
+    - name: loyaltyNumber
+      type: String_1
+    - name: notes
+      type: String_1
+    - name: smoking
+      type: Enum
+    - name: specialRequests
+      type: "[String_1]"
+  graphql:
+    typeName: IdentityGuestPreferences
+    inputTypeName: IdentityGuestPreferencesInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: identity_guest_preferences
+      fieldMapping:
+        accessibility:
+          column:
+            name: accessibility
+        bed:
+          column:
+            name: bed
+        dietary:
+          column:
+            name: dietary
+        floorPreference:
+          column:
+            name: floor_preference
+        id:
+          column:
+            name: id
+        loyaltyNumber:
+          column:
+            name: loyalty_number
+        notes:
+          column:
+            name: notes
+        smoking:
+          column:
+            name: smoking
+        specialRequests:
+          column:
+            name: special_requests
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: IdentityGuestPreferences
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - accessibility
+          - bed
+          - dietary
+          - floorPreference
+          - id
+          - loyaltyNumber
+          - notes
+          - smoking
+          - specialRequests
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IdentityGuestPreferencesBoolExp
+  operand:
+    object:
+      type: IdentityGuestPreferences
+      comparableFields:
+        - fieldName: bed
+          booleanExpressionType: IdentityBedPreferenceBoolExp
+        - fieldName: floorPreference
+          booleanExpressionType: Int4BoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: loyaltyNumber
+          booleanExpressionType: TextBoolExp
+        - fieldName: notes
+          booleanExpressionType: TextBoolExp
+        - fieldName: smoking
+          booleanExpressionType: IdentitySmokingPreferenceBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: IdentityGuestPreferencesBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IdentityGuestPreferencesAggExp
+  operand:
+    object:
+      aggregatedType: IdentityGuestPreferences
+      aggregatableFields:
+        - fieldName: bed
+          aggregateExpression: IdentityBedPreferenceAggExp
+        - fieldName: floorPreference
+          aggregateExpression: Int4AggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: loyaltyNumber
+          aggregateExpression: TextAggExp
+        - fieldName: notes
+          aggregateExpression: TextAggExp
+        - fieldName: smoking
+          aggregateExpression: IdentitySmokingPreferenceAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: IdentityGuestPreferencesAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IdentityGuestPreferencesOrderByExp
+  operand:
+    object:
+      orderedType: IdentityGuestPreferences
+      orderableFields:
+        - fieldName: bed
+          orderByExpression: EnumOrderByExp
+        - fieldName: floorPreference
+          orderByExpression: Int32OrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: loyaltyNumber
+          orderByExpression: String1OrderByExp
+        - fieldName: notes
+          orderByExpression: String1OrderByExp
+        - fieldName: smoking
+          orderByExpression: EnumOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: IdentityGuestPreferencesOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: IdentityGuestPreferences
+  objectType: IdentityGuestPreferences
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: identity_guest_preferences
+  filterExpressionType: IdentityGuestPreferencesBoolExp
+  aggregateExpression: IdentityGuestPreferencesAggExp
+  orderByExpression: IdentityGuestPreferencesOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: identityGuestPreferences
+      subscription:
+        rootField: identityGuestPreferences
+    selectUniques:
+      - queryRootField: identityGuestPreferencesById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: identityGuestPreferencesById
+    filterInputTypeName: IdentityGuestPreferencesFilterInput
+    aggregate:
+      queryRootField: identityGuestPreferencesAggregate
+      subscription:
+        rootField: identityGuestPreferencesAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: IdentityGuestPreferences
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

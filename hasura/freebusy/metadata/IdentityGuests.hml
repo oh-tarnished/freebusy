@@ -1,0 +1,289 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: IdentityGuests
+  fields:
+    - name: ageGroup
+      type: Enum
+    - name: birthDate
+      type: Date
+    - name: bookingId
+      type: String_1!
+    - name: displayName
+      type: String_1!
+    - name: email
+      type: String_1
+    - name: foreignerId
+      type: String_1
+    - name: gender
+      type: Enum
+    - name: id
+      type: String_1!
+    - name: idDocumentId
+      type: String_1
+    - name: localAddressId
+      type: String_1
+    - name: nationality
+      type: String_1
+    - name: permanentAddressId
+      type: String_1
+    - name: phoneNumber
+      type: String_1
+    - name: preferencesId
+      type: String_1
+    - name: primary
+      type: Boolean_1
+  graphql:
+    typeName: IdentityGuests
+    inputTypeName: IdentityGuestsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: identity_guests
+      fieldMapping:
+        ageGroup:
+          column:
+            name: age_group
+        birthDate:
+          column:
+            name: birth_date
+        bookingId:
+          column:
+            name: booking_id
+        displayName:
+          column:
+            name: display_name
+        email:
+          column:
+            name: email
+        foreignerId:
+          column:
+            name: foreigner_id
+        gender:
+          column:
+            name: gender
+        id:
+          column:
+            name: id
+        idDocumentId:
+          column:
+            name: id_document_id
+        localAddressId:
+          column:
+            name: local_address_id
+        nationality:
+          column:
+            name: nationality
+        permanentAddressId:
+          column:
+            name: permanent_address_id
+        phoneNumber:
+          column:
+            name: phone_number
+        preferencesId:
+          column:
+            name: preferences_id
+        primary:
+          column:
+            name: primary
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: IdentityGuests
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - ageGroup
+          - birthDate
+          - bookingId
+          - displayName
+          - email
+          - foreignerId
+          - gender
+          - id
+          - idDocumentId
+          - localAddressId
+          - nationality
+          - permanentAddressId
+          - phoneNumber
+          - preferencesId
+          - primary
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: IdentityGuestsBoolExp
+  operand:
+    object:
+      type: IdentityGuests
+      comparableFields:
+        - fieldName: ageGroup
+          booleanExpressionType: IdentityAgeGroupBoolExp
+        - fieldName: birthDate
+          booleanExpressionType: DateBoolExp
+        - fieldName: bookingId
+          booleanExpressionType: TextBoolExp
+        - fieldName: displayName
+          booleanExpressionType: TextBoolExp
+        - fieldName: email
+          booleanExpressionType: TextBoolExp
+        - fieldName: foreignerId
+          booleanExpressionType: TextBoolExp
+        - fieldName: gender
+          booleanExpressionType: IdentityGenderBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: idDocumentId
+          booleanExpressionType: TextBoolExp
+        - fieldName: localAddressId
+          booleanExpressionType: TextBoolExp
+        - fieldName: nationality
+          booleanExpressionType: TextBoolExp
+        - fieldName: permanentAddressId
+          booleanExpressionType: TextBoolExp
+        - fieldName: phoneNumber
+          booleanExpressionType: TextBoolExp
+        - fieldName: preferencesId
+          booleanExpressionType: TextBoolExp
+        - fieldName: primary
+          booleanExpressionType: BoolBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: IdentityGuestsBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: IdentityGuestsAggExp
+  operand:
+    object:
+      aggregatedType: IdentityGuests
+      aggregatableFields:
+        - fieldName: ageGroup
+          aggregateExpression: IdentityAgeGroupAggExp
+        - fieldName: birthDate
+          aggregateExpression: DateAggExp
+        - fieldName: bookingId
+          aggregateExpression: TextAggExp
+        - fieldName: displayName
+          aggregateExpression: TextAggExp
+        - fieldName: email
+          aggregateExpression: TextAggExp
+        - fieldName: foreignerId
+          aggregateExpression: TextAggExp
+        - fieldName: gender
+          aggregateExpression: IdentityGenderAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: idDocumentId
+          aggregateExpression: TextAggExp
+        - fieldName: localAddressId
+          aggregateExpression: TextAggExp
+        - fieldName: nationality
+          aggregateExpression: TextAggExp
+        - fieldName: permanentAddressId
+          aggregateExpression: TextAggExp
+        - fieldName: phoneNumber
+          aggregateExpression: TextAggExp
+        - fieldName: preferencesId
+          aggregateExpression: TextAggExp
+        - fieldName: primary
+          aggregateExpression: BoolAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: IdentityGuestsAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: IdentityGuestsOrderByExp
+  operand:
+    object:
+      orderedType: IdentityGuests
+      orderableFields:
+        - fieldName: ageGroup
+          orderByExpression: EnumOrderByExp
+        - fieldName: birthDate
+          orderByExpression: DateOrderByExp
+        - fieldName: bookingId
+          orderByExpression: String1OrderByExp
+        - fieldName: displayName
+          orderByExpression: String1OrderByExp
+        - fieldName: email
+          orderByExpression: String1OrderByExp
+        - fieldName: foreignerId
+          orderByExpression: String1OrderByExp
+        - fieldName: gender
+          orderByExpression: EnumOrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: idDocumentId
+          orderByExpression: String1OrderByExp
+        - fieldName: localAddressId
+          orderByExpression: String1OrderByExp
+        - fieldName: nationality
+          orderByExpression: String1OrderByExp
+        - fieldName: permanentAddressId
+          orderByExpression: String1OrderByExp
+        - fieldName: phoneNumber
+          orderByExpression: String1OrderByExp
+        - fieldName: preferencesId
+          orderByExpression: String1OrderByExp
+        - fieldName: primary
+          orderByExpression: Boolean1OrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: IdentityGuestsOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: IdentityGuests
+  objectType: IdentityGuests
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: identity_guests
+  filterExpressionType: IdentityGuestsBoolExp
+  aggregateExpression: IdentityGuestsAggExp
+  orderByExpression: IdentityGuestsOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: identityGuests
+      subscription:
+        rootField: identityGuests
+    selectUniques:
+      - queryRootField: identityGuestsById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: identityGuestsById
+    filterInputTypeName: IdentityGuestsFilterInput
+    aggregate:
+      queryRootField: identityGuestsAggregate
+      subscription:
+        rootField: identityGuestsAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: IdentityGuests
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

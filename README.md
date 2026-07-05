@@ -1,8 +1,15 @@
 # Freebusy
 
 > Hasura - `postgresql://postgres:postgrespassword@local.hasura.dev:5432/freebusydb`
-> 
-> Prisma - `postgresql://postgres:postgrespassword@localhost:5432/freebusydb`
+
+Prisma
+
+```
+# Connection URL for the freebusy database.
+# Copy this file to .env and replace the value with your real credentials.
+# freebusy.config.ts reads it via env("FREEBUSY_DATABASE_URL").
+FREEBUSY_DATABASE_URL="postgresql://postgres:postgrespassword@localhost:5432/freebusydb"
+```
 
 The pure availability engine: given the facts about a bookable resource and a
 date range, it computes what's bookable — deterministic functions over plain Go

@@ -24,6 +24,7 @@ var (
 	Id             = graphql.StringField{Col: "id"}
 	Name           = graphql.StringField{Col: "name"}
 	Notes          = graphql.StringField{Col: "notes"}
+	OccupancyId    = graphql.StringField{Col: "occupancyId"}
 	PriceId        = graphql.StringField{Col: "priceId"}
 	PromoCode      = graphql.StringField{Col: "promoCode"}
 	RefundAmountId = graphql.StringField{Col: "refundAmountId"}

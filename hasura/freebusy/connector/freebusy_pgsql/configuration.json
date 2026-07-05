@@ -95,6 +95,51 @@
         "foreignRelations": {},
         "description": null
       },
+      "booking_occupancies": {
+        "schemaName": "booking",
+        "tableName": "occupancies",
+        "columns": {
+          "adults": {
+            "name": "adults",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "children": {
+            "name": "children",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "infants": {
+            "name": "infants",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "occupancies_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
       "booking_resource": {
         "schemaName": "booking",
         "tableName": "resource",
@@ -220,6 +265,14 @@
             "nullable": "nullable",
             "description": null
           },
+          "occupancy_id": {
+            "name": "occupancy_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "price_id": {
             "name": "price_id",
             "type": {
@@ -326,6 +379,13 @@
             "foreignTable": "moneys",
             "columnMapping": {
               "discount_id": "id"
+            }
+          },
+          "resource_occupancy_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "occupancies",
+            "columnMapping": {
+              "occupancy_id": "id"
             }
           },
           "resource_price_id_fkey": {
@@ -822,6 +882,444 @@
         },
         "uniquenessConstraints": {
           "postal_address_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "identity_foreigner_details": {
+        "schemaName": "identity",
+        "tableName": "foreigner_details",
+        "columns": {
+          "arrival_date": {
+            "name": "arrival_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "entry_port": {
+            "name": "entry_port",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "next_destination": {
+            "name": "next_destination",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "origin": {
+            "name": "origin",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visa_expiry_date": {
+            "name": "visa_expiry_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visa_issue_date": {
+            "name": "visa_issue_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visa_issue_place": {
+            "name": "visa_issue_place",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visa_number": {
+            "name": "visa_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visa_type": {
+            "name": "visa_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "visit_purpose": {
+            "name": "visit_purpose",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "foreigner_details_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "identity_guest_preferences": {
+        "schemaName": "identity",
+        "tableName": "guest_preferences",
+        "columns": {
+          "accessibility": {
+            "name": "accessibility",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "bed": {
+            "name": "bed",
+            "type": {
+              "scalarType": "identity_bed_preference"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "dietary": {
+            "name": "dietary",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "floor_preference": {
+            "name": "floor_preference",
+            "type": {
+              "scalarType": "int4"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "loyalty_number": {
+            "name": "loyalty_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "notes": {
+            "name": "notes",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "smoking": {
+            "name": "smoking",
+            "type": {
+              "scalarType": "identity_smoking_preference"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "special_requests": {
+            "name": "special_requests",
+            "type": {
+              "arrayType": {
+                "scalarType": "text"
+              }
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "guest_preferences_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
+      "identity_guests": {
+        "schemaName": "identity",
+        "tableName": "guests",
+        "columns": {
+          "age_group": {
+            "name": "age_group",
+            "type": {
+              "scalarType": "identity_age_group"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "birth_date": {
+            "name": "birth_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "booking_id": {
+            "name": "booking_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "display_name": {
+            "name": "display_name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "email": {
+            "name": "email",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "foreigner_id": {
+            "name": "foreigner_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "gender": {
+            "name": "gender",
+            "type": {
+              "scalarType": "identity_gender"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "id_document_id": {
+            "name": "id_document_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "local_address_id": {
+            "name": "local_address_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "nationality": {
+            "name": "nationality",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "permanent_address_id": {
+            "name": "permanent_address_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "phone_number": {
+            "name": "phone_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "preferences_id": {
+            "name": "preferences_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "primary": {
+            "name": "primary",
+            "type": {
+              "scalarType": "bool"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "guests_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "guests_booking_id_fkey": {
+            "foreignSchema": "booking",
+            "foreignTable": "resource",
+            "columnMapping": {
+              "booking_id": "id"
+            }
+          },
+          "guests_foreigner_id_fkey": {
+            "foreignSchema": "identity",
+            "foreignTable": "foreigner_details",
+            "columnMapping": {
+              "foreigner_id": "id"
+            }
+          },
+          "guests_id_document_id_fkey": {
+            "foreignSchema": "identity",
+            "foreignTable": "id_documents",
+            "columnMapping": {
+              "id_document_id": "id"
+            }
+          },
+          "guests_local_address_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "postal_address",
+            "columnMapping": {
+              "local_address_id": "id"
+            }
+          },
+          "guests_permanent_address_id_fkey": {
+            "foreignSchema": "common",
+            "foreignTable": "postal_address",
+            "columnMapping": {
+              "permanent_address_id": "id"
+            }
+          },
+          "guests_preferences_id_fkey": {
+            "foreignSchema": "identity",
+            "foreignTable": "guest_preferences",
+            "columnMapping": {
+              "preferences_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "identity_id_documents": {
+        "schemaName": "identity",
+        "tableName": "id_documents",
+        "columns": {
+          "expiry_date": {
+            "name": "expiry_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "issue_date": {
+            "name": "issue_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "issue_place": {
+            "name": "issue_place",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "issuing_country": {
+            "name": "issuing_country",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "number": {
+            "name": "number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "identity_id_document_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "id_documents_pkey": [
             "id"
           ]
         },
@@ -3954,6 +4452,331 @@
             }
           },
           "typeRepresentation": "float64"
+        },
+        "identity_age_group": {
+          "typeName": "age_group",
+          "schemaName": "identity",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "identity_age_group"
+            },
+            "min": {
+              "returnType": "identity_age_group"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "identity_age_group",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ADULT",
+              "CHILD",
+              "INFANT"
+            ]
+          }
+        },
+        "identity_bed_preference": {
+          "typeName": "bed_preference",
+          "schemaName": "identity",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "identity_bed_preference"
+            },
+            "min": {
+              "returnType": "identity_bed_preference"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "identity_bed_preference",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "NO_PREFERENCE",
+              "KING",
+              "QUEEN",
+              "TWIN",
+              "SINGLE"
+            ]
+          }
+        },
+        "identity_gender": {
+          "typeName": "gender",
+          "schemaName": "identity",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "identity_gender"
+            },
+            "min": {
+              "returnType": "identity_gender"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "identity_gender",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNDISCLOSED"
+            ]
+          }
+        },
+        "identity_id_document_type": {
+          "typeName": "id_document_type",
+          "schemaName": "identity",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "identity_id_document_type"
+            },
+            "min": {
+              "returnType": "identity_id_document_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "identity_id_document_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "PASSPORT",
+              "NATIONAL_ID",
+              "DRIVING_LICENSE",
+              "AADHAAR",
+              "VOTER_ID",
+              "OTHER"
+            ]
+          }
+        },
+        "identity_smoking_preference": {
+          "typeName": "smoking_preference",
+          "schemaName": "identity",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "identity_smoking_preference"
+            },
+            "min": {
+              "returnType": "identity_smoking_preference"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "identity_smoking_preference",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "NON_SMOKING",
+              "SMOKING"
+            ]
+          }
         },
         "int4": {
           "typeName": "int4",

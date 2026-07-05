@@ -3,6 +3,7 @@ syntax = "proto3";
 package freebusy.booking.v1;
 
 import "freebusy/booking/v1/enums.proto";
+import "freebusy/identity/v1/guest.proto";
 // (-- api-linter: core::0215::foreign-type-reference=disabled
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
@@ -58,8 +59,22 @@ message Booking {
 
   // Contact details for the booker. Required when `customer` is unset (a guest /
   // walk-in booking); when `customer` is set these supplement or override the
-  // user's profile contact for this booking.
+  // user's profile contact for this booking. The booker is not necessarily one of
+  // the guests below.
   freebusy.shared.v1.Contact contact = 24 [(google.api.field_behavior) = OPTIONAL];
+
+  // The people staying under this booking (the party), with the registration
+  // details a hotel captures at check-in — name, nationality, ID, and the
+  // foreigner-registration fields required for foreign nationals — plus each
+  // guest's own preferences. The number of guests must not exceed
+  // `units × unit.max_occupancy`. Distinct from `customer`/`contact`, who is the
+  // booker.
+  repeated freebusy.identity.v1.Guest guests = 28 [(google.api.field_behavior) = OPTIONAL];
+
+  // Party-size breakdown, for capacity math and child pricing. When guests are
+  // listed the counts must reconcile with them; otherwise it stands alone as the
+  // occupancy. `adults + children` counts against `unit.max_occupancy`.
+  Occupancy occupancy = 29 [(google.api.field_behavior) = OPTIONAL];
 
   // Number of units / party size reserved. Defaults to 1.
   int32 units = 6 [(google.api.field_behavior) = OPTIONAL];
@@ -134,4 +149,19 @@ message Booking {
 
   // Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
   string etag = 23;
+}
+
+// Occupancy is a party-size breakdown by age bracket. `adults + children` is the
+// headcount charged against a unit's `max_occupancy`; infants are typically not
+// counted. When a booking also lists `guests`, these counts must reconcile with
+// that list.
+message Occupancy {
+  // Number of adults.
+  int32 adults = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Number of children.
+  int32 children = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Number of infants (usually not counted against occupancy).
+  int32 infants = 3 [(google.api.field_behavior) = OPTIONAL];
 }

@@ -83,6 +83,12 @@ model Booking {
   /// Relation to Contact via contact_id.
   contact Contact? @relation(fields: [contactID], references: [id], onDelete: SetNull)
 
+  /// Foreign key to Occupancy.
+  occupancyID String? @map("occupancy_id")
+
+  /// Relation to Occupancy via occupancy_id.
+  occupancy Occupancy? @relation(fields: [occupancyID], references: [id], onDelete: SetNull)
+
   /// Foreign key to TimeWindow.
   windowID String @map("window_id")
 
@@ -113,6 +119,9 @@ model Booking {
   /// Relation to Money via refund_amount_id.
   refundAmount Money? @relation("BookingRefundAmount", fields: [refundAmountID], references: [id], onDelete: SetNull)
 
+  /// Back-relation: Guest records that reference this model via booking_id.
+  guests Guest[]
+
   /// Back-relation: Redemption records that reference this model via booking.
   redemptions Redemption[]
 
@@ -127,6 +136,8 @@ model Booking {
   @@index([promoCodeID])
   /// Composite index on [contact_id].
   @@index([contactID])
+  /// Composite index on [occupancy_id].
+  @@index([occupancyID])
   /// Composite index on [window_id].
   @@index([windowID])
   /// Composite index on [price_id].
@@ -139,6 +150,29 @@ model Booking {
   @@index([refundAmountID])
   /// Maps the model to the "resource" table in the database.
   @@map("resource")
+  /// Maps the model to the "booking" schema in the database.
+  @@schema("booking")
+}
+
+/// Occupancy is a party-size breakdown by age bracket. `adults + children` is the headcount charged against a unit's `max_occupancy`; infants are typically not counted. When a booking also lists `guests`, these counts must reconcile with that list.
+model Occupancy {
+  /// Unique identifier for the record.
+  id String @id @default(ulid()) @map("id")
+
+  /// Number of adults.
+  adults Int? @map("adults")
+
+  /// Number of children.
+  children Int? @map("children")
+
+  /// Number of infants (usually not counted against occupancy).
+  infants Int? @map("infants")
+
+  /// Back-relation: Booking records that reference this model via occupancy_id.
+  resource Booking[]
+
+  /// Maps the model to the "occupancies" table in the database.
+  @@map("occupancies")
   /// Maps the model to the "booking" schema in the database.
   @@schema("booking")
 }

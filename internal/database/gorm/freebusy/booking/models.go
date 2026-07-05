@@ -98,6 +98,9 @@ type Booking struct {
 	// Foreign key to Contact.
 	ContactID *string         `gorm:"column:contact_id;index:idx_resource_contact_id" json:"contact_id,omitempty"`
 	Contact   *shared.Contact `gorm:"foreignKey:ContactID;constraint:OnDelete:SET NULL" json:"contact,omitempty"`
+	// Foreign key to Occupancy.
+	OccupancyID *string    `gorm:"column:occupancy_id;index:idx_resource_occupancy_id" json:"occupancy_id,omitempty"`
+	Occupancy   *Occupancy `gorm:"foreignKey:OccupancyID;constraint:OnDelete:SET NULL" json:"occupancy,omitempty"`
 	// Foreign key to TimeWindow.
 	WindowID string             `gorm:"column:window_id;not null;index:idx_resource_window_id" json:"window_id" validate:"required"`
 	Window   *shared.TimeWindow `gorm:"foreignKey:WindowID;constraint:OnDelete:CASCADE" json:"window,omitempty"`
@@ -116,3 +119,19 @@ type Booking struct {
 }
 
 func (*Booking) TableName() string { return "booking.resource" }
+
+// Occupancy is a party-size breakdown by age bracket. `adults + children` is the headcount charged against a unit's `max_occupancy`; infants are typically not counted. When a booking also lists `guests`, these counts must reconcile with that list.
+type Occupancy struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// Number of adults.
+	Adults *int32 `gorm:"column:adults" json:"adults,omitempty"`
+	// Number of children.
+	Children *int32 `gorm:"column:children" json:"children,omitempty"`
+	// Number of infants (usually not counted against occupancy).
+	Infants *int32 `gorm:"column:infants" json:"infants,omitempty"`
+	// Back-relation: Booking records that reference this via occupancy_id.
+	Resource []Booking `gorm:"foreignKey:OccupancyID" json:"resource,omitempty"`
+}
+
+func (*Occupancy) TableName() string { return "booking.occupancies" }

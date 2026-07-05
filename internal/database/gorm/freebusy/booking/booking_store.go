@@ -125,6 +125,16 @@ func (s *BookingStore) ListByContactID(ctx context.Context, id string, opts gorm
 	return out, nil
 }
 
+// ListByOccupancyID returns the Booking records whose occupancy_id matches id, with opts applied.
+func (s *BookingStore) ListByOccupancyID(ctx context.Context, id string, opts gormx.ListOptions) ([]Booking, error) {
+	var out []Booking
+	q := opts.Apply(s.DB.WithContext(ctx).Where("occupancy_id = ?", id))
+	if err := q.Find(&out).Error; err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ListByWindowID returns the Booking records whose window_id matches id, with opts applied.
 func (s *BookingStore) ListByWindowID(ctx context.Context, id string, opts gormx.ListOptions) ([]Booking, error) {
 	var out []Booking

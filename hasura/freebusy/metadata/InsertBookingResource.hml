@@ -34,6 +34,8 @@ definition:
       type: String_1!
     - name: notes
       type: String_1
+    - name: occupancyId
+      type: String_1
     - name: priceId
       type: String_1
     - name: promoCode
@@ -106,6 +108,9 @@ definition:
         notes:
           column:
             name: notes
+        occupancyId:
+          column:
+            name: occupancy_id
         priceId:
           column:
             name: price_id
@@ -161,6 +166,7 @@ definition:
           - id
           - name
           - notes
+          - occupancyId
           - priceId
           - promoCode
           - refundAmountId

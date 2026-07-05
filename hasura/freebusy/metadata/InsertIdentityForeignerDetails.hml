@@ -1,0 +1,163 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertIdentityForeignerDetailsObject
+  fields:
+    - name: arrivalDate
+      type: Date
+    - name: entryPort
+      type: String_1
+    - name: id
+      type: String_1!
+    - name: nextDestination
+      type: String_1
+    - name: origin
+      type: String_1
+    - name: visaExpiryDate
+      type: Date
+    - name: visaIssueDate
+      type: Date
+    - name: visaIssuePlace
+      type: String_1
+    - name: visaNumber
+      type: String_1
+    - name: visaType
+      type: String_1
+    - name: visitPurpose
+      type: String_1
+  graphql:
+    typeName: InsertIdentityForeignerDetailsObject
+    inputTypeName: InsertIdentityForeignerDetailsObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_identity_foreigner_details_object
+      fieldMapping:
+        arrivalDate:
+          column:
+            name: arrival_date
+        entryPort:
+          column:
+            name: entry_port
+        id:
+          column:
+            name: id
+        nextDestination:
+          column:
+            name: next_destination
+        origin:
+          column:
+            name: origin
+        visaExpiryDate:
+          column:
+            name: visa_expiry_date
+        visaIssueDate:
+          column:
+            name: visa_issue_date
+        visaIssuePlace:
+          column:
+            name: visa_issue_place
+        visaNumber:
+          column:
+            name: visa_number
+        visaType:
+          column:
+            name: visa_type
+        visitPurpose:
+          column:
+            name: visit_purpose
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertIdentityForeignerDetailsObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - arrivalDate
+          - entryPort
+          - id
+          - nextDestination
+          - origin
+          - visaExpiryDate
+          - visaIssueDate
+          - visaIssuePlace
+          - visaNumber
+          - visaType
+          - visitPurpose
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertIdentityForeignerDetailsResponse
+  description: Responses from the 'insert_identity_foreigner_details' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[IdentityForeignerDetails!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertIdentityForeignerDetailsResponse
+    inputTypeName: InsertIdentityForeignerDetailsResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_identity_foreigner_details_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertIdentityForeignerDetailsResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertIdentityForeignerDetails
+  outputType: InsertIdentityForeignerDetailsResponse!
+  arguments:
+    - name: objects
+      type: "[InsertIdentityForeignerDetailsObject!]!"
+    - name: postCheck
+      type: IdentityForeignerDetailsBoolExp
+      description: Insert permission predicate over the 'identity_foreigner_details'
+        collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_identity_foreigner_details
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertIdentityForeignerDetails
+    rootFieldKind: Mutation
+  description: Insert into the identity_foreigner_details table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertIdentityForeignerDetails
+  permissions:
+    - role: admin
+      allowExecution: true
+

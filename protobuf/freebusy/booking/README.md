@@ -32,7 +32,9 @@ A reservation against a unit. The hold lifecycle lives here as states rather tha
 | `name` | `string` | `IDENTIFIER` | The booking name. Format: bookings/{booking} |
 | `unit` | `string` | `REQUIRED` | The unit being booked. Format: properties/{property}/units/{unit} |
 | `customer` | `string` | `OPTIONAL` | The user the booking is for. Format: users/{user} |
-| `contact` | `Contact` | `OPTIONAL` | Contact details for the booker. Required when `customer` is unset (a guest / walk-in booking); when `customer` is set these supplement or override the user's profile contact for this booking. |
+| `contact` | `Contact` | `OPTIONAL` | Contact details for the booker. Required when `customer` is unset (a guest / walk-in booking); when `customer` is set these supplement or override the user's profile contact for this booking. The booker is not necessarily one of the guests below. |
+| `guests` | `repeated Guest` | `OPTIONAL` | The people staying under this booking (the party), with the registration details a hotel captures at check-in — name, nationality, ID, and the foreigner-registration fields required for foreign nationals — plus each guest's own preferences. The number of guests must not exceed `units × unit.max_occupancy`. Distinct from `customer`/`contact`, who is the booker. |
+| `occupancy` | `Occupancy` | `OPTIONAL` | Party-size breakdown, for capacity math and child pricing. When guests are listed the counts must reconcile with them; otherwise it stands alone as the occupancy. `adults + children` counts against `unit.max_occupancy`. |
 | `units` | `int32` | `OPTIONAL` | Number of units / party size reserved. Defaults to 1. |
 | `window` | `TimeWindow` | `REQUIRED` | The reserved span. For NIGHTLY units this spans check-in to check-out. |
 | `assigned_unit` | `string` | `OUTPUT_ONLY` | Which specific unit of the pool was assigned (the shell's atomic pick). |
@@ -54,6 +56,16 @@ A reservation against a unit. The hold lifecycle lives here as states rather tha
 | `refund_percent` | `int32` | `OUTPUT_ONLY` | Percentage of the total that `refund_amount` represents (0-100). |
 | `hold_ttl` | `Duration` | `IMMUTABLE` | Requested time-to-live of the hold, set at creation. The server caps this and reflects the effective expiry in hold_expire_time. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
+
+### Occupancy
+
+Occupancy is a party-size breakdown by age bracket. `adults + children` is the headcount charged against a unit's `max_occupancy`; infants are typically not counted. When a booking also lists `guests`, these counts must reconcile with that list.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `adults` | `int32` | `OPTIONAL` | Number of adults. |
+| `children` | `int32` | `OPTIONAL` | Number of children. |
+| `infants` | `int32` | `OPTIONAL` | Number of infants (usually not counted against occupancy). |
 
 ### ConfirmBookingRequest
 

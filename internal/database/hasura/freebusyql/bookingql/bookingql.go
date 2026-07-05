@@ -3,50 +3,62 @@
 package bookingql
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/occupanciesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
 	"github.com/oh-tarnished/generateql/runtime/go/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
+type BookingOccupancies = schemaql.BookingOccupancies
+type BookingOccupanciesAggExp = schemaql.BookingOccupanciesAggExp
 type BookingResource = schemaql.BookingResource
 type BookingResourceAggExp = schemaql.BookingResourceAggExp
+type DeleteBookingOccupanciesByIdResponse = schemaql.DeleteBookingOccupanciesByIdResponse
 type DeleteBookingResourceByIdResponse = schemaql.DeleteBookingResourceByIdResponse
+type InsertBookingOccupanciesResponse = schemaql.InsertBookingOccupanciesResponse
 type InsertBookingResourceResponse = schemaql.InsertBookingResourceResponse
+type UpdateBookingOccupanciesByIdResponse = schemaql.UpdateBookingOccupanciesByIdResponse
 type UpdateBookingResourceByIdResponse = schemaql.UpdateBookingResourceByIdResponse
 
 // QueryHandler aggregates query handlers for the bookingql domain.
 type QueryHandler struct {
-	Resource resourceql.QueryHandler
+	Occupancies occupanciesql.QueryHandler
+	Resource    resourceql.QueryHandler
 }
 
 // NewQuery wires every query handler in the domain.
 func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
-		Resource: resourceql.NewQuery(gql),
+		Occupancies: occupanciesql.NewQuery(gql),
+		Resource:    resourceql.NewQuery(gql),
 	}
 }
 
 // MutationHandler aggregates mutation handlers for the bookingql domain.
 type MutationHandler struct {
-	Resource resourceql.MutationHandler
+	Occupancies occupanciesql.MutationHandler
+	Resource    resourceql.MutationHandler
 }
 
 // NewMutation wires every mutation handler in the domain.
 func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
-		Resource: resourceql.NewMutation(gql),
+		Occupancies: occupanciesql.NewMutation(gql),
+		Resource:    resourceql.NewMutation(gql),
 	}
 }
 
 // SubscriptionHandler aggregates subscription handlers for the bookingql domain.
 type SubscriptionHandler struct {
-	Resource resourceql.SubscriptionHandler
+	Occupancies occupanciesql.SubscriptionHandler
+	Resource    resourceql.SubscriptionHandler
 }
 
 // NewSubscription wires every subscription handler in the domain.
 func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
-		Resource: resourceql.NewSubscription(gql),
+		Occupancies: occupanciesql.NewSubscription(gql),
+		Resource:    resourceql.NewSubscription(gql),
 	}
 }

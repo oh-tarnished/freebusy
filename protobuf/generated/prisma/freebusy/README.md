@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 40 | 19 |
+| 45 | 24 |
 
 ## Entity relationships
 
@@ -26,6 +26,7 @@ erDiagram
         string customer FK
         string promo_code FK
         string contact_id FK
+        string occupancy_id FK
         string window_id FK
         string price_id FK
         string discount_id FK
@@ -60,6 +61,24 @@ erDiagram
         string unit_id FK
         string amount_id FK
     }
+    ForeignerDetails {
+        string id PK
+    }
+    Guest {
+        string id PK
+        string booking_id FK
+        string id_document_id FK
+        string permanent_address_id FK
+        string local_address_id FK
+        string foreigner_id FK
+        string preferences_id FK
+    }
+    GuestPreferences {
+        string id PK
+    }
+    IdDocument {
+        string id PK
+    }
     LosDiscount {
         string id PK
         string unit_id FK
@@ -76,6 +95,9 @@ erDiagram
         string organisation_id FK
     }
     Money {
+        string id PK
+    }
+    Occupancy {
         string id PK
     }
     Organisation {
@@ -203,6 +225,7 @@ erDiagram
     Booking }o--|| User : "customer"
     Booking }o--|| PromoCode : "promo_code"
     Booking }o--|| Contact : "contact_id"
+    Booking }o--|| Occupancy : "occupancy_id"
     Booking }o--|| TimeWindow : "window_id"
     Booking }o--|| Money : "price_id"
     Booking }o--|| Money : "discount_id"
@@ -212,6 +235,12 @@ erDiagram
     Discount }o--|| Money : "amount_off_id"
     Fee }o--|| Unit : "unit_id"
     Fee }o--|| Money : "amount_id"
+    Guest }o--|| Booking : "booking_id"
+    Guest }o--|| IdDocument : "id_document_id"
+    Guest }o--|| PostalAddress : "permanent_address_id"
+    Guest }o--|| PostalAddress : "local_address_id"
+    Guest }o--|| ForeignerDetails : "foreigner_id"
+    Guest }o--|| GuestPreferences : "preferences_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"

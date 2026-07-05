@@ -3,50 +3,98 @@
 package identityql
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/foreignerdetailsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestpreferencesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/iddocumentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/usersql"
 	"github.com/oh-tarnished/generateql/runtime/go/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
+type DeleteIdentityForeignerDetailsByIdResponse = schemaql.DeleteIdentityForeignerDetailsByIdResponse
+type DeleteIdentityGuestPreferencesByIdResponse = schemaql.DeleteIdentityGuestPreferencesByIdResponse
+type DeleteIdentityGuestsByIdResponse = schemaql.DeleteIdentityGuestsByIdResponse
+type DeleteIdentityIdDocumentsByIdResponse = schemaql.DeleteIdentityIdDocumentsByIdResponse
 type DeleteIdentityUsersByIdResponse = schemaql.DeleteIdentityUsersByIdResponse
+type IdentityForeignerDetails = schemaql.IdentityForeignerDetails
+type IdentityForeignerDetailsAggExp = schemaql.IdentityForeignerDetailsAggExp
+type IdentityGuestPreferences = schemaql.IdentityGuestPreferences
+type IdentityGuestPreferencesAggExp = schemaql.IdentityGuestPreferencesAggExp
+type IdentityGuests = schemaql.IdentityGuests
+type IdentityGuestsAggExp = schemaql.IdentityGuestsAggExp
+type IdentityIdDocuments = schemaql.IdentityIdDocuments
+type IdentityIdDocumentsAggExp = schemaql.IdentityIdDocumentsAggExp
 type IdentityUsers = schemaql.IdentityUsers
 type IdentityUsersAggExp = schemaql.IdentityUsersAggExp
+type InsertIdentityForeignerDetailsResponse = schemaql.InsertIdentityForeignerDetailsResponse
+type InsertIdentityGuestPreferencesResponse = schemaql.InsertIdentityGuestPreferencesResponse
+type InsertIdentityGuestsResponse = schemaql.InsertIdentityGuestsResponse
+type InsertIdentityIdDocumentsResponse = schemaql.InsertIdentityIdDocumentsResponse
 type InsertIdentityUsersResponse = schemaql.InsertIdentityUsersResponse
+type UpdateIdentityForeignerDetailsByIdResponse = schemaql.UpdateIdentityForeignerDetailsByIdResponse
+type UpdateIdentityGuestPreferencesByIdResponse = schemaql.UpdateIdentityGuestPreferencesByIdResponse
+type UpdateIdentityGuestsByIdResponse = schemaql.UpdateIdentityGuestsByIdResponse
+type UpdateIdentityIdDocumentsByIdResponse = schemaql.UpdateIdentityIdDocumentsByIdResponse
 type UpdateIdentityUsersByIdResponse = schemaql.UpdateIdentityUsersByIdResponse
 
 // QueryHandler aggregates query handlers for the identityql domain.
 type QueryHandler struct {
-	Users usersql.QueryHandler
+	ForeignerDetails foreignerdetailsql.QueryHandler
+	GuestPreferences guestpreferencesql.QueryHandler
+	Guests           guestsql.QueryHandler
+	IdDocuments      iddocumentsql.QueryHandler
+	Users            usersql.QueryHandler
 }
 
 // NewQuery wires every query handler in the domain.
 func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
-		Users: usersql.NewQuery(gql),
+		ForeignerDetails: foreignerdetailsql.NewQuery(gql),
+		GuestPreferences: guestpreferencesql.NewQuery(gql),
+		Guests:           guestsql.NewQuery(gql),
+		IdDocuments:      iddocumentsql.NewQuery(gql),
+		Users:            usersql.NewQuery(gql),
 	}
 }
 
 // MutationHandler aggregates mutation handlers for the identityql domain.
 type MutationHandler struct {
-	Users usersql.MutationHandler
+	ForeignerDetails foreignerdetailsql.MutationHandler
+	GuestPreferences guestpreferencesql.MutationHandler
+	Guests           guestsql.MutationHandler
+	IdDocuments      iddocumentsql.MutationHandler
+	Users            usersql.MutationHandler
 }
 
 // NewMutation wires every mutation handler in the domain.
 func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
-		Users: usersql.NewMutation(gql),
+		ForeignerDetails: foreignerdetailsql.NewMutation(gql),
+		GuestPreferences: guestpreferencesql.NewMutation(gql),
+		Guests:           guestsql.NewMutation(gql),
+		IdDocuments:      iddocumentsql.NewMutation(gql),
+		Users:            usersql.NewMutation(gql),
 	}
 }
 
 // SubscriptionHandler aggregates subscription handlers for the identityql domain.
 type SubscriptionHandler struct {
-	Users usersql.SubscriptionHandler
+	ForeignerDetails foreignerdetailsql.SubscriptionHandler
+	GuestPreferences guestpreferencesql.SubscriptionHandler
+	Guests           guestsql.SubscriptionHandler
+	IdDocuments      iddocumentsql.SubscriptionHandler
+	Users            usersql.SubscriptionHandler
 }
 
 // NewSubscription wires every subscription handler in the domain.
 func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
-		Users: usersql.NewSubscription(gql),
+		ForeignerDetails: foreignerdetailsql.NewSubscription(gql),
+		GuestPreferences: guestpreferencesql.NewSubscription(gql),
+		Guests:           guestsql.NewSubscription(gql),
+		IdDocuments:      iddocumentsql.NewSubscription(gql),
+		Users:            usersql.NewSubscription(gql),
 	}
 }
