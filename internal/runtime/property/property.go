@@ -1,7 +1,8 @@
-// Package property is the gRPC/protobuf layer for the PropertyService: it
-// implements propertypbv1.PropertyServiceServer, owning request validation,
-// observability, and the mapping of repository errors to gRPC status codes. All
-// protobuf concerns live here; persistence stays behind the provider-agnostic
+// Package property is the gRPC/protobuf layer for the PropertyService and
+// LicenceService: one Server implements propertypbv1.PropertyServiceServer and
+// propertypbv1.LicenceServiceServer, owning request validation, observability,
+// and the mapping of repository errors to gRPC status codes. All protobuf
+// concerns live here; persistence stays behind the provider-agnostic
 // db.PropertyRepository, so the database layer is agnostic to protobuf and gRPC.
 package property
 
@@ -17,10 +18,12 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-// Server implements propertypbv1.PropertyServiceServer on top of a
-// provider-agnostic db.PropertyRepository.
+// Server implements propertypbv1.PropertyServiceServer and
+// propertypbv1.LicenceServiceServer on top of a provider-agnostic
+// db.PropertyRepository.
 type Server struct {
 	propertypbv1.UnimplementedPropertyServiceServer
+	propertypbv1.UnimplementedLicenceServiceServer
 	repo propertydb.PropertyRepository
 }
 
@@ -263,16 +266,18 @@ func (s *Server) UpdateUnit(ctx context.Context, req *propertypbv1.UpdateUnitReq
 	return out, err
 }
 
-// DeleteUnit removes a unit by resource name.
+// DeleteUnit removes a unit by resource name. Child licences block the delete
+// unless force is set.
 func (s *Server) DeleteUnit(ctx context.Context, req *propertypbv1.DeleteUnitRequest) (*emptypb.Empty, error) {
 	if req.GetName() == "" {
 		return nil, status.Error(codes.InvalidArgument, "name is required")
 	}
 	err := traced(ctx, "DeleteUnit", func(ctx context.Context) error {
-		return toStatusErr(s.repo.DeleteUnit(ctx, req.GetName()))
+		return toStatusErr(s.repo.DeleteUnit(ctx, req.GetName(), req.GetForce()))
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &emptypb.Empty{}, nil
 }
+

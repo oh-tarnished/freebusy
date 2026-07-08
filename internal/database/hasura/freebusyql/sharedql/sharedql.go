@@ -3,38 +3,45 @@
 package sharedql
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/contactsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/pricecomponentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
+type DeleteSharedAttachmentsByIdResponse = schemaql.DeleteSharedAttachmentsByIdResponse
+type InsertSharedAttachmentsResponse = schemaql.InsertSharedAttachmentsResponse
+type SharedAttachments = schemaql.SharedAttachments
+type SharedAttachmentsAggExp = schemaql.SharedAttachmentsAggExp
+type UpdateSharedAttachmentsByIdResponse = schemaql.UpdateSharedAttachmentsByIdResponse
 type DeleteSharedContactsByIdResponse = schemaql.DeleteSharedContactsByIdResponse
-type DeleteSharedDateRangesByIdResponse = schemaql.DeleteSharedDateRangesByIdResponse
-type DeleteSharedPriceComponentsByIdResponse = schemaql.DeleteSharedPriceComponentsByIdResponse
-type DeleteSharedTimeWindowsByIdResponse = schemaql.DeleteSharedTimeWindowsByIdResponse
 type InsertSharedContactsResponse = schemaql.InsertSharedContactsResponse
-type InsertSharedDateRangesResponse = schemaql.InsertSharedDateRangesResponse
-type InsertSharedPriceComponentsResponse = schemaql.InsertSharedPriceComponentsResponse
-type InsertSharedTimeWindowsResponse = schemaql.InsertSharedTimeWindowsResponse
 type SharedContacts = schemaql.SharedContacts
 type SharedContactsAggExp = schemaql.SharedContactsAggExp
+type UpdateSharedContactsByIdResponse = schemaql.UpdateSharedContactsByIdResponse
+type DeleteSharedDateRangesByIdResponse = schemaql.DeleteSharedDateRangesByIdResponse
+type InsertSharedDateRangesResponse = schemaql.InsertSharedDateRangesResponse
 type SharedDateRanges = schemaql.SharedDateRanges
 type SharedDateRangesAggExp = schemaql.SharedDateRangesAggExp
+type UpdateSharedDateRangesByIdResponse = schemaql.UpdateSharedDateRangesByIdResponse
+type DeleteSharedPriceComponentsByIdResponse = schemaql.DeleteSharedPriceComponentsByIdResponse
+type InsertSharedPriceComponentsResponse = schemaql.InsertSharedPriceComponentsResponse
 type SharedPriceComponents = schemaql.SharedPriceComponents
 type SharedPriceComponentsAggExp = schemaql.SharedPriceComponentsAggExp
+type UpdateSharedPriceComponentsByIdResponse = schemaql.UpdateSharedPriceComponentsByIdResponse
+type DeleteSharedTimeWindowsByIdResponse = schemaql.DeleteSharedTimeWindowsByIdResponse
+type InsertSharedTimeWindowsResponse = schemaql.InsertSharedTimeWindowsResponse
 type SharedTimeWindows = schemaql.SharedTimeWindows
 type SharedTimeWindowsAggExp = schemaql.SharedTimeWindowsAggExp
-type UpdateSharedContactsByIdResponse = schemaql.UpdateSharedContactsByIdResponse
-type UpdateSharedDateRangesByIdResponse = schemaql.UpdateSharedDateRangesByIdResponse
-type UpdateSharedPriceComponentsByIdResponse = schemaql.UpdateSharedPriceComponentsByIdResponse
 type UpdateSharedTimeWindowsByIdResponse = schemaql.UpdateSharedTimeWindowsByIdResponse
 
 // QueryHandler aggregates query handlers for the sharedql domain.
 type QueryHandler struct {
+	Attachments     attachmentsql.QueryHandler
 	Contacts        contactsql.QueryHandler
 	DateRanges      daterangesql.QueryHandler
 	PriceComponents pricecomponentsql.QueryHandler
@@ -44,6 +51,7 @@ type QueryHandler struct {
 // NewQuery wires every query handler in the domain.
 func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
+		Attachments:     attachmentsql.NewQuery(gql),
 		Contacts:        contactsql.NewQuery(gql),
 		DateRanges:      daterangesql.NewQuery(gql),
 		PriceComponents: pricecomponentsql.NewQuery(gql),
@@ -53,6 +61,7 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 
 // MutationHandler aggregates mutation handlers for the sharedql domain.
 type MutationHandler struct {
+	Attachments     attachmentsql.MutationHandler
 	Contacts        contactsql.MutationHandler
 	DateRanges      daterangesql.MutationHandler
 	PriceComponents pricecomponentsql.MutationHandler
@@ -62,6 +71,7 @@ type MutationHandler struct {
 // NewMutation wires every mutation handler in the domain.
 func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
+		Attachments:     attachmentsql.NewMutation(gql),
 		Contacts:        contactsql.NewMutation(gql),
 		DateRanges:      daterangesql.NewMutation(gql),
 		PriceComponents: pricecomponentsql.NewMutation(gql),
@@ -71,6 +81,7 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 
 // SubscriptionHandler aggregates subscription handlers for the sharedql domain.
 type SubscriptionHandler struct {
+	Attachments     attachmentsql.SubscriptionHandler
 	Contacts        contactsql.SubscriptionHandler
 	DateRanges      daterangesql.SubscriptionHandler
 	PriceComponents pricecomponentsql.SubscriptionHandler
@@ -80,6 +91,7 @@ type SubscriptionHandler struct {
 // NewSubscription wires every subscription handler in the domain.
 func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
+		Attachments:     attachmentsql.NewSubscription(gql),
 		Contacts:        contactsql.NewSubscription(gql),
 		DateRanges:      daterangesql.NewSubscription(gql),
 		PriceComponents: pricecomponentsql.NewSubscription(gql),

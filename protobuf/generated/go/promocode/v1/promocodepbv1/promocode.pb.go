@@ -567,18 +567,18 @@ var File_freebusy_promocode_v1_promocode_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xed\x06\n" +
+	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\x81\a\n" +
 	"\tPromoCode\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x1d\n" +
-	"\x04code\x18\x03 \x01(\tB\t\xe0A\x02\x92\xb5\x18\x02 \x01R\x04code\x12&\n" +
-	"\fdisplay_name\x18\x04 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12/\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12#\n" +
+	"\x04code\x18\x03 \x01(\tB\x0f\xe0A\x02\x92\xb5\x18\x02 \x01\x9a\xb5\x18\x02\x18\x01R\x04code\x12,\n" +
+	"\fdisplay_name\x18\x04 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12/\n" +
 	"\vdescription\x18\x05 \x01(\tB\r\xe0A\x01\x92\xb5\x18\x06\x12\x04TEXTR\vdescription\x12@\n" +
 	"\bdiscount\x18\x17 \x01(\v2\x1f.freebusy.promocode.v1.DiscountB\x03\xe0A\x02R\bdiscount\x12D\n" +
 	"\x06window\x18\x18 \x01(\v2'.freebusy.promocode.v1.RedemptionWindowB\x03\xe0A\x01R\x06window\x12?\n" +
 	"\x06limits\x18\x19 \x01(\v2\".freebusy.promocode.v1.UsageLimitsB\x03\xe0A\x01R\x06limits\x127\n" +
 	"\x05scope\x18\x1a \x01(\v2\x1c.freebusy.promocode.v1.ScopeB\x03\xe0A\x01R\x05scope\x12.\n" +
-	"\x10redemption_count\x18\x10 \x01(\x03B\x03\xe0A\x03R\x0fredemptionCount\x12@\n" +
-	"\x05state\x18\x11 \x01(\x0e2%.freebusy.promocode.v1.PromoCodeStateB\x03\xe0A\x03R\x05state\x12\x1f\n" +
+	"\x10redemption_count\x18\x10 \x01(\x03B\x03\xe0A\x03R\x0fredemptionCount\x12H\n" +
+	"\x05state\x18\x11 \x01(\x0e2%.freebusy.promocode.v1.PromoCodeStateB\v\xe0A\x03\x9a\xb5\x18\x04\b\x00\x10\x00R\x05state\x12\x1f\n" +
 	"\bdisabled\x18\x14 \x01(\bB\x03\xe0A\x01R\bdisabled\x12@\n" +
 	"\vcreate_time\x18\x12 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +

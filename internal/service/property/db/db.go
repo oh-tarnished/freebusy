@@ -61,8 +61,33 @@ type PropertyRepository interface {
 	UpdateUnit(ctx context.Context, u *propertypbv1.Unit, paths []string) (*propertypbv1.Unit, error)
 
 	// DeleteUnit removes the unit identified by its resource name, returning
-	// types.ErrNotFound when it does not exist.
-	DeleteUnit(ctx context.Context, name string) error
+	// types.ErrNotFound when it does not exist. Child licences block the delete
+	// unless force is set (AIP-135), in which case they are deleted too.
+	DeleteUnit(ctx context.Context, name string, force bool) error
+
+	// CreateLicence persists l under parent ("properties/{property}") and
+	// returns the stored record. A licence covering a single unit carries the
+	// unit's resource name in l.Unit; the caller validates it belongs to the
+	// parent property.
+	CreateLicence(ctx context.Context, parent string, l *propertypbv1.Licence) (*propertypbv1.Licence, error)
+
+	// GetLicence returns the licence identified by its resource name
+	// ("properties/{property}/licences/{licence}"), or types.ErrNotFound.
+	GetLicence(ctx context.Context, name string) (*propertypbv1.Licence, error)
+
+	// ListLicences returns a page of licences under parent
+	// ("properties/{property}") — property-wide and per-unit ones alike. The
+	// filter narrows by target, unit, type, or state, and supports expiry_date
+	// bounds (`expiry_date <= 2026-08-01`) for renewal-reminder queries.
+	ListLicences(ctx context.Context, parent string, params types.ListParams) (items []*propertypbv1.Licence, nextPageToken string, err error)
+
+	// UpdateLicence persists the masked fields of l; an empty mask replaces
+	// every mutable field (target and unit are immutable). l.Etag guards
+	// against concurrent writes.
+	UpdateLicence(ctx context.Context, l *propertypbv1.Licence, paths []string) (*propertypbv1.Licence, error)
+
+	// DeleteLicence removes the licence identified by its resource name.
+	DeleteLicence(ctx context.Context, name string) error
 }
 
 // Assert the provider implementations satisfy the contract here, so the

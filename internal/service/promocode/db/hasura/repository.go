@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
@@ -20,8 +22,8 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // PromoCodeRepository is the Hasura-backed promo code repository. Hasura exposes
@@ -126,32 +128,10 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 // params.Filter. It fetches one extra row to detect a further page, then hydrates
 // each resource's children.
 func (r *PromoCodeRepository) List(ctx context.Context, params types.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
-	order, err := orderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[pcschema.PromocodeResource](promocode.PromoCodeFilterSpec, r.svc.Query.Promocode.Resource).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, hasWhere, err := filterPredicate(params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-
-	req := resourceql.List().Limit(limit + 1).Offset(offset)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	if hasWhere {
-		req = req.Where(where)
-	}
-	rows, err := r.svc.Query.Promocode.Resource.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(rows))

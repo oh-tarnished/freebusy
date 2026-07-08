@@ -8,13 +8,16 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 45 | 24 |
+| 47 | 27 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
+    Attachment {
+        string id PK
+    }
     AvailabilityException {
         string id PK
         string property_id FK
@@ -80,6 +83,13 @@ erDiagram
     }
     IdDocument {
         string id PK
+        string attachment_id FK
+    }
+    Licence {
+        string id PK
+        string unit FK
+        string property_id FK
+        string attachment_id FK
     }
     LosDiscount {
         string id PK
@@ -243,6 +253,10 @@ erDiagram
     Guest }o--|| PostalAddress : "local_address_id"
     Guest }o--|| ForeignerDetails : "foreigner_id"
     Guest }o--|| GuestPreferences : "preferences_id"
+    IdDocument }o--|| Attachment : "attachment_id"
+    Licence }o--|| Unit : "unit"
+    Licence }o--|| Property : "property_id"
+    Licence }o--|| Attachment : "attachment_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"
@@ -463,6 +477,7 @@ A government identity document. Passport fields are required for foreign nationa
 | `issue_place` | `VARCHAR(255)` | nullable |
 | `issue_date` | `DATE` | nullable |
 | `expiry_date` | `DATE` | nullable |
+| `attachment_id` | `CHAR(26)` | nullable |
 
 ### `ForeignerDetails` → `foreigner_details`
 
@@ -704,6 +719,29 @@ A bookable unit type within a property: a pool of `capacity` interchangeable roo
 | `property_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
 
+### `Licence` → `licences`
+
+A regulatory licence or certificate held by a Property or one of its Units (e.g. trade licence, fire safety NOC, per-room liquor licence). One resource covers both: every licence is parented by the property, `target` says what it covers, and a unit licence names its unit in `unit`. Tracks the issuing authority and validity window so `expiry_date` can be filtered on to find licences due for renewal; the certificate itself is carried in `attachment`. A standalone resource (own Get/List/Create/Update/Delete), like Unit, rather than an embedded repeated field like Media, so a renewal doesn't require resending the whole Property.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `target` | `LicenceTarget` | nullable |
+| `unit` | `CHAR(26)` | nullable |
+| `type` | `LicenceType` | not null |
+| `licence_number` | `VARCHAR(255)` | nullable |
+| `issuing_authority` | `VARCHAR(255)` | nullable |
+| `issue_date` | `DATE` | nullable |
+| `expiry_date` | `DATE` | nullable |
+| `notes` | `VARCHAR(255)` | nullable |
+| `state` | `LicenceState` | nullable |
+| `create_time` | `TIMESTAMPTZ` | not null |
+| `update_time` | `TIMESTAMPTZ` | not null |
+| `etag` | `VARCHAR(255)` | nullable |
+| `property_id` | `CHAR(26)` | not null |
+| `attachment_id` | `CHAR(26)` | nullable |
+
 ### `Media` → `medias`
 
 A media asset in a Property's showcase gallery — an image, video, floor plan, virtual tour, or a document (PDF fact sheet, policy, house rules). The bytes live in object storage (S3 or any HTTP-reachable host); this message only carries the link and its presentation metadata. `UnitMedia` is the identical per-Unit gallery; they are separate messages so the ORM materializes each as a child table with a single owning parent.
@@ -827,6 +865,9 @@ Join table for the many-to-many relation Unit.applicable_promo_codes ↔ PromoCo
 - `BookingMode`: TIME_SLOT, NIGHTLY
 - `PricingUnit`: PER_BOOKING, PER_NIGHT, PER_PERSON
 - `UnitState`: ACTIVE, ARCHIVED
+- `LicenceTarget`: PROPERTY, UNIT
+- `LicenceType`: TRADE, FIRE_SAFETY, LIQUOR, FOOD_SAFETY, TOURISM, HEALTH, OTHER
+- `LicenceState`: ACTIVE, ARCHIVED
 - `MediaType`: IMAGE, VIDEO, DOCUMENT, FLOORPLAN, VIRTUAL_TOUR
 
 ## Schema `schedule`
@@ -971,6 +1012,20 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `display_name` | `VARCHAR(255)` | nullable |
 | `booking_id` | `CHAR(26)` | not null |
 | `amount_id` | `CHAR(26)` | nullable |
+
+### `Attachment` → `attachments`
+
+An uploaded file attached to a document- or licence-carrying record (e.g. a guest's IdDocument scan, or a property/unit licence certificate). The bytes are stored inline in `content` today; `uri` is populated once the file is migrated to object storage (S3 or any CDN-fronted host). At most one of the two is authoritative at a time — prefer `uri` when both are set.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `filename` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `size_bytes` | `BIGINT` | nullable |
+| `content` | `BYTEA` | nullable |
+| `uri` | `VARCHAR(255)` | nullable |
+| `upload_time` | `TIMESTAMPTZ` | nullable |
 
 ### `DateRange` → `date_ranges`
 

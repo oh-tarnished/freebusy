@@ -15,6 +15,10 @@ const (
 	FilterNeq
 	// FilterHas is the `:` operator (membership / substring match).
 	FilterHas
+	// FilterLte is the `<=` operator (less than or equal; ordered fields only).
+	FilterLte
+	// FilterGte is the `>=` operator (greater than or equal; ordered fields only).
+	FilterGte
 )
 
 // FilterCondition is one parsed term of a filter expression. A condition with an
@@ -31,6 +35,7 @@ type FilterCondition struct {
 // flat, AND-combined list of conditions. It supports:
 //
 //   - `field = value`, `field != value`, `field : value`
+//   - `field <= value`, `field >= value` (ordered fields, e.g. dates)
 //   - quoted values ("two words") and barewords (SUMMER25)
 //   - a bare term with no operator, treated as a free-text search
 //   - terms separated by whitespace or an explicit `AND`
@@ -82,6 +87,10 @@ func filterOp(s string) (FilterOp, error) {
 		return FilterNeq, nil
 	case ":":
 		return FilterHas, nil
+	case "<=":
+		return FilterLte, nil
+	case ">=":
+		return FilterGte, nil
 	default:
 		return 0, fmt.Errorf("%w: unsupported filter operator %q", ErrInvalidArgument, s)
 	}
@@ -126,6 +135,13 @@ func tokenizeFilter(s string) ([]filterToken, error) {
 			} else {
 				return nil, fmt.Errorf("%w: unexpected %q in filter (did you mean !=?)", ErrInvalidArgument, "!")
 			}
+		case '<', '>':
+			if i+1 < len(s) && s[i+1] == '=' {
+				toks = append(toks, filterToken{text: string(c) + "=", op: true})
+				i += 2
+			} else {
+				return nil, fmt.Errorf("%w: unexpected %q in filter (only <= and >= are supported)", ErrInvalidArgument, string(c))
+			}
 		default:
 			j := i
 			for j < len(s) && !isFilterDelim(s[j]) {
@@ -139,5 +155,5 @@ func tokenizeFilter(s string) ([]filterToken, error) {
 }
 
 func isFilterDelim(c byte) bool {
-	return c == ' ' || c == '\t' || c == '=' || c == ':' || c == '!' || c == '"'
+	return c == ' ' || c == '\t' || c == '=' || c == ':' || c == '!' || c == '"' || c == '<' || c == '>'
 }

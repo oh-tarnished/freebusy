@@ -7,6 +7,7 @@
 package identitypbv1
 
 import (
+	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	date "google.golang.org/genproto/googleapis/type/date"
 	postaladdress "google.golang.org/genproto/googleapis/type/postaladdress"
@@ -209,7 +210,9 @@ type IdDocument struct {
 	// Date the document was issued.
 	IssueDate *date.Date `protobuf:"bytes,5,opt,name=issue_date,json=issueDate,proto3" json:"issue_date,omitempty"`
 	// Date the document expires.
-	ExpiryDate    *date.Date `protobuf:"bytes,6,opt,name=expiry_date,json=expiryDate,proto3" json:"expiry_date,omitempty"`
+	ExpiryDate *date.Date `protobuf:"bytes,6,opt,name=expiry_date,json=expiryDate,proto3" json:"expiry_date,omitempty"`
+	// Scanned copy or photo of the document, uploaded at check-in.
+	Attachment    *sharedpbv1.Attachment `protobuf:"bytes,7,opt,name=attachment,proto3" json:"attachment,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -282,6 +285,13 @@ func (x *IdDocument) GetIssueDate() *date.Date {
 func (x *IdDocument) GetExpiryDate() *date.Date {
 	if x != nil {
 		return x.ExpiryDate
+	}
+	return nil
+}
+
+func (x *IdDocument) GetAttachment() *sharedpbv1.Attachment {
+	if x != nil {
+		return x.Attachment
 	}
 	return nil
 }
@@ -531,7 +541,7 @@ var File_freebusy_identity_v1_guest_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_guest_proto_rawDesc = "" +
 	"\n" +
-	" freebusy/identity/v1/guest.proto\x12\x14freebusy.identity.v1\x1a freebusy/identity/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x16google/type/date.proto\x1a google/type/postal_address.proto\"\xe2\x05\n" +
+	" freebusy/identity/v1/guest.proto\x12\x14freebusy.identity.v1\x1a freebusy/identity/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x16google/type/date.proto\x1a google/type/postal_address.proto\"\xe2\x05\n" +
 	"\x05Guest\x12&\n" +
 	"\fdisplay_name\x18\x01 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12\x1d\n" +
 	"\aprimary\x18\x02 \x01(\bB\x03\xe0A\x01R\aprimary\x129\n" +
@@ -548,7 +558,7 @@ const file_freebusy_identity_v1_guest_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.type.PostalAddressB\x03\xe0A\x01R\x10permanentAddress\x12D\n" +
 	"\rlocal_address\x18\v \x01(\v2\x1a.google.type.PostalAddressB\x03\xe0A\x01R\flocalAddress\x12I\n" +
 	"\tforeigner\x18\f \x01(\v2&.freebusy.identity.v1.ForeignerDetailsB\x03\xe0A\x01R\tforeigner\x12M\n" +
-	"\vpreferences\x18\r \x01(\v2&.freebusy.identity.v1.GuestPreferencesB\x03\xe0A\x01R\vpreferences\"\xac\x02\n" +
+	"\vpreferences\x18\r \x01(\v2&.freebusy.identity.v1.GuestPreferencesB\x03\xe0A\x01R\vpreferences\"\xf1\x02\n" +
 	"\n" +
 	"IdDocument\x12=\n" +
 	"\x04type\x18\x01 \x01(\x0e2$.freebusy.identity.v1.IdDocumentTypeB\x03\xe0A\x02R\x04type\x12\x1b\n" +
@@ -559,7 +569,10 @@ const file_freebusy_identity_v1_guest_proto_rawDesc = "" +
 	"\n" +
 	"issue_date\x18\x05 \x01(\v2\x11.google.type.DateB\x03\xe0A\x01R\tissueDate\x127\n" +
 	"\vexpiry_date\x18\x06 \x01(\v2\x11.google.type.DateB\x03\xe0A\x01R\n" +
-	"expiryDate\"\xe1\x03\n" +
+	"expiryDate\x12C\n" +
+	"\n" +
+	"attachment\x18\a \x01(\v2\x1e.freebusy.shared.v1.AttachmentB\x03\xe0A\x01R\n" +
+	"attachment\"\xe1\x03\n" +
 	"\x10ForeignerDetails\x12$\n" +
 	"\vvisa_number\x18\x01 \x01(\tB\x03\xe0A\x01R\n" +
 	"visaNumber\x12 \n" +
@@ -609,8 +622,9 @@ var file_freebusy_identity_v1_guest_proto_goTypes = []any{
 	(AgeGroup)(0),                       // 6: freebusy.identity.v1.AgeGroup
 	(*postaladdress.PostalAddress)(nil), // 7: google.type.PostalAddress
 	(IdDocumentType)(0),                 // 8: freebusy.identity.v1.IdDocumentType
-	(SmokingPreference)(0),              // 9: freebusy.identity.v1.SmokingPreference
-	(BedPreference)(0),                  // 10: freebusy.identity.v1.BedPreference
+	(*sharedpbv1.Attachment)(nil),       // 9: freebusy.shared.v1.Attachment
+	(SmokingPreference)(0),              // 10: freebusy.identity.v1.SmokingPreference
+	(BedPreference)(0),                  // 11: freebusy.identity.v1.BedPreference
 }
 var file_freebusy_identity_v1_guest_proto_depIdxs = []int32{
 	4,  // 0: freebusy.identity.v1.Guest.gender:type_name -> freebusy.identity.v1.Gender
@@ -624,16 +638,17 @@ var file_freebusy_identity_v1_guest_proto_depIdxs = []int32{
 	8,  // 8: freebusy.identity.v1.IdDocument.type:type_name -> freebusy.identity.v1.IdDocumentType
 	5,  // 9: freebusy.identity.v1.IdDocument.issue_date:type_name -> google.type.Date
 	5,  // 10: freebusy.identity.v1.IdDocument.expiry_date:type_name -> google.type.Date
-	5,  // 11: freebusy.identity.v1.ForeignerDetails.visa_issue_date:type_name -> google.type.Date
-	5,  // 12: freebusy.identity.v1.ForeignerDetails.visa_expiry_date:type_name -> google.type.Date
-	5,  // 13: freebusy.identity.v1.ForeignerDetails.arrival_date:type_name -> google.type.Date
-	9,  // 14: freebusy.identity.v1.GuestPreferences.smoking:type_name -> freebusy.identity.v1.SmokingPreference
-	10, // 15: freebusy.identity.v1.GuestPreferences.bed:type_name -> freebusy.identity.v1.BedPreference
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	9,  // 11: freebusy.identity.v1.IdDocument.attachment:type_name -> freebusy.shared.v1.Attachment
+	5,  // 12: freebusy.identity.v1.ForeignerDetails.visa_issue_date:type_name -> google.type.Date
+	5,  // 13: freebusy.identity.v1.ForeignerDetails.visa_expiry_date:type_name -> google.type.Date
+	5,  // 14: freebusy.identity.v1.ForeignerDetails.arrival_date:type_name -> google.type.Date
+	10, // 15: freebusy.identity.v1.GuestPreferences.smoking:type_name -> freebusy.identity.v1.SmokingPreference
+	11, // 16: freebusy.identity.v1.GuestPreferences.bed:type_name -> freebusy.identity.v1.BedPreference
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_identity_v1_guest_proto_init() }

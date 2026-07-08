@@ -7,8 +7,10 @@
 package bookingpbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	identitypbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
+	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -399,11 +401,82 @@ func (x *Occupancy) GetInfants() int32 {
 	return 0
 }
 
+// BookingGuests is a singleton sub-resource of a Booking (AIP-156): the staying
+// party attached to it. Exactly one exists per booking, addressed without an ID
+// segment. Read and replaced via UpdateBookingGuests; there is no separate
+// Create/Delete since it always exists alongside its parent Booking. It is an
+// API shape over Booking.guests/occupancy, not a stored table — the party
+// persists on the Booking row graph, so the ORM skips it (a generated table
+// would bolt a second required parent FK onto every guest row).
+type BookingGuests struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The singleton resource name.
+	// Format: bookings/{booking}/guests
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The guest party. An empty list clears the party.
+	Guests []*identitypbv1.Guest `protobuf:"bytes,2,rep,name=guests,proto3" json:"guests,omitempty"`
+	// The occupancy breakdown, replacing the existing one.
+	Occupancy     *Occupancy `protobuf:"bytes,3,opt,name=occupancy,proto3" json:"occupancy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BookingGuests) Reset() {
+	*x = BookingGuests{}
+	mi := &file_freebusy_booking_v1_booking_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BookingGuests) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BookingGuests) ProtoMessage() {}
+
+func (x *BookingGuests) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_booking_v1_booking_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BookingGuests.ProtoReflect.Descriptor instead.
+func (*BookingGuests) Descriptor() ([]byte, []int) {
+	return file_freebusy_booking_v1_booking_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *BookingGuests) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *BookingGuests) GetGuests() []*identitypbv1.Guest {
+	if x != nil {
+		return x.Guests
+	}
+	return nil
+}
+
+func (x *BookingGuests) GetOccupancy() *Occupancy {
+	if x != nil {
+		return x.Occupancy
+	}
+	return nil
+}
+
 var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\"\xc4\f\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xc4\f\n" +
 	"\aBooking\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x125\n" +
 	"\x04unit\x18\x03 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
@@ -442,11 +515,19 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\x0erefund_percent\x18\x1b \x01(\x05B\x03\xe0A\x03R\rrefundPercent\x129\n" +
 	"\bhold_ttl\x18\x16 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x05R\aholdTtl\x12\x12\n" +
 	"\x04etag\x18\x17 \x01(\tR\x04etag:G\xeaAD\n" +
-	"\x1bfreebusy.booking.v1/Booking\x12\x12bookings/{booking}*\bbookings2\abookingJ\x04\b\x02\x10\x03J\x04\b\x04\x10\x05\"h\n" +
-	"\tOccupancy\x12\x1b\n" +
-	"\x06adults\x18\x01 \x01(\x05B\x03\xe0A\x01R\x06adults\x12\x1f\n" +
-	"\bchildren\x18\x02 \x01(\x05B\x03\xe0A\x01R\bchildren\x12\x1d\n" +
-	"\ainfants\x18\x03 \x01(\x05B\x03\xe0A\x01R\ainfantsB\xf0\x01\n" +
+	"\x1bfreebusy.booking.v1/Booking\x12\x12bookings/{booking}*\bbookings2\abookingJ\x04\b\x02\x10\x03J\x04\b\x04\x10\x05\"}\n" +
+	"\tOccupancy\x12\"\n" +
+	"\x06adults\x18\x01 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x06adults\x12&\n" +
+	"\bchildren\x18\x02 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\bchildren\x12$\n" +
+	"\ainfants\x18\x03 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\ainfants\"\xaa\x02\n" +
+	"\rBookingGuests\x125\n" +
+	"\x04name\x18\x01 \x01(\tB!\xe0A\b\xbaH\x1br\x192\x17^bookings/[^/]+/guests$R\x04name\x128\n" +
+	"\x06guests\x18\x02 \x03(\v2\x1b.freebusy.identity.v1.GuestB\x03\xe0A\x01R\x06guests\x12A\n" +
+	"\toccupancy\x18\x03 \x01(\v2\x1e.freebusy.booking.v1.OccupancyB\x03\xe0A\x01R\toccupancy:e\xeaA\\\n" +
+	"!freebusy.booking.v1/BookingGuests\x12\x19bookings/{booking}/guests*\rbookingGuests2\rbookingGuests\x8a\xb5\x18\x02\x10\x01B\xf0\x01\n" +
 	"\x17com.freebusy.booking.v1B\fBookingProtoP\x01ZYgithub.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1\xa2\x02\x03FBX\xaa\x02\x13Freebusy.Booking.V1\xca\x02\x13Freebusy\\Booking\\V1\xe2\x02\x1fFreebusy\\Booking\\V1\\GPBMetadata\xea\x02\x15Freebusy::Booking::V1b\x06proto3"
 
 var (
@@ -461,45 +542,48 @@ func file_freebusy_booking_v1_booking_proto_rawDescGZIP() []byte {
 	return file_freebusy_booking_v1_booking_proto_rawDescData
 }
 
-var file_freebusy_booking_v1_booking_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_freebusy_booking_v1_booking_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_freebusy_booking_v1_booking_proto_goTypes = []any{
 	(*Booking)(nil),                   // 0: freebusy.booking.v1.Booking
 	(*Occupancy)(nil),                 // 1: freebusy.booking.v1.Occupancy
-	(*sharedpbv1.Contact)(nil),        // 2: freebusy.shared.v1.Contact
-	(*identitypbv1.Guest)(nil),        // 3: freebusy.identity.v1.Guest
-	(*sharedpbv1.TimeWindow)(nil),     // 4: freebusy.shared.v1.TimeWindow
-	(BookingState)(0),                 // 5: freebusy.booking.v1.BookingState
-	(*timestamppb.Timestamp)(nil),     // 6: google.protobuf.Timestamp
-	(*money.Money)(nil),               // 7: google.type.Money
-	(*sharedpbv1.PriceComponent)(nil), // 8: freebusy.shared.v1.PriceComponent
-	(*structpb.Struct)(nil),           // 9: google.protobuf.Struct
-	(CancelReason)(0),                 // 10: freebusy.booking.v1.CancelReason
-	(*durationpb.Duration)(nil),       // 11: google.protobuf.Duration
+	(*BookingGuests)(nil),             // 2: freebusy.booking.v1.BookingGuests
+	(*sharedpbv1.Contact)(nil),        // 3: freebusy.shared.v1.Contact
+	(*identitypbv1.Guest)(nil),        // 4: freebusy.identity.v1.Guest
+	(*sharedpbv1.TimeWindow)(nil),     // 5: freebusy.shared.v1.TimeWindow
+	(BookingState)(0),                 // 6: freebusy.booking.v1.BookingState
+	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
+	(*money.Money)(nil),               // 8: google.type.Money
+	(*sharedpbv1.PriceComponent)(nil), // 9: freebusy.shared.v1.PriceComponent
+	(*structpb.Struct)(nil),           // 10: google.protobuf.Struct
+	(CancelReason)(0),                 // 11: freebusy.booking.v1.CancelReason
+	(*durationpb.Duration)(nil),       // 12: google.protobuf.Duration
 }
 var file_freebusy_booking_v1_booking_proto_depIdxs = []int32{
-	2,  // 0: freebusy.booking.v1.Booking.contact:type_name -> freebusy.shared.v1.Contact
-	3,  // 1: freebusy.booking.v1.Booking.guests:type_name -> freebusy.identity.v1.Guest
+	3,  // 0: freebusy.booking.v1.Booking.contact:type_name -> freebusy.shared.v1.Contact
+	4,  // 1: freebusy.booking.v1.Booking.guests:type_name -> freebusy.identity.v1.Guest
 	1,  // 2: freebusy.booking.v1.Booking.occupancy:type_name -> freebusy.booking.v1.Occupancy
-	4,  // 3: freebusy.booking.v1.Booking.window:type_name -> freebusy.shared.v1.TimeWindow
-	5,  // 4: freebusy.booking.v1.Booking.state:type_name -> freebusy.booking.v1.BookingState
-	6,  // 5: freebusy.booking.v1.Booking.hold_expire_time:type_name -> google.protobuf.Timestamp
-	7,  // 6: freebusy.booking.v1.Booking.price:type_name -> google.type.Money
-	7,  // 7: freebusy.booking.v1.Booking.discount:type_name -> google.type.Money
-	7,  // 8: freebusy.booking.v1.Booking.total:type_name -> google.type.Money
-	8,  // 9: freebusy.booking.v1.Booking.price_components:type_name -> freebusy.shared.v1.PriceComponent
-	9,  // 10: freebusy.booking.v1.Booking.attributes:type_name -> google.protobuf.Struct
-	10, // 11: freebusy.booking.v1.Booking.cancel_reason:type_name -> freebusy.booking.v1.CancelReason
-	6,  // 12: freebusy.booking.v1.Booking.create_time:type_name -> google.protobuf.Timestamp
-	6,  // 13: freebusy.booking.v1.Booking.update_time:type_name -> google.protobuf.Timestamp
-	6,  // 14: freebusy.booking.v1.Booking.confirm_time:type_name -> google.protobuf.Timestamp
-	6,  // 15: freebusy.booking.v1.Booking.cancel_time:type_name -> google.protobuf.Timestamp
-	7,  // 16: freebusy.booking.v1.Booking.refund_amount:type_name -> google.type.Money
-	11, // 17: freebusy.booking.v1.Booking.hold_ttl:type_name -> google.protobuf.Duration
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	5,  // 3: freebusy.booking.v1.Booking.window:type_name -> freebusy.shared.v1.TimeWindow
+	6,  // 4: freebusy.booking.v1.Booking.state:type_name -> freebusy.booking.v1.BookingState
+	7,  // 5: freebusy.booking.v1.Booking.hold_expire_time:type_name -> google.protobuf.Timestamp
+	8,  // 6: freebusy.booking.v1.Booking.price:type_name -> google.type.Money
+	8,  // 7: freebusy.booking.v1.Booking.discount:type_name -> google.type.Money
+	8,  // 8: freebusy.booking.v1.Booking.total:type_name -> google.type.Money
+	9,  // 9: freebusy.booking.v1.Booking.price_components:type_name -> freebusy.shared.v1.PriceComponent
+	10, // 10: freebusy.booking.v1.Booking.attributes:type_name -> google.protobuf.Struct
+	11, // 11: freebusy.booking.v1.Booking.cancel_reason:type_name -> freebusy.booking.v1.CancelReason
+	7,  // 12: freebusy.booking.v1.Booking.create_time:type_name -> google.protobuf.Timestamp
+	7,  // 13: freebusy.booking.v1.Booking.update_time:type_name -> google.protobuf.Timestamp
+	7,  // 14: freebusy.booking.v1.Booking.confirm_time:type_name -> google.protobuf.Timestamp
+	7,  // 15: freebusy.booking.v1.Booking.cancel_time:type_name -> google.protobuf.Timestamp
+	8,  // 16: freebusy.booking.v1.Booking.refund_amount:type_name -> google.type.Money
+	12, // 17: freebusy.booking.v1.Booking.hold_ttl:type_name -> google.protobuf.Duration
+	4,  // 18: freebusy.booking.v1.BookingGuests.guests:type_name -> freebusy.identity.v1.Guest
+	1,  // 19: freebusy.booking.v1.BookingGuests.occupancy:type_name -> freebusy.booking.v1.Occupancy
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_booking_v1_booking_proto_init() }
@@ -514,7 +598,7 @@ func file_freebusy_booking_v1_booking_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_booking_v1_booking_proto_rawDesc), len(file_freebusy_booking_v1_booking_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

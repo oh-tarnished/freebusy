@@ -41,6 +41,12 @@ type unitName struct {
 	Unit     string   `resource:"unit"`
 }
 
+type licenceName struct {
+	_        struct{} `resource:"properties/{property}/licences/{licence}"`
+	Property string   `resource:"property"`
+	Licence  string   `resource:"licence"`
+}
+
 type organisationName struct {
 	_  struct{} `resource:"organisations/{organisation}"`
 	ID string   `resource:"organisation"`
@@ -217,6 +223,41 @@ func ResolveUnitName(parent, name string) (propertyID, unitID, full string, err 
 	unitID = ulid.GenerateString()
 	full, err = UnitName(propertyID, unitID)
 	return propertyID, unitID, full, err
+}
+
+// LicenceName builds "properties/{property}/licences/{licence}" from bare ids.
+func LicenceName(propertyID, licenceID string) (string, error) {
+	return resourcename.MarshalResource(&licenceName{Property: propertyID, Licence: licenceID})
+}
+
+// LicenceID extracts the licence id segment from a
+// "properties/{property}/licences/{licence}" resource name.
+func LicenceID(name string) (string, error) {
+	var n licenceName
+	if err := resourcename.UnmarshalResource(name, &n); err != nil {
+		return "", err
+	}
+	return n.Licence, nil
+}
+
+// ResolveLicenceName returns the parent property id, licence id, and full
+// licence resource name for a write. When name is set it is parsed; otherwise
+// a fresh ULID licence id is minted under the property parsed from parent
+// ("properties/{property}").
+func ResolveLicenceName(parent, name string) (propertyID, licenceID, full string, err error) {
+	if name != "" {
+		var n licenceName
+		if err = resourcename.UnmarshalResource(name, &n); err != nil {
+			return "", "", "", err
+		}
+		return n.Property, n.Licence, name, nil
+	}
+	if propertyID, err = PropertyID(parent); err != nil {
+		return "", "", "", err
+	}
+	licenceID = ulid.GenerateString()
+	full, err = LicenceName(propertyID, licenceID)
+	return propertyID, licenceID, full, err
 }
 
 // OrganisationName builds the resource name "organisations/{id}" from a bare id.

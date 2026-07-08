@@ -7,6 +7,7 @@ import (
 )
 
 // Model type aliases, re-exported from this resource's schema package.
+type DeleteIdentityGuestsByBookingIdResponse = schemaql.DeleteIdentityGuestsByBookingIdResponse
 type DeleteIdentityGuestsByIdResponse = schemaql.DeleteIdentityGuestsByIdResponse
 type IdentityGuests = schemaql.IdentityGuests
 type IdentityGuestsAggExp = schemaql.IdentityGuestsAggExp

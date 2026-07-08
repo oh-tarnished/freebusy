@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	exceptionsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
 	recurringschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
@@ -164,27 +166,10 @@ func (r *ScheduleRepository) ListAvailabilityExceptions(ctx context.Context, par
 	if err != nil {
 		return nil, "", err
 	}
-	order, err := exceptionOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[scheduleschema.ScheduleAvailabilityExceptions](schedule.AvailabilityExceptionFilterSpec, r.svc.Query.Schedule.AvailabilityExceptions).
+		Scope(exceptionsql.UnitId.Eq(unitID)).List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, err := exceptionFilterPredicate(params.Filter, unitID)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := exceptionsql.List().Limit(limit + 1).Offset(offset).Where(where)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	rows, err := r.svc.Query.Schedule.AvailabilityExceptions.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*schedulepbv1.AvailabilityException, 0, len(rows))
 	for i := range rows {

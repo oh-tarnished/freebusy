@@ -3,7 +3,7 @@
 package guestsql
 
 import (
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // Filter fields for IdentityGuests. Build predicates like AgeGroup.Eq(v) and combine

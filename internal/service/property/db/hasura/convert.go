@@ -12,7 +12,7 @@ import (
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/genproto/googleapis/type/postaladdress"

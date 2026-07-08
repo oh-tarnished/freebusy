@@ -3,8 +3,8 @@ package gorm
 import (
 	"time"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -13,14 +13,13 @@ import (
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/structpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// This file holds the pure conversions between the protobuf Booking type and its
-// GORM storage model. The booking row references its unit / customer / promo code
-// by bare id (the FKs target those tables' ids) and stores its window, contact,
-// and Money value-objects as belongs-to rows. Instants (window) are UTC; nights
-// are counted in the unit's timezone.
+// This file holds what the generated converters (the models packages'
+// protobuf.go) deliberately leave to the repository: resource-name↔id mapping,
+// write-side model construction (which must respect OUTPUT_ONLY semantics the
+// schema doesn't know), money arithmetic, and night counting. Read-side field
+// mapping is the generated BookingToProto and friends.
 
 const defaultHoldTTL = 15 * time.Minute
 
@@ -41,37 +40,11 @@ func strOrNil(s string) *string {
 	return &s
 }
 
-func tsToTime(ts *timestamppb.Timestamp) *time.Time {
-	if ts == nil {
-		return nil
-	}
-	t := ts.AsTime()
-	return &t
-}
-
-func timeToTS(t *time.Time) *timestamppb.Timestamp {
-	if t == nil || t.IsZero() {
-		return nil
-	}
-	return timestamppb.New(*t)
-}
-
 func durationToStr(d *durationpb.Duration) *string {
 	if d == nil {
 		return nil
 	}
 	return ptr(d.AsDuration().String())
-}
-
-func durationFromStr(s *string) *durationpb.Duration {
-	if s == nil || *s == "" {
-		return nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil
-	}
-	return durationpb.New(d)
 }
 
 func structToJSON(s *structpb.Struct) []byte {
@@ -85,18 +58,7 @@ func structToJSON(s *structpb.Struct) []byte {
 	return b
 }
 
-func jsonToStruct(b []byte) *structpb.Struct {
-	if len(b) == 0 {
-		return nil
-	}
-	s := &structpb.Struct{}
-	if err := s.UnmarshalJSON(b); err != nil {
-		return nil
-	}
-	return s
-}
-
-// --- value-object conversions ------------------------------------------------
+// --- value-object write-side constructors -------------------------------------
 
 func moneyToModel(m *money.Money) *common.Money {
 	if m == nil {
@@ -107,17 +69,6 @@ func moneyToModel(m *money.Money) *common.Money {
 		CurrencyCode: strOrNil(m.GetCurrencyCode()),
 		Units:        ptr(m.GetUnits()),
 		Nanos:        ptr(m.GetNanos()),
-	}
-}
-
-func moneyFromModel(m *common.Money) *money.Money {
-	if m == nil {
-		return nil
-	}
-	return &money.Money{
-		CurrencyCode: deref(m.CurrencyCode),
-		Units:        deref(m.Units),
-		Nanos:        deref(m.Nanos),
 	}
 }
 
@@ -159,17 +110,6 @@ func contactToModel(c *sharedpbv1.Contact) *shared.Contact {
 	}
 }
 
-func contactFromModel(c *shared.Contact) *sharedpbv1.Contact {
-	if c == nil {
-		return nil
-	}
-	return &sharedpbv1.Contact{
-		DisplayName: deref(c.DisplayName),
-		Email:       deref(c.Email),
-		PhoneNumber: deref(c.PhoneNumber),
-	}
-}
-
 func timeWindowToModel(w *sharedpbv1.TimeWindow) *shared.TimeWindow {
 	if w == nil {
 		return nil
@@ -178,16 +118,6 @@ func timeWindowToModel(w *sharedpbv1.TimeWindow) *shared.TimeWindow {
 		ID:        ulid.GenerateString(),
 		StartTime: w.GetStartTime().AsTime().UTC(),
 		EndTime:   w.GetEndTime().AsTime().UTC(),
-	}
-}
-
-func timeWindowFromModel(w *shared.TimeWindow) *sharedpbv1.TimeWindow {
-	if w == nil {
-		return nil
-	}
-	return &sharedpbv1.TimeWindow{
-		StartTime: timestamppb.New(w.StartTime),
-		EndTime:   timestamppb.New(w.EndTime),
 	}
 }
 
@@ -211,26 +141,15 @@ func nightsBetween(w *sharedpbv1.TimeWindow, tz string) int64 {
 
 // --- enum + name conversions -------------------------------------------------
 
-func stateFromModel(s *booking.BookingState) bookingpbv1.BookingState {
-	if s == nil {
-		return bookingpbv1.BookingState_BOOKING_STATE_UNSPECIFIED
-	}
-	return bookingpbv1.BookingState(bookingpbv1.BookingState_value["BOOKING_STATE_"+string(*s)])
-}
-
 func cancelReasonToModel(r bookingpbv1.CancelReason) *booking.CancelReason {
 	if r == bookingpbv1.CancelReason_CANCEL_REASON_UNSPECIFIED {
 		return nil
 	}
-	v := booking.CancelReason(trimPrefix(r.String(), "CANCEL_REASON_"))
-	return &v
-}
-
-func cancelReasonFromModel(r *booking.CancelReason) bookingpbv1.CancelReason {
-	if r == nil {
-		return bookingpbv1.CancelReason_CANCEL_REASON_UNSPECIFIED
+	v := booking.CancelReasonFromProto(r)
+	if v == "" {
+		return nil
 	}
-	return bookingpbv1.CancelReason(bookingpbv1.CancelReason_value["CANCEL_REASON_"+string(*r)])
+	return &v
 }
 
 // userNameOrEmpty rebuilds "users/{id}" from the bare customer FK id.
@@ -253,13 +172,6 @@ func promoCodeNameOrEmpty(id *string) string {
 	return name
 }
 
-func trimPrefix(s, prefix string) string {
-	if len(s) >= len(prefix) && s[:len(prefix)] == prefix {
-		return s[len(prefix):]
-	}
-	return s
-}
-
 // lastSegment returns the final path component of an AIP resource name, or ""
 // for an empty input — used to reduce a full name to the bare id an FK stores.
 func lastSegment(name string) string {
@@ -274,34 +186,14 @@ func lastSegment(name string) string {
 	return name
 }
 
-// bookingFromModel assembles the protobuf Booking from a stored row, its
-// preloaded value-objects, and the unit's full resource name (resolved by the
-// repository, since the row stores only the bare unit id).
+// bookingFromModel assembles the protobuf Booking from a stored row via the
+// generated converter, then fills what only the repository can know: the
+// resource names rebuilt from bare FK ids (the unit name is resolved by the
+// caller — the row stores only the unit id).
 func bookingFromModel(m *booking.Booking, unitName string) *bookingpbv1.Booking {
-	return &bookingpbv1.Booking{
-		Name:           m.Name,
-		Unit:           unitName,
-		Customer:       userNameOrEmpty(m.CustomerID),
-		Contact:        contactFromModel(m.Contact),
-		Units:          deref(m.Units),
-		Window:         timeWindowFromModel(m.Window),
-		AssignedUnit:   deref(m.AssignedUnit),
-		State:          stateFromModel(m.State),
-		HoldExpireTime: timeToTS(m.HoldExpireTime),
-		Price:          moneyFromModel(m.Price),
-		PromoCode:      promoCodeNameOrEmpty(m.PromoCodeID),
-		Discount:       moneyFromModel(m.Discount),
-		Total:          moneyFromModel(m.Total),
-		Notes:          deref(m.Notes),
-		Attributes:     jsonToStruct(m.Attributes),
-		CancelReason:   cancelReasonFromModel(m.CancelReason),
-		CreateTime:     timeToTS(&m.CreateTime),
-		UpdateTime:     timeToTS(&m.UpdateTime),
-		ConfirmTime:    timeToTS(m.ConfirmTime),
-		CancelTime:     timeToTS(m.CancelTime),
-		RefundAmount:   moneyFromModel(m.RefundAmount),
-		RefundPercent:  deref(m.RefundPercent),
-		HoldTtl:        durationFromStr(m.HoldTtl),
-		Etag:           deref(m.Etag),
-	}
+	out := booking.BookingToProto(m)
+	out.Unit = unitName
+	out.Customer = userNameOrEmpty(m.CustomerID)
+	out.PromoCode = promoCodeNameOrEmpty(m.PromoCodeID)
+	return out
 }

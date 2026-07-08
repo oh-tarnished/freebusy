@@ -10,15 +10,19 @@ import (
 	"context"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitlicencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
@@ -95,30 +99,10 @@ func (r *PropertyRepository) GetProperty(ctx context.Context, name string) (*pro
 }
 
 func (r *PropertyRepository) ListProperties(ctx context.Context, params types.ListParams) ([]*propertypbv1.Property, string, error) {
-	order, err := propertyOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[pschema.PropertyProperties](property.PropertyFilterSpec, r.svc.Query.Property.Properties).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, hasWhere, err := propertyFilterPredicate(params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := propertiesList().Limit(limit + 1).Offset(offset)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	if hasWhere {
-		req = req.Where(where)
-	}
-	rows, err := r.svc.Query.Property.Properties.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Property, 0, len(rows))
 	for i := range rows {
@@ -165,6 +149,13 @@ func (r *PropertyRepository) fetchPropertyParts(ctx context.Context, res *pschem
 	}
 	for i := range units {
 		p.unitNames = append(p.unitNames, units[i].Name)
+	}
+	licences, err := r.svc.Query.Property.Licences.List(ctx, licencesList().Where(licencesql.PropertyId.Eq(res.Id)))
+	if err != nil {
+		return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
+	}
+	for i := range licences {
+		p.licenceNames = append(p.licenceNames, licences[i].Name)
 	}
 	return p, refs, nil
 }
@@ -213,27 +204,11 @@ func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, param
 	if err != nil {
 		return nil, "", err
 	}
-	order, err := unitOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[pschema.PropertyUnits](property.UnitFilterSpec, r.svc.Query.Property.Units).
+		Scope(unitsql.PropertyId.Eq(propertyID)).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, err := unitFilterPredicate(params.Filter, propertyID)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := unitsList().Limit(limit + 1).Offset(offset).Where(where)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	rows, err := r.svc.Query.Property.Units.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Unit, 0, len(rows))
 	for i := range rows {
@@ -346,6 +321,14 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 	p.promoCodes = codes
 	for i := range codes {
 		refs.promoIDs = append(refs.promoIDs, codes[i].Id)
+	}
+
+	licences, err := r.svc.Query.Property.UnitLicences.List(ctx, unitLicencesList().Where(unitlicencesql.UnitId.Eq(res.Id)))
+	if err != nil {
+		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+	}
+	for i := range licences {
+		p.licenceNames = append(p.licenceNames, licences[i].Name)
 	}
 	return p, refs, nil
 }

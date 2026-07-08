@@ -5,8 +5,8 @@ package guestsql
 import (
 	"context"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 type mutationHandler struct {
@@ -122,4 +122,20 @@ func (h *mutationHandler) UpdateOp(keyId string, patch UpdateInput, result *sche
 	}
 	args["updateColumns"] = graphql.Var(graphql.SetColumns(patch), "UpdateIdentityGuestsByIdUpdateColumnsInput")
 	return runtime.BatchOp{Field: "updateIdentityGuestsById", Args: args, Result: result}
+}
+
+func (h *mutationHandler) DeleteByBookingId(ctx context.Context, bookingId string) (schemaql.DeleteIdentityGuestsByBookingIdResponse, error) {
+	var out schemaql.DeleteIdentityGuestsByBookingIdResponse
+	args := map[string]any{}
+	args["bookingId"] = graphql.Var(bookingId, "String1")
+	res := <-h.gql.MutateFields(ctx, "deleteIdentityGuestsByBookingId", &out, args)
+	return out, res.Error
+}
+
+// DeleteByBookingIdOp returns DeleteByBookingId as a deferred mutation for a Tx batch; result is filled when the
+// batch commits. Queue it with svc.Mutation.Tx().Add(...) to commit several mutations atomically.
+func (h *mutationHandler) DeleteByBookingIdOp(bookingId string, result *schemaql.DeleteIdentityGuestsByBookingIdResponse) runtime.BatchOp {
+	args := map[string]any{}
+	args["bookingId"] = graphql.Var(bookingId, "String1")
+	return runtime.BatchOp{Field: "deleteIdentityGuestsByBookingId", Args: args, Result: result}
 }

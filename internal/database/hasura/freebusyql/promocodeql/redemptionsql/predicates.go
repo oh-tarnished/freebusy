@@ -3,7 +3,7 @@
 package redemptionsql
 
 import (
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // Filter fields for PromocodeRedemptions. Build predicates like AmountAppliedId.Eq(v) and combine

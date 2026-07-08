@@ -26,6 +26,7 @@ const (
 	BookingService_CancelBooking_FullMethodName       = "/freebusy.booking.v1.BookingService/CancelBooking"
 	BookingService_PreviewCancellation_FullMethodName = "/freebusy.booking.v1.BookingService/PreviewCancellation"
 	BookingService_RescheduleBooking_FullMethodName   = "/freebusy.booking.v1.BookingService/RescheduleBooking"
+	BookingService_GetBookingGuests_FullMethodName    = "/freebusy.booking.v1.BookingService/GetBookingGuests"
 	BookingService_UpdateBookingGuests_FullMethodName = "/freebusy.booking.v1.BookingService/UpdateBookingGuests"
 )
 
@@ -54,8 +55,10 @@ type BookingServiceClient interface {
 	PreviewCancellation(ctx context.Context, in *PreviewCancellationRequest, opts ...grpc.CallOption) (*PreviewCancellationResponse, error)
 	// Reschedules a booking to a new span.
 	RescheduleBooking(ctx context.Context, in *RescheduleBookingRequest, opts ...grpc.CallOption) (*Booking, error)
+	// Gets the staying party (guests and occupancy) on a booking.
+	GetBookingGuests(ctx context.Context, in *GetBookingGuestsRequest, opts ...grpc.CallOption) (*BookingGuests, error)
 	// Replaces the staying party (guests and occupancy) on a booking.
-	UpdateBookingGuests(ctx context.Context, in *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*Booking, error)
+	UpdateBookingGuests(ctx context.Context, in *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*BookingGuests, error)
 }
 
 type bookingServiceClient struct {
@@ -136,9 +139,19 @@ func (c *bookingServiceClient) RescheduleBooking(ctx context.Context, in *Resche
 	return out, nil
 }
 
-func (c *bookingServiceClient) UpdateBookingGuests(ctx context.Context, in *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*Booking, error) {
+func (c *bookingServiceClient) GetBookingGuests(ctx context.Context, in *GetBookingGuestsRequest, opts ...grpc.CallOption) (*BookingGuests, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Booking)
+	out := new(BookingGuests)
+	err := c.cc.Invoke(ctx, BookingService_GetBookingGuests_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookingServiceClient) UpdateBookingGuests(ctx context.Context, in *UpdateBookingGuestsRequest, opts ...grpc.CallOption) (*BookingGuests, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BookingGuests)
 	err := c.cc.Invoke(ctx, BookingService_UpdateBookingGuests_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -171,8 +184,10 @@ type BookingServiceServer interface {
 	PreviewCancellation(context.Context, *PreviewCancellationRequest) (*PreviewCancellationResponse, error)
 	// Reschedules a booking to a new span.
 	RescheduleBooking(context.Context, *RescheduleBookingRequest) (*Booking, error)
+	// Gets the staying party (guests and occupancy) on a booking.
+	GetBookingGuests(context.Context, *GetBookingGuestsRequest) (*BookingGuests, error)
 	// Replaces the staying party (guests and occupancy) on a booking.
-	UpdateBookingGuests(context.Context, *UpdateBookingGuestsRequest) (*Booking, error)
+	UpdateBookingGuests(context.Context, *UpdateBookingGuestsRequest) (*BookingGuests, error)
 	mustEmbedUnimplementedBookingServiceServer()
 }
 
@@ -204,7 +219,10 @@ func (UnimplementedBookingServiceServer) PreviewCancellation(context.Context, *P
 func (UnimplementedBookingServiceServer) RescheduleBooking(context.Context, *RescheduleBookingRequest) (*Booking, error) {
 	return nil, status.Error(codes.Unimplemented, "method RescheduleBooking not implemented")
 }
-func (UnimplementedBookingServiceServer) UpdateBookingGuests(context.Context, *UpdateBookingGuestsRequest) (*Booking, error) {
+func (UnimplementedBookingServiceServer) GetBookingGuests(context.Context, *GetBookingGuestsRequest) (*BookingGuests, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetBookingGuests not implemented")
+}
+func (UnimplementedBookingServiceServer) UpdateBookingGuests(context.Context, *UpdateBookingGuestsRequest) (*BookingGuests, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateBookingGuests not implemented")
 }
 func (UnimplementedBookingServiceServer) mustEmbedUnimplementedBookingServiceServer() {}
@@ -354,6 +372,24 @@ func _BookingService_RescheduleBooking_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookingService_GetBookingGuests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBookingGuestsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookingServiceServer).GetBookingGuests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BookingService_GetBookingGuests_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookingServiceServer).GetBookingGuests(ctx, req.(*GetBookingGuestsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BookingService_UpdateBookingGuests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateBookingGuestsRequest)
 	if err := dec(in); err != nil {
@@ -406,6 +442,10 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RescheduleBooking",
 			Handler:    _BookingService_RescheduleBooking_Handler,
+		},
+		{
+			MethodName: "GetBookingGuests",
+			Handler:    _BookingService_GetBookingGuests_Handler,
 		},
 		{
 			MethodName: "UpdateBookingGuests",

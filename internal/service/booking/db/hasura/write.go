@@ -15,13 +15,14 @@ import (
 	refundtiersql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
 	schedresourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -57,8 +58,15 @@ func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
 
 // UpdateBookingGuests replaces the whole staying party (guests + occupancy) on a
 // booking, allowed only while PENDING_HOLD or CONFIRMED and re-validated against
-// the unit's max occupancy. The old occupancy and guest graph are dropped and the
-// new ones inserted in one atomic mutation batch.
+// the unit's max occupancy.
+//
+// Ordering matters: the booking row is repointed with a CAS guard (state + etag
+// preCheck) BEFORE any destructive guest work. The etag bump serializes
+// concurrent writers — a racing replace/confirm/cancel loses the CAS and gets
+// Conflict before a single guest row is touched — which also makes the
+// old-guest snapshot below race-free. A failure between the CAS and the batch
+// leaves only orphaned value-object rows (never a corrupted booking); the swap
+// batch itself is atomic.
 func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string, guests []*identitypbv1.Guest, occupancy *bookingpbv1.Occupancy) (*bookingpbv1.Booking, error) {
 	id, err := types.BookingID(name)
 	if err != nil {
@@ -83,46 +91,52 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 	if unit == nil {
 		return nil, types.ErrNotFound
 	}
-	units := deref(res.Units)
-	if units < 1 {
-		units = 1
-	}
-	if unit.MaxOccupancy != nil && *unit.MaxOccupancy > 0 && partySize(occupancy, guests) > *unit.MaxOccupancy*units {
+	if !party.Fits(deref(unit.MaxOccupancy), deref(res.Units), occupancy, guests) {
 		return nil, types.ErrInvalidArgument
 	}
 
-	oldGuests, err := r.svc.Query.Identity.Guests.List(ctx, guestsql.List().Where(guestsql.BookingId.Eq(id)))
-	if err != nil {
-		return nil, mapHasuraErr(err)
-	}
-
+	// Insert the new occupancy first so the CAS repoint below has an FK target.
 	now := time.Now().UTC()
 	newOcc := occupancyInput(occupancy)
-	graphs := make([]guestGraph, 0, len(guests))
-	for _, g := range guests {
-		graphs = append(graphs, buildGuestGraph(g, id))
-	}
-
-	tx := r.svc.Mutation.Tx()
 	occID := ""
 	if newOcc != nil {
-		var oRes bookingschema.InsertBookingOccupanciesResponse
-		tx.Add(r.svc.Mutation.Booking.Occupancies.CreateOp(*newOcc, &oRes))
+		if _, e := r.svc.Mutation.Booking.Occupancies.Create(ctx, *newOcc); e != nil {
+			return nil, mapHasuraErr(e)
+		}
 		occID = newOcc.Id
+	}
+
+	// CAS: repoint the occupancy and bump the etag only if the booking is still
+	// editable and unchanged since the read above.
+	match := resourceql.State.In("PENDING_HOLD", "CONFIRMED")
+	if res.Etag != nil {
+		match = resourceql.And(match, resourceql.Etag.Eq(*res.Etag))
 	}
 	patch := resourceql.UpdateInput{
 		OccupancyId: nullableStr(occID),
 		Etag:        graphql.Value(ulid.GenerateString()),
 		UpdateTime:  graphql.Value(tsToStr(timestamppb.New(now))),
 	}
-	var updRes bookingschema.UpdateBookingResourceByIdResponse
-	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes))
+	if _, e := r.svc.Mutation.Booking.Resource.UpdateIfMatch(ctx, id, patch, match); e != nil {
+		if occID != "" {
+			_, _ = r.svc.Mutation.Booking.Occupancies.Delete(ctx, occID) // reap the orphan
+		}
+		return nil, mapHasuraErr(e)
+	}
+
+	// The etag is bumped — this writer owns the replace section. Swap the party
+	// and drop the superseded occupancy in one atomic batch.
+	oldGuests, err := r.svc.Query.Identity.Guests.List(ctx, guestsql.List().Where(guestsql.BookingId.Eq(id)))
+	if err != nil {
+		return nil, mapHasuraErr(err)
+	}
+	tx := r.svc.Mutation.Tx()
 	if res.OccupancyId != nil {
 		var delOcc bookingschema.DeleteBookingOccupanciesByIdResponse
 		tx.Add(r.svc.Mutation.Booking.Occupancies.DeleteOp(*res.OccupancyId, &delOcc))
 	}
-	queueGuestDeletes(tx, r, oldGuests)
-	queueGuestInserts(tx, r, graphs)
+	queueGuestDeletes(tx, r, id, oldGuests)
+	queueGuestInserts(tx, r, buildGuestGraphs(guests, id))
 	if err := tx.Commit(ctx); err != nil {
 		return nil, mapHasuraErr(err)
 	}
@@ -153,7 +167,14 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 		Etag:           graphql.Value(ulid.GenerateString()),
 		UpdateTime:     graphql.Value(tsToStr(timestamppb.New(now))),
 	}
-	if _, err := r.svc.Mutation.Booking.Resource.Update(ctx, id, patch); err != nil {
+	// CAS: only a still-held, unchanged booking confirms; a concurrent cancel,
+	// expiry, or double-confirm loses the race and gets Conflict instead of
+	// silently overwriting the state that won.
+	match := resourceql.State.Eq("PENDING_HOLD")
+	if res.Etag != nil {
+		match = resourceql.And(match, resourceql.Etag.Eq(*res.Etag))
+	}
+	if _, err := r.svc.Mutation.Booking.Resource.UpdateIfMatch(ctx, id, patch, match); err != nil {
 		return nil, mapHasuraErr(err)
 	}
 	return r.GetBooking(ctx, name)
@@ -189,17 +210,33 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 		Etag:          graphql.Value(ulid.GenerateString()),
 		UpdateTime:    graphql.Value(tsToStr(timestamppb.New(now))),
 	}
+	// CAS: the cancel only lands if the booking hasn't reached a terminal state
+	// (or been otherwise modified) since the read above. The refund Money insert
+	// rides in the same batch; if the guarded update matches no row, the batch
+	// still commits the insert, so the zero-affected-rows path reaps it.
+	match := resourceql.Not(resourceql.State.In("CANCELLED", "EXPIRED"))
+	if res.Etag != nil {
+		match = resourceql.And(match, resourceql.Etag.Eq(*res.Etag))
+	}
 	tx := r.svc.Mutation.Tx()
+	refundID := ""
 	if amount != nil {
 		mi := moneyInput(amount)
 		var mRes commonschema.InsertCommonMoneysResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(mi, &mRes))
 		patch.RefundAmountId = graphql.Value(mi.Id)
+		refundID = mi.Id
 	}
 	var updRes bookingschema.UpdateBookingResourceByIdResponse
-	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes))
+	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes, resourceql.Update().PreCheck(match)))
 	if err := tx.Commit(ctx); err != nil {
 		return nil, mapHasuraErr(err)
+	}
+	if updRes.AffectedRows == 0 {
+		if refundID != "" {
+			_, _ = r.svc.Mutation.Common.Moneys.Delete(ctx, refundID) // reap the orphan
+		}
+		return nil, types.ErrConflict
 	}
 	return r.GetBooking(ctx, name)
 }
@@ -319,24 +356,55 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		UpdateTime: graphql.Value(tsToStr(timestamppb.New(now))),
 	}
 
-	tx := r.svc.Mutation.Tx()
+	// Stage 1: create the replacement rows (window + price breakdown). Additive
+	// only — safe to reap if the CAS below loses.
+	ins := r.svc.Mutation.Tx()
 	var winRes sharedschema.InsertSharedTimeWindowsResponse
-	tx.Add(r.svc.Mutation.Shared.TimeWindows.CreateOp(window, &winRes))
-	queueMoneyInserts(tx, r, priceIn, discountIn, totalIn)
-	var updRes bookingschema.UpdateBookingResourceByIdResponse
-	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes))
-	// Drop the superseded window and old price/discount/total Money rows.
+	ins.Add(r.svc.Mutation.Shared.TimeWindows.CreateOp(window, &winRes))
+	queueMoneyInserts(ins, r, priceIn, discountIn, totalIn)
+	if err := ins.Commit(ctx); err != nil {
+		return nil, mapHasuraErr(err)
+	}
+
+	// Stage 2: CAS-repoint the booking onto the new rows. A concurrent write
+	// (confirm/cancel/another reschedule) loses here — before anything old is
+	// deleted — and the freshly inserted rows are reaped best-effort.
+	// (Reschedule carries no state gate today, matching the GORM provider, so
+	// the guard is the etag alone.)
+	var casErr error
+	if res.Etag != nil {
+		_, casErr = r.svc.Mutation.Booking.Resource.UpdateIfMatch(ctx, id, patch, resourceql.Etag.Eq(*res.Etag))
+	} else {
+		_, casErr = r.svc.Mutation.Booking.Resource.Update(ctx, id, patch)
+	}
+	if casErr != nil {
+		reap := r.svc.Mutation.Tx()
+		var delW sharedschema.DeleteSharedTimeWindowsByIdResponse
+		reap.Add(r.svc.Mutation.Shared.TimeWindows.DeleteOp(window.Id, &delW))
+		for _, in := range []*moneysql.CreateInput{priceIn, discountIn, totalIn} {
+			if in != nil {
+				var delM commonschema.DeleteCommonMoneysByIdResponse
+				reap.Add(r.svc.Mutation.Common.Moneys.DeleteOp(in.Id, &delM))
+			}
+		}
+		_ = reap.Commit(ctx) // best-effort: a failed reap only leaves orphans
+		return nil, mapHasuraErr(casErr)
+	}
+
+	// Stage 3: drop the superseded window and Money rows. The booking is already
+	// consistent, so a failure here must not fail the reschedule — it only
+	// leaves orphaned value-object rows.
+	drop := r.svc.Mutation.Tx()
 	var delW sharedschema.DeleteSharedTimeWindowsByIdResponse
-	tx.Add(r.svc.Mutation.Shared.TimeWindows.DeleteOp(res.WindowId, &delW))
+	drop.Add(r.svc.Mutation.Shared.TimeWindows.DeleteOp(res.WindowId, &delW))
 	for _, mid := range []*string{res.PriceId, res.DiscountId, res.TotalId} {
 		if mid != nil {
 			var delM commonschema.DeleteCommonMoneysByIdResponse
-			tx.Add(r.svc.Mutation.Common.Moneys.DeleteOp(*mid, &delM))
+			drop.Add(r.svc.Mutation.Common.Moneys.DeleteOp(*mid, &delM))
 		}
 	}
-	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
-	}
+	_ = drop.Commit(ctx)
+
 	out, err := r.GetBooking(ctx, name)
 	if err != nil {
 		return nil, err

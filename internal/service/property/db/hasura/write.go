@@ -3,19 +3,21 @@ package hasura
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitlicencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -173,8 +175,10 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 }
 
 // DeleteUnit removes a unit (its pricing/media/promo children cascade in the DB)
-// and the Money/DateRange value-objects those children referenced.
-func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string) error {
+// DeleteUnit removes a unit, its pricing children, and the Money/DateRange
+// value-objects those children referenced. Child licences block the delete
+// unless force is set, in which case they (and their attachment rows) go too.
+func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force bool) error {
 	id, err := types.UnitID(name)
 	if err != nil {
 		return err
@@ -190,7 +194,23 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string) error 
 	if err != nil {
 		return err
 	}
+	licences, err := r.svc.Query.Property.UnitLicences.List(ctx, unitLicencesList().Where(unitlicencesql.UnitId.Eq(id)))
+	if err != nil {
+		return mapHasuraErr(err)
+	}
+	if len(licences) > 0 && !force {
+		return fmt.Errorf("%w: unit has %d licences; set force to delete them too",
+			types.ErrInvalidArgument, len(licences))
+	}
 	tx := r.svc.Mutation.Tx()
+	for i := range licences {
+		var out pschema.DeletePropertyUnitLicencesByIdResponse
+		tx.Add(r.svc.Mutation.Property.UnitLicences.DeleteOp(licences[i].Id, &out))
+		if aid := licences[i].AttachmentId; aid != nil {
+			var aOut sharedschema.DeleteSharedAttachmentsByIdResponse
+			tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*aid, &aOut))
+		}
+	}
 	var delRes pschema.DeletePropertyUnitsByIdResponse
 	tx.Add(r.svc.Mutation.Property.Units.DeleteOp(id, &delRes))
 	queueValueObjectDeletes(tx, r, refs.moneyIDs, refs.dateIDs)

@@ -7,6 +7,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+import "orm/v1/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1";
 option java_multiple_files = true;
@@ -34,7 +35,10 @@ message Organisation {
   reserved 2;
 
   // Human-friendly organisation name (e.g. "Acme Inc.").
-  string display_name = 3 [(google.api.field_behavior) = REQUIRED];
+  string display_name = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (orm.v1.query) = {search: true}
+  ];
 
   // URL-safe slug, unique across organisations.
   string slug = 4 [(google.api.field_behavior) = OPTIONAL];
@@ -85,7 +89,10 @@ message Member {
   ];
 
   // The invited email address.
-  string email = 4 [(google.api.field_behavior) = REQUIRED];
+  string email = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (orm.v1.query) = {search: true}
+  ];
 
   // Cached display name of the member.
   string display_name = 5 [(google.api.field_behavior) = OUTPUT_ONLY];

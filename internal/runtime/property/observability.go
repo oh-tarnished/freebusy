@@ -78,6 +78,8 @@ func toStatusErr(err error) error {
 		return status.Error(codes.Aborted, err.Error())
 	case errors.Is(err, types.ErrInvalidArgument):
 		return status.Error(codes.InvalidArgument, err.Error())
+	case errors.Is(err, types.ErrUnimplemented):
+		return status.Error(codes.Unimplemented, err.Error())
 	}
 	if _, ok := status.FromError(err); ok {
 		return err

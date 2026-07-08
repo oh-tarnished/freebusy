@@ -27,9 +27,9 @@ type UnitInfo struct {
 	ID          string
 	Name        string
 	DisplayName string
-	Mode        string // ModeNightly or ModeTimeSlot
-	Capacity    int32  // pool size; treated as 1 when unset
-	TimeZone    string // IANA name
+	Mode        string        // ModeNightly or ModeTimeSlot
+	Capacity    int32         // pool size; treated as 1 when unset
+	TimeZone    string        // IANA name
 	Duration    time.Duration // default slot length (TIME_SLOT)
 	Price       *money.Money
 	Archived    bool
@@ -44,9 +44,9 @@ type UnitInfo struct {
 	MaxNights        int32
 	MinNotice        time.Duration
 	MaxAdvance       time.Duration
-	Gap              time.Duration // required gap between adjacent bookings
-	StartDelta       time.Duration // prep time reserved before each booking
-	EndDelta         time.Duration // turnover time reserved after each booking
+	Gap              time.Duration  // required gap between adjacent bookings
+	StartDelta       time.Duration  // prep time reserved before each booking
+	EndDelta         time.Duration  // turnover time reserved after each booking
 	CheckinWeekdays  []time.Weekday // allowed check-in days (empty = any)
 	CheckoutWeekdays []time.Weekday // allowed check-out days (empty = any)
 	Recurring        []rrule.Rule   // open-hours rules (empty = always open)

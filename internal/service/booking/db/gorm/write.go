@@ -12,6 +12,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
+	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -62,11 +63,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 		if e := tx.WithContext(ctx).Select("id", "max_occupancy").First(&unit, "id = ?", m.UnitID).Error; e != nil {
 			return e
 		}
-		units := deref(m.Units)
-		if units < 1 {
-			units = 1
-		}
-		if maxOcc := deref(unit.MaxOccupancy); maxOcc > 0 && partySize(occupancy, guests) > maxOcc*units {
+		if !party.Fits(deref(unit.MaxOccupancy), deref(m.Units), occupancy, guests) {
 			return types.ErrInvalidArgument
 		}
 
@@ -85,7 +82,6 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 			m.OccupancyID = nil
 		}
 		m.Etag = ptr(ulid.GenerateString())
-		m.Contact, m.Window, m.Price, m.Discount, m.Total, m.RefundAmount, m.Occupancy = nil, nil, nil, nil, nil, nil, nil
 		if e := booking.NewBookingStore(tx).Update(ctx, &m); e != nil {
 			return e
 		}
@@ -94,11 +90,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 				return e
 			}
 		}
-		graphs := make([]guestGraph, 0, len(guests))
-		for _, g := range guests {
-			graphs = append(graphs, buildGuestGraph(g, id))
-		}
-		return persistGuests(ctx, tx, graphs)
+		return persistGuests(ctx, tx, buildGuestGraphs(guests, id))
 	})
 	if err != nil {
 		return nil, mapGormErr(err)
@@ -191,7 +183,7 @@ func (r *BookingRepository) PreviewCancellation(ctx context.Context, name string
 	if err != nil {
 		return false, 0, nil, nil, "", mapGormErr(err)
 	}
-	total := moneyFromModel(m.Total)
+	total := common.MoneyToProto(m.Total)
 	nonRefundable = moneySub(total, amount)
 	return percent > 0, percent, amount, nonRefundable, summary, nil
 }
@@ -332,7 +324,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 // returns the refund percent, amount, and a human summary for the booking's lead
 // time. No matching tier (or no policy) means non-refundable.
 func (r *BookingRepository) computeRefund(ctx context.Context, tx *gorm.DB, m *booking.Booking) (int32, *money.Money, string, error) {
-	total := moneyFromModel(m.Total)
+	total := common.MoneyToProto(m.Total)
 	if total == nil {
 		return 0, nil, "non-refundable", nil
 	}

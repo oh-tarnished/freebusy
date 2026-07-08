@@ -4,22 +4,25 @@ import (
 	"context"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
 	moneysql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
 	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -66,16 +69,11 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 
 	// Occupancy: the staying party must fit the unit's max occupancy across the
 	// reserved units. Zero max_occupancy means unbounded.
-	if unit.MaxOccupancy != nil && *unit.MaxOccupancy > 0 {
-		if partySize(b.GetOccupancy(), b.GetGuests()) > *unit.MaxOccupancy*requested {
-			return nil, types.ErrInvalidArgument
-		}
+	if !party.Fits(deref(unit.MaxOccupancy), requested, b.GetOccupancy(), b.GetGuests()) {
+		return nil, types.ErrInvalidArgument
 	}
 	occupancy := occupancyInput(b.GetOccupancy())
-	guestGraphs := make([]guestGraph, 0, len(b.GetGuests()))
-	for _, g := range b.GetGuests() {
-		guestGraphs = append(guestGraphs, buildGuestGraph(g, id))
-	}
+	guestGraphs := buildGuestGraphs(b.GetGuests(), id)
 
 	promoID := lastSegment(b.GetPromoCode())
 
@@ -215,30 +213,10 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 
 // ListBookings returns a page of bookings ordered by params.OrderBy.
 func (r *BookingRepository) ListBookings(ctx context.Context, params types.ListParams) ([]*bookingpbv1.Booking, string, error) {
-	order, err := bookingOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[bookingschema.BookingResource](booking.BookingFilterSpec, r.svc.Query.Booking.Resource).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, hasWhere, err := bookingFilterPredicate(params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := resourceql.List().Limit(limit + 1).Offset(offset)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	if hasWhere {
-		req = req.Where(where)
-	}
-	rows, err := r.svc.Query.Booking.Resource.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*bookingpbv1.Booking, 0, len(rows))
 	for i := range rows {

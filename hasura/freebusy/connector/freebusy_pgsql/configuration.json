@@ -1260,6 +1260,14 @@
         "schemaName": "identity",
         "tableName": "id_documents",
         "columns": {
+          "attachment_id": {
+            "name": "attachment_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
           "expiry_date": {
             "name": "expiry_date",
             "type": {
@@ -1323,7 +1331,15 @@
             "id"
           ]
         },
-        "foreignRelations": {},
+        "foreignRelations": {
+          "id_documents_attachment_id_fkey": {
+            "foreignSchema": "shared",
+            "foreignTable": "attachments",
+            "columnMapping": {
+              "attachment_id": "id"
+            }
+          }
+        },
         "description": null
       },
       "identity_users": {
@@ -2284,6 +2300,148 @@
         },
         "description": null
       },
+      "property_licences": {
+        "schemaName": "property",
+        "tableName": "licences",
+        "columns": {
+          "attachment_id": {
+            "name": "attachment_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "create_time": {
+            "name": "create_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "etag": {
+            "name": "etag",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "expiry_date": {
+            "name": "expiry_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "issue_date": {
+            "name": "issue_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "issuing_authority": {
+            "name": "issuing_authority",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "licence_number": {
+            "name": "licence_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "notes": {
+            "name": "notes",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "property_id": {
+            "name": "property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "property_licence_state"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "property_licence_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "update_time": {
+            "name": "update_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "licences_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "licences_attachment_id_fkey": {
+            "foreignSchema": "shared",
+            "foreignTable": "attachments",
+            "columnMapping": {
+              "attachment_id": "id"
+            }
+          },
+          "licences_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
+            "columnMapping": {
+              "property_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
       "property_los_discounts": {
         "schemaName": "property",
         "tableName": "los_discounts",
@@ -2830,6 +2988,163 @@
             }
           },
           "unit_applicable_promo_codes_unit_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "units",
+            "columnMapping": {
+              "unit_id": "id"
+            }
+          }
+        },
+        "description": null
+      },
+      "property_unit_licences": {
+        "schemaName": "property",
+        "tableName": "unit_licences",
+        "columns": {
+          "attachment_id": {
+            "name": "attachment_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "create_time": {
+            "name": "create_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "etag": {
+            "name": "etag",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "expiry_date": {
+            "name": "expiry_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "issue_date": {
+            "name": "issue_date",
+            "type": {
+              "scalarType": "date"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "issuing_authority": {
+            "name": "issuing_authority",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "licence_number": {
+            "name": "licence_number",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "name": {
+            "name": "name",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "notes": {
+            "name": "notes",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "property_id": {
+            "name": "property_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "state": {
+            "name": "state",
+            "type": {
+              "scalarType": "property_licence_state"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "type": {
+            "name": "type",
+            "type": {
+              "scalarType": "property_licence_type"
+            },
+            "nullable": "nonNullable",
+            "hasDefault": "hasDefault",
+            "description": null
+          },
+          "unit_id": {
+            "name": "unit_id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "update_time": {
+            "name": "update_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "unit_licences_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {
+          "unit_licences_attachment_id_fkey": {
+            "foreignSchema": "shared",
+            "foreignTable": "attachments",
+            "columnMapping": {
+              "attachment_id": "id"
+            }
+          },
+          "unit_licences_property_id_fkey": {
+            "foreignSchema": "property",
+            "foreignTable": "properties",
+            "columnMapping": {
+              "property_id": "id"
+            }
+          },
+          "unit_licences_unit_id_fkey": {
             "foreignSchema": "property",
             "foreignTable": "units",
             "columnMapping": {
@@ -3725,6 +4040,75 @@
         "foreignRelations": {},
         "description": null
       },
+      "shared_attachments": {
+        "schemaName": "shared",
+        "tableName": "attachments",
+        "columns": {
+          "content": {
+            "name": "content",
+            "type": {
+              "scalarType": "bytea"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "filename": {
+            "name": "filename",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "id": {
+            "name": "id",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nonNullable",
+            "description": null
+          },
+          "mime_type": {
+            "name": "mime_type",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "size_bytes": {
+            "name": "size_bytes",
+            "type": {
+              "scalarType": "int8"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "upload_time": {
+            "name": "upload_time",
+            "type": {
+              "scalarType": "timestamptz"
+            },
+            "nullable": "nullable",
+            "description": null
+          },
+          "uri": {
+            "name": "uri",
+            "type": {
+              "scalarType": "text"
+            },
+            "nullable": "nullable",
+            "description": null
+          }
+        },
+        "uniquenessConstraints": {
+          "attachments_pkey": [
+            "id"
+          ]
+        },
+        "foreignRelations": {},
+        "description": null
+      },
       "shared_contacts": {
         "schemaName": "shared",
         "tableName": "contacts",
@@ -4116,6 +4500,76 @@
             }
           },
           "typeRepresentation": "boolean"
+        },
+        "bytea": {
+          "typeName": "bytea",
+          "schemaName": "pg_catalog",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "bytea"
+            },
+            "min": {
+              "returnType": "bytea"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_like": {
+              "operatorName": "~~",
+              "operatorKind": "custom",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "<>",
+              "operatorKind": "custom",
+              "argumentType": "bytea",
+              "isInfix": true
+            },
+            "_nlike": {
+              "operatorName": "!~~",
+              "operatorKind": "custom",
+              "argumentType": "bytea",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": null
         },
         "channel_channel_state": {
           "typeName": "channel_state",
@@ -5557,6 +6011,137 @@
             ]
           }
         },
+        "property_licence_state": {
+          "typeName": "licence_state",
+          "schemaName": "property",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "property_licence_state"
+            },
+            "min": {
+              "returnType": "property_licence_state"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "property_licence_state",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "ACTIVE",
+              "ARCHIVED"
+            ]
+          }
+        },
+        "property_licence_type": {
+          "typeName": "licence_type",
+          "schemaName": "property",
+          "description": null,
+          "aggregateFunctions": {
+            "max": {
+              "returnType": "property_licence_type"
+            },
+            "min": {
+              "returnType": "property_licence_type"
+            }
+          },
+          "comparisonOperators": {
+            "_eq": {
+              "operatorName": "=",
+              "operatorKind": "equal",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            },
+            "_gt": {
+              "operatorName": ">",
+              "operatorKind": "greaterThan",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            },
+            "_gte": {
+              "operatorName": ">=",
+              "operatorKind": "greaterThanOrEqual",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            },
+            "_in": {
+              "operatorName": "IN",
+              "operatorKind": "in",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            },
+            "_lt": {
+              "operatorName": "<",
+              "operatorKind": "lessThan",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            },
+            "_lte": {
+              "operatorName": "<=",
+              "operatorKind": "lessThanOrEqual",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            },
+            "_neq": {
+              "operatorName": "!=",
+              "operatorKind": "custom",
+              "argumentType": "property_licence_type",
+              "isInfix": true
+            }
+          },
+          "typeRepresentation": {
+            "enum": [
+              "TRADE",
+              "FIRE_SAFETY",
+              "LIQUOR",
+              "FOOD_SAFETY",
+              "TOURISM",
+              "HEALTH",
+              "OTHER"
+            ]
+          }
+        },
         "property_media_type": {
           "typeName": "media_type",
           "schemaName": "property",
@@ -6433,7 +7018,34 @@
     },
     "nativeOperations": {
       "queries": {},
-      "mutations": {}
+      "mutations": {
+        "delete_identity_guests_by_booking_id": {
+          "sql": {
+            "file": "native_operations/mutations/delete_identity_guests_by_booking_id.sql"
+          },
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": {
+                "scalarType": "text"
+              },
+              "nullable": "nonNullable",
+              "description": null
+            }
+          },
+          "arguments": {
+            "booking_id": {
+              "name": "booking_id",
+              "type": {
+                "scalarType": "text"
+              },
+              "nullable": "nonNullable",
+              "description": null
+            }
+          },
+          "description": null
+        }
+      }
     }
   },
   "introspectionOptions": {

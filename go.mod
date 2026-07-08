@@ -5,15 +5,16 @@ go 1.26.4
 replace github.com/oh-tarnished/freebusy/protobuf => ./protobuf
 
 require (
+	buf.build/go/protovalidate v1.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.12.3
 	github.com/machanirobotics/pulse/pulse-go v0.0.0-20260524060824-a62605622128
 	github.com/oh-tarnished/freebusy/protobuf v0.0.0-00010101000000-000000000000
-	github.com/oh-tarnished/generateql v0.3.0
 	github.com/oh-tarnished/runtime-go/config v0.0.0-20260625174747-ee0fd6e44bef
 	github.com/oh-tarnished/runtime-go/grpc v0.0.0-20260625174747-ee0fd6e44bef
 	github.com/oh-tarnished/runtime-go/ulid v0.0.0-20260625174747-ee0fd6e44bef
 	github.com/the-protobuf-project/resourcename v0.0.0-20260616190751-3e187a5d3da5
+	github.com/the-protobuf-project/runtime-go/network v0.0.0-20260707151848-75a55c595654
 	google.golang.org/genproto v0.0.0-20260622175928-b703f567277d
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.11
@@ -24,10 +25,13 @@ require (
 )
 
 require (
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260415201107-50325440f8f2.1 // indirect
+	cel.dev/expr v0.25.1 // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/ClickHouse/ch-go v0.61.5 // indirect
 	github.com/ClickHouse/clickhouse-go/v2 v2.30.0 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -53,6 +57,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
+	github.com/google/cel-go v0.28.0 // indirect
 	github.com/google/jsonschema-go v0.4.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect

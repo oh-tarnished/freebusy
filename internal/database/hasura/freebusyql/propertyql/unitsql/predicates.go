@@ -3,7 +3,7 @@
 package unitsql
 
 import (
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // Filter fields for PropertyUnits. Build predicates like Attributes.Eq(v) and combine

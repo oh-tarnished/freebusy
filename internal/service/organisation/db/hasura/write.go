@@ -11,8 +11,8 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

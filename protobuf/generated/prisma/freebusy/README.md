@@ -6,13 +6,16 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 45 | 24 |
+| 47 | 27 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
+    Attachment {
+        string id PK
+    }
     AvailabilityException {
         string id PK
         string property_id FK
@@ -78,6 +81,13 @@ erDiagram
     }
     IdDocument {
         string id PK
+        string attachment_id FK
+    }
+    Licence {
+        string id PK
+        string unit FK
+        string property_id FK
+        string attachment_id FK
     }
     LosDiscount {
         string id PK
@@ -241,6 +251,10 @@ erDiagram
     Guest }o--|| PostalAddress : "local_address_id"
     Guest }o--|| ForeignerDetails : "foreigner_id"
     Guest }o--|| GuestPreferences : "preferences_id"
+    IdDocument }o--|| Attachment : "attachment_id"
+    Licence }o--|| Unit : "unit"
+    Licence }o--|| Property : "property_id"
+    Licence }o--|| Attachment : "attachment_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"

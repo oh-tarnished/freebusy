@@ -7,12 +7,13 @@
 package bookingpbv1
 
 import (
-	identitypbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -249,14 +250,11 @@ func (x *RescheduleBookingRequest) GetRequestId() string {
 // the unit's max occupancy.
 type UpdateBookingGuestsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The booking whose party to replace.
-	// Format: bookings/{booking}
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The new guest party. Replaces every existing guest on the booking; an empty
-	// list clears the party.
-	Guests []*identitypbv1.Guest `protobuf:"bytes,2,rep,name=guests,proto3" json:"guests,omitempty"`
-	// The new occupancy breakdown, replacing the existing one.
-	Occupancy     *Occupancy `protobuf:"bytes,3,opt,name=occupancy,proto3" json:"occupancy,omitempty"`
+	// The new guest party and occupancy; its name identifies the target booking.
+	// Format: bookings/{booking}/guests
+	BookingGuests *BookingGuests `protobuf:"bytes,1,opt,name=booking_guests,json=bookingGuests,proto3" json:"booking_guests,omitempty"`
+	// Fields to overwrite. Omit to replace both guests and occupancy.
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -291,23 +289,16 @@ func (*UpdateBookingGuestsRequest) Descriptor() ([]byte, []int) {
 	return file_freebusy_booking_v1_booking_actions_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *UpdateBookingGuestsRequest) GetName() string {
+func (x *UpdateBookingGuestsRequest) GetBookingGuests() *BookingGuests {
 	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *UpdateBookingGuestsRequest) GetGuests() []*identitypbv1.Guest {
-	if x != nil {
-		return x.Guests
+		return x.BookingGuests
 	}
 	return nil
 }
 
-func (x *UpdateBookingGuestsRequest) GetOccupancy() *Occupancy {
+func (x *UpdateBookingGuestsRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
-		return x.Occupancy
+		return x.UpdateMask
 	}
 	return nil
 }
@@ -447,37 +438,36 @@ var File_freebusy_booking_v1_booking_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\n" +
-	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a\x17google/type/money.proto\"\xa2\x01\n" +
-	"\x15ConfirmBookingRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\x12$\n" +
+	")freebusy/booking/v1/booking_actions.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a!freebusy/booking/v1/booking.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\xb9\x01\n" +
+	"\x15ConfirmBookingRequest\x12N\n" +
+	"\x04name\x18\x01 \x01(\tB:\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\x12$\n" +
 	"\vpayment_ref\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
 	"paymentRef\x12*\n" +
 	"\n" +
-	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xd4\x01\n" +
-	"\x14CancelBookingRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\x12>\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xeb\x01\n" +
+	"\x14CancelBookingRequest\x12N\n" +
+	"\x04name\x18\x01 \x01(\tB:\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\x12>\n" +
 	"\x06reason\x18\x02 \x01(\x0e2!.freebusy.booking.v1.CancelReasonB\x03\xe0A\x01R\x06reason\x12\x17\n" +
 	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xf3\x01\n" +
-	"\x18RescheduleBookingRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\x12;\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x8a\x02\n" +
+	"\x18RescheduleBookingRequest\x12N\n" +
+	"\x04name\x18\x01 \x01(\tB:\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\x12;\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x125\n" +
 	"\x04unit\x18\x03 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
 	"\x19freebusy.property.v1/UnitR\x04unit\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xd2\x01\n" +
-	"\x1aUpdateBookingGuestsRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\x128\n" +
-	"\x06guests\x18\x02 \x03(\v2\x1b.freebusy.identity.v1.GuestB\x03\xe0A\x01R\x06guests\x12A\n" +
-	"\toccupancy\x18\x03 \x01(\v2\x1e.freebusy.booking.v1.OccupancyB\x03\xe0A\x01R\toccupancy\"U\n" +
-	"\x1aPreviewCancellationRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\"\x8c\x02\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xae\x01\n" +
+	"\x1aUpdateBookingGuestsRequest\x12N\n" +
+	"\x0ebooking_guests\x18\x01 \x01(\v2\".freebusy.booking.v1.BookingGuestsB\x03\xe0A\x02R\rbookingGuests\x12@\n" +
+	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
+	"updateMask\"l\n" +
+	"\x1aPreviewCancellationRequest\x12N\n" +
+	"\x04name\x18\x01 \x01(\tB:\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\"\x8c\x02\n" +
 	"\x1bPreviewCancellationResponse\x12\x1e\n" +
 	"\n" +
 	"refundable\x18\x01 \x01(\bR\n" +
@@ -510,15 +500,15 @@ var file_freebusy_booking_v1_booking_actions_proto_goTypes = []any{
 	(*PreviewCancellationResponse)(nil), // 5: freebusy.booking.v1.PreviewCancellationResponse
 	(CancelReason)(0),                   // 6: freebusy.booking.v1.CancelReason
 	(*sharedpbv1.TimeWindow)(nil),       // 7: freebusy.shared.v1.TimeWindow
-	(*identitypbv1.Guest)(nil),          // 8: freebusy.identity.v1.Guest
-	(*Occupancy)(nil),                   // 9: freebusy.booking.v1.Occupancy
+	(*BookingGuests)(nil),               // 8: freebusy.booking.v1.BookingGuests
+	(*fieldmaskpb.FieldMask)(nil),       // 9: google.protobuf.FieldMask
 	(*money.Money)(nil),                 // 10: google.type.Money
 }
 var file_freebusy_booking_v1_booking_actions_proto_depIdxs = []int32{
 	6,  // 0: freebusy.booking.v1.CancelBookingRequest.reason:type_name -> freebusy.booking.v1.CancelReason
 	7,  // 1: freebusy.booking.v1.RescheduleBookingRequest.window:type_name -> freebusy.shared.v1.TimeWindow
-	8,  // 2: freebusy.booking.v1.UpdateBookingGuestsRequest.guests:type_name -> freebusy.identity.v1.Guest
-	9,  // 3: freebusy.booking.v1.UpdateBookingGuestsRequest.occupancy:type_name -> freebusy.booking.v1.Occupancy
+	8,  // 2: freebusy.booking.v1.UpdateBookingGuestsRequest.booking_guests:type_name -> freebusy.booking.v1.BookingGuests
+	9,  // 3: freebusy.booking.v1.UpdateBookingGuestsRequest.update_mask:type_name -> google.protobuf.FieldMask
 	10, // 4: freebusy.booking.v1.PreviewCancellationResponse.refund_amount:type_name -> google.type.Money
 	10, // 5: freebusy.booking.v1.PreviewCancellationResponse.non_refundable_amount:type_name -> google.type.Money
 	6,  // [6:6] is the sub-list for method output_type

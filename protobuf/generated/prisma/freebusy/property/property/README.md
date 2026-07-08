@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 11 | 0 |
+| 12 | 0 |
 
 ## Entity relationships
 
@@ -17,6 +17,12 @@ erDiagram
         string id PK
         string unit_id FK
         string amount_id FK
+    }
+    Licence {
+        string id PK
+        string unit FK
+        string property_id FK
+        string attachment_id FK
     }
     LosDiscount {
         string id PK
@@ -65,6 +71,9 @@ erDiagram
         string id PK
         string unit_id FK
     }
+    Attachment {
+        string externalStub PK
+    }
     DateRange {
         string externalStub PK
     }
@@ -82,6 +91,9 @@ erDiagram
     }
     Fee }o--|| Unit : "unit_id"
     Fee }o--|| Money : "amount_id"
+    Licence }o--|| Unit : "unit"
+    Licence }o--|| Property : "property_id"
+    Licence }o--|| Attachment : "attachment_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"
@@ -149,6 +161,29 @@ A bookable unit type within a property: a pool of `capacity` interchangeable roo
 | `etag` | `VARCHAR(255)` | nullable |
 | `property_id` | `CHAR(26)` | not null |
 | `price_id` | `CHAR(26)` | nullable |
+
+### `Licence` → `licences`
+
+A regulatory licence or certificate held by a Property or one of its Units (e.g. trade licence, fire safety NOC, per-room liquor licence). One resource covers both: every licence is parented by the property, `target` says what it covers, and a unit licence names its unit in `unit`. Tracks the issuing authority and validity window so `expiry_date` can be filtered on to find licences due for renewal; the certificate itself is carried in `attachment`. A standalone resource (own Get/List/Create/Update/Delete), like Unit, rather than an embedded repeated field like Media, so a renewal doesn't require resending the whole Property.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `target` | `LicenceTarget` | nullable |
+| `unit` | `CHAR(26)` | nullable |
+| `type` | `LicenceType` | not null |
+| `licence_number` | `VARCHAR(255)` | nullable |
+| `issuing_authority` | `VARCHAR(255)` | nullable |
+| `issue_date` | `DATE` | nullable |
+| `expiry_date` | `DATE` | nullable |
+| `notes` | `VARCHAR(255)` | nullable |
+| `state` | `LicenceState` | nullable |
+| `create_time` | `TIMESTAMPTZ` | not null |
+| `update_time` | `TIMESTAMPTZ` | not null |
+| `etag` | `VARCHAR(255)` | nullable |
+| `property_id` | `CHAR(26)` | not null |
+| `attachment_id` | `CHAR(26)` | nullable |
 
 ### `Media` → `medias`
 

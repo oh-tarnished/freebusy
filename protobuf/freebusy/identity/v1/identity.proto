@@ -6,6 +6,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
+import "orm/v1/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1;identitypbv1";
 option java_multiple_files = true;
@@ -35,7 +36,10 @@ message User {
   string email = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Display name.
-  string display_name = 4 [(google.api.field_behavior) = OPTIONAL];
+  string display_name = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (orm.v1.query) = {search: true}
+  ];
 
   // Avatar image URL.
   string avatar_url = 5 [(google.api.field_behavior) = OPTIONAL];

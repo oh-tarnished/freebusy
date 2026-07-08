@@ -24,6 +24,10 @@ plugins:
     opt:
       - target=gorm
       - stores=true
+      # Proto↔model converters (<Model>ToProto/<Model>FromProto + enum value
+      # mappers) per schema package — the mechanical field mass the app's
+      # per-service convert.go files otherwise hand-write.
+      - converters=true
       # Import path of the gorm output dir (module path + out). The generated
       # stores import the shared gormx runtime package by this path, so it MUST
       # match the `out` dir above (internal/database/) — otherwise the
@@ -31,3 +35,10 @@ plugins:
       - go_module=github.com/oh-tarnished/freebusy/internal/database/gorm
       - config=tools/protobuf/buf/config/orm.yaml
       - otel=true
+      # AIP-160 filter / AIP-132 order_by specs per schema + the shared filterx
+      # engines (backend-neutral core, gorm + hasura engines) — one Spec drives
+      # both providers' filter/order/List paths.
+      - filters=true
+      # Emit the pulse-go Observer adapter so repositories can trace/log the
+      # generated list engines through shared.Pulse.
+      - pulse=true

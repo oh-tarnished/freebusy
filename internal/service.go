@@ -8,6 +8,7 @@ import (
 	"context"
 
 	bookingruntime "github.com/oh-tarnished/freebusy/internal/runtime/booking"
+	propertyruntime "github.com/oh-tarnished/freebusy/internal/runtime/property"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -24,6 +25,7 @@ import (
 type Service struct {
 	promocodepbv1.PromoCodeServiceServer
 	propertypbv1.PropertyServiceServer
+	propertypbv1.LicenceServiceServer
 	orgpbv1.OrganisationServiceServer
 	schedulepbv1.ScheduleServiceServer
 	bookingpbv1.BookingServiceServer
@@ -38,9 +40,11 @@ type Service struct {
 // NewService wraps the assembled service servers as the registered Service. The
 // booking server is passed as its concrete type so its background hold sweeper can
 // be started; it still satisfies bookingpbv1.BookingServiceServer for embedding.
+// The property server is concrete for the same kind of reason: it implements
+// both the PropertyService and the LicenceService.
 func NewService(
 	promoCode promocodepbv1.PromoCodeServiceServer,
-	property propertypbv1.PropertyServiceServer,
+	property *propertyruntime.Server,
 	organisation orgpbv1.OrganisationServiceServer,
 	schedule schedulepbv1.ScheduleServiceServer,
 	booking *bookingruntime.Server,
@@ -50,6 +54,7 @@ func NewService(
 	return &Service{
 		PromoCodeServiceServer:    promoCode,
 		PropertyServiceServer:     property,
+		LicenceServiceServer:      property,
 		OrganisationServiceServer: organisation,
 		ScheduleServiceServer:     schedule,
 		BookingServiceServer:      booking,

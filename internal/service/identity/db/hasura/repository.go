@@ -4,12 +4,15 @@ import (
 	"context"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/identity"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
+	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	usersql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/usersql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -41,30 +44,10 @@ func (r *UserRepository) GetUser(ctx context.Context, name string) (*identitypbv
 
 // ListUsers returns a page of users ordered by params.OrderBy.
 func (r *UserRepository) ListUsers(ctx context.Context, params types.ListParams) ([]*identitypbv1.User, string, error) {
-	order, err := userOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[identityschema.IdentityUsers](identity.UserFilterSpec, r.svc.Query.Identity.Users).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, hasWhere, err := userFilterPredicate(params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := usersql.List().Limit(limit + 1).Offset(offset)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	if hasWhere {
-		req = req.Where(where)
-	}
-	rows, err := r.svc.Query.Identity.Users.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*identitypbv1.User, 0, len(rows))
 	for i := range rows {

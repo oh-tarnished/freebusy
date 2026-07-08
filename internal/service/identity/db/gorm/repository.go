@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/identity"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -51,27 +52,10 @@ func (r *UserRepository) GetUser(ctx context.Context, name string) (*identitypbv
 
 // ListUsers returns a page of users ordered by params.OrderBy.
 func (r *UserRepository) ListUsers(ctx context.Context, params types.ListParams) ([]*identitypbv1.User, string, error) {
-	order, err := userOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[identity.User](identity.UserFilterSpec).
+		List(ctx, r.db, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := r.db.WithContext(ctx).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyUserFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []identity.User
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	items := make([]*identitypbv1.User, 0, len(models))
 	for i := range models {

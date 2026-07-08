@@ -73,6 +73,12 @@ static_resources:
                             timeout: 60s
 
                         - match:
+                            prefix: "/freebusy.property.v1.LicenceService/"
+                          route:
+                            cluster: freebusy_backend
+                            timeout: 60s
+
+                        - match:
                             prefix: "/freebusy.property.v1.PropertyService/"
                           route:
                             cluster: freebusy_backend

@@ -13,7 +13,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // List-request constructors, wrapped so the repository reads uniformly and the

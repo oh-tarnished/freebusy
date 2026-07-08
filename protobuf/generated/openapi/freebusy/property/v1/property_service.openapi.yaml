@@ -293,6 +293,13 @@ paths:
                   required: true
                   schema:
                     type: string
+                - name: force
+                  in: query
+                  description: |-
+                    Whether to delete the unit's child licences along with it. Required to be
+                     true if any exist; otherwise the delete is rejected.
+                  schema:
+                    type: boolean
             responses:
                 "200":
                     description: OK
@@ -813,6 +820,17 @@ components:
                 etag:
                     type: string
                     description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+                licences:
+                    readOnly: true
+                    type: array
+                    items:
+                        type: string
+                    description: |-
+                        Resource names of the regulatory licences/certificates held by this
+                         property and its units (e.g. trade licence, fire safety NOC); manage them
+                         with the LicenceService. Derived from the licences' parent FK at read
+                         time, so no join table is materialized (orm skip).
+                         Format: properties/{property}/licences/{licence}
             description: |-
                 A hotel (or other lodging property): the guest-facing venue a chain operates.
                  A Property belongs to an Organisation (the chain/brand) and carries the

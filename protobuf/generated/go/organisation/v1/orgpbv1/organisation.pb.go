@@ -7,6 +7,7 @@
 package orgpbv1
 
 import (
+	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -290,10 +291,10 @@ var File_freebusy_organisation_v1_organisation_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a$freebusy/organisation/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc1\x04\n" +
+	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a$freebusy/organisation/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"\xc7\x04\n" +
 	"\fOrganisation\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
-	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12\x17\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12,\n" +
+	"\fdisplay_name\x18\x03 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12\x17\n" +
 	"\x04slug\x18\x04 \x01(\tB\x03\xe0A\x01R\x04slug\x12(\n" +
 	"\rbilling_email\x18\x05 \x01(\tB\x03\xe0A\x01R\fbillingEmail\x12F\n" +
 	"\x05state\x18\x06 \x01(\x0e2+.freebusy.organisation.v1.OrganisationStateB\x03\xe0A\x03R\x05state\x128\n" +
@@ -305,12 +306,12 @@ const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
 	"\x04etag\x18\v \x01(\tR\x04etag:e\xeaAb\n" +
-	"%freebusy.organisation.v1/Organisation\x12\x1corganisations/{organisation}*\rorganisations2\forganisationJ\x04\b\x02\x10\x03\"\xe3\x04\n" +
+	"%freebusy.organisation.v1/Organisation\x12\x1corganisations/{organisation}*\rorganisations2\forganisationJ\x04\b\x02\x10\x03\"\xe9\x04\n" +
 	"\x06Member\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x125\n" +
 	"\x04user\x18\x03 \x01(\tB!\xe0A\x03\xfaA\x1b\n" +
-	"\x19freebusy.identity.v1/UserR\x04user\x12\x19\n" +
-	"\x05email\x18\x04 \x01(\tB\x03\xe0A\x02R\x05email\x12&\n" +
+	"\x19freebusy.identity.v1/UserR\x04user\x12\x1f\n" +
+	"\x05email\x18\x04 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\x05email\x12&\n" +
 	"\fdisplay_name\x18\x05 \x01(\tB\x03\xe0A\x03R\vdisplayName\x12C\n" +
 	"\x04role\x18\x06 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\x12@\n" +
 	"\x05state\x18\a \x01(\x0e2%.freebusy.organisation.v1.MemberStateB\x03\xe0A\x03R\x05state\x12;\n" +

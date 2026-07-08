@@ -150,6 +150,53 @@ func (x *GetBookingRequest) GetName() string {
 	return ""
 }
 
+// Request message for GetBookingGuests.
+type GetBookingGuestsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The singleton guests sub-resource to retrieve.
+	// Format: bookings/{booking}/guests
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetBookingGuestsRequest) Reset() {
+	*x = GetBookingGuestsRequest{}
+	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetBookingGuestsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetBookingGuestsRequest) ProtoMessage() {}
+
+func (x *GetBookingGuestsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetBookingGuestsRequest.ProtoReflect.Descriptor instead.
+func (*GetBookingGuestsRequest) Descriptor() ([]byte, []int) {
+	return file_freebusy_booking_v1_booking_messages_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetBookingGuestsRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 // Request message for ListBookings.
 type ListBookingsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -168,7 +215,7 @@ type ListBookingsRequest struct {
 
 func (x *ListBookingsRequest) Reset() {
 	*x = ListBookingsRequest{}
-	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[2]
+	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -180,7 +227,7 @@ func (x *ListBookingsRequest) String() string {
 func (*ListBookingsRequest) ProtoMessage() {}
 
 func (x *ListBookingsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[2]
+	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -193,7 +240,7 @@ func (x *ListBookingsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListBookingsRequest.ProtoReflect.Descriptor instead.
 func (*ListBookingsRequest) Descriptor() ([]byte, []int) {
-	return file_freebusy_booking_v1_booking_messages_proto_rawDescGZIP(), []int{2}
+	return file_freebusy_booking_v1_booking_messages_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ListBookingsRequest) GetPageSize() int32 {
@@ -237,7 +284,7 @@ type ListBookingsResponse struct {
 
 func (x *ListBookingsResponse) Reset() {
 	*x = ListBookingsResponse{}
-	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[3]
+	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -249,7 +296,7 @@ func (x *ListBookingsResponse) String() string {
 func (*ListBookingsResponse) ProtoMessage() {}
 
 func (x *ListBookingsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[3]
+	mi := &file_freebusy_booking_v1_booking_messages_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -262,7 +309,7 @@ func (x *ListBookingsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListBookingsResponse.ProtoReflect.Descriptor instead.
 func (*ListBookingsResponse) Descriptor() ([]byte, []int) {
-	return file_freebusy_booking_v1_booking_messages_proto_rawDescGZIP(), []int{3}
+	return file_freebusy_booking_v1_booking_messages_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ListBookingsResponse) GetBookings() []*Booking {
@@ -293,7 +340,10 @@ const file_freebusy_booking_v1_booking_messages_proto_rawDesc = "" +
 	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"L\n" +
 	"\x11GetBookingRequest\x127\n" +
 	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\"\x98\x01\n" +
+	"\x1bfreebusy.booking.v1/BookingR\x04name\"X\n" +
+	"\x17GetBookingGuestsRequest\x12=\n" +
+	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
+	"!freebusy.booking.v1/BookingGuestsR\x04name\"\x98\x01\n" +
 	"\x13ListBookingsRequest\x12 \n" +
 	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
 	"\n" +
@@ -317,17 +367,18 @@ func file_freebusy_booking_v1_booking_messages_proto_rawDescGZIP() []byte {
 	return file_freebusy_booking_v1_booking_messages_proto_rawDescData
 }
 
-var file_freebusy_booking_v1_booking_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_freebusy_booking_v1_booking_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_freebusy_booking_v1_booking_messages_proto_goTypes = []any{
-	(*CreateBookingRequest)(nil), // 0: freebusy.booking.v1.CreateBookingRequest
-	(*GetBookingRequest)(nil),    // 1: freebusy.booking.v1.GetBookingRequest
-	(*ListBookingsRequest)(nil),  // 2: freebusy.booking.v1.ListBookingsRequest
-	(*ListBookingsResponse)(nil), // 3: freebusy.booking.v1.ListBookingsResponse
-	(*Booking)(nil),              // 4: freebusy.booking.v1.Booking
+	(*CreateBookingRequest)(nil),    // 0: freebusy.booking.v1.CreateBookingRequest
+	(*GetBookingRequest)(nil),       // 1: freebusy.booking.v1.GetBookingRequest
+	(*GetBookingGuestsRequest)(nil), // 2: freebusy.booking.v1.GetBookingGuestsRequest
+	(*ListBookingsRequest)(nil),     // 3: freebusy.booking.v1.ListBookingsRequest
+	(*ListBookingsResponse)(nil),    // 4: freebusy.booking.v1.ListBookingsResponse
+	(*Booking)(nil),                 // 5: freebusy.booking.v1.Booking
 }
 var file_freebusy_booking_v1_booking_messages_proto_depIdxs = []int32{
-	4, // 0: freebusy.booking.v1.CreateBookingRequest.booking:type_name -> freebusy.booking.v1.Booking
-	4, // 1: freebusy.booking.v1.ListBookingsResponse.bookings:type_name -> freebusy.booking.v1.Booking
+	5, // 0: freebusy.booking.v1.CreateBookingRequest.booking:type_name -> freebusy.booking.v1.Booking
+	5, // 1: freebusy.booking.v1.ListBookingsResponse.bookings:type_name -> freebusy.booking.v1.Booking
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -347,7 +398,7 @@ func file_freebusy_booking_v1_booking_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_booking_v1_booking_messages_proto_rawDesc), len(file_freebusy_booking_v1_booking_messages_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

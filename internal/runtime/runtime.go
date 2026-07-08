@@ -25,7 +25,6 @@ import (
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 )
 
@@ -40,8 +39,9 @@ func NewPromoCodeServer() (promocodepbv1.PromoCodeServiceServer, error) {
 }
 
 // NewPropertyServer opens the configured backend, builds the repository, and
-// returns the property gRPC service implementation ready to register.
-func NewPropertyServer() (propertypbv1.PropertyServiceServer, error) {
+// returns the property gRPC service implementation ready to register. The
+// concrete Server implements both the PropertyService and the LicenceService.
+func NewPropertyServer() (*property.Server, error) {
 	conn, err := database.Open()
 	if err != nil {
 		return nil, err

@@ -6,19 +6,19 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
 type CommonMoneys = schemaql.CommonMoneys
 type CommonMoneysAggExp = schemaql.CommonMoneysAggExp
+type DeleteCommonMoneysByIdResponse = schemaql.DeleteCommonMoneysByIdResponse
+type InsertCommonMoneysResponse = schemaql.InsertCommonMoneysResponse
+type UpdateCommonMoneysByIdResponse = schemaql.UpdateCommonMoneysByIdResponse
 type CommonPostalAddress = schemaql.CommonPostalAddress
 type CommonPostalAddressAggExp = schemaql.CommonPostalAddressAggExp
-type DeleteCommonMoneysByIdResponse = schemaql.DeleteCommonMoneysByIdResponse
 type DeleteCommonPostalAddressByIdResponse = schemaql.DeleteCommonPostalAddressByIdResponse
-type InsertCommonMoneysResponse = schemaql.InsertCommonMoneysResponse
 type InsertCommonPostalAddressResponse = schemaql.InsertCommonPostalAddressResponse
-type UpdateCommonMoneysByIdResponse = schemaql.UpdateCommonMoneysByIdResponse
 type UpdateCommonPostalAddressByIdResponse = schemaql.UpdateCommonPostalAddressByIdResponse
 
 // QueryHandler aggregates query handlers for the commonql domain.

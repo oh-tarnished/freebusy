@@ -8,6 +8,7 @@ package gorm
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
@@ -33,13 +34,15 @@ func NewPropertyRepository(db *gorm.DB) *PropertyRepository {
 }
 
 // preloadProperty eager-loads a property's association graph: its address,
-// policy, media gallery, and the child units (names only surface on the proto).
+// policy, media gallery, and the child units and licences (names only surface
+// on the proto).
 func preloadProperty(db *gorm.DB) *gorm.DB {
 	return db.
 		Preload("Address").
 		Preload("Policy").
 		Preload("Medias").
-		Preload("Units")
+		Preload("Units").
+		Preload("Licences")
 }
 
 // preloadUnit eager-loads a unit's association graph: its price and every
@@ -54,7 +57,8 @@ func preloadUnit(db *gorm.DB) *gorm.DB {
 		Preload("Fees.Amount").
 		Preload("Taxes").
 		Preload("UnitMedias").
-		Preload("UnitApplicablePromoCodes")
+		Preload("UnitApplicablePromoCodes").
+		Preload("Licences")
 }
 
 // persist inserts a property graph: its belongs-to children (address, policy)
@@ -195,27 +199,10 @@ func (r *PropertyRepository) GetProperty(ctx context.Context, name string) (*pro
 
 // ListProperties returns a page of properties ordered by params.OrderBy.
 func (r *PropertyRepository) ListProperties(ctx context.Context, params types.ListParams) ([]*propertypbv1.Property, string, error) {
-	order, err := propertyOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[property.Property](property.PropertyFilterSpec).
+		List(ctx, preloadProperty(r.db), types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := preloadProperty(r.db.WithContext(ctx)).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyPropertyFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []property.Property
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Property, 0, len(models))
 	for i := range models {
@@ -265,27 +252,10 @@ func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, param
 	if err != nil {
 		return nil, "", err
 	}
-	order, err := unitOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[property.Unit](property.UnitFilterSpec).
+		List(ctx, preloadUnit(r.db).Where("property_id = ?", propertyID), types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := preloadUnit(r.db.WithContext(ctx)).Where("property_id = ?", propertyID).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyUnitFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []property.Unit
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Unit, 0, len(models))
 	for i := range models {

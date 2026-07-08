@@ -9,34 +9,35 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/iddocumentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/usersql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
 type DeleteIdentityForeignerDetailsByIdResponse = schemaql.DeleteIdentityForeignerDetailsByIdResponse
-type DeleteIdentityGuestPreferencesByIdResponse = schemaql.DeleteIdentityGuestPreferencesByIdResponse
-type DeleteIdentityGuestsByIdResponse = schemaql.DeleteIdentityGuestsByIdResponse
-type DeleteIdentityIdDocumentsByIdResponse = schemaql.DeleteIdentityIdDocumentsByIdResponse
-type DeleteIdentityUsersByIdResponse = schemaql.DeleteIdentityUsersByIdResponse
 type IdentityForeignerDetails = schemaql.IdentityForeignerDetails
 type IdentityForeignerDetailsAggExp = schemaql.IdentityForeignerDetailsAggExp
+type InsertIdentityForeignerDetailsResponse = schemaql.InsertIdentityForeignerDetailsResponse
+type UpdateIdentityForeignerDetailsByIdResponse = schemaql.UpdateIdentityForeignerDetailsByIdResponse
+type DeleteIdentityGuestPreferencesByIdResponse = schemaql.DeleteIdentityGuestPreferencesByIdResponse
 type IdentityGuestPreferences = schemaql.IdentityGuestPreferences
 type IdentityGuestPreferencesAggExp = schemaql.IdentityGuestPreferencesAggExp
+type InsertIdentityGuestPreferencesResponse = schemaql.InsertIdentityGuestPreferencesResponse
+type UpdateIdentityGuestPreferencesByIdResponse = schemaql.UpdateIdentityGuestPreferencesByIdResponse
+type DeleteIdentityGuestsByBookingIdResponse = schemaql.DeleteIdentityGuestsByBookingIdResponse
+type DeleteIdentityGuestsByIdResponse = schemaql.DeleteIdentityGuestsByIdResponse
 type IdentityGuests = schemaql.IdentityGuests
 type IdentityGuestsAggExp = schemaql.IdentityGuestsAggExp
+type InsertIdentityGuestsResponse = schemaql.InsertIdentityGuestsResponse
+type UpdateIdentityGuestsByIdResponse = schemaql.UpdateIdentityGuestsByIdResponse
+type DeleteIdentityIdDocumentsByIdResponse = schemaql.DeleteIdentityIdDocumentsByIdResponse
 type IdentityIdDocuments = schemaql.IdentityIdDocuments
 type IdentityIdDocumentsAggExp = schemaql.IdentityIdDocumentsAggExp
+type InsertIdentityIdDocumentsResponse = schemaql.InsertIdentityIdDocumentsResponse
+type UpdateIdentityIdDocumentsByIdResponse = schemaql.UpdateIdentityIdDocumentsByIdResponse
+type DeleteIdentityUsersByIdResponse = schemaql.DeleteIdentityUsersByIdResponse
 type IdentityUsers = schemaql.IdentityUsers
 type IdentityUsersAggExp = schemaql.IdentityUsersAggExp
-type InsertIdentityForeignerDetailsResponse = schemaql.InsertIdentityForeignerDetailsResponse
-type InsertIdentityGuestPreferencesResponse = schemaql.InsertIdentityGuestPreferencesResponse
-type InsertIdentityGuestsResponse = schemaql.InsertIdentityGuestsResponse
-type InsertIdentityIdDocumentsResponse = schemaql.InsertIdentityIdDocumentsResponse
 type InsertIdentityUsersResponse = schemaql.InsertIdentityUsersResponse
-type UpdateIdentityForeignerDetailsByIdResponse = schemaql.UpdateIdentityForeignerDetailsByIdResponse
-type UpdateIdentityGuestPreferencesByIdResponse = schemaql.UpdateIdentityGuestPreferencesByIdResponse
-type UpdateIdentityGuestsByIdResponse = schemaql.UpdateIdentityGuestsByIdResponse
-type UpdateIdentityIdDocumentsByIdResponse = schemaql.UpdateIdentityIdDocumentsByIdResponse
 type UpdateIdentityUsersByIdResponse = schemaql.UpdateIdentityUsersByIdResponse
 
 // QueryHandler aggregates query handlers for the identityql domain.

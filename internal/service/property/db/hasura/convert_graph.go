@@ -83,11 +83,12 @@ func buildPropertyGraph(p *propertypbv1.Property, now time.Time) *propertyGraph 
 }
 
 type propertyParts struct {
-	res       *pschema.PropertyProperties
-	address   *commonschema.CommonPostalAddress
-	policy    *pschema.PropertyPolicies
-	medias    []pschema.PropertyMedias
-	unitNames []string
+	res          *pschema.PropertyProperties
+	address      *commonschema.CommonPostalAddress
+	policy       *pschema.PropertyPolicies
+	medias       []pschema.PropertyMedias
+	unitNames    []string
+	licenceNames []string
 }
 
 func propertyFromParts(p propertyParts) *propertypbv1.Property {
@@ -107,6 +108,7 @@ func propertyFromParts(p propertyParts) *propertypbv1.Property {
 		UpdateTime:   strToTS(res.UpdateTime),
 		Etag:         deref(res.Etag),
 		Units:        p.unitNames,
+		Licences:     p.licenceNames,
 	}
 	for i := range p.medias {
 		out.Media = append(out.Media, mediaFromModel(&p.medias[i]))
@@ -265,6 +267,7 @@ type unitParts struct {
 	promoCodes    []pschema.PropertyUnitApplicablePromoCodes
 	moneyByID     map[string]*commonschema.CommonMoneys
 	dateByID      map[string]*sharedschema.SharedDateRanges
+	licenceNames  []string
 }
 
 func unitFromParts(p unitParts) *propertypbv1.Unit {
@@ -287,6 +290,7 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 		CreateTime:   strToTS(res.CreateTime),
 		UpdateTime:   strToTS(res.UpdateTime),
 		Etag:         deref(res.Etag),
+		Licences:     p.licenceNames,
 	}
 	for i := range p.rateOverrides {
 		r := &p.rateOverrides[i]

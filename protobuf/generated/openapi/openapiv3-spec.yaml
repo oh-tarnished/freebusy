@@ -35,6 +35,7 @@ tags:
   - name: Booking Service
   - name: Channel Service
   - name: Identity Service
+  - name: Licence Service
   - name: Organisation Service
   - name: Promo Code Service
   - name: Property Service
@@ -374,6 +375,83 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Get Booking
+  /v1/bookings/{booking}/guests:
+    get:
+      tags:
+        - Booking Service
+      description: Gets the staying party (guests and occupancy) on a booking.
+      operationId: BookingService_GetBookingGuests
+      parameters:
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingGuests'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Booking Guests
+    patch:
+      tags:
+        - Booking Service
+      description: Replaces the staying party (guests and occupancy) on a booking.
+      operationId: BookingService_UpdateBookingGuests
+      parameters:
+        - name: booking
+          in: path
+          description: The booking id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace both guests and occupancy.
+          schema:
+            type: string
+            format: field-mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingGuests'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingGuests'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Update Booking Guests
   /v1/bookings/{booking}:cancel:
     post:
       tags:
@@ -2116,6 +2194,240 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
       summary: Validate Promo Code
+  /v1/properties/{property}/licences:
+    get:
+      tags:
+        - Licence Service
+      description: |-
+        Lists the regulatory licences/certificates under a property — both
+         property-wide and per-unit ones.
+      operationId: LicenceService_ListLicences
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Maximum number of licences to return. The server may cap this.
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: Page token from a previous ListLicences call's next_page_token.
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: |-
+            Filter expression (AIP-160), e.g. `type = LICENCE_TYPE_FIRE_SAFETY`,
+             `target = LICENCE_TARGET_UNIT`, `unit = properties/p1/units/u1`, or
+             `expiry_date <= 2026-08-01` to find licences due for renewal.
+          schema:
+            type: string
+        - name: orderBy
+          in: query
+          description: Sort order, e.g. "expiry_date" or "create_time desc".
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListLicencesResponse'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: List Licences
+    post:
+      tags:
+        - Licence Service
+      description: |-
+        Creates a licence under a property, e.g. after uploading a scan of a trade
+         or fire-safety certificate. Set the licence's `unit` to cover a single
+         unit instead of the whole property.
+      operationId: LicenceService_CreateLicence
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: licenceId
+          in: query
+          description: Optional caller-chosen ID for the licence; the server generates one if unset.
+          schema:
+            type: string
+        - name: requestId
+          in: query
+          description: Caller-supplied idempotency key; identical retries return the first result.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Licence'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Licence'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Create Licence
+  /v1/properties/{property}/licences/{licence}:
+    get:
+      tags:
+        - Licence Service
+      description: Gets a single licence.
+      operationId: LicenceService_GetLicence
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: licence
+          in: path
+          description: The licence id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Licence'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Get Licence
+    delete:
+      tags:
+        - Licence Service
+      description: Deletes a licence.
+      operationId: LicenceService_DeleteLicence
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: licence
+          in: path
+          description: The licence id.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content: {}
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Delete Licence
+    patch:
+      tags:
+        - Licence Service
+      description: Updates a licence, e.g. to record its renewal.
+      operationId: LicenceService_UpdateLicence
+      parameters:
+        - name: property
+          in: path
+          description: The property id.
+          required: true
+          schema:
+            type: string
+        - name: licence
+          in: path
+          description: The licence id.
+          required: true
+          schema:
+            type: string
+        - name: updateMask
+          in: query
+          description: Fields to overwrite. Omit to replace all mutable fields.
+          schema:
+            type: string
+            format: field-mask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Licence'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Licence'
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      summary: Update Licence
   /v1/properties:
     get:
       tags:
@@ -2446,6 +2758,13 @@ paths:
           required: true
           schema:
             type: string
+        - name: force
+          in: query
+          description: |-
+            Whether to delete the unit's child licences along with it. Required to be
+             true if any exist; otherwise the delete is rejected.
+          schema:
+            type: boolean
       responses:
         "200":
           description: OK
@@ -3781,6 +4100,40 @@ components:
             $ref: '#/components/schemas/NightAvailability'
           description: Per-night availability, when mode is NIGHTLY.
       description: Availability for one unit, used in batch responses.
+    Attachment:
+      type: object
+      properties:
+        filename:
+          type: string
+          description: Original filename as uploaded.
+        mimeType:
+          type: string
+          description: MIME type of the file (e.g. "application/pdf", "image/jpeg").
+        sizeBytes:
+          type: string
+          description: Size of the file in bytes.
+        content:
+          type: string
+          description: |-
+            Raw file content, stored inline in the database. Cleared once the file is
+             migrated to object storage, at which point `uri` takes over.
+          format: bytes
+        uri:
+          type: string
+          description: |-
+            Location of the file once moved to object storage (e.g. an s3:// or
+             https:// URL). Unset while the file lives inline in `content`.
+        uploadTime:
+          readOnly: true
+          type: string
+          description: When the file was uploaded.
+          format: date-time
+      description: |-
+        An uploaded file attached to a document- or licence-carrying record (e.g. a
+         guest's IdDocument scan, or a property/unit licence certificate). The bytes
+         are stored inline in `content` today; `uri` is populated once the file is
+         migrated to object storage (S3 or any CDN-fronted host). At most one of the
+         two is authoritative at a time — prefer `uri` when both are set.
     Booking:
       required:
         - unit
@@ -3939,6 +4292,31 @@ components:
          rather than a separate service: CreateBooking places a PENDING_HOLD,
          confirmation flips it to CONFIRMED, and an internal sweeper expires holds that
          are never confirmed.
+    BookingGuests:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The singleton resource name.
+             Format: bookings/{booking}/guests
+        guests:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guest'
+          description: The guest party. An empty list clears the party.
+        occupancy:
+          allOf:
+            - $ref: '#/components/schemas/Occupancy'
+          description: The occupancy breakdown, replacing the existing one.
+      description: |-
+        BookingGuests is a singleton sub-resource of a Booking (AIP-156): the staying
+         party attached to it. Exactly one exists per booking, addressed without an ID
+         segment. Read and replaced via UpdateBookingGuests; there is no separate
+         Create/Delete since it always exists alongside its parent Booking. It is an
+         API shape over Booking.guests/occupancy, not a stored table — the party
+         persists on the Booking row graph, so the ORM skips it (a generated table
+         would bolt a second required parent FK onto every guest row).
     CancelBookingRequest:
       required:
         - name
@@ -4184,6 +4562,10 @@ components:
           type: string
           description: Date the document expires.
           format: date
+        attachment:
+          allOf:
+            - $ref: '#/components/schemas/Attachment'
+          description: Scanned copy or photo of the document, uploaded at check-in.
       description: |-
         A government identity document. Passport fields are required for foreign
          nationals; domestic guests may present any accepted document type.
@@ -5316,6 +5698,96 @@ components:
             - $ref: '#/components/schemas/Money'
           description: Subtotal minus the discount.
       description: Response message for ValidatePromoCode.
+    Licence:
+      required:
+        - type
+      type: object
+      properties:
+        name:
+          type: string
+          description: |-
+            The licence name.
+             Format: properties/{property}/licences/{licence}
+        target:
+          readOnly: true
+          type: integer
+          description: |-
+            What the licence covers: the whole property, or the single unit named in
+             `unit`. Derived from whether `unit` is set at create time.
+          format: enum
+        unit:
+          type: string
+          description: |-
+            The unit this licence covers, for a LICENCE_TARGET_UNIT licence; unset for
+             a property-wide licence. Must belong to the parent property.
+             Format: properties/{property}/units/{unit}
+        type:
+          type: integer
+          description: What kind of licence/certificate this is.
+          format: enum
+        licenceNumber:
+          type: string
+          description: Licence/certificate number as printed by the issuing authority.
+        issuingAuthority:
+          type: string
+          description: The authority or body that issued the licence (e.g. "Municipal Corporation of Goa").
+        issueDate:
+          type: string
+          description: Date the licence was issued.
+          format: date
+        expiryDate:
+          type: string
+          description: |-
+            Date the licence expires. List calls may filter on this field (e.g.
+             `expiry_date <= 2026-08-01`) to find licences due for renewal.
+          format: date
+        attachment:
+          allOf:
+            - $ref: '#/components/schemas/Attachment'
+          description: Scanned copy of the licence certificate.
+        notes:
+          type: string
+          description: Any additional free-text notes.
+        state:
+          readOnly: true
+          type: integer
+          description: Lifecycle state.
+          format: enum
+        createTime:
+          readOnly: true
+          type: string
+          description: Creation timestamp.
+          format: date-time
+        updateTime:
+          readOnly: true
+          type: string
+          description: Last-modification timestamp.
+          format: date-time
+        etag:
+          type: string
+          description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+      description: |-
+        A regulatory licence or certificate held by a Property or one of its Units
+         (e.g. trade licence, fire safety NOC, per-room liquor licence). One resource
+         covers both: every licence is parented by the property, `target` says what it
+         covers, and a unit licence names its unit in `unit`. Tracks the issuing
+         authority and validity window so `expiry_date` can be filtered on to find
+         licences due for renewal; the certificate itself is carried in `attachment`.
+         A standalone resource (own Get/List/Create/Update/Delete), like Unit, rather
+         than an embedded repeated field like Media, so a renewal doesn't require
+         resending the whole Property.
+    ListLicencesResponse:
+      type: object
+      properties:
+        licences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Licence'
+          description: The page of licences.
+        nextPageToken:
+          type: string
+          description: Next page token. Omitted if this is the last page.
+      description: Response message for ListLicences.
     ArchivePropertyRequest:
       required:
         - name
@@ -5541,6 +6013,17 @@ components:
         etag:
           type: string
           description: Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+        licences:
+          readOnly: true
+          type: array
+          items:
+            type: string
+          description: |-
+            Resource names of the regulatory licences/certificates held by this
+             property and its units (e.g. trade licence, fire safety NOC); manage them
+             with the LicenceService. Derived from the licences' parent FK at read
+             time, so no join table is materialized (orm skip).
+             Format: properties/{property}/licences/{licence}
       description: |-
         A hotel (or other lodging property): the guest-facing venue a chain operates.
          A Property belongs to an Organisation (the chain/brand) and carries the

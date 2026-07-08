@@ -30,9 +30,13 @@ erDiagram
     }
     IdDocument {
         string id PK
+        string attachment_id FK
     }
     User {
         string id PK
+    }
+    Attachment {
+        string externalStub PK
     }
     Booking {
         string externalStub PK
@@ -46,6 +50,7 @@ erDiagram
     Guest }o--|| PostalAddress : "local_address_id"
     Guest }o--|| ForeignerDetails : "foreigner_id"
     Guest }o--|| GuestPreferences : "preferences_id"
+    IdDocument }o--|| Attachment : "attachment_id"
 ```
 
 ## Subfolders

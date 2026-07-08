@@ -49,11 +49,15 @@ message PromoCode {
   // The human-entered code, unique across all promo codes (e.g. "SUMMER25").
   string code = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (orm.v1.column) = {unique: true}
+    (orm.v1.column) = {unique: true},
+    (orm.v1.query) = {search: true}
   ];
 
   // Internal display name (not shown to customers).
-  string display_name = 4 [(google.api.field_behavior) = OPTIONAL];
+  string display_name = 4 [
+    (google.api.field_behavior) = OPTIONAL,
+    (orm.v1.query) = {search: true}
+  ];
 
   // Free-form description.
   string description = 5 [
@@ -91,7 +95,16 @@ message PromoCode {
   // job): DISABLED when `disabled` is set; EXPIRED once now > window.end_time
   // (the expiry) or the code is out of redemptions; otherwise ACTIVE. This is how
   // a code auto-disables at its expiry without a stored flag to flip.
-  PromoCodeState state = 17 [(google.api.field_behavior) = OUTPUT_ONLY];
+  PromoCodeState state = 17 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    // Derived at read time (disabled / window / cap), never written: the stored
+    // column is empty, so generated filters must not touch it. The gorm
+    // provider filters it via a hand-written engine override instead.
+    (orm.v1.query) = {
+      filterable: false
+      sortable: false
+    }
+  ];
 
   // If true, the code is manually disabled regardless of its window and caps.
   bool disabled = 20 [(google.api.field_behavior) = OPTIONAL];

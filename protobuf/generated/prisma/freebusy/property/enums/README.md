@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 0 | 4 |
+| 0 | 7 |
 
 Schema file: [`enums.postgres.prisma`](./enums.postgres.prisma)
 
@@ -16,3 +16,6 @@ Schema file: [`enums.postgres.prisma`](./enums.postgres.prisma)
 - `UnitType`: PROVIDER, ROOM, EQUIPMENT, LODGING, SPACE
 - `PricingUnit`: PER_BOOKING, PER_NIGHT, PER_PERSON
 - `UnitState`: ACTIVE, ARCHIVED
+- `LicenceTarget`: PROPERTY, UNIT
+- `LicenceType`: TRADE, FIRE_SAFETY, LIQUOR, FOOD_SAFETY, TOURISM, HEALTH, OTHER
+- `LicenceState`: ACTIVE, ARCHIVED

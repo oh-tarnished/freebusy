@@ -6,13 +6,16 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 4 | 3 |
+| 5 | 3 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
+    Attachment {
+        string id PK
+    }
     Contact {
         string id PK
     }

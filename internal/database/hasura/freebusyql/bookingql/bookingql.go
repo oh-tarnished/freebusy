@@ -6,19 +6,19 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/occupanciesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
 type BookingOccupancies = schemaql.BookingOccupancies
 type BookingOccupanciesAggExp = schemaql.BookingOccupanciesAggExp
+type DeleteBookingOccupanciesByIdResponse = schemaql.DeleteBookingOccupanciesByIdResponse
+type InsertBookingOccupanciesResponse = schemaql.InsertBookingOccupanciesResponse
+type UpdateBookingOccupanciesByIdResponse = schemaql.UpdateBookingOccupanciesByIdResponse
 type BookingResource = schemaql.BookingResource
 type BookingResourceAggExp = schemaql.BookingResourceAggExp
-type DeleteBookingOccupanciesByIdResponse = schemaql.DeleteBookingOccupanciesByIdResponse
 type DeleteBookingResourceByIdResponse = schemaql.DeleteBookingResourceByIdResponse
-type InsertBookingOccupanciesResponse = schemaql.InsertBookingOccupanciesResponse
 type InsertBookingResourceResponse = schemaql.InsertBookingResourceResponse
-type UpdateBookingOccupanciesByIdResponse = schemaql.UpdateBookingOccupanciesByIdResponse
 type UpdateBookingResourceByIdResponse = schemaql.UpdateBookingResourceByIdResponse
 
 // QueryHandler aggregates query handlers for the bookingql domain.

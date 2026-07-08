@@ -7,6 +7,17 @@
 
 ## Services
 
+### LicenceService
+
+LicenceService manages the regulatory licences/certificates of properties and their units (trade licences, fire-safety certificates, per-room liquor licences, and the like): their issuing authority, validity window, and scanned attachment. Every licence is parented by its property; the licence's `target` says whether it covers the whole property or the single unit named in its `unit` field. Built for compliance workflows such as listing licences by expiry_date to find those due for renewal.
+
+| Method | Request | Response | Description |
+| --- | --- | --- | --- |
+| `ListLicences` | `ListLicencesRequest` | `ListLicencesResponse` | Lists the regulatory licences/certificates under a property — both property-wide and per-unit ones. |
+| `GetLicence` | `GetLicenceRequest` | `Licence` | Gets a single licence. |
+| `CreateLicence` | `CreateLicenceRequest` | `Licence` | Creates a licence under a property, e.g. after uploading a scan of a trade or fire-safety certificate. Set the licence's `unit` to cover a single unit instead of the whole property. |
+| `UpdateLicence` | `UpdateLicenceRequest` | `Licence` | Updates a licence, e.g. to record its renewal. |
+
 ### PropertyService
 
 PropertyService is the catalog of hotels (properties) and the bookable units (room types) within them. Properties carry showcase media and guest-facing policy; units carry pricing, occupancy, and availability inputs.
@@ -47,6 +58,7 @@ A hotel (or other lodging property): the guest-facing venue a chain operates. A 
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
+| `licences` | `repeated string` | `OUTPUT_ONLY` | Resource names of the regulatory licences/certificates held by this property and its units (e.g. trade licence, fire safety NOC); manage them with the LicenceService. Derived from the licences' parent FK at read time, so no join table is materialized (orm skip). Format: properties/{property}/licences/{licence} |
 
 ### Policy
 
@@ -159,6 +171,27 @@ A tax applied to the taxable base (base subtotal plus taxable fees). Surfaces as
 | `code` | `string` | `REQUIRED` | Stable machine code, e.g. "occupancy_tax" or "gst". |
 | `display_name` | `string` | `OPTIONAL` | Human-readable label for receipts. |
 | `percent` | `double` | `REQUIRED` | Tax rate as a percentage, e.g. 12 for 12% GST. |
+
+### Licence
+
+A regulatory licence or certificate held by a Property or one of its Units (e.g. trade licence, fire safety NOC, per-room liquor licence). One resource covers both: every licence is parented by the property, `target` says what it covers, and a unit licence names its unit in `unit`. Tracks the issuing authority and validity window so `expiry_date` can be filtered on to find licences due for renewal; the certificate itself is carried in `attachment`. A standalone resource (own Get/List/Create/Update/Delete), like Unit, rather than an embedded repeated field like Media, so a renewal doesn't require resending the whole Property.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The licence name. Format: properties/{property}/licences/{licence} |
+| `target` | `LicenceTarget` | `OUTPUT_ONLY` | What the licence covers: the whole property, or the single unit named in `unit`. Derived from whether `unit` is set at create time. |
+| `unit` | `string` | `OPTIONAL` | The unit this licence covers, for a LICENCE_TARGET_UNIT licence; unset for a property-wide licence. Must belong to the parent property. Format: properties/{property}/units/{unit} |
+| `type` | `LicenceType` | `REQUIRED` | What kind of licence/certificate this is. |
+| `licence_number` | `string` | `OPTIONAL` | Licence/certificate number as printed by the issuing authority. |
+| `issuing_authority` | `string` | `OPTIONAL` | The authority or body that issued the licence (e.g. "Municipal Corporation of Goa"). |
+| `issue_date` | `Date` | `OPTIONAL` | Date the licence was issued. |
+| `expiry_date` | `Date` | `OPTIONAL` | Date the licence expires. List calls may filter on this field (e.g. `expiry_date <= 2026-08-01`) to find licences due for renewal. |
+| `attachment` | `Attachment` | `OPTIONAL` | Scanned copy of the licence certificate. |
+| `notes` | `string` | `OPTIONAL` | Any additional free-text notes. |
+| `state` | `LicenceState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
+| `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
+| `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
 
 ### AddPropertyArgs
 
@@ -302,6 +335,64 @@ Request message for DeleteUnit.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The unit to delete. Format: properties/{property}/units/{unit} |
+| `force` | `bool` | `OPTIONAL` | Whether to delete the unit's child licences along with it. Required to be true if any exist; otherwise the delete is rejected. |
+
+### ListLicencesRequest
+
+Request message for ListLicences.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `parent` | `string` | `REQUIRED` | The parent property whose licences to list — property-wide and per-unit ones alike; narrow with `filter`. Format: properties/{property} |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of licences to return. The server may cap this. |
+| `page_token` | `string` | `OPTIONAL` | Page token from a previous ListLicences call's next_page_token. |
+| `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `type = LICENCE_TYPE_FIRE_SAFETY`, `target = LICENCE_TARGET_UNIT`, `unit = properties/p1/units/u1`, or `expiry_date <= 2026-08-01` to find licences due for renewal. |
+| `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "expiry_date" or "create_time desc". |
+
+### ListLicencesResponse
+
+Response message for ListLicences.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `licences` | `repeated Licence` | - | The page of licences. |
+| `next_page_token` | `string` | - | Next page token. Omitted if this is the last page. |
+
+### GetLicenceRequest
+
+Request message for GetLicence.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The licence to retrieve. Format: properties/{property}/licences/{licence} |
+
+### CreateLicenceRequest
+
+Request message for CreateLicence.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `parent` | `string` | `REQUIRED` | The property to attach the licence to. A licence covering a single unit also lives under the property: set the licence's `unit` field. Format: properties/{property} |
+| `licence` | `Licence` | `REQUIRED` | The licence to create. Its name, target, and state fields are ignored; target derives from whether `unit` is set. |
+| `licence_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the licence; the server generates one if unset. |
+| `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key; identical retries return the first result. |
+
+### UpdateLicenceRequest
+
+Request message for UpdateLicence.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `licence` | `Licence` | `REQUIRED` | The licence to update; its name identifies the target. |
+| `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace all mutable fields. |
+
+### DeleteLicenceRequest
+
+Request message for DeleteLicence.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The licence to delete. Format: properties/{property}/licences/{licence} |
 
 ## Enums
 
@@ -348,6 +439,41 @@ What a unit's price is charged per.
 | `PRICING_UNIT_PER_BOOKING` | 1 | A flat price for the whole booking. |
 | `PRICING_UNIT_PER_NIGHT` | 2 | Price multiplied by the number of nights (NIGHTLY units). |
 | `PRICING_UNIT_PER_PERSON` | 3 | Price multiplied by party size / units booked. |
+
+### LicenceType
+
+Kind of regulatory licence or certificate held by a property or unit.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `LICENCE_TYPE_UNSPECIFIED` | 0 | Unset. |
+| `LICENCE_TYPE_TRADE` | 1 | General trade / shop & establishment licence. |
+| `LICENCE_TYPE_FIRE_SAFETY` | 2 | Fire safety / no-objection certificate. |
+| `LICENCE_TYPE_LIQUOR` | 3 | Liquor / bar licence. |
+| `LICENCE_TYPE_FOOD_SAFETY` | 4 | Food safety registration (e.g. India's FSSAI). |
+| `LICENCE_TYPE_TOURISM` | 5 | Tourism department registration or star classification. |
+| `LICENCE_TYPE_HEALTH` | 6 | Health / sanitation certificate. |
+| `LICENCE_TYPE_OTHER` | 7 | Any other regulatory licence or certificate. |
+
+### LicenceTarget
+
+What a licence covers: the whole property or a single unit within it.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `LICENCE_TARGET_UNSPECIFIED` | 0 | Unset. |
+| `LICENCE_TARGET_PROPERTY` | 1 | The licence covers the whole property (e.g. a trade licence). |
+| `LICENCE_TARGET_UNIT` | 2 | The licence covers one unit (e.g. a per-room liquor licence); the licence's `unit` field names it. |
+
+### LicenceState
+
+Lifecycle status of a licence.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `LICENCE_STATE_UNSPECIFIED` | 0 | Unset. |
+| `LICENCE_STATE_ACTIVE` | 1 | Currently held and in force. |
+| `LICENCE_STATE_ARCHIVED` | 2 | Retired / no longer tracked. Whether it is past its expiry_date is a separate, time-derived fact — not reflected in this state. |
 
 ---
 

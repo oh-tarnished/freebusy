@@ -51,6 +51,7 @@ A government identity document. Passport fields are required for foreign nationa
 | `issue_place` | `string` | `OPTIONAL` | Place of issue (city / office), as printed on the document. |
 | `issue_date` | `Date` | `OPTIONAL` | Date the document was issued. |
 | `expiry_date` | `Date` | `OPTIONAL` | Date the document expires. |
+| `attachment` | `Attachment` | `OPTIONAL` | Scanned copy or photo of the document, uploaded at check-in. |
 
 ### ForeignerDetails
 

@@ -63,12 +63,18 @@ func NewServer(name, version string, opts ...options.Options) (*Server, error) {
 	}, nil
 }
 
-// serviceOptions builds the hybrid-server options: the gRPC/HTTP/MCP
-// registrations plus, when a certificate/key pair is configured, the TLS option.
-// The pair is validated up front so a bad path returns a clear error instead of
-// the panic grpc.WithCertificates would raise.
+// serviceOptions builds the hybrid-server options: the protovalidate request
+// interceptor, the gRPC/HTTP/MCP registrations, plus, when a certificate/key
+// pair is configured, the TLS option. The pair is validated up front so a bad
+// path returns a clear error instead of the panic grpc.WithCertificates would
+// raise.
 func serviceOptions(svc *Service) ([]grpc.Option, error) {
+	validate, err := validationInterceptor()
+	if err != nil {
+		return nil, err
+	}
 	opts := []grpc.Option{
+		grpc.WithUnaryInterceptors(validate),
 		registerGRPCServers(svc),
 		registerHTTPGateways(),
 		registerMCPServices(svc),

@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -175,27 +176,10 @@ func (r *ScheduleRepository) ListAvailabilityExceptions(ctx context.Context, par
 	if err != nil {
 		return nil, "", err
 	}
-	order, err := exceptionOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[schedule.AvailabilityException](schedule.AvailabilityExceptionFilterSpec).
+		List(ctx, preloadException(r.db).Where("unit_id = ?", unitID), types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := preloadException(r.db.WithContext(ctx)).Where("unit_id = ?", unitID).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyExceptionFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []schedule.AvailabilityException
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	items := make([]*schedulepbv1.AvailabilityException, 0, len(models))
 	for i := range models {

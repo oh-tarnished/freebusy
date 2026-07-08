@@ -240,6 +240,38 @@ components:
                   idDocument:
                     description: Government identity document presented at check-in.
                     properties:
+                      attachment:
+                        description: Scanned copy or photo of the document, uploaded
+                          at check-in.
+                        properties:
+                          content:
+                            description: Raw file content, stored inline in the database.
+                              Cleared once the file is migrated to object storage,
+                              at which point `uri` takes over.
+                            format: byte
+                            type: string
+                          filename:
+                            description: Original filename as uploaded.
+                            type: string
+                          mimeType:
+                            description: MIME type of the file (e.g. "application/pdf",
+                              "image/jpeg").
+                            type: string
+                          sizeBytes:
+                            description: Size of the file in bytes.
+                            format: int64
+                            type: integer
+                            x-kubernetes-int-or-string: true
+                          uploadTime:
+                            description: When the file was uploaded.
+                            format: date-time
+                            type: string
+                          uri:
+                            description: Location of the file once moved to object
+                              storage (e.g. an s3:// or https:// URL). Unset while
+                              the file lives inline in `content`.
+                            type: string
+                        type: object
                       expiryDate:
                         description: Date the document expires.
                         properties:
@@ -743,6 +775,13 @@ components:
             what would happen, but place no hold.
           type: boolean
       type: object
+    freebusy.booking.v1.GetBookingGuestsRequest:
+      description: Request message for GetBookingGuests.
+      properties:
+        name:
+          description: 'The singleton guests sub-resource to retrieve. Format: bookings/{booking}/guests'
+          type: string
+      type: object
     freebusy.booking.v1.GetBookingRequest:
       description: Request message for GetBooking.
       properties:
@@ -1010,6 +1049,38 @@ components:
                     idDocument:
                       description: Government identity document presented at check-in.
                       properties:
+                        attachment:
+                          description: Scanned copy or photo of the document, uploaded
+                            at check-in.
+                          properties:
+                            content:
+                              description: Raw file content, stored inline in the
+                                database. Cleared once the file is migrated to object
+                                storage, at which point `uri` takes over.
+                              format: byte
+                              type: string
+                            filename:
+                              description: Original filename as uploaded.
+                              type: string
+                            mimeType:
+                              description: MIME type of the file (e.g. "application/pdf",
+                                "image/jpeg").
+                              type: string
+                            sizeBytes:
+                              description: Size of the file in bytes.
+                              format: int64
+                              type: integer
+                              x-kubernetes-int-or-string: true
+                            uploadTime:
+                              description: When the file was uploaded.
+                              format: date-time
+                              type: string
+                            uri:
+                              description: Location of the file once moved to object
+                                storage (e.g. an s3:// or https:// URL). Unset while
+                                the file lives inline in `content`.
+                              type: string
+                          type: object
                         expiryDate:
                           description: Date the document expires.
                           properties:

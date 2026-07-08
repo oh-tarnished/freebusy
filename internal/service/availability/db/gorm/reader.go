@@ -9,6 +9,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
@@ -209,9 +210,16 @@ func (r *AvailabilityReader) SearchUnits(ctx context.Context, propertyRef, organ
 		sub := r.db.Model(&property.Property{}).Select("id").Where("organisation = ?", orgID)
 		q = q.Where("property_id IN (?)", sub)
 	}
-	q, err := applyUnitFilter(q, filter)
+	conds, err := types.ParseFilter(filter)
 	if err != nil {
 		return nil, err
+	}
+	where, args, err := filterx.Gorm[property.Unit](property.UnitFilterSpec).Where(types.Filterx(conds))
+	if err != nil {
+		return nil, types.MapFilterxErr(err)
+	}
+	if where != "" {
+		q = q.Where(where, args...)
 	}
 
 	var units []property.Unit

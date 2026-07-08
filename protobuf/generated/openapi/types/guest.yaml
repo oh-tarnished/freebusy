@@ -228,6 +228,36 @@ components:
         idDocument:
           description: Government identity document presented at check-in.
           properties:
+            attachment:
+              description: Scanned copy or photo of the document, uploaded at check-in.
+              properties:
+                content:
+                  description: Raw file content, stored inline in the database. Cleared
+                    once the file is migrated to object storage, at which point `uri`
+                    takes over.
+                  format: byte
+                  type: string
+                filename:
+                  description: Original filename as uploaded.
+                  type: string
+                mimeType:
+                  description: MIME type of the file (e.g. "application/pdf", "image/jpeg").
+                  type: string
+                sizeBytes:
+                  description: Size of the file in bytes.
+                  format: int64
+                  type: integer
+                  x-kubernetes-int-or-string: true
+                uploadTime:
+                  description: When the file was uploaded.
+                  format: date-time
+                  type: string
+                uri:
+                  description: Location of the file once moved to object storage (e.g.
+                    an s3:// or https:// URL). Unset while the file lives inline in
+                    `content`.
+                  type: string
+              type: object
             expiryDate:
               description: Date the document expires.
               properties:
@@ -553,6 +583,35 @@ components:
       description: A government identity document. Passport fields are required for
         foreign nationals; domestic guests may present any accepted document type.
       properties:
+        attachment:
+          description: Scanned copy or photo of the document, uploaded at check-in.
+          properties:
+            content:
+              description: Raw file content, stored inline in the database. Cleared
+                once the file is migrated to object storage, at which point `uri`
+                takes over.
+              format: byte
+              type: string
+            filename:
+              description: Original filename as uploaded.
+              type: string
+            mimeType:
+              description: MIME type of the file (e.g. "application/pdf", "image/jpeg").
+              type: string
+            sizeBytes:
+              description: Size of the file in bytes.
+              format: int64
+              type: integer
+              x-kubernetes-int-or-string: true
+            uploadTime:
+              description: When the file was uploaded.
+              format: date-time
+              type: string
+            uri:
+              description: Location of the file once moved to object storage (e.g.
+                an s3:// or https:// URL). Unset while the file lives inline in `content`.
+              type: string
+          type: object
         expiryDate:
           description: Date the document expires.
           properties:

@@ -188,6 +188,13 @@ definition:
               unique_columns:
                 - id
         - arguments: {}
+          name: property_licences
+          type: property_licences
+          uniqueness_constraints:
+            licences_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
           name: property_los_discounts
           type: property_los_discounts
           uniqueness_constraints:
@@ -234,6 +241,13 @@ definition:
           type: property_unit_applicable_promo_codes
           uniqueness_constraints:
             unit_applicable_promo_codes_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: property_unit_licences
+          type: property_unit_licences
+          uniqueness_constraints:
+            unit_licences_pkey:
               unique_columns:
                 - id
         - arguments: {}
@@ -311,6 +325,13 @@ definition:
           type: schedule_stay_constraints
           uniqueness_constraints:
             stay_constraints_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
+          name: shared_attachments
+          type: shared_attachments
+          uniqueness_constraints:
+            attachments_pkey:
               unique_columns:
                 - id
         - arguments: {}
@@ -1040,6 +1061,29 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        delete_identity_guests_by_booking_id:
+          fields:
+            id:
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        delete_identity_guests_by_booking_id_response:
+          description: Responses from the 'delete_identity_guests_by_booking_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: delete_identity_guests_by_booking_id
+                  type: named
+                type: array
+          foreign_keys: {}
         delete_identity_guests_by_id_response:
           description: Responses from the 'delete_identity_guests_by_id' procedure
           fields:
@@ -1264,6 +1308,22 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        delete_property_licences_by_id_response:
+          description: Responses from the 'delete_property_licences_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_licences
+                  type: named
+                type: array
+          foreign_keys: {}
         delete_property_los_discounts_by_id_response:
           description: Responses from the 'delete_property_los_discounts_by_id' procedure
           fields:
@@ -1373,6 +1433,22 @@ definition:
               type:
                 element_type:
                   name: property_unit_applicable_promo_codes
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_property_unit_licences_by_id_response:
+          description: Responses from the 'delete_property_unit_licences_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_unit_licences
                   type: named
                 type: array
           foreign_keys: {}
@@ -1549,6 +1625,22 @@ definition:
               type:
                 element_type:
                   name: schedule_stay_constraints
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_shared_attachments_by_id_response:
+          description: Responses from the 'delete_shared_attachments_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: shared_attachments
                   type: named
                 type: array
           foreign_keys: {}
@@ -1869,6 +1961,12 @@ definition:
               foreign_collection: identity_guest_preferences
         identity_id_documents:
           fields:
+            attachment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
             expiry_date:
               type:
                 type: nullable
@@ -1905,7 +2003,12 @@ definition:
               type:
                 name: identity_id_document_type
                 type: named
-          foreign_keys: {}
+          foreign_keys:
+            id_documents_attachment_id_fkey:
+              column_mapping:
+                attachment_id:
+                  - id
+              foreign_collection: shared_attachments
         identity_users:
           fields:
             avatar_url:
@@ -2844,6 +2947,12 @@ definition:
           foreign_keys: {}
         insert_identity_id_documents_object:
           fields:
+            attachment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
             expiry_date:
               type:
                 type: nullable
@@ -3547,6 +3656,101 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        insert_property_licences_object:
+          fields:
+            attachment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            create_time:
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamptz
+                  type: named
+            etag:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            expiry_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            issue_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            issuing_authority:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            licence_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            name:
+              type:
+                name: text
+                type: named
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            property_id:
+              type:
+                name: text
+                type: named
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_state
+                  type: named
+            type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_type
+                  type: named
+            update_time:
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
+        insert_property_licences_response:
+          description: Responses from the 'insert_property_licences' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_licences
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_property_los_discounts_object:
           fields:
             amount_off_id:
@@ -3915,6 +4119,105 @@ definition:
               type:
                 element_type:
                   name: property_unit_applicable_promo_codes
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_property_unit_licences_object:
+          fields:
+            attachment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            create_time:
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamptz
+                  type: named
+            etag:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            expiry_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            issue_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            issuing_authority:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            licence_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            name:
+              type:
+                name: text
+                type: named
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            property_id:
+              type:
+                name: text
+                type: named
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_state
+                  type: named
+            type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_type
+                  type: named
+            unit_id:
+              type:
+                name: text
+                type: named
+            update_time:
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
+        insert_property_unit_licences_response:
+          description: Responses from the 'insert_property_unit_licences' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_unit_licences
                   type: named
                 type: array
           foreign_keys: {}
@@ -4516,6 +4819,65 @@ definition:
               type:
                 element_type:
                   name: schedule_stay_constraints
+                  type: named
+                type: array
+          foreign_keys: {}
+        insert_shared_attachments_object:
+          fields:
+            content:
+              type:
+                type: nullable
+                underlying_type:
+                  name: bytea
+                  type: named
+            filename:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            mime_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            size_bytes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int8
+                  type: named
+            upload_time:
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamptz
+                  type: named
+            uri:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        insert_shared_attachments_response:
+          description: Responses from the 'insert_shared_attachments' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: shared_attachments
                   type: named
                 type: array
           foreign_keys: {}
@@ -5159,6 +5521,91 @@ definition:
                 unit_id:
                   - id
               foreign_collection: property_units
+        property_licences:
+          fields:
+            attachment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            create_time:
+              type:
+                name: timestamptz
+                type: named
+            etag:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            expiry_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            issue_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            issuing_authority:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            licence_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            name:
+              type:
+                name: text
+                type: named
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            property_id:
+              type:
+                name: text
+                type: named
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_state
+                  type: named
+            type:
+              type:
+                name: property_licence_type
+                type: named
+            update_time:
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys:
+            licences_attachment_id_fkey:
+              column_mapping:
+                attachment_id:
+                  - id
+              foreign_collection: shared_attachments
+            licences_property_id_fkey:
+              column_mapping:
+                property_id:
+                  - id
+              foreign_collection: property_properties
         property_los_discounts:
           fields:
             amount_off_id:
@@ -5470,6 +5917,100 @@ definition:
                   - id
               foreign_collection: promocode_resource
             unit_applicable_promo_codes_unit_id_fkey:
+              column_mapping:
+                unit_id:
+                  - id
+              foreign_collection: property_units
+        property_unit_licences:
+          fields:
+            attachment_id:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            create_time:
+              type:
+                name: timestamptz
+                type: named
+            etag:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            expiry_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            issue_date:
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+            issuing_authority:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            licence_number:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            name:
+              type:
+                name: text
+                type: named
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            property_id:
+              type:
+                name: text
+                type: named
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_state
+                  type: named
+            type:
+              type:
+                name: property_licence_type
+                type: named
+            unit_id:
+              type:
+                name: text
+                type: named
+            update_time:
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys:
+            unit_licences_attachment_id_fkey:
+              column_mapping:
+                attachment_id:
+                  - id
+              foreign_collection: shared_attachments
+            unit_licences_property_id_fkey:
+              column_mapping:
+                property_id:
+                  - id
+              foreign_collection: property_properties
+            unit_licences_unit_id_fkey:
               column_mapping:
                 unit_id:
                   - id
@@ -5970,6 +6511,49 @@ definition:
                 type: nullable
                 underlying_type:
                   name: int4
+                  type: named
+          foreign_keys: {}
+        shared_attachments:
+          fields:
+            content:
+              type:
+                type: nullable
+                underlying_type:
+                  name: bytea
+                  type: named
+            filename:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            mime_type:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            size_bytes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: int8
+                  type: named
+            upload_time:
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamptz
+                  type: named
+            uri:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
           foreign_keys: {}
         shared_contacts:
@@ -7911,6 +8495,17 @@ definition:
                   name: bool
                   type: named
           foreign_keys: {}
+        update_column_identity_id_documents_attachment_id:
+          description: Update the 'attachment_id' column in the 'identity_id_documents' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
         update_column_identity_id_documents_expiry_date:
           description: Update the 'expiry_date' column in the 'identity_id_documents' collection
           fields:
@@ -8802,6 +9397,148 @@ definition:
                 name: text
                 type: named
           foreign_keys: {}
+        update_column_property_licences_attachment_id:
+          description: Update the 'attachment_id' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_create_time:
+          description: Update the 'create_time' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
+        update_column_property_licences_etag:
+          description: Update the 'etag' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_expiry_date:
+          description: Update the 'expiry_date' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_id:
+          description: Update the 'id' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_licences_issue_date:
+          description: Update the 'issue_date' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_issuing_authority:
+          description: Update the 'issuing_authority' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_licence_number:
+          description: Update the 'licence_number' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_name:
+          description: Update the 'name' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_licences_notes:
+          description: Update the 'notes' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_property_id:
+          description: Update the 'property_id' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_licences_state:
+          description: Update the 'state' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_state
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_type:
+          description: Update the 'type' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: property_licence_type
+                type: named
+          foreign_keys: {}
+        update_column_property_licences_update_time:
+          description: Update the 'update_time' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
         update_column_property_los_discounts_amount_off_id:
           description: Update the 'amount_off_id' column in the 'property_los_discounts' collection
           fields:
@@ -9264,6 +10001,157 @@ definition:
               description: Set the column to this value
               type:
                 name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_attachment_id:
+          description: Update the 'attachment_id' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_create_time:
+          description: Update the 'create_time' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_etag:
+          description: Update the 'etag' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_expiry_date:
+          description: Update the 'expiry_date' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_id:
+          description: Update the 'id' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_issue_date:
+          description: Update the 'issue_date' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: date
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_issuing_authority:
+          description: Update the 'issuing_authority' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_licence_number:
+          description: Update the 'licence_number' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_name:
+          description: Update the 'name' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_notes:
+          description: Update the 'notes' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_property_id:
+          description: Update the 'property_id' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_state:
+          description: Update the 'state' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: property_licence_state
+                  type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_type:
+          description: Update the 'type' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: property_licence_type
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_unit_id:
+          description: Update the 'unit_id' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_property_unit_licences_update_time:
+          description: Update the 'update_time' column in the 'property_unit_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: timestamptz
                 type: named
           foreign_keys: {}
         update_column_property_unit_medias_description:
@@ -10026,6 +10914,81 @@ definition:
                   name: int4
                   type: named
           foreign_keys: {}
+        update_column_shared_attachments_content:
+          description: Update the 'content' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: bytea
+                  type: named
+          foreign_keys: {}
+        update_column_shared_attachments_filename:
+          description: Update the 'filename' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_shared_attachments_id:
+          description: Update the 'id' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_shared_attachments_mime_type:
+          description: Update the 'mime_type' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_shared_attachments_size_bytes:
+          description: Update the 'size_bytes' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: int8
+                  type: named
+          foreign_keys: {}
+        update_column_shared_attachments_upload_time:
+          description: Update the 'upload_time' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamptz
+                  type: named
+          foreign_keys: {}
+        update_column_shared_attachments_uri:
+          description: Update the 'uri' column in the 'shared_attachments' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
         update_column_shared_contacts_display_name:
           description: Update the 'display_name' column in the 'shared_contacts' collection
           fields:
@@ -10660,6 +11623,13 @@ definition:
         update_identity_id_documents_by_id_update_columns:
           description: Update the columns of the 'identity_id_documents' collection
           fields:
+            attachment_id:
+              description: Update the 'attachment_id' column in the 'identity_id_documents' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_identity_id_documents_attachment_id
+                  type: named
             expiry_date:
               description: Update the 'expiry_date' column in the 'identity_id_documents' collection.
               type:
@@ -11524,6 +12494,124 @@ definition:
                   name: update_column_property_fees_unit_id
                   type: named
           foreign_keys: {}
+        update_property_licences_by_id_response:
+          description: Responses from the 'update_property_licences_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_licences
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_property_licences_by_id_update_columns:
+          description: Update the columns of the 'property_licences' collection
+          fields:
+            attachment_id:
+              description: Update the 'attachment_id' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_attachment_id
+                  type: named
+            create_time:
+              description: Update the 'create_time' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_create_time
+                  type: named
+            etag:
+              description: Update the 'etag' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_etag
+                  type: named
+            expiry_date:
+              description: Update the 'expiry_date' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_expiry_date
+                  type: named
+            id:
+              description: Update the 'id' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_id
+                  type: named
+            issue_date:
+              description: Update the 'issue_date' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_issue_date
+                  type: named
+            issuing_authority:
+              description: Update the 'issuing_authority' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_issuing_authority
+                  type: named
+            licence_number:
+              description: Update the 'licence_number' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_licence_number
+                  type: named
+            name:
+              description: Update the 'name' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_name
+                  type: named
+            notes:
+              description: Update the 'notes' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_notes
+                  type: named
+            property_id:
+              description: Update the 'property_id' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_property_id
+                  type: named
+            state:
+              description: Update the 'state' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_state
+                  type: named
+            type:
+              description: Update the 'type' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_type
+                  type: named
+            update_time:
+              description: Update the 'update_time' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_update_time
+                  type: named
+          foreign_keys: {}
         update_property_los_discounts_by_id_response:
           description: Responses from the 'update_property_los_discounts_by_id' procedure
           fields:
@@ -11984,6 +13072,131 @@ definition:
                 type: nullable
                 underlying_type:
                   name: update_column_property_unit_applicable_promo_codes_unit_id
+                  type: named
+          foreign_keys: {}
+        update_property_unit_licences_by_id_response:
+          description: Responses from the 'update_property_unit_licences_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: property_unit_licences
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_property_unit_licences_by_id_update_columns:
+          description: Update the columns of the 'property_unit_licences' collection
+          fields:
+            attachment_id:
+              description: Update the 'attachment_id' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_attachment_id
+                  type: named
+            create_time:
+              description: Update the 'create_time' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_create_time
+                  type: named
+            etag:
+              description: Update the 'etag' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_etag
+                  type: named
+            expiry_date:
+              description: Update the 'expiry_date' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_expiry_date
+                  type: named
+            id:
+              description: Update the 'id' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_id
+                  type: named
+            issue_date:
+              description: Update the 'issue_date' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_issue_date
+                  type: named
+            issuing_authority:
+              description: Update the 'issuing_authority' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_issuing_authority
+                  type: named
+            licence_number:
+              description: Update the 'licence_number' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_licence_number
+                  type: named
+            name:
+              description: Update the 'name' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_name
+                  type: named
+            notes:
+              description: Update the 'notes' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_notes
+                  type: named
+            property_id:
+              description: Update the 'property_id' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_property_id
+                  type: named
+            state:
+              description: Update the 'state' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_state
+                  type: named
+            type:
+              description: Update the 'type' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_type
+                  type: named
+            unit_id:
+              description: Update the 'unit_id' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_unit_id
+                  type: named
+            update_time:
+              description: Update the 'update_time' column in the 'property_unit_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_unit_licences_update_time
                   type: named
           foreign_keys: {}
         update_property_unit_medias_by_id_response:
@@ -12738,6 +13951,75 @@ definition:
                   name: update_column_schedule_stay_constraints_min_nights
                   type: named
           foreign_keys: {}
+        update_shared_attachments_by_id_response:
+          description: Responses from the 'update_shared_attachments_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: shared_attachments
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_shared_attachments_by_id_update_columns:
+          description: Update the columns of the 'shared_attachments' collection
+          fields:
+            content:
+              description: Update the 'content' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_content
+                  type: named
+            filename:
+              description: Update the 'filename' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_filename
+                  type: named
+            id:
+              description: Update the 'id' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_id
+                  type: named
+            mime_type:
+              description: Update the 'mime_type' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_mime_type
+                  type: named
+            size_bytes:
+              description: Update the 'size_bytes' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_size_bytes
+                  type: named
+            upload_time:
+              description: Update the 'upload_time' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_upload_time
+                  type: named
+            uri:
+              description: Update the 'uri' column in the 'shared_attachments' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_attachments_uri
+                  type: named
+          foreign_keys: {}
         update_shared_contacts_by_id_response:
           description: Responses from the 'update_shared_contacts_by_id' procedure
           fields:
@@ -12931,6 +14213,15 @@ definition:
                   type: named
           foreign_keys: {}
       procedures:
+        - arguments:
+            booking_id:
+              type:
+                name: text
+                type: named
+          name: delete_identity_guests_by_booking_id
+          result_type:
+            name: delete_identity_guests_by_booking_id_response
+            type: named
         - arguments:
             key_id:
               type:
@@ -13345,6 +14636,23 @@ definition:
                 name: text
                 type: named
             pre_check:
+              description: Delete permission predicate over the 'property_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_licences
+                  type: predicate
+          description: Delete any row on the 'property_licences' collection using the 'id' key
+          name: delete_property_licences_by_id
+          result_type:
+            name: delete_property_licences_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
               description: Delete permission predicate over the 'property_los_discounts' collection
               type:
                 type: nullable
@@ -13457,6 +14765,23 @@ definition:
           name: delete_property_unit_applicable_promo_codes_by_id
           result_type:
             name: delete_property_unit_applicable_promo_codes_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'property_unit_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_licences
+                  type: predicate
+          description: Delete any row on the 'property_unit_licences' collection using the 'id' key
+          name: delete_property_unit_licences_by_id
+          result_type:
+            name: delete_property_unit_licences_by_id_response
             type: named
         - arguments:
             key_id:
@@ -13644,6 +14969,23 @@ definition:
           name: delete_schedule_stay_constraints_by_id
           result_type:
             name: delete_schedule_stay_constraints_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'shared_attachments' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_attachments
+                  type: predicate
+          description: Delete any row on the 'shared_attachments' collection using the 'id' key
+          name: delete_shared_attachments_by_id
+          result_type:
+            name: delete_shared_attachments_by_id_response
             type: named
         - arguments:
             key_id:
@@ -14173,6 +15515,25 @@ definition:
             objects:
               type:
                 element_type:
+                  name: insert_property_licences_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'property_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_licences
+                  type: predicate
+          description: Insert into the property_licences table
+          name: insert_property_licences
+          result_type:
+            name: insert_property_licences_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
                   name: insert_property_los_discounts_object
                   type: named
                 type: array
@@ -14301,6 +15662,25 @@ definition:
           name: insert_property_unit_applicable_promo_codes
           result_type:
             name: insert_property_unit_applicable_promo_codes_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_property_unit_licences_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'property_unit_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_licences
+                  type: predicate
+          description: Insert into the property_unit_licences table
+          name: insert_property_unit_licences
+          result_type:
+            name: insert_property_unit_licences_response
             type: named
         - arguments:
             objects:
@@ -14510,6 +15890,25 @@ definition:
           name: insert_schedule_stay_constraints
           result_type:
             name: insert_schedule_stay_constraints_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_shared_attachments_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'shared_attachments' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_attachments
+                  type: predicate
+          description: Insert into the shared_attachments table
+          name: insert_shared_attachments
+          result_type:
+            name: insert_shared_attachments_response
             type: named
         - arguments:
             objects:
@@ -15265,6 +16664,34 @@ definition:
                 name: text
                 type: named
             post_check:
+              description: Update permission post-condition predicate over the 'property_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_licences
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'property_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_licences
+                  type: predicate
+            update_columns:
+              type:
+                name: update_property_licences_by_id_update_columns
+                type: named
+          description: Update any row on the 'property_licences' collection using the 'id' key
+          name: update_property_licences_by_id
+          result_type:
+            name: update_property_licences_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
               description: Update permission post-condition predicate over the 'property_los_discounts' collection
               type:
                 type: nullable
@@ -15454,6 +16881,34 @@ definition:
           name: update_property_unit_applicable_promo_codes_by_id
           result_type:
             name: update_property_unit_applicable_promo_codes_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'property_unit_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_licences
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'property_unit_licences' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: property_unit_licences
+                  type: predicate
+            update_columns:
+              type:
+                name: update_property_unit_licences_by_id_update_columns
+                type: named
+          description: Update any row on the 'property_unit_licences' collection using the 'id' key
+          name: update_property_unit_licences_by_id
+          result_type:
+            name: update_property_unit_licences_by_id_response
             type: named
         - arguments:
             key_id:
@@ -15769,6 +17224,34 @@ definition:
                 name: text
                 type: named
             post_check:
+              description: Update permission post-condition predicate over the 'shared_attachments' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_attachments
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'shared_attachments' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_attachments
+                  type: predicate
+            update_columns:
+              type:
+                name: update_shared_attachments_by_id_update_columns
+                type: named
+          description: Update any row on the 'shared_attachments' collection using the 'id' key
+          name: update_shared_attachments_by_id
+          result_type:
+            name: update_shared_attachments_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
               description: Update permission post-condition predicate over the 'shared_contacts' collection
               type:
                 type: nullable
@@ -15988,6 +17471,43 @@ definition:
           extraction_functions: {}
           representation:
             type: boolean
+        bytea:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _like:
+              argument_type:
+                name: bytea
+                type: named
+              type: custom
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: bytea
+                type: named
+              type: custom
+            _nlike:
+              argument_type:
+                name: bytea
+                type: named
+              type: custom
+          extraction_functions: {}
+          representation:
+            type: json
         channel_channel_state:
           aggregate_functions:
             max:
@@ -16896,6 +18416,71 @@ definition:
             one_of:
               - TIME_SLOT
               - NIGHTLY
+            type: enum
+        property_licence_state:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: property_licence_state
+                type: named
+              type: custom
+          extraction_functions: {}
+          representation:
+            one_of:
+              - ACTIVE
+              - ARCHIVED
+            type: enum
+        property_licence_type:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: property_licence_type
+                type: named
+              type: custom
+          extraction_functions: {}
+          representation:
+            one_of:
+              - TRADE
+              - FIRE_SAFETY
+              - LIQUOR
+              - FOOD_SAFETY
+              - TOURISM
+              - HEALTH
+              - OTHER
             type: enum
         property_media_type:
           aggregate_functions:

@@ -72,6 +72,9 @@ func propertyFromModel(m *property.Property) *propertypbv1.Property {
 	for i := range m.Units {
 		p.Units = append(p.Units, m.Units[i].Name)
 	}
+	for i := range m.Licences {
+		p.Licences = append(p.Licences, m.Licences[i].Name)
+	}
 	return p
 }
 

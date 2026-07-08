@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.booking.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/booking/v1/enums.proto";
 import "freebusy/identity/v1/guest.proto";
 // (-- api-linter: core::0215::foreign-type-reference=disabled
@@ -14,6 +15,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/type/money.proto";
+import "orm/v1/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1;bookingpbv1";
 option java_multiple_files = true;
@@ -157,11 +159,51 @@ message Booking {
 // that list.
 message Occupancy {
   // Number of adults.
-  int32 adults = 1 [(google.api.field_behavior) = OPTIONAL];
+  int32 adults = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // Number of children.
-  int32 children = 2 [(google.api.field_behavior) = OPTIONAL];
+  int32 children = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // Number of infants (usually not counted against occupancy).
-  int32 infants = 3 [(google.api.field_behavior) = OPTIONAL];
+  int32 infants = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
+}
+
+// BookingGuests is a singleton sub-resource of a Booking (AIP-156): the staying
+// party attached to it. Exactly one exists per booking, addressed without an ID
+// segment. Read and replaced via UpdateBookingGuests; there is no separate
+// Create/Delete since it always exists alongside its parent Booking. It is an
+// API shape over Booking.guests/occupancy, not a stored table — the party
+// persists on the Booking row graph, so the ORM skips it (a generated table
+// would bolt a second required parent FK onto every guest row).
+message BookingGuests {
+  option (orm.v1.table) = {skip: true};
+
+  option (google.api.resource) = {
+    type: "freebusy.booking.v1/BookingGuests"
+    pattern: "bookings/{booking}/guests"
+    singular: "bookingGuests"
+    plural: "bookingGuests"
+  };
+
+  // The singleton resource name.
+  // Format: bookings/{booking}/guests
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^bookings/[^/]+/guests$"
+  ];
+
+  // The guest party. An empty list clears the party.
+  repeated freebusy.identity.v1.Guest guests = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // The occupancy breakdown, replacing the existing one.
+  Occupancy occupancy = 3 [(google.api.field_behavior) = OPTIONAL];
 }

@@ -2318,6 +2318,228 @@
     },
     {
       "kind": "OBJECT",
+      "name": "ByteaAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "_count_distinct",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "max",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          }
+        },
+        {
+          "name": "min",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "ByteaBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "ByteaBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_eq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_in",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Json",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_is_null",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_like",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_neq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_nlike",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "ByteaBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "ByteaBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
       "name": "ChannelChannelStateAggExp",
       "description": "",
       "fields": [
@@ -6327,6 +6549,76 @@
     },
     {
       "kind": "OBJECT",
+      "name": "DeleteIdentityGuestsByBookingId",
+      "description": "",
+      "fields": [
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "DeleteIdentityGuestsByBookingIdResponse",
+      "description": "Responses from the 'delete_identity_guests_by_booking_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DeleteIdentityGuestsByBookingId",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
       "name": "DeleteIdentityGuestsByIdResponse",
       "description": "Responses from the 'delete_identity_guests_by_id' procedure",
       "fields": [
@@ -7017,6 +7309,52 @@
     },
     {
       "kind": "OBJECT",
+      "name": "DeletePropertyLicencesByIdResponse",
+      "description": "Responses from the 'delete_property_licences_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyLicences",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
       "name": "DeletePropertyLosDiscountsByIdResponse",
       "description": "Responses from the 'delete_property_los_discounts_by_id' procedure",
       "fields": [
@@ -7326,6 +7664,52 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "PropertyUnitApplicablePromoCodes",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "DeletePropertyUnitLicencesByIdResponse",
+      "description": "Responses from the 'delete_property_unit_licences_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyUnitLicences",
                   "ofType": null
                 }
               }
@@ -7832,6 +8216,52 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "ScheduleStayConstraints",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "DeleteSharedAttachmentsByIdResponse",
+      "description": "Responses from the 'delete_shared_attachments_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SharedAttachments",
                   "ofType": null
                 }
               }
@@ -11103,6 +11533,16 @@
       "description": "",
       "fields": [
         {
+          "name": "attachmentId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
           "name": "expiryDate",
           "description": "",
           "args": [],
@@ -11204,6 +11644,20 @@
             "ofType": {
               "kind": "SCALAR",
               "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "attachmentId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
               "ofType": null
             }
           }
@@ -11364,6 +11818,16 @@
           "defaultValue": null
         },
         {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
           "name": "expiryDate",
           "description": "",
           "type": {
@@ -11501,6 +11965,16 @@
       "description": "",
       "fields": null,
       "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
         {
           "name": "expiryDate",
           "description": "",
@@ -14178,6 +14652,16 @@
       "fields": null,
       "inputFields": [
         {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
           "name": "expiryDate",
           "description": "",
           "type": {
@@ -16091,6 +16575,218 @@
     },
     {
       "kind": "INPUT_OBJECT",
+      "name": "InsertPropertyLicencesObjectInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Timestamptz",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "InsertPropertyLicencesResponse",
+      "description": "Responses from the 'insert_property_licences' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyLicences",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
       "name": "InsertPropertyLosDiscountsObjectInput",
       "description": "",
       "fields": null,
@@ -17030,6 +17726,232 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "PropertyUnitApplicablePromoCodes",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "InsertPropertyUnitLicencesObjectInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Timestamptz",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "InsertPropertyUnitLicencesResponse",
+      "description": "Responses from the 'insert_property_unit_licences' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyUnitLicences",
                   "ofType": null
                 }
               }
@@ -18546,6 +19468,136 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "ScheduleStayConstraints",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "InsertSharedAttachmentsObjectInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "content",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "filename",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sizeBytes",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int64",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uploadTime",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Timestamptz",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "InsertSharedAttachmentsResponse",
+      "description": "Responses from the 'insert_shared_attachments' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SharedAttachments",
                   "ofType": null
                 }
               }
@@ -20206,6 +21258,35 @@
           }
         },
         {
+          "name": "deleteIdentityGuestsByBookingId",
+          "description": "",
+          "args": [
+            {
+              "name": "bookingId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DeleteIdentityGuestsByBookingIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "deleteIdentityGuestsById",
           "description": "Delete any row on the 'identity_guests' collection using the 'id' key",
           "args": [
@@ -20791,6 +21872,45 @@
           }
         },
         {
+          "name": "deletePropertyLicencesById",
+          "description": "Delete any row on the 'property_licences' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Delete permission predicate over the 'property_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DeletePropertyLicencesByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "deletePropertyLosDiscountsById",
           "description": "Delete any row on the 'property_los_discounts' collection using the 'id' key",
           "args": [
@@ -21059,6 +22179,45 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "DeletePropertyUnitApplicablePromoCodesByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "deletePropertyUnitLicencesById",
+          "description": "Delete any row on the 'property_unit_licences' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Delete permission predicate over the 'property_unit_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DeletePropertyUnitLicencesByIdResponse",
               "ofType": null
             }
           }
@@ -21488,6 +22647,45 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "DeleteScheduleStayConstraintsByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "deleteSharedAttachmentsById",
+          "description": "Delete any row on the 'shared_attachments' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Delete permission predicate over the 'shared_attachments' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DeleteSharedAttachmentsByIdResponse",
               "ofType": null
             }
           }
@@ -22777,6 +23975,53 @@
           }
         },
         {
+          "name": "insertPropertyLicences",
+          "description": "Insert into the property_licences table",
+          "args": [
+            {
+              "name": "objects",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "LIST",
+                  "name": "",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": "",
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InsertPropertyLicencesObjectInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Insert permission predicate over the 'property_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "InsertPropertyLicencesResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "insertPropertyLosDiscounts",
           "description": "Insert into the property_los_discounts table",
           "args": [
@@ -23101,6 +24346,53 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "InsertPropertyUnitApplicablePromoCodesResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "insertPropertyUnitLicences",
+          "description": "Insert into the property_unit_licences table",
+          "args": [
+            {
+              "name": "objects",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "LIST",
+                  "name": "",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": "",
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InsertPropertyUnitLicencesObjectInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Insert permission predicate over the 'property_unit_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "InsertPropertyUnitLicencesResponse",
               "ofType": null
             }
           }
@@ -23618,6 +24910,53 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "InsertScheduleStayConstraintsResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "insertSharedAttachments",
+          "description": "Insert into the shared_attachments table",
+          "args": [
+            {
+              "name": "objects",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "LIST",
+                  "name": "",
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": "",
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "InsertSharedAttachmentsObjectInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Insert permission predicate over the 'shared_attachments' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "InsertSharedAttachmentsResponse",
               "ofType": null
             }
           }
@@ -25323,6 +26662,69 @@
           }
         },
         {
+          "name": "updatePropertyLicencesById",
+          "description": "Update any row on the 'property_licences' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Update permission post-condition predicate over the 'property_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Update permission pre-condition predicate over the 'property_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "updateColumns",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UpdatePropertyLicencesByIdUpdateColumnsInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "UpdatePropertyLicencesByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
           "name": "updatePropertyLosDiscountsById",
           "description": "Update any row on the 'property_los_discounts' collection using the 'id' key",
           "args": [
@@ -25759,6 +27161,69 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "UpdatePropertyUnitApplicablePromoCodesByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updatePropertyUnitLicencesById",
+          "description": "Update any row on the 'property_unit_licences' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Update permission post-condition predicate over the 'property_unit_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Update permission pre-condition predicate over the 'property_unit_licences' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "updateColumns",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UpdatePropertyUnitLicencesByIdUpdateColumnsInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "UpdatePropertyUnitLicencesByIdResponse",
               "ofType": null
             }
           }
@@ -26452,6 +27917,69 @@
             "ofType": {
               "kind": "OBJECT",
               "name": "UpdateScheduleStayConstraintsByIdResponse",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updateSharedAttachmentsById",
+          "description": "Update any row on the 'shared_attachments' collection using the 'id' key",
+          "args": [
+            {
+              "name": "keyId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "postCheck",
+              "description": "Update permission post-condition predicate over the 'shared_attachments' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "preCheck",
+              "description": "Update permission pre-condition predicate over the 'shared_attachments' collection",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "updateColumns",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "UpdateSharedAttachmentsByIdUpdateColumnsInput",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "UpdateSharedAttachmentsByIdResponse",
               "ofType": null
             }
           }
@@ -33529,6 +35057,1208 @@
     },
     {
       "kind": "OBJECT",
+      "name": "PropertyLicenceStateAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "_count_distinct",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "max",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        },
+        {
+          "name": "min",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyLicenceStateBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicenceStateBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_eq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_in",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Enum",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_is_null",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_neq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicenceStateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicenceStateBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyLicenceTypeAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "_count_distinct",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "max",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        },
+        {
+          "name": "min",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyLicenceTypeBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicenceTypeBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_eq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_gte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_in",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Enum",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_is_null",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Boolean",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lt",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_lte",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_neq",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicenceTypeBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicenceTypeBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyLicences",
+      "description": "",
+      "fields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          }
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "name",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "state",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyLicencesAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "attachmentId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TimestamptzAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DateAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DateAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "name",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "state",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "PropertyLicenceStateAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "PropertyLicenceTypeAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TimestamptzAggExp",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyLicencesBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicencesBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TimestamptzBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "DateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "DateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicenceStateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicenceTypeBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TimestamptzBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyLicencesFilterInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "limit",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "offset",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "order_by",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesOrderByExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "where",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicencesBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyLicencesOrderByExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
       "name": "PropertyLosDiscounts",
       "description": "",
       "fields": [
@@ -37291,6 +40021,852 @@
         },
         {
           "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyUnitLicences",
+      "description": "",
+      "fields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          }
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "name",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "state",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "PropertyUnitLicencesAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "attachmentId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TimestamptzAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DateAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "DateAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "name",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "state",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "PropertyLicenceStateAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "type",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "PropertyLicenceTypeAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TimestamptzAggExp",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyUnitLicencesBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyUnitLicencesBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TimestamptzBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "DateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "DateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicenceStateBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyLicenceTypeBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TimestamptzBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyUnitLicencesFilterInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "limit",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "offset",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "order_by",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesOrderByExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "where",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "PropertyUnitLicencesBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "PropertyUnitLicencesOrderByExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
           "description": "",
           "type": {
             "kind": "ENUM",
@@ -42345,6 +45921,119 @@
           }
         },
         {
+          "name": "propertyLicences",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyLicencesOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyLicences",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyLicencesAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyLicencesAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyLicencesById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyLicences",
+            "ofType": null
+          }
+        },
+        {
           "name": "propertyLosDiscounts",
           "description": "",
           "args": [
@@ -43132,6 +46821,119 @@
           "type": {
             "kind": "OBJECT",
             "name": "PropertyUnitApplicablePromoCodes",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitLicences",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyUnitLicencesOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyUnitLicences",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyUnitLicencesAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitLicencesAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitLicencesById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitLicences",
             "ofType": null
           }
         },
@@ -44375,6 +48177,119 @@
           "type": {
             "kind": "OBJECT",
             "name": "ScheduleStayConstraints",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sharedAttachments",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SharedAttachmentsOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SharedAttachments",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "sharedAttachmentsAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "SharedAttachmentsAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sharedAttachmentsById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "SharedAttachments",
             "ofType": null
           }
         },
@@ -48519,6 +52434,476 @@
         },
         {
           "name": "minNights",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "SharedAttachments",
+      "description": "",
+      "fields": [
+        {
+          "name": "content",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          }
+        },
+        {
+          "name": "filename",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sizeBytes",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int64",
+            "ofType": null
+          }
+        },
+        {
+          "name": "uploadTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "Timestamptz",
+            "ofType": null
+          }
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "OBJECT",
+      "name": "SharedAttachmentsAggExp",
+      "description": "",
+      "fields": [
+        {
+          "name": "_count",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int64",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "content",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "ByteaAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "filename",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "id",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sizeBytes",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "Int8AggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "uploadTime",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TimestamptzAggExp",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "OBJECT",
+              "name": "TextAggExp",
+              "ofType": null
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "SharedAttachmentsBoolExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "_and",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_not",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "SharedAttachmentsBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "_or",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "content",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "ByteaBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "filename",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sizeBytes",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "Int8BoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uploadTime",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TimestamptzBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "TextBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "SharedAttachmentsFilterInput",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "limit",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "offset",
+          "description": "",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "order_by",
+          "description": "",
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsOrderByExp",
+                "ofType": null
+              }
+            }
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "where",
+          "description": "",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "SharedAttachmentsBoolExp",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "SharedAttachmentsOrderByExp",
+      "description": "",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "content",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "filename",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sizeBytes",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uploadTime",
+          "description": "",
+          "type": {
+            "kind": "ENUM",
+            "name": "OrderBy",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
           "description": "",
           "type": {
             "kind": "ENUM",
@@ -52841,6 +57226,119 @@
           }
         },
         {
+          "name": "propertyLicences",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyLicencesOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyLicences",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyLicencesAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyLicencesFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyLicencesAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyLicencesById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyLicences",
+            "ofType": null
+          }
+        },
+        {
           "name": "propertyLosDiscounts",
           "description": "",
           "args": [
@@ -53628,6 +58126,119 @@
           "type": {
             "kind": "OBJECT",
             "name": "PropertyUnitApplicablePromoCodes",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitLicences",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "PropertyUnitLicencesOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PropertyUnitLicences",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "propertyUnitLicencesAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "PropertyUnitLicencesFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitLicencesAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "propertyUnitLicencesById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "PropertyUnitLicences",
             "ofType": null
           }
         },
@@ -54871,6 +59482,119 @@
           "type": {
             "kind": "OBJECT",
             "name": "ScheduleStayConstraints",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sharedAttachments",
+          "description": "",
+          "args": [
+            {
+              "name": "limit",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "offset",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "order_by",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "name": "",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": "",
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SharedAttachmentsOrderByExp",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "where",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsBoolExp",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "LIST",
+            "name": "",
+            "ofType": {
+              "kind": "NON_NULL",
+              "name": "",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SharedAttachments",
+                "ofType": null
+              }
+            }
+          }
+        },
+        {
+          "name": "sharedAttachmentsAggregate",
+          "description": "",
+          "args": [
+            {
+              "name": "filter_input",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SharedAttachmentsFilterInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "SharedAttachmentsAggExp",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sharedAttachmentsById",
+          "description": "",
+          "args": [
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String1",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "type": {
+            "kind": "OBJECT",
+            "name": "SharedAttachments",
             "ofType": null
           }
         },
@@ -59274,6 +63998,26 @@
     },
     {
       "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnIdentityIdDocumentsAttachmentIdInput",
+      "description": "Update the 'attachment_id' column in the 'identity_id_documents' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
       "name": "UpdateColumnIdentityIdDocumentsExpiryDateInput",
       "description": "Update the 'expiry_date' column in the 'identity_id_documents' collection",
       "fields": null,
@@ -61410,6 +66154,310 @@
     },
     {
       "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesAttachmentIdInput",
+      "description": "Update the 'attachment_id' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesCreateTimeInput",
+      "description": "Update the 'create_time' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesEtagInput",
+      "description": "Update the 'etag' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesExpiryDateInput",
+      "description": "Update the 'expiry_date' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesIdInput",
+      "description": "Update the 'id' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesIssueDateInput",
+      "description": "Update the 'issue_date' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesIssuingAuthorityInput",
+      "description": "Update the 'issuing_authority' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesLicenceNumberInput",
+      "description": "Update the 'licence_number' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesNameInput",
+      "description": "Update the 'name' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesNotesInput",
+      "description": "Update the 'notes' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesPropertyIdInput",
+      "description": "Update the 'property_id' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesStateInput",
+      "description": "Update the 'state' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesTypeInput",
+      "description": "Update the 'type' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyLicencesUpdateTimeInput",
+      "description": "Update the 'update_time' column in the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
       "name": "UpdateColumnPropertyLosDiscountsAmountOffIdInput",
       "description": "Update the 'amount_off_id' column in the 'property_los_discounts' collection",
       "fields": null,
@@ -62427,6 +67475,334 @@
             "ofType": {
               "kind": "SCALAR",
               "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesAttachmentIdInput",
+      "description": "Update the 'attachment_id' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesCreateTimeInput",
+      "description": "Update the 'create_time' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesEtagInput",
+      "description": "Update the 'etag' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesExpiryDateInput",
+      "description": "Update the 'expiry_date' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesIdInput",
+      "description": "Update the 'id' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesIssueDateInput",
+      "description": "Update the 'issue_date' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Date",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesIssuingAuthorityInput",
+      "description": "Update the 'issuing_authority' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesLicenceNumberInput",
+      "description": "Update the 'licence_number' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesNameInput",
+      "description": "Update the 'name' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesNotesInput",
+      "description": "Update the 'notes' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesPropertyIdInput",
+      "description": "Update the 'property_id' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesStateInput",
+      "description": "Update the 'state' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Enum",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesTypeInput",
+      "description": "Update the 'type' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Enum",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesUnitIdInput",
+      "description": "Update the 'unit_id' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnPropertyUnitLicencesUpdateTimeInput",
+      "description": "Update the 'update_time' column in the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Timestamptz",
               "ofType": null
             }
           },
@@ -64122,6 +69498,150 @@
     },
     {
       "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsContentInput",
+      "description": "Update the 'content' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Json",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsFilenameInput",
+      "description": "Update the 'filename' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsIdInput",
+      "description": "Update the 'id' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "String1",
+              "ofType": null
+            }
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsMimeTypeInput",
+      "description": "Update the 'mime_type' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsSizeBytesInput",
+      "description": "Update the 'size_bytes' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Int64",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsUploadTimeInput",
+      "description": "Update the 'upload_time' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "Timestamptz",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateColumnSharedAttachmentsUriInput",
+      "description": "Update the 'uri' column in the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "set",
+          "description": "Set the column to this value",
+          "type": {
+            "kind": "SCALAR",
+            "name": "String1",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "INPUT_OBJECT",
       "name": "UpdateColumnSharedContactsDisplayNameInput",
       "description": "Update the 'display_name' column in the 'shared_contacts' collection",
       "fields": null,
@@ -65318,6 +70838,16 @@
       "description": "Update the columns of the 'identity_id_documents' collection",
       "fields": null,
       "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "Update the 'attachment_id' column in the 'identity_id_documents' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnIdentityIdDocumentsAttachmentIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
         {
           "name": "expiryDate",
           "description": "Update the 'expiry_date' column in the 'identity_id_documents' collection.",
@@ -67022,6 +72552,202 @@
     },
     {
       "kind": "OBJECT",
+      "name": "UpdatePropertyLicencesByIdResponse",
+      "description": "Responses from the 'update_property_licences_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyLicences",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdatePropertyLicencesByIdUpdateColumnsInput",
+      "description": "Update the columns of the 'property_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "Update the 'attachment_id' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesAttachmentIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "Update the 'create_time' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesCreateTimeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "Update the 'etag' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesEtagInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "Update the 'expiry_date' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesExpiryDateInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "Update the 'id' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "Update the 'issue_date' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesIssueDateInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "Update the 'issuing_authority' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesIssuingAuthorityInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "Update the 'licence_number' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesLicenceNumberInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "Update the 'name' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesNameInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "Update the 'notes' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesNotesInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "Update the 'property_id' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesPropertyIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "Update the 'state' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesStateInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "Update the 'type' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "Update the 'update_time' column in the 'property_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyLicencesUpdateTimeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
       "name": "UpdatePropertyLosDiscountsByIdResponse",
       "description": "Responses from the 'update_property_los_discounts_by_id' procedure",
       "fields": [
@@ -67864,6 +73590,212 @@
           "type": {
             "kind": "INPUT_OBJECT",
             "name": "UpdateColumnPropertyUnitApplicablePromoCodesUnitIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "UpdatePropertyUnitLicencesByIdResponse",
+      "description": "Responses from the 'update_property_unit_licences_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PropertyUnitLicences",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdatePropertyUnitLicencesByIdUpdateColumnsInput",
+      "description": "Update the columns of the 'property_unit_licences' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "attachmentId",
+          "description": "Update the 'attachment_id' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesAttachmentIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "createTime",
+          "description": "Update the 'create_time' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesCreateTimeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "etag",
+          "description": "Update the 'etag' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesEtagInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "expiryDate",
+          "description": "Update the 'expiry_date' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesExpiryDateInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "Update the 'id' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issueDate",
+          "description": "Update the 'issue_date' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesIssueDateInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "issuingAuthority",
+          "description": "Update the 'issuing_authority' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesIssuingAuthorityInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "licenceNumber",
+          "description": "Update the 'licence_number' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesLicenceNumberInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "name",
+          "description": "Update the 'name' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesNameInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "notes",
+          "description": "Update the 'notes' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesNotesInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "propertyId",
+          "description": "Update the 'property_id' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesPropertyIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "state",
+          "description": "Update the 'state' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesStateInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "type",
+          "description": "Update the 'type' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "unitId",
+          "description": "Update the 'unit_id' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesUnitIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "updateTime",
+          "description": "Update the 'update_time' column in the 'property_unit_licences' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnPropertyUnitLicencesUpdateTimeInput",
             "ofType": null
           },
           "defaultValue": null
@@ -69240,6 +75172,132 @@
           "type": {
             "kind": "INPUT_OBJECT",
             "name": "UpdateColumnScheduleStayConstraintsMinNightsInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        }
+      ],
+      "enumValues": null,
+      "interfaces": null
+    },
+    {
+      "kind": "OBJECT",
+      "name": "UpdateSharedAttachmentsByIdResponse",
+      "description": "Responses from the 'update_shared_attachments_by_id' procedure",
+      "fields": [
+        {
+          "name": "affectedRows",
+          "description": "The number of rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "SCALAR",
+              "name": "Int32",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "returning",
+          "description": "Data from rows affected by the mutation",
+          "args": [],
+          "type": {
+            "kind": "NON_NULL",
+            "name": "",
+            "ofType": {
+              "kind": "LIST",
+              "name": "",
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": "",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SharedAttachments",
+                  "ofType": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "inputFields": null,
+      "enumValues": null,
+      "interfaces": []
+    },
+    {
+      "kind": "INPUT_OBJECT",
+      "name": "UpdateSharedAttachmentsByIdUpdateColumnsInput",
+      "description": "Update the columns of the 'shared_attachments' collection",
+      "fields": null,
+      "inputFields": [
+        {
+          "name": "content",
+          "description": "Update the 'content' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsContentInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "filename",
+          "description": "Update the 'filename' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsFilenameInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "id",
+          "description": "Update the 'id' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsIdInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "mimeType",
+          "description": "Update the 'mime_type' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsMimeTypeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "sizeBytes",
+          "description": "Update the 'size_bytes' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsSizeBytesInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uploadTime",
+          "description": "Update the 'upload_time' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsUploadTimeInput",
+            "ofType": null
+          },
+          "defaultValue": null
+        },
+        {
+          "name": "uri",
+          "description": "Update the 'uri' column in the 'shared_attachments' collection.",
+          "type": {
+            "kind": "INPUT_OBJECT",
+            "name": "UpdateColumnSharedAttachmentsUriInput",
             "ofType": null
           },
           "defaultValue": null

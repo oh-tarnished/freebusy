@@ -6,13 +6,16 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 4 | 1 |
+| 5 | 1 |
 
 ## Entity relationships
 
 ```mermaid
 erDiagram
     direction LR
+    Attachment {
+        string id PK
+    }
     Contact {
         string id PK
     }
@@ -72,6 +75,20 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `display_name` | `VARCHAR(255)` | nullable |
 | `booking_id` | `CHAR(26)` | not null |
 | `amount_id` | `CHAR(26)` | nullable |
+
+### `Attachment` → `attachments`
+
+An uploaded file attached to a document- or licence-carrying record (e.g. a guest's IdDocument scan, or a property/unit licence certificate). The bytes are stored inline in `content` today; `uri` is populated once the file is migrated to object storage (S3 or any CDN-fronted host). At most one of the two is authoritative at a time — prefer `uri` when both are set.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `filename` | `VARCHAR(255)` | nullable |
+| `mime_type` | `VARCHAR(255)` | nullable |
+| `size_bytes` | `BIGINT` | nullable |
+| `content` | `BYTEA` | nullable |
+| `uri` | `VARCHAR(255)` | nullable |
+| `upload_time` | `TIMESTAMPTZ` | nullable |
 
 ### `DateRange` → `date_ranges`
 

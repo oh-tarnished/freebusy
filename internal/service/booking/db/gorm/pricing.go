@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
@@ -26,7 +27,7 @@ type pricingResult struct {
 // Discount + Scope preloaded) is optional.
 func computePricing(unit *property.Unit, nights, units int64, promo *promocode.PromoCode) pricingResult {
 	in := pricing.Inputs{
-		Price:       moneyFromModel(unit.Price),
+		Price:       common.MoneyToProto(unit.Price),
 		BookingMode: string(unit.BookingMode),
 		Nights:      nights,
 		Units:       units,
@@ -36,7 +37,7 @@ func computePricing(unit *property.Unit, nights, units int64, promo *promocode.P
 		in.LosDiscounts = append(in.LosDiscounts, pricing.LosDiscount{
 			MinNights:  d.MinNights,
 			PercentOff: d.PercentOff,
-			AmountOff:  moneyFromModel(d.AmountOff),
+			AmountOff:  common.MoneyToProto(d.AmountOff),
 		})
 	}
 	for i := range unit.Fees {
@@ -50,7 +51,7 @@ func computePricing(unit *property.Unit, nights, units int64, promo *promocode.P
 			DisplayName: deref(f.DisplayName),
 			PricingUnit: pu,
 			Percent:     f.Percent,
-			Amount:      moneyFromModel(f.Amount),
+			Amount:      common.MoneyToProto(f.Amount),
 			Taxable:     deref(f.Taxable),
 		})
 	}
@@ -62,10 +63,10 @@ func computePricing(unit *property.Unit, nights, units int64, promo *promocode.P
 		p := &pricing.Promo{Code: promo.Code, DisplayName: deref(promo.DisplayName)}
 		if promo.Discount != nil {
 			p.PercentOff = promo.Discount.PercentOff
-			p.AmountOff = moneyFromModel(promo.Discount.AmountOff)
+			p.AmountOff = common.MoneyToProto(promo.Discount.AmountOff)
 		}
 		if promo.Scope != nil {
-			p.MinSubtotal = moneyFromModel(promo.Scope.MinSubtotal)
+			p.MinSubtotal = common.MoneyToProto(promo.Scope.MinSubtotal)
 			for i := range promo.Scope.ScopeApplicableUnits {
 				p.ApplicableUnitIDs = append(p.ApplicableUnitIDs, promo.Scope.ScopeApplicableUnits[i].UnitID)
 			}

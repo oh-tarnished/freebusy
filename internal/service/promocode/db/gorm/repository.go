@@ -9,6 +9,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -146,29 +147,11 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 // extra row to decide whether a further page exists; the whole association graph
 // is preloaded in batch queries to avoid an N+1.
 func (r *PromoCodeRepository) List(ctx context.Context, params types.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
-	order, err := orderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[promocode.PromoCode](promocode.PromoCodeFilterSpec).
+		Override("state", stateHandler(time.Now().UTC())).
+		List(ctx, preloadGraph(r.db), types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-
-	q := preloadGraph(r.db.WithContext(ctx)).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyPromoFilter(q, params.Filter, time.Now().UTC())
-	if err != nil {
-		return nil, "", err
-	}
-	var models []promocode.PromoCode
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(models))

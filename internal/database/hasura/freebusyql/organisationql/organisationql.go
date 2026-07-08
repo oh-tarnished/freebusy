@@ -6,19 +6,19 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/membersql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/schemaql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
 type DeleteOrganisationMembersByIdResponse = schemaql.DeleteOrganisationMembersByIdResponse
-type DeleteOrganisationResourceByIdResponse = schemaql.DeleteOrganisationResourceByIdResponse
 type InsertOrganisationMembersResponse = schemaql.InsertOrganisationMembersResponse
-type InsertOrganisationResourceResponse = schemaql.InsertOrganisationResourceResponse
 type OrganisationMembers = schemaql.OrganisationMembers
 type OrganisationMembersAggExp = schemaql.OrganisationMembersAggExp
+type UpdateOrganisationMembersByIdResponse = schemaql.UpdateOrganisationMembersByIdResponse
+type DeleteOrganisationResourceByIdResponse = schemaql.DeleteOrganisationResourceByIdResponse
+type InsertOrganisationResourceResponse = schemaql.InsertOrganisationResourceResponse
 type OrganisationResource = schemaql.OrganisationResource
 type OrganisationResourceAggExp = schemaql.OrganisationResourceAggExp
-type UpdateOrganisationMembersByIdResponse = schemaql.UpdateOrganisationMembersByIdResponse
 type UpdateOrganisationResourceByIdResponse = schemaql.UpdateOrganisationResourceByIdResponse
 
 // QueryHandler aggregates query handlers for the organisationql domain.

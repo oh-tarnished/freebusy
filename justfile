@@ -91,6 +91,11 @@ test:
 test-unit:
     go test -v ./internal/discount/ ./internal/database/repository/ ./internal/service/gorm/
 
+# Live Hasura/DDN integration tests — needs the local engine (`ddn run docker-start`).
+[group('test')]
+test-hasura url="http://localhost:3280/graphql":
+    FREEBUSY_TEST_GRAPHQL_URL={{ url }} go test ./internal/service/booking/db/hasura/ -run Live -v
+
 # CI-style gate: build, vet, and test.
 [group('test')]
 check: build vet test

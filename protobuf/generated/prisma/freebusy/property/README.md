@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 11 | 4 |
+| 12 | 7 |
 
 ## Entity relationships
 
@@ -17,6 +17,12 @@ erDiagram
         string id PK
         string unit_id FK
         string amount_id FK
+    }
+    Licence {
+        string id PK
+        string unit FK
+        string property_id FK
+        string attachment_id FK
     }
     LosDiscount {
         string id PK
@@ -65,6 +71,9 @@ erDiagram
         string id PK
         string unit_id FK
     }
+    Attachment {
+        string externalStub PK
+    }
     DateRange {
         string externalStub PK
     }
@@ -82,6 +91,9 @@ erDiagram
     }
     Fee }o--|| Unit : "unit_id"
     Fee }o--|| Money : "amount_id"
+    Licence }o--|| Unit : "unit"
+    Licence }o--|| Property : "property_id"
+    Licence }o--|| Attachment : "attachment_id"
     LosDiscount }o--|| Unit : "unit_id"
     LosDiscount }o--|| Money : "amount_off_id"
     Media }o--|| Property : "property_id"

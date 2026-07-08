@@ -15,7 +15,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 	"net/url"
 )
 

@@ -7,9 +7,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/organisation"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/membersql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/resourceql"
+	orgschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -58,30 +60,10 @@ func (r *OrganisationRepository) GetOrganisation(ctx context.Context, name strin
 }
 
 func (r *OrganisationRepository) ListOrganisations(ctx context.Context, params types.ListParams) ([]*orgpbv1.Organisation, string, error) {
-	order, err := orgOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[orgschema.OrganisationResource](organisation.OrganisationFilterSpec, r.svc.Query.Organisation.Resource).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, hasWhere, err := orgFilterPredicate(params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := resourceql.List().Limit(limit + 1).Offset(offset)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	if hasWhere {
-		req = req.Where(where)
-	}
-	rows, err := r.svc.Query.Organisation.Resource.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*orgpbv1.Organisation, 0, len(rows))
 	for i := range rows {
@@ -128,27 +110,11 @@ func (r *OrganisationRepository) ListMembers(ctx context.Context, parent string,
 	if err != nil {
 		return nil, "", err
 	}
-	order, err := memberOrderTerms(params.OrderBy)
+	rows, next, err := filterx.Hasura[orgschema.OrganisationMembers](organisation.MemberFilterSpec, r.svc.Query.Organisation.Members).
+		Scope(membersql.OrganisationId.Eq(orgID)).
+		List(ctx, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	where, err := memberFilterPredicate(params.Filter, orgID)
-	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	req := membersql.List().Limit(limit + 1).Offset(offset).Where(where)
-	if len(order) > 0 {
-		req = req.OrderBy(order...)
-	}
-	rows, err := r.svc.Query.Organisation.Members.List(ctx, req)
-	if err != nil {
-		return nil, "", mapHasuraErr(err)
-	}
-	next := ""
-	if len(rows) > limit {
-		rows = rows[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
 	items := make([]*orgpbv1.Member, 0, len(rows))
 	for i := range rows {

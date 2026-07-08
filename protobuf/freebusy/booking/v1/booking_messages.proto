@@ -48,6 +48,16 @@ message GetBookingRequest {
   ];
 }
 
+// Request message for GetBookingGuests.
+message GetBookingGuestsRequest {
+  // The singleton guests sub-resource to retrieve.
+  // Format: bookings/{booking}/guests
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "freebusy.booking.v1/BookingGuests"}
+  ];
+}
+
 // Request message for ListBookings.
 message ListBookingsRequest {
   // Maximum number of bookings to return. The server may cap this.

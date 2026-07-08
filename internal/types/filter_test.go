@@ -28,6 +28,9 @@ func TestParseFilter(t *testing.T) {
 			{Field: "code", Op: FilterHas, Value: "X"},
 		}},
 		{"no space around operator", "state=ACTIVE", []FilterCondition{{Field: "state", Op: FilterEq, Value: "ACTIVE"}}},
+		{"less than or equal", "expiry_date <= 2026-08-01", []FilterCondition{{Field: "expiry_date", Op: FilterLte, Value: "2026-08-01"}}},
+		{"greater than or equal", "expiry_date >= 2026-08-01", []FilterCondition{{Field: "expiry_date", Op: FilterGte, Value: "2026-08-01"}}},
+		{"no space around lte", "expiry_date<=2026-08-01", []FilterCondition{{Field: "expiry_date", Op: FilterLte, Value: "2026-08-01"}}},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -49,11 +52,12 @@ func TestParseFilter(t *testing.T) {
 
 func TestParseFilterErrors(t *testing.T) {
 	for _, filter := range []string{
-		"= ACTIVE",           // leading operator
-		"state =",            // missing value
-		"state = = ACTIVE",   // operator where value expected
-		`code : "unbalanced`, // unterminated quote
-		"code ! ACTIVE",      // lone bang
+		"= ACTIVE",                 // leading operator
+		"state =",                  // missing value
+		"state = = ACTIVE",         // operator where value expected
+		`code : "unbalanced`,       // unterminated quote
+		"code ! ACTIVE",            // lone bang
+		"expiry_date < 2026-08-01", // lone less-than
 	} {
 		t.Run(filter, func(t *testing.T) {
 			if _, err := ParseFilter(filter); !errors.Is(err, ErrInvalidArgument) {

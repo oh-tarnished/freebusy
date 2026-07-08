@@ -3,12 +3,13 @@
 package iddocumentsql
 
 import (
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
-// Filter fields for IdentityIdDocuments. Build predicates like ExpiryDate.Eq(v) and combine
+// Filter fields for IdentityIdDocuments. Build predicates like AttachmentId.Eq(v) and combine
 // them with And/Or/Not.
 var (
+	AttachmentId   = graphql.StringField{Col: "attachmentId"}
 	ExpiryDate     = graphql.StringField{Col: "expiryDate"}
 	Id             = graphql.StringField{Col: "id"}
 	IssueDate      = graphql.StringField{Col: "issueDate"}

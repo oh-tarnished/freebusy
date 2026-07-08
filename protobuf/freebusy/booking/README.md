@@ -20,6 +20,8 @@ BookingService is the transactional heart. CreateBooking carries the idempotency
 | `CancelBooking` | `CancelBookingRequest` | `Booking` | Cancels a booking. |
 | `PreviewCancellation` | `PreviewCancellationRequest` | `PreviewCancellationResponse` | Previews the refund a cancellation would yield now, without cancelling. |
 | `RescheduleBooking` | `RescheduleBookingRequest` | `Booking` | Reschedules a booking to a new span. |
+| `GetBookingGuests` | `GetBookingGuestsRequest` | `BookingGuests` | Gets the staying party (guests and occupancy) on a booking. |
+| `UpdateBookingGuests` | `UpdateBookingGuestsRequest` | `BookingGuests` | Replaces the staying party (guests and occupancy) on a booking. |
 
 ## Messages
 
@@ -67,6 +69,16 @@ Occupancy is a party-size breakdown by age bracket. `adults + children` is the h
 | `children` | `int32` | `OPTIONAL` | Number of children. |
 | `infants` | `int32` | `OPTIONAL` | Number of infants (usually not counted against occupancy). |
 
+### BookingGuests
+
+BookingGuests is a singleton sub-resource of a Booking (AIP-156): the staying party attached to it. Exactly one exists per booking, addressed without an ID segment. Read and replaced via UpdateBookingGuests; there is no separate Create/Delete since it always exists alongside its parent Booking. It is an API shape over Booking.guests/occupancy, not a stored table — the party persists on the Booking row graph, so the ORM skips it (a generated table would bolt a second required parent FK onto every guest row).
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The singleton resource name. Format: bookings/{booking}/guests |
+| `guests` | `repeated Guest` | `OPTIONAL` | The guest party. An empty list clears the party. |
+| `occupancy` | `Occupancy` | `OPTIONAL` | The occupancy breakdown, replacing the existing one. |
+
 ### ConfirmBookingRequest
 
 Request message for ConfirmBooking. Confirmation normally arrives via the payment webhook rather than a direct client call; either way it flips a PENDING_HOLD to CONFIRMED.
@@ -98,6 +110,15 @@ Request message for RescheduleBooking. Atomically moves a booking to a new span 
 | `window` | `TimeWindow` | `REQUIRED` | The new reserved span. |
 | `unit` | `string` | `OPTIONAL` | The new unit, when changing it as part of the reschedule. Format: properties/{property}/units/{unit} |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this reschedule. |
+
+### UpdateBookingGuestsRequest
+
+Request message for UpdateBookingGuests. Replaces the whole staying party — the guest list and the occupancy breakdown — on a booking. Allowed only while the booking is PENDING_HOLD or CONFIRMED; the new party is re-validated against the unit's max occupancy.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `booking_guests` | `BookingGuests` | `REQUIRED` | The new guest party and occupancy; its name identifies the target booking. Format: bookings/{booking}/guests |
+| `update_mask` | `FieldMask` | `OPTIONAL` | Fields to overwrite. Omit to replace both guests and occupancy. |
 
 ### PreviewCancellationRequest
 
@@ -148,6 +169,14 @@ Request message for GetBooking.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `name` | `string` | `REQUIRED` | The booking to retrieve. Format: bookings/{booking} |
+
+### GetBookingGuestsRequest
+
+Request message for GetBookingGuests.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `REQUIRED` | The singleton guests sub-resource to retrieve. Format: bookings/{booking}/guests |
 
 ### ListBookingsRequest
 

@@ -10,11 +10,13 @@ import (
 	"errors"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
+	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
@@ -116,16 +118,11 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 
 	// Occupancy: the staying party must fit the unit's max occupancy across the
 	// reserved units (guests × max_occupancy). Zero max_occupancy means unbounded.
-	if maxOcc := deref(unit.MaxOccupancy); maxOcc > 0 {
-		if partySize(b.GetOccupancy(), b.GetGuests()) > maxOcc*requested {
-			return nil, types.ErrInvalidArgument
-		}
+	if !party.Fits(deref(unit.MaxOccupancy), requested, b.GetOccupancy(), b.GetGuests()) {
+		return nil, types.ErrInvalidArgument
 	}
 	occupancy := occupancyToModel(b.GetOccupancy())
-	guestGraphs := make([]guestGraph, 0, len(b.GetGuests()))
-	for _, g := range b.GetGuests() {
-		guestGraphs = append(guestGraphs, buildGuestGraph(g, id))
-	}
+	guestGraphs := buildGuestGraphs(b.GetGuests(), id)
 
 	window := timeWindowToModel(b.GetWindow())
 	contact := contactToModel(b.GetContact())
@@ -259,7 +256,6 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 		return nil, err
 	}
 	out := bookingFromModel(&m, unitName)
-	out.Occupancy = occupancyFromModel(m.Occupancy)
 	guests, err := r.loadGuests(ctx, m.ID)
 	if err != nil {
 		return nil, err
@@ -270,27 +266,10 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 
 // ListBookings returns a page of bookings ordered by params.OrderBy.
 func (r *BookingRepository) ListBookings(ctx context.Context, params types.ListParams) ([]*bookingpbv1.Booking, string, error) {
-	order, err := bookingOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[booking.Booking](booking.BookingFilterSpec).
+		List(ctx, preloadBooking(r.db), types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := preloadBooking(r.db.WithContext(ctx)).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyBookingFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []booking.Booking
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	unitNames, err := r.unitNames(ctx, models)
 	if err != nil {
@@ -299,7 +278,6 @@ func (r *BookingRepository) ListBookings(ctx context.Context, params types.ListP
 	items := make([]*bookingpbv1.Booking, 0, len(models))
 	for i := range models {
 		out := bookingFromModel(&models[i], unitNames[models[i].UnitID])
-		out.Occupancy = occupancyFromModel(models[i].Occupancy)
 		guests, err := r.loadGuests(ctx, models[i].ID)
 		if err != nil {
 			return nil, "", err

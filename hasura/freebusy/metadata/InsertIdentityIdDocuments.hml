@@ -4,6 +4,8 @@ version: v1
 definition:
   name: InsertIdentityIdDocumentsObject
   fields:
+    - name: attachmentId
+      type: String_1
     - name: expiryDate
       type: Date
     - name: id
@@ -25,6 +27,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: insert_identity_id_documents_object
       fieldMapping:
+        attachmentId:
+          column:
+            name: attachment_id
         expiryDate:
           column:
             name: expiry_date
@@ -56,6 +61,7 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - attachmentId
           - expiryDate
           - id
           - issueDate

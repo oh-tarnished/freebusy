@@ -55,6 +55,7 @@ func registerGRPCServers(svc *Service) grpc.Option {
 	return grpc.WithGRPCServers(func(s *grpc.GRPCServer) {
 		promocodepbv1.RegisterPromoCodeServiceServer(s, svc)
 		propertypbv1.RegisterPropertyServiceServer(s, svc)
+		propertypbv1.RegisterLicenceServiceServer(s, svc)
 		orgpbv1.RegisterOrganisationServiceServer(s, svc)
 		schedulepbv1.RegisterScheduleServiceServer(s, svc)
 		bookingpbv1.RegisterBookingServiceServer(s, svc)
@@ -71,6 +72,9 @@ func registerHTTPGateways() grpc.Option {
 			return err
 		}
 		if err := propertypbv1.RegisterPropertyServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+			return err
+		}
+		if err := propertypbv1.RegisterLicenceServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 			return err
 		}
 		if err := orgpbv1.RegisterOrganisationServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
@@ -97,6 +101,9 @@ func registerMCPServices(svc *Service) grpc.Option {
 			return err
 		}
 		if err := propertypbv1.ServePropertyServiceMCP(ctx, svc, cfg); err != nil {
+			return err
+		}
+		if err := propertypbv1.ServeLicenceServiceMCP(ctx, svc, cfg); err != nil {
 			return err
 		}
 		if err := orgpbv1.ServeOrganisationServiceMCP(ctx, svc, cfg); err != nil {

@@ -30,6 +30,10 @@ erDiagram
     }
     IdDocument {
         string id PK
+        string attachment_id FK
+    }
+    Attachment {
+        string externalStub PK
     }
     Booking {
         string externalStub PK
@@ -43,6 +47,7 @@ erDiagram
     Guest }o--|| PostalAddress : "local_address_id"
     Guest }o--|| ForeignerDetails : "foreigner_id"
     Guest }o--|| GuestPreferences : "preferences_id"
+    IdDocument }o--|| Attachment : "attachment_id"
 ```
 
 Schema file: [`guest.postgres.prisma`](./guest.postgres.prisma)
@@ -82,6 +87,7 @@ A government identity document. Passport fields are required for foreign nationa
 | `issue_place` | `VARCHAR(255)` | nullable |
 | `issue_date` | `DATE` | nullable |
 | `expiry_date` | `DATE` | nullable |
+| `attachment_id` | `CHAR(26)` | nullable |
 
 ### `ForeignerDetails` → `foreigner_details`
 

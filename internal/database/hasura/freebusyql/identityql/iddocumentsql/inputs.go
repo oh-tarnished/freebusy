@@ -3,11 +3,12 @@
 package iddocumentsql
 
 import (
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // CreateInput holds the settable fields for creating one IdentityIdDocuments row.
 type CreateInput struct {
+	AttachmentId   string `json:"attachmentId,omitzero"`
 	ExpiryDate     string `json:"expiryDate,omitzero"`
 	Id             string `json:"id"`
 	IssueDate      string `json:"issueDate,omitzero"`
@@ -19,6 +20,7 @@ type CreateInput struct {
 
 // UpdateInput holds the fields to change on a IdentityIdDocuments row; each set field becomes a column update.
 type UpdateInput struct {
+	AttachmentId   graphql.Nullable[string] `json:"attachmentId"`
 	ExpiryDate     graphql.Nullable[string] `json:"expiryDate"`
 	Id             graphql.Nullable[string] `json:"id"`
 	IssueDate      graphql.Nullable[string] `json:"issueDate"`

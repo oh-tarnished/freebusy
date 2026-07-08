@@ -2,6 +2,38 @@
 kind: ObjectType
 version: v1
 definition:
+  name: UpdateColumnIdentityIdDocumentsAttachmentId
+  description: Update the 'attachment_id' column in the 'identity_id_documents' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnIdentityIdDocumentsAttachmentId
+    inputTypeName: UpdateColumnIdentityIdDocumentsAttachmentIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_identity_id_documents_attachment_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnIdentityIdDocumentsAttachmentId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
   name: UpdateColumnIdentityIdDocumentsExpiryDate
   description: Update the 'expiry_date' column in the 'identity_id_documents' collection
   fields:
@@ -229,6 +261,10 @@ definition:
   name: UpdateIdentityIdDocumentsByIdUpdateColumns
   description: Update the columns of the 'identity_id_documents' collection
   fields:
+    - name: attachmentId
+      type: UpdateColumnIdentityIdDocumentsAttachmentId
+      description: Update the 'attachment_id' column in the 'identity_id_documents'
+        collection.
     - name: expiryDate
       type: UpdateColumnIdentityIdDocumentsExpiryDate
       description: Update the 'expiry_date' column in the 'identity_id_documents'
@@ -260,6 +296,9 @@ definition:
     - dataConnectorName: freebusy_pgsql
       dataConnectorObjectType: update_identity_id_documents_by_id_update_columns
       fieldMapping:
+        attachmentId:
+          column:
+            name: attachment_id
         expiryDate:
           column:
             name: expiry_date
@@ -291,6 +330,7 @@ definition:
     - role: admin
       output:
         allowedFields:
+          - attachmentId
           - expiryDate
           - id
           - issueDate

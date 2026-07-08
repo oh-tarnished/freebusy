@@ -3,32 +3,16 @@ package gorm
 import (
 	"testing"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/identity"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"google.golang.org/genproto/googleapis/type/date"
 )
 
-func TestPartySize(t *testing.T) {
-	// Explicit occupancy wins: 2 adults + 1 child = 3 (infants excluded).
-	occ := &bookingpbv1.Occupancy{Adults: 2, Children: 1, Infants: 1}
-	if n := partySize(occ, nil); n != 3 {
-		t.Fatalf("partySize(occupancy) = %d, want 3", n)
-	}
-	// Derived from guests: 2 adults + 1 child counted, 1 infant excluded.
-	guests := []*identitypbv1.Guest{
-		{DisplayName: "A", AgeGroup: identitypbv1.AgeGroup_AGE_GROUP_ADULT},
-		{DisplayName: "B", AgeGroup: identitypbv1.AgeGroup_AGE_GROUP_ADULT},
-		{DisplayName: "C", AgeGroup: identitypbv1.AgeGroup_AGE_GROUP_CHILD},
-		{DisplayName: "D", AgeGroup: identitypbv1.AgeGroup_AGE_GROUP_INFANT},
-	}
-	if n := partySize(nil, guests); n != 3 {
-		t.Fatalf("partySize(guests) = %d, want 3", n)
-	}
-}
-
 func TestOccupancyRoundTrip(t *testing.T) {
 	in := &bookingpbv1.Occupancy{Adults: 2, Children: 1, Infants: 0}
-	out := occupancyFromModel(occupancyToModel(in))
+	out := booking.OccupancyToProto(occupancyToModel(in))
 	if out.GetAdults() != 2 || out.GetChildren() != 1 || out.GetInfants() != 0 {
 		t.Fatalf("occupancy round-trip = %+v", out)
 	}
@@ -77,11 +61,12 @@ func TestGuestGraphRoundTrip(t *testing.T) {
 		t.Fatal("guest FKs not wired to sub-rows")
 	}
 
-	// Reattach preloaded associations (as GORM would on read) and convert back.
+	// Reattach preloaded associations (as GORM would on read) and convert back
+	// through the generated converter.
 	g.guest.IDDocument = g.idDocument
 	g.guest.Foreigner = g.foreigner
 	g.guest.Preferences = g.preferences
-	out := guestFromModel(g.guest)
+	out := identity.GuestToProto(g.guest)
 
 	if out.GetNationality() != "GB" || out.GetGender() != identitypbv1.Gender_GENDER_FEMALE {
 		t.Fatalf("guest scalars lost: %+v", out)

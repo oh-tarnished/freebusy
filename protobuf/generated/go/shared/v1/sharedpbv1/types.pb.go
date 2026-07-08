@@ -7,6 +7,7 @@
 package sharedpbv1
 
 import (
+	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	date "google.golang.org/genproto/googleapis/type/date"
 	money "google.golang.org/genproto/googleapis/type/money"
@@ -345,11 +346,108 @@ func (x *PriceComponent) GetAmount() *money.Money {
 	return nil
 }
 
+// An uploaded file attached to a document- or licence-carrying record (e.g. a
+// guest's IdDocument scan, or a property/unit licence certificate). The bytes
+// are stored inline in `content` today; `uri` is populated once the file is
+// migrated to object storage (S3 or any CDN-fronted host). At most one of the
+// two is authoritative at a time — prefer `uri` when both are set.
+type Attachment struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Original filename as uploaded.
+	Filename string `protobuf:"bytes,1,opt,name=filename,proto3" json:"filename,omitempty"`
+	// MIME type of the file (e.g. "application/pdf", "image/jpeg").
+	MimeType string `protobuf:"bytes,2,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
+	// Size of the file in bytes.
+	SizeBytes int64 `protobuf:"varint,3,opt,name=size_bytes,json=sizeBytes,proto3" json:"size_bytes,omitempty"`
+	// Raw file content, stored inline in the database. Cleared once the file is
+	// migrated to object storage, at which point `uri` takes over.
+	Content []byte `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	// Location of the file once moved to object storage (e.g. an s3:// or
+	// https:// URL). Unset while the file lives inline in `content`.
+	Uri string `protobuf:"bytes,5,opt,name=uri,proto3" json:"uri,omitempty"`
+	// When the file was uploaded.
+	UploadTime    *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=upload_time,json=uploadTime,proto3" json:"upload_time,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Attachment) Reset() {
+	*x = Attachment{}
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Attachment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Attachment) ProtoMessage() {}
+
+func (x *Attachment) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_shared_v1_types_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Attachment.ProtoReflect.Descriptor instead.
+func (*Attachment) Descriptor() ([]byte, []int) {
+	return file_freebusy_shared_v1_types_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Attachment) GetFilename() string {
+	if x != nil {
+		return x.Filename
+	}
+	return ""
+}
+
+func (x *Attachment) GetMimeType() string {
+	if x != nil {
+		return x.MimeType
+	}
+	return ""
+}
+
+func (x *Attachment) GetSizeBytes() int64 {
+	if x != nil {
+		return x.SizeBytes
+	}
+	return 0
+}
+
+func (x *Attachment) GetContent() []byte {
+	if x != nil {
+		return x.Content
+	}
+	return nil
+}
+
+func (x *Attachment) GetUri() string {
+	if x != nil {
+		return x.Uri
+	}
+	return ""
+}
+
+func (x *Attachment) GetUploadTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UploadTime
+	}
+	return nil
+}
+
 var File_freebusy_shared_v1_types_proto protoreflect.FileDescriptor
 
 const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\x88\x01\n" +
+	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\x88\x01\n" +
 	"\n" +
 	"TimeWindow\x12>\n" +
 	"\n" +
@@ -373,7 +471,17 @@ const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\tTYPE_BASE\x10\x01\x12\f\n" +
 	"\bTYPE_FEE\x10\x02\x12\f\n" +
 	"\bTYPE_TAX\x10\x03\x12\x11\n" +
-	"\rTYPE_DISCOUNT\x10\x04B\xe6\x01\n" +
+	"\rTYPE_DISCOUNT\x10\x04\"\xf3\x01\n" +
+	"\n" +
+	"Attachment\x12\x1f\n" +
+	"\bfilename\x18\x01 \x01(\tB\x03\xe0A\x01R\bfilename\x12 \n" +
+	"\tmime_type\x18\x02 \x01(\tB\x03\xe0A\x01R\bmimeType\x12\"\n" +
+	"\n" +
+	"size_bytes\x18\x03 \x01(\x03B\x03\xe0A\x01R\tsizeBytes\x12\x1d\n" +
+	"\acontent\x18\x04 \x01(\fB\x03\xe0A\x01R\acontent\x12\x15\n" +
+	"\x03uri\x18\x05 \x01(\tB\x03\xe0A\x01R\x03uri\x12@\n" +
+	"\vupload_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
+	"uploadTime:\x06\x8a\xb5\x18\x02\x18\x01B\xe6\x01\n" +
 	"\x16com.freebusy.shared.v1B\n" +
 	"TypesProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1\xa2\x02\x03FSX\xaa\x02\x12Freebusy.Shared.V1\xca\x02\x12Freebusy\\Shared\\V1\xe2\x02\x1eFreebusy\\Shared\\V1\\GPBMetadata\xea\x02\x14Freebusy::Shared::V1b\x06proto3"
 
@@ -390,29 +498,31 @@ func file_freebusy_shared_v1_types_proto_rawDescGZIP() []byte {
 }
 
 var file_freebusy_shared_v1_types_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_freebusy_shared_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_freebusy_shared_v1_types_proto_goTypes = []any{
 	(PriceComponent_Type)(0),      // 0: freebusy.shared.v1.PriceComponent.Type
 	(*TimeWindow)(nil),            // 1: freebusy.shared.v1.TimeWindow
 	(*DateRange)(nil),             // 2: freebusy.shared.v1.DateRange
 	(*Contact)(nil),               // 3: freebusy.shared.v1.Contact
 	(*PriceComponent)(nil),        // 4: freebusy.shared.v1.PriceComponent
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
-	(*date.Date)(nil),             // 6: google.type.Date
-	(*money.Money)(nil),           // 7: google.type.Money
+	(*Attachment)(nil),            // 5: freebusy.shared.v1.Attachment
+	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
+	(*date.Date)(nil),             // 7: google.type.Date
+	(*money.Money)(nil),           // 8: google.type.Money
 }
 var file_freebusy_shared_v1_types_proto_depIdxs = []int32{
-	5, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
-	5, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
-	6, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
-	6, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
+	6, // 0: freebusy.shared.v1.TimeWindow.start_time:type_name -> google.protobuf.Timestamp
+	6, // 1: freebusy.shared.v1.TimeWindow.end_time:type_name -> google.protobuf.Timestamp
+	7, // 2: freebusy.shared.v1.DateRange.start_date:type_name -> google.type.Date
+	7, // 3: freebusy.shared.v1.DateRange.end_date:type_name -> google.type.Date
 	0, // 4: freebusy.shared.v1.PriceComponent.type:type_name -> freebusy.shared.v1.PriceComponent.Type
-	7, // 5: freebusy.shared.v1.PriceComponent.amount:type_name -> google.type.Money
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	8, // 5: freebusy.shared.v1.PriceComponent.amount:type_name -> google.type.Money
+	6, // 6: freebusy.shared.v1.Attachment.upload_time:type_name -> google.protobuf.Timestamp
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_shared_v1_types_proto_init() }
@@ -427,7 +537,7 @@ func file_freebusy_shared_v1_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_shared_v1_types_proto_rawDesc), len(file_freebusy_shared_v1_types_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -7,24 +7,24 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/channelql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/channelql/syncstatusesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/channelql/unitmappingsql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
 type ChannelResource = schemaql.ChannelResource
 type ChannelResourceAggExp = schemaql.ChannelResourceAggExp
+type DeleteChannelResourceByIdResponse = schemaql.DeleteChannelResourceByIdResponse
+type InsertChannelResourceResponse = schemaql.InsertChannelResourceResponse
+type UpdateChannelResourceByIdResponse = schemaql.UpdateChannelResourceByIdResponse
 type ChannelSyncStatuses = schemaql.ChannelSyncStatuses
 type ChannelSyncStatusesAggExp = schemaql.ChannelSyncStatusesAggExp
+type DeleteChannelSyncStatusesByIdResponse = schemaql.DeleteChannelSyncStatusesByIdResponse
+type InsertChannelSyncStatusesResponse = schemaql.InsertChannelSyncStatusesResponse
+type UpdateChannelSyncStatusesByIdResponse = schemaql.UpdateChannelSyncStatusesByIdResponse
 type ChannelUnitMappings = schemaql.ChannelUnitMappings
 type ChannelUnitMappingsAggExp = schemaql.ChannelUnitMappingsAggExp
-type DeleteChannelResourceByIdResponse = schemaql.DeleteChannelResourceByIdResponse
-type DeleteChannelSyncStatusesByIdResponse = schemaql.DeleteChannelSyncStatusesByIdResponse
 type DeleteChannelUnitMappingsByIdResponse = schemaql.DeleteChannelUnitMappingsByIdResponse
-type InsertChannelResourceResponse = schemaql.InsertChannelResourceResponse
-type InsertChannelSyncStatusesResponse = schemaql.InsertChannelSyncStatusesResponse
 type InsertChannelUnitMappingsResponse = schemaql.InsertChannelUnitMappingsResponse
-type UpdateChannelResourceByIdResponse = schemaql.UpdateChannelResourceByIdResponse
-type UpdateChannelSyncStatusesByIdResponse = schemaql.UpdateChannelSyncStatusesByIdResponse
 type UpdateChannelUnitMappingsByIdResponse = schemaql.UpdateChannelUnitMappingsByIdResponse
 
 // QueryHandler aggregates query handlers for the channelql domain.

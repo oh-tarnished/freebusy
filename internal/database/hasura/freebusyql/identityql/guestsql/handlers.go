@@ -5,8 +5,8 @@ package guestsql
 import (
 	"context"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
-	"github.com/oh-tarnished/generateql/runtime/go/graphql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/graphql"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // QueryHandler runs IdentityGuests query operations.
@@ -41,6 +41,10 @@ type MutationHandler interface {
 	UpdateIfMatch(ctx context.Context, keyId string, patch UpdateInput, match graphql.Predicate) (schemaql.UpdateIdentityGuestsByIdResponse, error)
 	// UpdateOp returns Update as a deferred mutation for atomic batching via a Tx.
 	UpdateOp(keyId string, patch UpdateInput, result *schemaql.UpdateIdentityGuestsByIdResponse, req ...*UpdateRequest) runtime.BatchOp
+	// DeleteByBookingId runs the "deleteIdentityGuestsByBookingId" mutation.
+	DeleteByBookingId(ctx context.Context, bookingId string) (schemaql.DeleteIdentityGuestsByBookingIdResponse, error)
+	// DeleteByBookingIdOp returns DeleteByBookingId as a deferred mutation for atomic batching via a Tx.
+	DeleteByBookingIdOp(bookingId string, result *schemaql.DeleteIdentityGuestsByBookingIdResponse) runtime.BatchOp
 }
 
 // NewMutation returns a MutationHandler bound to gql.

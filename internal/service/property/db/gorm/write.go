@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
@@ -58,6 +59,7 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 		existing.PolicyID = g.property.PolicyID
 		existing.Etag = ptr(ulid.GenerateString())
 		existing.Address, existing.Policy, existing.Medias, existing.Units, existing.UnitsLink = nil, nil, nil, nil, nil
+		existing.Licences = nil
 		if e := property.NewPropertyStore(tx).Update(ctx, &existing); e != nil {
 			return e
 		}
@@ -167,6 +169,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 		existing.Price, existing.RateOverrides, existing.LosDiscounts = nil, nil, nil
 		existing.Fees, existing.Taxes, existing.UnitMedias = nil, nil, nil
 		existing.UnitApplicablePromoCodes, existing.UnitsLink, existing.Property = nil, nil, nil
+		existing.Licences = nil
 		if e := property.NewUnitStore(tx).Update(ctx, &existing); e != nil {
 			return e
 		}
@@ -192,8 +195,9 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 
 // DeleteUnit removes a unit, its pricing children (cascaded by the unit_id
 // foreign keys), media, and applicable-promo-code rows, then the Money/DateRange
-// value-objects those children referenced.
-func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string) error {
+// value-objects those children referenced. Child licences block the delete
+// unless force is set, in which case they (and their attachment rows) go too.
+func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force bool) error {
 	id, err := types.UnitID(name)
 	if err != nil {
 		return err
@@ -203,9 +207,21 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string) error 
 		if e := preloadUnit(tx.WithContext(ctx)).First(&existing, "id = ?", id).Error; e != nil {
 			return e
 		}
+		if len(existing.Licences) > 0 && !force {
+			return fmt.Errorf("%w: unit has %d licences; set force to delete them too",
+				types.ErrInvalidArgument, len(existing.Licences))
+		}
 		money, dates := collectUnitValueObjects(&existing)
 		if e := property.NewUnitStore(tx).DeleteByID(ctx, id); e != nil {
 			return e
+		}
+		attachments := shared.NewAttachmentStore(tx)
+		for i := range existing.Licences {
+			if aid := existing.Licences[i].AttachmentID; aid != nil {
+				if e := attachments.DeleteByID(ctx, *aid); e != nil {
+					return e
+				}
+			}
 		}
 		return deleteValueObjects(ctx, tx, money, dates)
 	})

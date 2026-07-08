@@ -7,6 +7,7 @@ package gorm
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/organisation"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
@@ -55,27 +56,10 @@ func (r *OrganisationRepository) GetOrganisation(ctx context.Context, name strin
 }
 
 func (r *OrganisationRepository) ListOrganisations(ctx context.Context, params types.ListParams) ([]*orgpbv1.Organisation, string, error) {
-	order, err := orgOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[organisation.Organisation](organisation.OrganisationFilterSpec).
+		List(ctx, r.db, types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := r.db.WithContext(ctx).Model(&organisation.Organisation{}).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyOrgFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []organisation.Organisation
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	items := make([]*orgpbv1.Organisation, 0, len(models))
 	for i := range models {
@@ -119,27 +103,10 @@ func (r *OrganisationRepository) ListMembers(ctx context.Context, parent string,
 	if err != nil {
 		return nil, "", err
 	}
-	order, err := memberOrderClause(params.OrderBy)
+	models, next, err := filterx.Gorm[organisation.Member](organisation.MemberFilterSpec).
+		List(ctx, r.db.Where("organisation_id = ?", orgID), types.FilterxInput(params))
 	if err != nil {
-		return nil, "", err
-	}
-	limit, offset := types.PageBounds(params)
-	q := r.db.WithContext(ctx).Model(&organisation.Member{}).Where("organisation_id = ?", orgID).Limit(limit + 1).Offset(offset)
-	if order != "" {
-		q = q.Order(order)
-	}
-	q, err = applyMemberFilter(q, params.Filter)
-	if err != nil {
-		return nil, "", err
-	}
-	var models []organisation.Member
-	if err := q.Find(&models).Error; err != nil {
-		return nil, "", mapGormErr(err)
-	}
-	next := ""
-	if len(models) > limit {
-		models = models[:limit]
-		next = types.EncodeOffset(offset + limit)
+		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
 	items := make([]*orgpbv1.Member, 0, len(models))
 	for i := range models {

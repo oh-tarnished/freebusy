@@ -46,6 +46,19 @@ One line in a price breakdown: a base charge, a fee, a tax, or a discount. Clien
 | `display_name` | `string` | - | Human-readable label suitable for display on an itemized receipt. |
 | `amount` | `Money` | - | Signed amount: positive for charges (base, fees, taxes), negative for discounts. Summing every component yields the booking total. |
 
+### Attachment
+
+An uploaded file attached to a document- or licence-carrying record (e.g. a guest's IdDocument scan, or a property/unit licence certificate). The bytes are stored inline in `content` today; `uri` is populated once the file is migrated to object storage (S3 or any CDN-fronted host). At most one of the two is authoritative at a time — prefer `uri` when both are set.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `filename` | `string` | `OPTIONAL` | Original filename as uploaded. |
+| `mime_type` | `string` | `OPTIONAL` | MIME type of the file (e.g. "application/pdf", "image/jpeg"). |
+| `size_bytes` | `int64` | `OPTIONAL` | Size of the file in bytes. |
+| `content` | `bytes` | `OPTIONAL` | Raw file content, stored inline in the database. Cleared once the file is migrated to object storage, at which point `uri` takes over. |
+| `uri` | `string` | `OPTIONAL` | Location of the file once moved to object storage (e.g. an s3:// or https:// URL). Unset while the file lives inline in `content`. |
+| `upload_time` | `Timestamp` | `OUTPUT_ONLY` | When the file was uploaded. |
+
 ## Enums
 
 ### OrderDirection

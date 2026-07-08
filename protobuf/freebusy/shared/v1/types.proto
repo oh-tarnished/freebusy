@@ -7,6 +7,7 @@ import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 import "google/type/date.proto";
 import "google/type/money.proto";
+import "orm/v1/annotations.proto";
 
 option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1";
 option java_multiple_files = true;
@@ -86,4 +87,33 @@ message PriceComponent {
   // Signed amount: positive for charges (base, fees, taxes), negative for
   // discounts. Summing every component yields the booking total.
   google.type.Money amount = 4;
+}
+
+// An uploaded file attached to a document- or licence-carrying record (e.g. a
+// guest's IdDocument scan, or a property/unit licence certificate). The bytes
+// are stored inline in `content` today; `uri` is populated once the file is
+// migrated to object storage (S3 or any CDN-fronted host). At most one of the
+// two is authoritative at a time — prefer `uri` when both are set.
+message Attachment {
+  option (orm.v1.table) = {id: ID_STRATEGY_ULID};
+
+  // Original filename as uploaded.
+  string filename = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // MIME type of the file (e.g. "application/pdf", "image/jpeg").
+  string mime_type = 2 [(google.api.field_behavior) = OPTIONAL];
+
+  // Size of the file in bytes.
+  int64 size_bytes = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // Raw file content, stored inline in the database. Cleared once the file is
+  // migrated to object storage, at which point `uri` takes over.
+  bytes content = 4 [(google.api.field_behavior) = OPTIONAL];
+
+  // Location of the file once moved to object storage (e.g. an s3:// or
+  // https:// URL). Unset while the file lives inline in `content`.
+  string uri = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // When the file was uploaded.
+  google.protobuf.Timestamp upload_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
 }

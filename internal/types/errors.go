@@ -15,4 +15,7 @@ var (
 	// ErrInvalidArgument indicates a caller-supplied argument was rejected (e.g.
 	// an order_by field outside the sortable allowlist).
 	ErrInvalidArgument = errors.New("invalid argument")
+	// ErrUnimplemented indicates the configured provider does not support the
+	// operation yet (e.g. a repository method pending backend regeneration).
+	ErrUnimplemented = errors.New("unimplemented")
 )

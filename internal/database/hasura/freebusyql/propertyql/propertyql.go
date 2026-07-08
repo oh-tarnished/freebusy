@@ -4,6 +4,7 @@ package propertyql
 
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/policiesql"
@@ -12,72 +13,84 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitlicencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitslinkql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
 // Model type aliases for this domain, re-exported from its schema package.
 type DeletePropertyFeesByIdResponse = schemaql.DeletePropertyFeesByIdResponse
-type DeletePropertyLosDiscountsByIdResponse = schemaql.DeletePropertyLosDiscountsByIdResponse
-type DeletePropertyMediasByIdResponse = schemaql.DeletePropertyMediasByIdResponse
-type DeletePropertyPoliciesByIdResponse = schemaql.DeletePropertyPoliciesByIdResponse
-type DeletePropertyPropertiesByIdResponse = schemaql.DeletePropertyPropertiesByIdResponse
-type DeletePropertyRateOverridesByIdResponse = schemaql.DeletePropertyRateOverridesByIdResponse
-type DeletePropertyTaxesByIdResponse = schemaql.DeletePropertyTaxesByIdResponse
-type DeletePropertyUnitApplicablePromoCodesByIdResponse = schemaql.DeletePropertyUnitApplicablePromoCodesByIdResponse
-type DeletePropertyUnitMediasByIdResponse = schemaql.DeletePropertyUnitMediasByIdResponse
-type DeletePropertyUnitsByIdResponse = schemaql.DeletePropertyUnitsByIdResponse
-type DeletePropertyUnitsLinkByIdResponse = schemaql.DeletePropertyUnitsLinkByIdResponse
 type InsertPropertyFeesResponse = schemaql.InsertPropertyFeesResponse
-type InsertPropertyLosDiscountsResponse = schemaql.InsertPropertyLosDiscountsResponse
-type InsertPropertyMediasResponse = schemaql.InsertPropertyMediasResponse
-type InsertPropertyPoliciesResponse = schemaql.InsertPropertyPoliciesResponse
-type InsertPropertyPropertiesResponse = schemaql.InsertPropertyPropertiesResponse
-type InsertPropertyRateOverridesResponse = schemaql.InsertPropertyRateOverridesResponse
-type InsertPropertyTaxesResponse = schemaql.InsertPropertyTaxesResponse
-type InsertPropertyUnitApplicablePromoCodesResponse = schemaql.InsertPropertyUnitApplicablePromoCodesResponse
-type InsertPropertyUnitMediasResponse = schemaql.InsertPropertyUnitMediasResponse
-type InsertPropertyUnitsLinkResponse = schemaql.InsertPropertyUnitsLinkResponse
-type InsertPropertyUnitsResponse = schemaql.InsertPropertyUnitsResponse
 type PropertyFees = schemaql.PropertyFees
 type PropertyFeesAggExp = schemaql.PropertyFeesAggExp
+type UpdatePropertyFeesByIdResponse = schemaql.UpdatePropertyFeesByIdResponse
+type DeletePropertyLicencesByIdResponse = schemaql.DeletePropertyLicencesByIdResponse
+type InsertPropertyLicencesResponse = schemaql.InsertPropertyLicencesResponse
+type PropertyLicences = schemaql.PropertyLicences
+type PropertyLicencesAggExp = schemaql.PropertyLicencesAggExp
+type UpdatePropertyLicencesByIdResponse = schemaql.UpdatePropertyLicencesByIdResponse
+type DeletePropertyLosDiscountsByIdResponse = schemaql.DeletePropertyLosDiscountsByIdResponse
+type InsertPropertyLosDiscountsResponse = schemaql.InsertPropertyLosDiscountsResponse
 type PropertyLosDiscounts = schemaql.PropertyLosDiscounts
 type PropertyLosDiscountsAggExp = schemaql.PropertyLosDiscountsAggExp
+type UpdatePropertyLosDiscountsByIdResponse = schemaql.UpdatePropertyLosDiscountsByIdResponse
+type DeletePropertyMediasByIdResponse = schemaql.DeletePropertyMediasByIdResponse
+type InsertPropertyMediasResponse = schemaql.InsertPropertyMediasResponse
 type PropertyMedias = schemaql.PropertyMedias
 type PropertyMediasAggExp = schemaql.PropertyMediasAggExp
+type UpdatePropertyMediasByIdResponse = schemaql.UpdatePropertyMediasByIdResponse
+type DeletePropertyPoliciesByIdResponse = schemaql.DeletePropertyPoliciesByIdResponse
+type InsertPropertyPoliciesResponse = schemaql.InsertPropertyPoliciesResponse
 type PropertyPolicies = schemaql.PropertyPolicies
 type PropertyPoliciesAggExp = schemaql.PropertyPoliciesAggExp
+type UpdatePropertyPoliciesByIdResponse = schemaql.UpdatePropertyPoliciesByIdResponse
+type DeletePropertyPropertiesByIdResponse = schemaql.DeletePropertyPropertiesByIdResponse
+type InsertPropertyPropertiesResponse = schemaql.InsertPropertyPropertiesResponse
 type PropertyProperties = schemaql.PropertyProperties
 type PropertyPropertiesAggExp = schemaql.PropertyPropertiesAggExp
+type UpdatePropertyPropertiesByIdResponse = schemaql.UpdatePropertyPropertiesByIdResponse
+type DeletePropertyRateOverridesByIdResponse = schemaql.DeletePropertyRateOverridesByIdResponse
+type InsertPropertyRateOverridesResponse = schemaql.InsertPropertyRateOverridesResponse
 type PropertyRateOverrides = schemaql.PropertyRateOverrides
 type PropertyRateOverridesAggExp = schemaql.PropertyRateOverridesAggExp
+type UpdatePropertyRateOverridesByIdResponse = schemaql.UpdatePropertyRateOverridesByIdResponse
+type DeletePropertyTaxesByIdResponse = schemaql.DeletePropertyTaxesByIdResponse
+type InsertPropertyTaxesResponse = schemaql.InsertPropertyTaxesResponse
 type PropertyTaxes = schemaql.PropertyTaxes
 type PropertyTaxesAggExp = schemaql.PropertyTaxesAggExp
+type UpdatePropertyTaxesByIdResponse = schemaql.UpdatePropertyTaxesByIdResponse
+type DeletePropertyUnitApplicablePromoCodesByIdResponse = schemaql.DeletePropertyUnitApplicablePromoCodesByIdResponse
+type InsertPropertyUnitApplicablePromoCodesResponse = schemaql.InsertPropertyUnitApplicablePromoCodesResponse
 type PropertyUnitApplicablePromoCodes = schemaql.PropertyUnitApplicablePromoCodes
 type PropertyUnitApplicablePromoCodesAggExp = schemaql.PropertyUnitApplicablePromoCodesAggExp
+type UpdatePropertyUnitApplicablePromoCodesByIdResponse = schemaql.UpdatePropertyUnitApplicablePromoCodesByIdResponse
+type DeletePropertyUnitLicencesByIdResponse = schemaql.DeletePropertyUnitLicencesByIdResponse
+type InsertPropertyUnitLicencesResponse = schemaql.InsertPropertyUnitLicencesResponse
+type PropertyUnitLicences = schemaql.PropertyUnitLicences
+type PropertyUnitLicencesAggExp = schemaql.PropertyUnitLicencesAggExp
+type UpdatePropertyUnitLicencesByIdResponse = schemaql.UpdatePropertyUnitLicencesByIdResponse
+type DeletePropertyUnitMediasByIdResponse = schemaql.DeletePropertyUnitMediasByIdResponse
+type InsertPropertyUnitMediasResponse = schemaql.InsertPropertyUnitMediasResponse
 type PropertyUnitMedias = schemaql.PropertyUnitMedias
 type PropertyUnitMediasAggExp = schemaql.PropertyUnitMediasAggExp
+type UpdatePropertyUnitMediasByIdResponse = schemaql.UpdatePropertyUnitMediasByIdResponse
+type DeletePropertyUnitsByIdResponse = schemaql.DeletePropertyUnitsByIdResponse
+type InsertPropertyUnitsResponse = schemaql.InsertPropertyUnitsResponse
 type PropertyUnits = schemaql.PropertyUnits
 type PropertyUnitsAggExp = schemaql.PropertyUnitsAggExp
+type UpdatePropertyUnitsByIdResponse = schemaql.UpdatePropertyUnitsByIdResponse
+type DeletePropertyUnitsLinkByIdResponse = schemaql.DeletePropertyUnitsLinkByIdResponse
+type InsertPropertyUnitsLinkResponse = schemaql.InsertPropertyUnitsLinkResponse
 type PropertyUnitsLink = schemaql.PropertyUnitsLink
 type PropertyUnitsLinkAggExp = schemaql.PropertyUnitsLinkAggExp
-type UpdatePropertyFeesByIdResponse = schemaql.UpdatePropertyFeesByIdResponse
-type UpdatePropertyLosDiscountsByIdResponse = schemaql.UpdatePropertyLosDiscountsByIdResponse
-type UpdatePropertyMediasByIdResponse = schemaql.UpdatePropertyMediasByIdResponse
-type UpdatePropertyPoliciesByIdResponse = schemaql.UpdatePropertyPoliciesByIdResponse
-type UpdatePropertyPropertiesByIdResponse = schemaql.UpdatePropertyPropertiesByIdResponse
-type UpdatePropertyRateOverridesByIdResponse = schemaql.UpdatePropertyRateOverridesByIdResponse
-type UpdatePropertyTaxesByIdResponse = schemaql.UpdatePropertyTaxesByIdResponse
-type UpdatePropertyUnitApplicablePromoCodesByIdResponse = schemaql.UpdatePropertyUnitApplicablePromoCodesByIdResponse
-type UpdatePropertyUnitMediasByIdResponse = schemaql.UpdatePropertyUnitMediasByIdResponse
-type UpdatePropertyUnitsByIdResponse = schemaql.UpdatePropertyUnitsByIdResponse
 type UpdatePropertyUnitsLinkByIdResponse = schemaql.UpdatePropertyUnitsLinkByIdResponse
 
 // QueryHandler aggregates query handlers for the propertyql domain.
 type QueryHandler struct {
 	Fees                     feesql.QueryHandler
+	Licences                 licencesql.QueryHandler
 	LosDiscounts             losdiscountsql.QueryHandler
 	Medias                   mediasql.QueryHandler
 	Policies                 policiesql.QueryHandler
@@ -85,6 +98,7 @@ type QueryHandler struct {
 	RateOverrides            rateoverridesql.QueryHandler
 	Taxes                    taxesql.QueryHandler
 	UnitApplicablePromoCodes unitapplicablepromocodesql.QueryHandler
+	UnitLicences             unitlicencesql.QueryHandler
 	UnitMedias               unitmediasql.QueryHandler
 	Units                    unitsql.QueryHandler
 	UnitsLink                unitslinkql.QueryHandler
@@ -94,6 +108,7 @@ type QueryHandler struct {
 func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 	return QueryHandler{
 		Fees:                     feesql.NewQuery(gql),
+		Licences:                 licencesql.NewQuery(gql),
 		LosDiscounts:             losdiscountsql.NewQuery(gql),
 		Medias:                   mediasql.NewQuery(gql),
 		Policies:                 policiesql.NewQuery(gql),
@@ -101,6 +116,7 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 		RateOverrides:            rateoverridesql.NewQuery(gql),
 		Taxes:                    taxesql.NewQuery(gql),
 		UnitApplicablePromoCodes: unitapplicablepromocodesql.NewQuery(gql),
+		UnitLicences:             unitlicencesql.NewQuery(gql),
 		UnitMedias:               unitmediasql.NewQuery(gql),
 		Units:                    unitsql.NewQuery(gql),
 		UnitsLink:                unitslinkql.NewQuery(gql),
@@ -110,6 +126,7 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 // MutationHandler aggregates mutation handlers for the propertyql domain.
 type MutationHandler struct {
 	Fees                     feesql.MutationHandler
+	Licences                 licencesql.MutationHandler
 	LosDiscounts             losdiscountsql.MutationHandler
 	Medias                   mediasql.MutationHandler
 	Policies                 policiesql.MutationHandler
@@ -117,6 +134,7 @@ type MutationHandler struct {
 	RateOverrides            rateoverridesql.MutationHandler
 	Taxes                    taxesql.MutationHandler
 	UnitApplicablePromoCodes unitapplicablepromocodesql.MutationHandler
+	UnitLicences             unitlicencesql.MutationHandler
 	UnitMedias               unitmediasql.MutationHandler
 	Units                    unitsql.MutationHandler
 	UnitsLink                unitslinkql.MutationHandler
@@ -126,6 +144,7 @@ type MutationHandler struct {
 func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 	return MutationHandler{
 		Fees:                     feesql.NewMutation(gql),
+		Licences:                 licencesql.NewMutation(gql),
 		LosDiscounts:             losdiscountsql.NewMutation(gql),
 		Medias:                   mediasql.NewMutation(gql),
 		Policies:                 policiesql.NewMutation(gql),
@@ -133,6 +152,7 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 		RateOverrides:            rateoverridesql.NewMutation(gql),
 		Taxes:                    taxesql.NewMutation(gql),
 		UnitApplicablePromoCodes: unitapplicablepromocodesql.NewMutation(gql),
+		UnitLicences:             unitlicencesql.NewMutation(gql),
 		UnitMedias:               unitmediasql.NewMutation(gql),
 		Units:                    unitsql.NewMutation(gql),
 		UnitsLink:                unitslinkql.NewMutation(gql),
@@ -142,6 +162,7 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 // SubscriptionHandler aggregates subscription handlers for the propertyql domain.
 type SubscriptionHandler struct {
 	Fees                     feesql.SubscriptionHandler
+	Licences                 licencesql.SubscriptionHandler
 	LosDiscounts             losdiscountsql.SubscriptionHandler
 	Medias                   mediasql.SubscriptionHandler
 	Policies                 policiesql.SubscriptionHandler
@@ -149,6 +170,7 @@ type SubscriptionHandler struct {
 	RateOverrides            rateoverridesql.SubscriptionHandler
 	Taxes                    taxesql.SubscriptionHandler
 	UnitApplicablePromoCodes unitapplicablepromocodesql.SubscriptionHandler
+	UnitLicences             unitlicencesql.SubscriptionHandler
 	UnitMedias               unitmediasql.SubscriptionHandler
 	Units                    unitsql.SubscriptionHandler
 	UnitsLink                unitslinkql.SubscriptionHandler
@@ -158,6 +180,7 @@ type SubscriptionHandler struct {
 func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 	return SubscriptionHandler{
 		Fees:                     feesql.NewSubscription(gql),
+		Licences:                 licencesql.NewSubscription(gql),
 		LosDiscounts:             losdiscountsql.NewSubscription(gql),
 		Medias:                   mediasql.NewSubscription(gql),
 		Policies:                 policiesql.NewSubscription(gql),
@@ -165,6 +188,7 @@ func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 		RateOverrides:            rateoverridesql.NewSubscription(gql),
 		Taxes:                    taxesql.NewSubscription(gql),
 		UnitApplicablePromoCodes: unitapplicablepromocodesql.NewSubscription(gql),
+		UnitLicences:             unitlicencesql.NewSubscription(gql),
 		UnitMedias:               unitmediasql.NewSubscription(gql),
 		Units:                    unitsql.NewSubscription(gql),
 		UnitsLink:                unitslinkql.NewSubscription(gql),

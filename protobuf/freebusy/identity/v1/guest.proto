@@ -2,7 +2,12 @@ syntax = "proto3";
 
 package freebusy.identity.v1;
 
+// (-- api-linter: core::0215::foreign-type-reference=disabled
+//     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
+//     shared-types package; reusing it beats inlining per-package copies. --)
+
 import "freebusy/identity/v1/enums.proto";
+import "freebusy/shared/v1/types.proto";
 import "google/api/field_behavior.proto";
 import "google/type/date.proto";
 import "google/type/postal_address.proto";
@@ -90,6 +95,9 @@ message IdDocument {
 
   // Date the document expires.
   google.type.Date expiry_date = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // Scanned copy or photo of the document, uploaded at check-in.
+  freebusy.shared.v1.Attachment attachment = 7 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Foreigner-registration details a hotel must capture for foreign nationals to

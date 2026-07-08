@@ -10,6 +10,7 @@ import (
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	date "google.golang.org/genproto/googleapis/type/date"
 	money "google.golang.org/genproto/googleapis/type/money"
 	postaladdress "google.golang.org/genproto/googleapis/type/postaladdress"
 	timeofday "google.golang.org/genproto/googleapis/type/timeofday"
@@ -73,7 +74,13 @@ type Property struct {
 	// Last-modification timestamp.
 	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
-	Etag          string `protobuf:"bytes,15,opt,name=etag,proto3" json:"etag,omitempty"`
+	Etag string `protobuf:"bytes,15,opt,name=etag,proto3" json:"etag,omitempty"`
+	// Resource names of the regulatory licences/certificates held by this
+	// property and its units (e.g. trade licence, fire safety NOC); manage them
+	// with the LicenceService. Derived from the licences' parent FK at read
+	// time, so no join table is materialized (orm skip).
+	// Format: properties/{property}/licences/{licence}
+	Licences      []string `protobuf:"bytes,16,rep,name=licences,proto3" json:"licences,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -211,6 +218,13 @@ func (x *Property) GetEtag() string {
 		return x.Etag
 	}
 	return ""
+}
+
+func (x *Property) GetLicences() []string {
+	if x != nil {
+		return x.Licences
+	}
+	return nil
 }
 
 // Guest-facing, informational property policy: what to *display* to a guest
@@ -1047,16 +1061,192 @@ func (x *Tax) GetPercent() float64 {
 	return 0
 }
 
+// A regulatory licence or certificate held by a Property or one of its Units
+// (e.g. trade licence, fire safety NOC, per-room liquor licence). One resource
+// covers both: every licence is parented by the property, `target` says what it
+// covers, and a unit licence names its unit in `unit`. Tracks the issuing
+// authority and validity window so `expiry_date` can be filtered on to find
+// licences due for renewal; the certificate itself is carried in `attachment`.
+// A standalone resource (own Get/List/Create/Update/Delete), like Unit, rather
+// than an embedded repeated field like Media, so a renewal doesn't require
+// resending the whole Property.
+type Licence struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The licence name.
+	// Format: properties/{property}/licences/{licence}
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// What the licence covers: the whole property, or the single unit named in
+	// `unit`. Derived from whether `unit` is set at create time.
+	Target LicenceTarget `protobuf:"varint,2,opt,name=target,proto3,enum=freebusy.property.v1.LicenceTarget" json:"target,omitempty"`
+	// The unit this licence covers, for a LICENCE_TARGET_UNIT licence; unset for
+	// a property-wide licence. Must belong to the parent property.
+	// Format: properties/{property}/units/{unit}
+	Unit string `protobuf:"bytes,3,opt,name=unit,proto3" json:"unit,omitempty"`
+	// What kind of licence/certificate this is.
+	Type LicenceType `protobuf:"varint,4,opt,name=type,proto3,enum=freebusy.property.v1.LicenceType" json:"type,omitempty"`
+	// Licence/certificate number as printed by the issuing authority.
+	LicenceNumber string `protobuf:"bytes,5,opt,name=licence_number,json=licenceNumber,proto3" json:"licence_number,omitempty"`
+	// The authority or body that issued the licence (e.g. "Municipal Corporation of Goa").
+	IssuingAuthority string `protobuf:"bytes,6,opt,name=issuing_authority,json=issuingAuthority,proto3" json:"issuing_authority,omitempty"`
+	// Date the licence was issued.
+	IssueDate *date.Date `protobuf:"bytes,7,opt,name=issue_date,json=issueDate,proto3" json:"issue_date,omitempty"`
+	// Date the licence expires. List calls may filter on this field (e.g.
+	// `expiry_date <= 2026-08-01`) to find licences due for renewal.
+	ExpiryDate *date.Date `protobuf:"bytes,8,opt,name=expiry_date,json=expiryDate,proto3" json:"expiry_date,omitempty"`
+	// Scanned copy of the licence certificate.
+	Attachment *sharedpbv1.Attachment `protobuf:"bytes,9,opt,name=attachment,proto3" json:"attachment,omitempty"`
+	// Any additional free-text notes.
+	Notes string `protobuf:"bytes,10,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Lifecycle state.
+	State LicenceState `protobuf:"varint,11,opt,name=state,proto3,enum=freebusy.property.v1.LicenceState" json:"state,omitempty"`
+	// Creation timestamp.
+	CreateTime *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	// Last-modification timestamp.
+	UpdateTime *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	// Opaque version for optimistic concurrency (AIP-154); echo on update/delete.
+	Etag          string `protobuf:"bytes,14,opt,name=etag,proto3" json:"etag,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Licence) Reset() {
+	*x = Licence{}
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Licence) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Licence) ProtoMessage() {}
+
+func (x *Licence) ProtoReflect() protoreflect.Message {
+	mi := &file_freebusy_property_v1_property_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Licence.ProtoReflect.Descriptor instead.
+func (*Licence) Descriptor() ([]byte, []int) {
+	return file_freebusy_property_v1_property_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *Licence) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Licence) GetTarget() LicenceTarget {
+	if x != nil {
+		return x.Target
+	}
+	return LicenceTarget_LICENCE_TARGET_UNSPECIFIED
+}
+
+func (x *Licence) GetUnit() string {
+	if x != nil {
+		return x.Unit
+	}
+	return ""
+}
+
+func (x *Licence) GetType() LicenceType {
+	if x != nil {
+		return x.Type
+	}
+	return LicenceType_LICENCE_TYPE_UNSPECIFIED
+}
+
+func (x *Licence) GetLicenceNumber() string {
+	if x != nil {
+		return x.LicenceNumber
+	}
+	return ""
+}
+
+func (x *Licence) GetIssuingAuthority() string {
+	if x != nil {
+		return x.IssuingAuthority
+	}
+	return ""
+}
+
+func (x *Licence) GetIssueDate() *date.Date {
+	if x != nil {
+		return x.IssueDate
+	}
+	return nil
+}
+
+func (x *Licence) GetExpiryDate() *date.Date {
+	if x != nil {
+		return x.ExpiryDate
+	}
+	return nil
+}
+
+func (x *Licence) GetAttachment() *sharedpbv1.Attachment {
+	if x != nil {
+		return x.Attachment
+	}
+	return nil
+}
+
+func (x *Licence) GetNotes() string {
+	if x != nil {
+		return x.Notes
+	}
+	return ""
+}
+
+func (x *Licence) GetState() LicenceState {
+	if x != nil {
+		return x.State
+	}
+	return LicenceState_LICENCE_STATE_UNSPECIFIED
+}
+
+func (x *Licence) GetCreateTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreateTime
+	}
+	return nil
+}
+
+func (x *Licence) GetUpdateTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdateTime
+	}
+	return nil
+}
+
+func (x *Licence) GetEtag() string {
+	if x != nil {
+		return x.Etag
+	}
+	return ""
+}
+
 var File_freebusy_property_v1_property_proto protoreflect.FileDescriptor
 
 const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\xce\x06\n" +
+	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\x9c\a\n" +
 	"\bProperty\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\forganisation\x18\x02 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\forganisation\x12&\n" +
-	"\fdisplay_name\x18\x03 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
+	"%freebusy.organisation.v1/OrganisationR\forganisation\x12,\n" +
+	"\fdisplay_name\x18\x03 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x129\n" +
 	"\aaddress\x18\x05 \x01(\v2\x1a.google.type.PostalAddressB\x03\xe0A\x01R\aaddress\x12 \n" +
 	"\ttime_zone\x18\x06 \x01(\tB\x03\xe0A\x02R\btimeZone\x126\n" +
@@ -1074,7 +1264,9 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
-	"\x04etag\x18\x0f \x01(\tR\x04etag:O\xeaAL\n" +
+	"\x04etag\x18\x0f \x01(\tR\x04etag\x12F\n" +
+	"\blicences\x18\x10 \x03(\tB*\xe0A\x03\xfaA\x1e\n" +
+	"\x1cfreebusy.property.v1/Licence\x92\xb5\x18\x020\x01R\blicences:O\xeaAL\n" +
 	"\x1dfreebusy.property.v1/Property\x12\x15properties/{property}*\n" +
 	"properties2\bproperty\"\xcb\x01\n" +
 	"\x06Policy\x12>\n" +
@@ -1082,11 +1274,11 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\rcheckout_time\x18\x02 \x01(\v2\x16.google.type.TimeOfDayB\x03\xe0A\x01R\fcheckoutTime\x12$\n" +
 	"\vhouse_rules\x18\x03 \x03(\tB\x03\xe0A\x01R\n" +
 	"houseRules\x12\x19\n" +
-	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xaf\n" +
+	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xb5\n" +
 	"\n" +
 	"\x04Unit\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12&\n" +
-	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x02R\vdisplayName\x12%\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12,\n" +
+	"\fdisplay_name\x18\x02 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x03 \x01(\tB\x03\xe0A\x01R\vdescription\x127\n" +
 	"\x04type\x18\x04 \x01(\x0e2\x1e.freebusy.property.v1.UnitTypeB\x03\xe0A\x02R\x04type\x12J\n" +
 	"\fbooking_mode\x18\x05 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeB\x06\xe0A\x02\xe0A\x05R\vbookingMode\x12\x1f\n" +
@@ -1155,7 +1347,31 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\x03Tax\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x1d\n" +
-	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercentB\xf9\x01\n" +
+	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent\"\xd7\x06\n" +
+	"\aLicence\x12\x17\n" +
+	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12@\n" +
+	"\x06target\x18\x02 \x01(\x0e2#.freebusy.property.v1.LicenceTargetB\x03\xe0A\x03R\x06target\x12>\n" +
+	"\x04unit\x18\x03 \x01(\tB*\xe0A\x01\xe0A\x05\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\x92\xb5\x18\x02P\x01R\x04unit\x12:\n" +
+	"\x04type\x18\x04 \x01(\x0e2!.freebusy.property.v1.LicenceTypeB\x03\xe0A\x02R\x04type\x120\n" +
+	"\x0elicence_number\x18\x05 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\rlicenceNumber\x126\n" +
+	"\x11issuing_authority\x18\x06 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\x10issuingAuthority\x125\n" +
+	"\n" +
+	"issue_date\x18\a \x01(\v2\x11.google.type.DateB\x03\xe0A\x01R\tissueDate\x127\n" +
+	"\vexpiry_date\x18\b \x01(\v2\x11.google.type.DateB\x03\xe0A\x01R\n" +
+	"expiryDate\x12C\n" +
+	"\n" +
+	"attachment\x18\t \x01(\v2\x1e.freebusy.shared.v1.AttachmentB\x03\xe0A\x01R\n" +
+	"attachment\x12\x19\n" +
+	"\x05notes\x18\n" +
+	" \x01(\tB\x03\xe0A\x01R\x05notes\x12=\n" +
+	"\x05state\x18\v \x01(\x0e2\".freebusy.property.v1.LicenceStateB\x03\xe0A\x03R\x05state\x12@\n" +
+	"\vcreate_time\x18\f \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
+	"createTime\x12@\n" +
+	"\vupdate_time\x18\r \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
+	"updateTime\x12\x12\n" +
+	"\x04etag\x18\x0e \x01(\tR\x04etag:d\xeaA[\n" +
+	"\x1cfreebusy.property.v1/Licence\x12(properties/{property}/licences/{licence}*\blicences2\alicence\x8a\xb5\x18\x02\x18\x01B\xf9\x01\n" +
 	"\x18com.freebusy.property.v1B\rPropertyProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1;propertypbv1\xa2\x02\x03FPX\xaa\x02\x14Freebusy.Property.V1\xca\x02\x14Freebusy\\Property\\V1\xe2\x02 Freebusy\\Property\\V1\\GPBMetadata\xea\x02\x16Freebusy::Property::V1b\x06proto3"
 
 var (
@@ -1170,7 +1386,7 @@ func file_freebusy_property_v1_property_proto_rawDescGZIP() []byte {
 	return file_freebusy_property_v1_property_proto_rawDescData
 }
 
-var file_freebusy_property_v1_property_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_freebusy_property_v1_property_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_freebusy_property_v1_property_proto_goTypes = []any{
 	(*Property)(nil),                    // 0: freebusy.property.v1.Property
 	(*Policy)(nil),                      // 1: freebusy.property.v1.Policy
@@ -1181,58 +1397,72 @@ var file_freebusy_property_v1_property_proto_goTypes = []any{
 	(*Media)(nil),                       // 6: freebusy.property.v1.Media
 	(*UnitMedia)(nil),                   // 7: freebusy.property.v1.UnitMedia
 	(*Tax)(nil),                         // 8: freebusy.property.v1.Tax
-	(*postaladdress.PostalAddress)(nil), // 9: google.type.PostalAddress
-	(*structpb.Struct)(nil),             // 10: google.protobuf.Struct
-	(PropertyState)(0),                  // 11: freebusy.property.v1.PropertyState
-	(*timestamppb.Timestamp)(nil),       // 12: google.protobuf.Timestamp
-	(*timeofday.TimeOfDay)(nil),         // 13: google.type.TimeOfDay
-	(UnitType)(0),                       // 14: freebusy.property.v1.UnitType
-	(sharedpbv1.BookingMode)(0),         // 15: freebusy.shared.v1.BookingMode
-	(*money.Money)(nil),                 // 16: google.type.Money
-	(PricingUnit)(0),                    // 17: freebusy.property.v1.PricingUnit
-	(*durationpb.Duration)(nil),         // 18: google.protobuf.Duration
-	(UnitState)(0),                      // 19: freebusy.property.v1.UnitState
-	(*sharedpbv1.DateRange)(nil),        // 20: freebusy.shared.v1.DateRange
-	(sharedpbv1.Weekday)(0),             // 21: freebusy.shared.v1.Weekday
-	(sharedpbv1.MediaType)(0),           // 22: freebusy.shared.v1.MediaType
+	(*Licence)(nil),                     // 9: freebusy.property.v1.Licence
+	(*postaladdress.PostalAddress)(nil), // 10: google.type.PostalAddress
+	(*structpb.Struct)(nil),             // 11: google.protobuf.Struct
+	(PropertyState)(0),                  // 12: freebusy.property.v1.PropertyState
+	(*timestamppb.Timestamp)(nil),       // 13: google.protobuf.Timestamp
+	(*timeofday.TimeOfDay)(nil),         // 14: google.type.TimeOfDay
+	(UnitType)(0),                       // 15: freebusy.property.v1.UnitType
+	(sharedpbv1.BookingMode)(0),         // 16: freebusy.shared.v1.BookingMode
+	(*money.Money)(nil),                 // 17: google.type.Money
+	(PricingUnit)(0),                    // 18: freebusy.property.v1.PricingUnit
+	(*durationpb.Duration)(nil),         // 19: google.protobuf.Duration
+	(UnitState)(0),                      // 20: freebusy.property.v1.UnitState
+	(*sharedpbv1.DateRange)(nil),        // 21: freebusy.shared.v1.DateRange
+	(sharedpbv1.Weekday)(0),             // 22: freebusy.shared.v1.Weekday
+	(sharedpbv1.MediaType)(0),           // 23: freebusy.shared.v1.MediaType
+	(LicenceTarget)(0),                  // 24: freebusy.property.v1.LicenceTarget
+	(LicenceType)(0),                    // 25: freebusy.property.v1.LicenceType
+	(*date.Date)(nil),                   // 26: google.type.Date
+	(*sharedpbv1.Attachment)(nil),       // 27: freebusy.shared.v1.Attachment
+	(LicenceState)(0),                   // 28: freebusy.property.v1.LicenceState
 }
 var file_freebusy_property_v1_property_proto_depIdxs = []int32{
-	9,  // 0: freebusy.property.v1.Property.address:type_name -> google.type.PostalAddress
+	10, // 0: freebusy.property.v1.Property.address:type_name -> google.type.PostalAddress
 	6,  // 1: freebusy.property.v1.Property.media:type_name -> freebusy.property.v1.Media
 	1,  // 2: freebusy.property.v1.Property.policy:type_name -> freebusy.property.v1.Policy
-	10, // 3: freebusy.property.v1.Property.attributes:type_name -> google.protobuf.Struct
-	11, // 4: freebusy.property.v1.Property.state:type_name -> freebusy.property.v1.PropertyState
-	12, // 5: freebusy.property.v1.Property.create_time:type_name -> google.protobuf.Timestamp
-	12, // 6: freebusy.property.v1.Property.update_time:type_name -> google.protobuf.Timestamp
-	13, // 7: freebusy.property.v1.Policy.checkin_time:type_name -> google.type.TimeOfDay
-	13, // 8: freebusy.property.v1.Policy.checkout_time:type_name -> google.type.TimeOfDay
-	14, // 9: freebusy.property.v1.Unit.type:type_name -> freebusy.property.v1.UnitType
-	15, // 10: freebusy.property.v1.Unit.booking_mode:type_name -> freebusy.shared.v1.BookingMode
-	16, // 11: freebusy.property.v1.Unit.price:type_name -> google.type.Money
-	17, // 12: freebusy.property.v1.Unit.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
-	18, // 13: freebusy.property.v1.Unit.duration:type_name -> google.protobuf.Duration
+	11, // 3: freebusy.property.v1.Property.attributes:type_name -> google.protobuf.Struct
+	12, // 4: freebusy.property.v1.Property.state:type_name -> freebusy.property.v1.PropertyState
+	13, // 5: freebusy.property.v1.Property.create_time:type_name -> google.protobuf.Timestamp
+	13, // 6: freebusy.property.v1.Property.update_time:type_name -> google.protobuf.Timestamp
+	14, // 7: freebusy.property.v1.Policy.checkin_time:type_name -> google.type.TimeOfDay
+	14, // 8: freebusy.property.v1.Policy.checkout_time:type_name -> google.type.TimeOfDay
+	15, // 9: freebusy.property.v1.Unit.type:type_name -> freebusy.property.v1.UnitType
+	16, // 10: freebusy.property.v1.Unit.booking_mode:type_name -> freebusy.shared.v1.BookingMode
+	17, // 11: freebusy.property.v1.Unit.price:type_name -> google.type.Money
+	18, // 12: freebusy.property.v1.Unit.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
+	19, // 13: freebusy.property.v1.Unit.duration:type_name -> google.protobuf.Duration
 	3,  // 14: freebusy.property.v1.Unit.rate_overrides:type_name -> freebusy.property.v1.RateOverride
 	4,  // 15: freebusy.property.v1.Unit.los_discounts:type_name -> freebusy.property.v1.LosDiscount
 	5,  // 16: freebusy.property.v1.Unit.fees:type_name -> freebusy.property.v1.Fee
 	8,  // 17: freebusy.property.v1.Unit.taxes:type_name -> freebusy.property.v1.Tax
 	7,  // 18: freebusy.property.v1.Unit.media:type_name -> freebusy.property.v1.UnitMedia
-	10, // 19: freebusy.property.v1.Unit.attributes:type_name -> google.protobuf.Struct
-	19, // 20: freebusy.property.v1.Unit.state:type_name -> freebusy.property.v1.UnitState
-	12, // 21: freebusy.property.v1.Unit.create_time:type_name -> google.protobuf.Timestamp
-	12, // 22: freebusy.property.v1.Unit.update_time:type_name -> google.protobuf.Timestamp
-	20, // 23: freebusy.property.v1.RateOverride.date_range:type_name -> freebusy.shared.v1.DateRange
-	21, // 24: freebusy.property.v1.RateOverride.weekdays:type_name -> freebusy.shared.v1.Weekday
-	16, // 25: freebusy.property.v1.RateOverride.price:type_name -> google.type.Money
-	16, // 26: freebusy.property.v1.LosDiscount.amount_off:type_name -> google.type.Money
-	16, // 27: freebusy.property.v1.Fee.amount:type_name -> google.type.Money
-	17, // 28: freebusy.property.v1.Fee.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
-	22, // 29: freebusy.property.v1.Media.type:type_name -> freebusy.shared.v1.MediaType
-	22, // 30: freebusy.property.v1.UnitMedia.type:type_name -> freebusy.shared.v1.MediaType
-	31, // [31:31] is the sub-list for method output_type
-	31, // [31:31] is the sub-list for method input_type
-	31, // [31:31] is the sub-list for extension type_name
-	31, // [31:31] is the sub-list for extension extendee
-	0,  // [0:31] is the sub-list for field type_name
+	11, // 19: freebusy.property.v1.Unit.attributes:type_name -> google.protobuf.Struct
+	20, // 20: freebusy.property.v1.Unit.state:type_name -> freebusy.property.v1.UnitState
+	13, // 21: freebusy.property.v1.Unit.create_time:type_name -> google.protobuf.Timestamp
+	13, // 22: freebusy.property.v1.Unit.update_time:type_name -> google.protobuf.Timestamp
+	21, // 23: freebusy.property.v1.RateOverride.date_range:type_name -> freebusy.shared.v1.DateRange
+	22, // 24: freebusy.property.v1.RateOverride.weekdays:type_name -> freebusy.shared.v1.Weekday
+	17, // 25: freebusy.property.v1.RateOverride.price:type_name -> google.type.Money
+	17, // 26: freebusy.property.v1.LosDiscount.amount_off:type_name -> google.type.Money
+	17, // 27: freebusy.property.v1.Fee.amount:type_name -> google.type.Money
+	18, // 28: freebusy.property.v1.Fee.pricing_unit:type_name -> freebusy.property.v1.PricingUnit
+	23, // 29: freebusy.property.v1.Media.type:type_name -> freebusy.shared.v1.MediaType
+	23, // 30: freebusy.property.v1.UnitMedia.type:type_name -> freebusy.shared.v1.MediaType
+	24, // 31: freebusy.property.v1.Licence.target:type_name -> freebusy.property.v1.LicenceTarget
+	25, // 32: freebusy.property.v1.Licence.type:type_name -> freebusy.property.v1.LicenceType
+	26, // 33: freebusy.property.v1.Licence.issue_date:type_name -> google.type.Date
+	26, // 34: freebusy.property.v1.Licence.expiry_date:type_name -> google.type.Date
+	27, // 35: freebusy.property.v1.Licence.attachment:type_name -> freebusy.shared.v1.Attachment
+	28, // 36: freebusy.property.v1.Licence.state:type_name -> freebusy.property.v1.LicenceState
+	13, // 37: freebusy.property.v1.Licence.create_time:type_name -> google.protobuf.Timestamp
+	13, // 38: freebusy.property.v1.Licence.update_time:type_name -> google.protobuf.Timestamp
+	39, // [39:39] is the sub-list for method output_type
+	39, // [39:39] is the sub-list for method input_type
+	39, // [39:39] is the sub-list for extension type_name
+	39, // [39:39] is the sub-list for extension extendee
+	0,  // [0:39] is the sub-list for field type_name
 }
 
 func init() { file_freebusy_property_v1_property_proto_init() }
@@ -1247,7 +1477,7 @@ func file_freebusy_property_v1_property_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_freebusy_property_v1_property_proto_rawDesc), len(file_freebusy_property_v1_property_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

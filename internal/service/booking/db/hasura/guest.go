@@ -15,8 +15,8 @@ import (
 	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
-	"github.com/oh-tarnished/generateql/runtime/go/runtime"
 	"github.com/oh-tarnished/runtime-go/ulid"
+	"github.com/the-protobuf-project/runtime-go/network/runtime"
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/genproto/googleapis/type/postaladdress"
 )
@@ -42,21 +42,6 @@ func occupancyFromSchema(o *bookingschema.BookingOccupancies) *bookingpbv1.Occup
 		return nil
 	}
 	return &bookingpbv1.Occupancy{Adults: deref(o.Adults), Children: deref(o.Children), Infants: deref(o.Infants)}
-}
-
-// partySize is the headcount charged against occupancy: adults+children of the
-// explicit occupancy, else the non-infant guests.
-func partySize(o *bookingpbv1.Occupancy, guests []*identitypbv1.Guest) int32 {
-	if o != nil && o.GetAdults()+o.GetChildren() > 0 {
-		return o.GetAdults() + o.GetChildren()
-	}
-	var n int32
-	for _, g := range guests {
-		if g.GetAgeGroup() != identitypbv1.AgeGroup_AGE_GROUP_INFANT {
-			n++
-		}
-	}
-	return n
 }
 
 // --- guest graph -------------------------------------------------------------
@@ -140,6 +125,15 @@ func buildGuestGraph(g *identitypbv1.Guest, bookingID string) guestGraph {
 		graph.guest.LocalAddressId = a.Id
 	}
 	return graph
+}
+
+// buildGuestGraphs turns a proto guest party into its insert graphs under bookingID.
+func buildGuestGraphs(guests []*identitypbv1.Guest, bookingID string) []guestGraph {
+	graphs := make([]guestGraph, 0, len(guests))
+	for _, g := range guests {
+		graphs = append(graphs, buildGuestGraph(g, bookingID))
+	}
+	return graphs
 }
 
 // guestFromSchema hydrates a protobuf Guest from its stored rows.
@@ -358,13 +352,16 @@ func queueGuestInserts(tx *runtime.Tx, r *BookingRepository, graphs []guestGraph
 	}
 }
 
-// queueGuestDeletes appends deletes for a booking's existing guest rows and their
-// belongs-to sub-rows (ID documents, foreigner details, preferences, addresses).
-func queueGuestDeletes(tx *runtime.Tx, r *BookingRepository, guests []identityschema.IdentityGuests) {
+// queueGuestDeletes appends deletes for a booking's existing guest party: one
+// predicate delete (a native mutation, delete_identity_guests_by_booking_id)
+// removes every guest row on the booking — including rows a stale snapshot
+// missed — then the snapshot's belongs-to sub-rows (ID documents, foreigner
+// details, preferences, addresses) are deleted by id.
+func queueGuestDeletes(tx *runtime.Tx, r *BookingRepository, bookingID string, guests []identityschema.IdentityGuests) {
+	var delAll identityschema.DeleteIdentityGuestsByBookingIdResponse
+	tx.Add(r.svc.Mutation.Identity.Guests.DeleteByBookingIdOp(bookingID, &delAll))
 	for i := range guests {
 		g := &guests[i]
-		var gRes identityschema.DeleteIdentityGuestsByIdResponse
-		tx.Add(r.svc.Mutation.Identity.Guests.DeleteOp(g.Id, &gRes))
 		if g.IdDocumentId != nil {
 			var res identityschema.DeleteIdentityIdDocumentsByIdResponse
 			tx.Add(r.svc.Mutation.Identity.IdDocuments.DeleteOp(*g.IdDocumentId, &res))

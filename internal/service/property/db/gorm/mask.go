@@ -119,3 +119,31 @@ func applyUnitMask(merged, u *propertypbv1.Unit, paths []string) {
 		merged.ApplicablePromoCodes = u.GetApplicablePromoCodes()
 	}
 }
+
+// applyLicenceMask merges the masked fields of l onto merged. The attachment
+// is replaced wholesale when selected. Identity, target, unit, timestamps,
+// state, and etag are managed by the repository (target and unit are
+// immutable).
+func applyLicenceMask(merged, l *propertypbv1.Licence, paths []string) {
+	if inMask(paths, "type") {
+		merged.Type = l.GetType()
+	}
+	if inMask(paths, "licence_number") {
+		merged.LicenceNumber = l.GetLicenceNumber()
+	}
+	if inMask(paths, "issuing_authority") {
+		merged.IssuingAuthority = l.GetIssuingAuthority()
+	}
+	if inMask(paths, "issue_date") {
+		merged.IssueDate = l.GetIssueDate()
+	}
+	if inMask(paths, "expiry_date") {
+		merged.ExpiryDate = l.GetExpiryDate()
+	}
+	if inMask(paths, "notes") {
+		merged.Notes = l.GetNotes()
+	}
+	if groupTouched(paths, "attachment") {
+		merged.Attachment = l.GetAttachment()
+	}
+}
