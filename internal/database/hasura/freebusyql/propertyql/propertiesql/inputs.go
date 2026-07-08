@@ -11,7 +11,7 @@ import (
 type CreateInput struct {
 	AddressId    string          `json:"addressId,omitzero"`
 	Attributes   json.RawMessage `json:"attributes,omitzero"`
-	CreateTime   string          `json:"createTime,omitzero"`
+	CreateTime   string          `json:"createTime"`
 	Description  string          `json:"description,omitzero"`
 	DisplayName  string          `json:"displayName"`
 	Etag         string          `json:"etag,omitzero"`

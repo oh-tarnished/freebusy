@@ -21,7 +21,9 @@ var (
 	Notes            = graphql.StringField{Col: "notes"}
 	PropertyId       = graphql.StringField{Col: "propertyId"}
 	State            = graphql.StringField{Col: "state"}
+	Target           = graphql.StringField{Col: "target"}
 	Type             = graphql.StringField{Col: "type"}
+	Unit             = graphql.StringField{Col: "unit"}
 	UpdateTime       = graphql.StringField{Col: "updateTime"}
 )
 

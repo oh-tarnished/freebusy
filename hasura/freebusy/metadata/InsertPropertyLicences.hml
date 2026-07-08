@@ -7,7 +7,7 @@ definition:
     - name: attachmentId
       type: String_1
     - name: createTime
-      type: Timestamptz
+      type: Timestamptz!
     - name: etag
       type: String_1
     - name: expiryDate
@@ -27,9 +27,13 @@ definition:
     - name: propertyId
       type: String_1!
     - name: state
-      type: Enum
+      type: String_1
+    - name: target
+      type: String_1
     - name: type
-      type: Enum
+      type: String_1
+    - name: unit
+      type: String_1
     - name: updateTime
       type: Timestamptz!
   graphql:
@@ -75,9 +79,15 @@ definition:
         state:
           column:
             name: state
+        target:
+          column:
+            name: target
         type:
           column:
             name: type
+        unit:
+          column:
+            name: unit
         updateTime:
           column:
             name: update_time
@@ -103,7 +113,9 @@ definition:
           - notes
           - propertyId
           - state
+          - target
           - type
+          - unit
           - updateTime
 
 ---

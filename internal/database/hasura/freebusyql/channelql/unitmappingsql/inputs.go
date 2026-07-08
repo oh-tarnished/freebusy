@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one ChannelUnitMappings row.
 type CreateInput struct {
 	ChannelId          string `json:"channelId"`
-	CreateTime         string `json:"createTime,omitzero"`
+	CreateTime         string `json:"createTime"`
 	Etag               string `json:"etag,omitzero"`
 	ExternalRatePlanId string `json:"externalRatePlanId,omitzero"`
 	ExternalRoomTypeId string `json:"externalRoomTypeId"`

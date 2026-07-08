@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one ScheduleAvailabilityExceptions row.
 type CreateInput struct {
-	CreateTime  string `json:"createTime,omitzero"`
+	CreateTime  string `json:"createTime"`
 	DateRangeId string `json:"dateRangeId,omitzero"`
 	Id          string `json:"id"`
 	Kind        string `json:"kind,omitzero"`

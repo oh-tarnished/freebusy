@@ -232,7 +232,7 @@ func buildUnitGraph(u *propertypbv1.Unit, propertyID string, now time.Time) *uni
 			Id:          ulid.GenerateString(),
 			Code:        t.GetCode(),
 			DisplayName: t.GetDisplayName(),
-			Percent:     t.GetPercent(),
+			Percent:     toBigdec(t.GetPercent()),
 		})
 	}
 	for _, m := range u.GetMedia() {
@@ -290,7 +290,6 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 		CreateTime:   strToTS(res.CreateTime),
 		UpdateTime:   strToTS(res.UpdateTime),
 		Etag:         deref(res.Etag),
-		Licences:     p.licenceNames,
 	}
 	for i := range p.rateOverrides {
 		r := &p.rateOverrides[i]
@@ -329,7 +328,7 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 		out.Taxes = append(out.Taxes, &propertypbv1.Tax{
 			Code:        p.taxes[i].Code,
 			DisplayName: deref(p.taxes[i].DisplayName),
-			Percent:     p.taxes[i].Percent,
+			Percent:     fromBigdec(p.taxes[i].Percent),
 		})
 	}
 	for i := range p.medias {

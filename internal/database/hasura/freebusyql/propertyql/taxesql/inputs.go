@@ -8,18 +8,18 @@ import (
 
 // CreateInput holds the settable fields for creating one PropertyTaxes row.
 type CreateInput struct {
-	Code        string  `json:"code"`
-	DisplayName string  `json:"displayName,omitzero"`
-	Id          string  `json:"id"`
-	Percent     float64 `json:"percent"`
-	UnitId      string  `json:"unitId"`
+	Code        string             `json:"code"`
+	DisplayName string             `json:"displayName,omitzero"`
+	Id          string             `json:"id"`
+	Percent     graphql.Bigdecimal `json:"percent"`
+	UnitId      string             `json:"unitId"`
 }
 
 // UpdateInput holds the fields to change on a PropertyTaxes row; each set field becomes a column update.
 type UpdateInput struct {
-	Code        graphql.Nullable[string]  `json:"code"`
-	DisplayName graphql.Nullable[string]  `json:"displayName"`
-	Id          graphql.Nullable[string]  `json:"id"`
-	Percent     graphql.Nullable[float64] `json:"percent"`
-	UnitId      graphql.Nullable[string]  `json:"unitId"`
+	Code        graphql.Nullable[string]             `json:"code"`
+	DisplayName graphql.Nullable[string]             `json:"displayName"`
+	Id          graphql.Nullable[string]             `json:"id"`
+	Percent     graphql.Nullable[graphql.Bigdecimal] `json:"percent"`
+	UnitId      graphql.Nullable[string]             `json:"unitId"`
 }

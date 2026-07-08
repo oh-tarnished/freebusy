@@ -10,11 +10,11 @@ import (
 type DeletePropertyTaxesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
-		Code        string  `graphql:"code"`
-		DisplayName *string `graphql:"displayName"`
-		Id          string  `graphql:"id"`
-		Percent     float64 `graphql:"percent"`
-		UnitId      string  `graphql:"unitId"`
+		Code        string             `graphql:"code"`
+		DisplayName *string            `graphql:"displayName"`
+		Id          string             `graphql:"id"`
+		Percent     graphql.Bigdecimal `graphql:"percent"`
+		UnitId      string             `graphql:"unitId"`
 	} `graphql:"returning"`
 }
 
@@ -22,21 +22,21 @@ type DeletePropertyTaxesByIdResponse struct {
 type InsertPropertyTaxesResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
-		Code        string  `graphql:"code"`
-		DisplayName *string `graphql:"displayName"`
-		Id          string  `graphql:"id"`
-		Percent     float64 `graphql:"percent"`
-		UnitId      string  `graphql:"unitId"`
+		Code        string             `graphql:"code"`
+		DisplayName *string            `graphql:"displayName"`
+		Id          string             `graphql:"id"`
+		Percent     graphql.Bigdecimal `graphql:"percent"`
+		UnitId      string             `graphql:"unitId"`
 	} `graphql:"returning"`
 }
 
 // PropertyTaxes is the PropertyTaxes model.
 type PropertyTaxes struct {
-	Code        string  `graphql:"code"`
-	DisplayName *string `graphql:"displayName"`
-	Id          string  `graphql:"id"`
-	Percent     float64 `graphql:"percent"`
-	UnitId      string  `graphql:"unitId"`
+	Code        string             `graphql:"code"`
+	DisplayName *string            `graphql:"displayName"`
+	Id          string             `graphql:"id"`
+	Percent     graphql.Bigdecimal `graphql:"percent"`
+	UnitId      string             `graphql:"unitId"`
 }
 
 // PropertyTaxesAggExp is the PropertyTaxesAggExp model.
@@ -61,18 +61,18 @@ type PropertyTaxesAggExp struct {
 		Min           *string       `graphql:"min"`
 	} `graphql:"id"`
 	Percent struct {
-		Count         graphql.Int64 `graphql:"_count"`
-		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
-		Avg           *float64      `graphql:"avg"`
-		Max           *float64      `graphql:"max"`
-		Min           *float64      `graphql:"min"`
-		Stddev        *float64      `graphql:"stddev"`
-		StddevPop     *float64      `graphql:"stddev_pop"`
-		StddevSamp    *float64      `graphql:"stddev_samp"`
-		Sum           *float64      `graphql:"sum"`
-		VarPop        *float64      `graphql:"var_pop"`
-		VarSamp       *float64      `graphql:"var_samp"`
-		Variance      *float64      `graphql:"variance"`
+		Count         graphql.Int64       `graphql:"_count"`
+		CountDistinct graphql.Int64       `graphql:"_count_distinct"`
+		Avg           *graphql.Bigdecimal `graphql:"avg"`
+		Max           *graphql.Bigdecimal `graphql:"max"`
+		Min           *graphql.Bigdecimal `graphql:"min"`
+		Stddev        *graphql.Bigdecimal `graphql:"stddev"`
+		StddevPop     *graphql.Bigdecimal `graphql:"stddev_pop"`
+		StddevSamp    *graphql.Bigdecimal `graphql:"stddev_samp"`
+		Sum           *graphql.Bigdecimal `graphql:"sum"`
+		VarPop        *graphql.Bigdecimal `graphql:"var_pop"`
+		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
+		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"percent"`
 	UnitId struct {
 		Count         graphql.Int64 `graphql:"_count"`
@@ -86,10 +86,10 @@ type PropertyTaxesAggExp struct {
 type UpdatePropertyTaxesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	Returning    []struct {
-		Code        string  `graphql:"code"`
-		DisplayName *string `graphql:"displayName"`
-		Id          string  `graphql:"id"`
-		Percent     float64 `graphql:"percent"`
-		UnitId      string  `graphql:"unitId"`
+		Code        string             `graphql:"code"`
+		DisplayName *string            `graphql:"displayName"`
+		Id          string             `graphql:"id"`
+		Percent     graphql.Bigdecimal `graphql:"percent"`
+		UnitId      string             `graphql:"unitId"`
 	} `graphql:"returning"`
 }

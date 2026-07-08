@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one PropertyLicences row.
 type CreateInput struct {
 	AttachmentId     string `json:"attachmentId,omitzero"`
-	CreateTime       string `json:"createTime,omitzero"`
+	CreateTime       string `json:"createTime"`
 	Etag             string `json:"etag,omitzero"`
 	ExpiryDate       string `json:"expiryDate,omitzero"`
 	Id               string `json:"id"`
@@ -20,7 +20,9 @@ type CreateInput struct {
 	Notes            string `json:"notes,omitzero"`
 	PropertyId       string `json:"propertyId"`
 	State            string `json:"state,omitzero"`
+	Target           string `json:"target,omitzero"`
 	Type             string `json:"type,omitzero"`
+	Unit             string `json:"unit,omitzero"`
 	UpdateTime       string `json:"updateTime"`
 }
 
@@ -38,6 +40,8 @@ type UpdateInput struct {
 	Notes            graphql.Nullable[string] `json:"notes"`
 	PropertyId       graphql.Nullable[string] `json:"propertyId"`
 	State            graphql.Nullable[string] `json:"state"`
+	Target           graphql.Nullable[string] `json:"target"`
 	Type             graphql.Nullable[string] `json:"type"`
+	Unit             graphql.Nullable[string] `json:"unit"`
 	UpdateTime       graphql.Nullable[string] `json:"updateTime"`
 }

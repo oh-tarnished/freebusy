@@ -15,7 +15,7 @@ type CreateInput struct {
 	CancelTime     string          `json:"cancelTime,omitzero"`
 	ConfirmTime    string          `json:"confirmTime,omitzero"`
 	ContactId      string          `json:"contactId,omitzero"`
-	CreateTime     string          `json:"createTime,omitzero"`
+	CreateTime     string          `json:"createTime"`
 	Customer       string          `json:"customer,omitzero"`
 	DiscountId     string          `json:"discountId,omitzero"`
 	Etag           string          `json:"etag,omitzero"`

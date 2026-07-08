@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one IdentityUsers row.
 type CreateInput struct {
 	AvatarUrl   string `json:"avatarUrl,omitzero"`
-	CreateTime  string `json:"createTime,omitzero"`
+	CreateTime  string `json:"createTime"`
 	DisplayName string `json:"displayName,omitzero"`
 	Email       string `json:"email,omitzero"`
 	Etag        string `json:"etag,omitzero"`

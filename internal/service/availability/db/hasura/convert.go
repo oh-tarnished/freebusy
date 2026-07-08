@@ -3,6 +3,7 @@ package hasura
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,6 +29,12 @@ func derefInt32(p *int32) int32 {
 		return 0
 	}
 	return *p
+}
+
+// fromBigdec parses a numeric(precision,scale) column's decimal-string value.
+func fromBigdec(b graphql.Bigdecimal) float64 {
+	f, _ := strconv.ParseFloat(string(b), 64)
+	return f
 }
 
 func durationFromStr(s string) time.Duration {

@@ -7,6 +7,7 @@
 package hasura
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -37,6 +38,12 @@ func deref[T any](p *T) T {
 		return zero
 	}
 	return *p
+}
+
+// fromBigdec parses a numeric(precision,scale) column's decimal-string value.
+func fromBigdec(b graphql.Bigdecimal) float64 {
+	f, _ := strconv.ParseFloat(string(b), 64)
+	return f
 }
 
 func tsToStr(ts *timestamppb.Timestamp) string {

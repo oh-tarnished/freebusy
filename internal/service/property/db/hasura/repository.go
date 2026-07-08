@@ -22,7 +22,6 @@ import (
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitlicencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
@@ -150,7 +149,7 @@ func (r *PropertyRepository) fetchPropertyParts(ctx context.Context, res *pschem
 	for i := range units {
 		p.unitNames = append(p.unitNames, units[i].Name)
 	}
-	licences, err := r.svc.Query.Property.Licences.List(ctx, licencesList().Where(licencesql.PropertyId.Eq(res.Id)))
+	licences, err := r.svc.Query.Property.Licences.List(ctx, licencesql.List().Where(licencesql.PropertyId.Eq(res.Id)))
 	if err != nil {
 		return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
 	}
@@ -323,13 +322,6 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 		refs.promoIDs = append(refs.promoIDs, codes[i].Id)
 	}
 
-	licences, err := r.svc.Query.Property.UnitLicences.List(ctx, unitLicencesList().Where(unitlicencesql.UnitId.Eq(res.Id)))
-	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
-	}
-	for i := range licences {
-		p.licenceNames = append(p.licenceNames, licences[i].Name)
-	}
 	return p, refs, nil
 }
 

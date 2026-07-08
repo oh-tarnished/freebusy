@@ -10,7 +10,7 @@ import (
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitlicencesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -194,7 +194,7 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 	if err != nil {
 		return err
 	}
-	licences, err := r.svc.Query.Property.UnitLicences.List(ctx, unitLicencesList().Where(unitlicencesql.UnitId.Eq(id)))
+	licences, err := r.svc.Query.Property.Licences.List(ctx, licencesql.List().Where(licencesql.Unit.Eq(id)))
 	if err != nil {
 		return mapHasuraErr(err)
 	}
@@ -204,8 +204,8 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 	}
 	tx := r.svc.Mutation.Tx()
 	for i := range licences {
-		var out pschema.DeletePropertyUnitLicencesByIdResponse
-		tx.Add(r.svc.Mutation.Property.UnitLicences.DeleteOp(licences[i].Id, &out))
+		var out pschema.DeletePropertyLicencesByIdResponse
+		tx.Add(r.svc.Mutation.Property.Licences.DeleteOp(licences[i].Id, &out))
 		if aid := licences[i].AttachmentId; aid != nil {
 			var aOut sharedschema.DeleteSharedAttachmentsByIdResponse
 			tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*aid, &aOut))

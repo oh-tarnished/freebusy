@@ -22,7 +22,9 @@ type DeletePropertyLicencesByIdResponse struct {
 		Notes            *string `graphql:"notes"`
 		PropertyId       string  `graphql:"propertyId"`
 		State            *string `graphql:"state"`
+		Target           *string `graphql:"target"`
 		Type             string  `graphql:"type"`
+		Unit             *string `graphql:"unit"`
 		UpdateTime       string  `graphql:"updateTime"`
 	} `graphql:"returning"`
 }
@@ -43,7 +45,9 @@ type InsertPropertyLicencesResponse struct {
 		Notes            *string `graphql:"notes"`
 		PropertyId       string  `graphql:"propertyId"`
 		State            *string `graphql:"state"`
+		Target           *string `graphql:"target"`
 		Type             string  `graphql:"type"`
+		Unit             *string `graphql:"unit"`
 		UpdateTime       string  `graphql:"updateTime"`
 	} `graphql:"returning"`
 }
@@ -62,7 +66,9 @@ type PropertyLicences struct {
 	Notes            *string `graphql:"notes"`
 	PropertyId       string  `graphql:"propertyId"`
 	State            *string `graphql:"state"`
+	Target           *string `graphql:"target"`
 	Type             string  `graphql:"type"`
+	Unit             *string `graphql:"unit"`
 	UpdateTime       string  `graphql:"updateTime"`
 }
 
@@ -141,12 +147,24 @@ type PropertyLicencesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"state"`
+	Target struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"target"`
 	Type struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"type"`
+	Unit struct {
+		Count         graphql.Int64 `graphql:"_count"`
+		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
+		Max           *string       `graphql:"max"`
+		Min           *string       `graphql:"min"`
+	} `graphql:"unit"`
 	UpdateTime struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
@@ -171,7 +189,9 @@ type UpdatePropertyLicencesByIdResponse struct {
 		Notes            *string `graphql:"notes"`
 		PropertyId       string  `graphql:"propertyId"`
 		State            *string `graphql:"state"`
+		Target           *string `graphql:"target"`
 		Type             string  `graphql:"type"`
+		Unit             *string `graphql:"unit"`
 		UpdateTime       string  `graphql:"updateTime"`
 	} `graphql:"returning"`
 }

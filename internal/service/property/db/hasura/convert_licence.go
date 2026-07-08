@@ -9,9 +9,9 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitlicencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -19,11 +19,10 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// Conversions between the protobuf PropertyLicence/UnitLicence domain types and
-// the Hasura schema. The attachment (scanned certificate) is normalized into
-// shared.attachments and referenced by FK; its bytea `content` crosses the
-// GraphQL boundary as a base64 JSON string (ndc-postgres's bytea
-// representation).
+// Conversions between the protobuf Licence domain type and the Hasura schema.
+// The attachment (scanned certificate) is normalized into shared.attachments
+// and referenced by FK; its bytea `content` crosses the GraphQL boundary as a
+// base64 JSON string (ndc-postgres's bytea representation).
 
 // --- enum <-> bare value-name conversions -----------------------------------
 
@@ -111,19 +110,33 @@ func attachmentFromModel(a *sharedschema.SharedAttachments) *sharedpbv1.Attachme
 	}
 }
 
-// --- PropertyLicence graph -----------------------------------------------------
+// --- Licence graph -----------------------------------------------------------
 
-type propertyLicenceGraph struct {
+func licenceTargetFromStr(s *string) propertypbv1.LicenceTarget {
+	if s == nil || *s == "" {
+		return propertypbv1.LicenceTarget_LICENCE_TARGET_UNSPECIFIED
+	}
+	return propertypbv1.LicenceTarget(propertypbv1.LicenceTarget_value["LICENCE_TARGET_"+*s])
+}
+
+type licenceGraph struct {
 	licence    licencesql.CreateInput
 	attachment *attachmentsql.CreateInput
 }
 
-// buildPropertyLicenceGraph materializes the proto into its row inputs.
-// Identity (id, name), state, and etag stay with the caller.
-func buildPropertyLicenceGraph(l *propertypbv1.PropertyLicence, propertyID string, now time.Time) *propertyLicenceGraph {
+// buildLicenceGraph materializes the proto into its row inputs. The target
+// derives from whether unitID is set. Identity (id, name), state, and etag
+// stay with the caller.
+func buildLicenceGraph(l *propertypbv1.Licence, propertyID string, unitID *string, now time.Time) *licenceGraph {
 	nowStr := tsToStr(timestamppb.New(now))
-	g := &propertyLicenceGraph{
+	target := "PROPERTY"
+	if unitID != nil {
+		target = "UNIT"
+	}
+	g := &licenceGraph{
 		licence: licencesql.CreateInput{
+			Target:           target,
+			Unit:             deref(unitID),
 			Type:             licenceTypeToStr(l.GetType()),
 			LicenceNumber:    l.GetLicenceNumber(),
 			IssuingAuthority: l.GetIssuingAuthority(),
@@ -142,61 +155,18 @@ func buildPropertyLicenceGraph(l *propertypbv1.PropertyLicence, propertyID strin
 	return g
 }
 
-// propertyLicenceFromParts re-hydrates the proto from a licence row and its
-// resolved attachment (nil when the licence has none).
-func propertyLicenceFromParts(res *pschema.PropertyLicences, att *sharedschema.SharedAttachments) *propertypbv1.PropertyLicence {
-	return &propertypbv1.PropertyLicence{
+// licenceFromParts re-hydrates the proto from a licence row and its resolved
+// attachment (nil when the licence has none). The unit resource name is
+// rebuilt from the stored parent property and bare unit ids.
+func licenceFromParts(res *pschema.PropertyLicences, att *sharedschema.SharedAttachments) *propertypbv1.Licence {
+	var unit string
+	if res.Unit != nil && *res.Unit != "" {
+		unit, _ = types.UnitName(res.PropertyId, *res.Unit)
+	}
+	return &propertypbv1.Licence{
 		Name:             res.Name,
-		Type:             licenceTypeFromStr(res.Type),
-		LicenceNumber:    deref(res.LicenceNumber),
-		IssuingAuthority: deref(res.IssuingAuthority),
-		IssueDate:        strToDate(deref(res.IssueDate)),
-		ExpiryDate:       strToDate(deref(res.ExpiryDate)),
-		Attachment:       attachmentFromModel(att),
-		Notes:            deref(res.Notes),
-		State:            licenceStateFromStr(res.State),
-		CreateTime:       strToTS(res.CreateTime),
-		UpdateTime:       strToTS(res.UpdateTime),
-		Etag:             deref(res.Etag),
-	}
-}
-
-// --- UnitLicence graph -----------------------------------------------------------
-
-type unitLicenceGraph struct {
-	licence    unitlicencesql.CreateInput
-	attachment *attachmentsql.CreateInput
-}
-
-// buildUnitLicenceGraph materializes the proto into its row inputs.
-func buildUnitLicenceGraph(l *propertypbv1.UnitLicence, propertyID, unitID string, now time.Time) *unitLicenceGraph {
-	nowStr := tsToStr(timestamppb.New(now))
-	g := &unitLicenceGraph{
-		licence: unitlicencesql.CreateInput{
-			Type:             licenceTypeToStr(l.GetType()),
-			LicenceNumber:    l.GetLicenceNumber(),
-			IssuingAuthority: l.GetIssuingAuthority(),
-			IssueDate:        dateToStr(l.GetIssueDate()),
-			ExpiryDate:       dateToStr(l.GetExpiryDate()),
-			Notes:            l.GetNotes(),
-			PropertyId:       propertyID,
-			UnitId:           unitID,
-			CreateTime:       nowStr,
-			UpdateTime:       nowStr,
-		},
-	}
-	if a := attachmentInput(l.GetAttachment(), now); a != nil {
-		g.attachment = a
-		g.licence.AttachmentId = a.Id
-	}
-	return g
-}
-
-// unitLicenceFromParts re-hydrates the proto from a licence row and its
-// resolved attachment.
-func unitLicenceFromParts(res *pschema.PropertyUnitLicences, att *sharedschema.SharedAttachments) *propertypbv1.UnitLicence {
-	return &propertypbv1.UnitLicence{
-		Name:             res.Name,
+		Target:           licenceTargetFromStr(res.Target),
+		Unit:             unit,
 		Type:             licenceTypeFromStr(res.Type),
 		LicenceNumber:    deref(res.LicenceNumber),
 		IssuingAuthority: deref(res.IssuingAuthority),

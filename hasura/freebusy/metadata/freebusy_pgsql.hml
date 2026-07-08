@@ -448,7 +448,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: booking_cancel_reason
+                  name: text
                   type: named
             cancel_time:
               type:
@@ -550,7 +550,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: booking_booking_state
+                  name: text
                   type: named
             total_id:
               type:
@@ -679,11 +679,11 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_state
+                  name: text
                   type: named
             type:
               type:
-                name: channel_channel_type
+                name: text
                 type: named
             update_time:
               type:
@@ -733,7 +733,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_state
+                  name: text
                   type: named
           foreign_keys: {}
         channel_unit_mappings:
@@ -774,7 +774,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_mapping_state
+                  name: text
                   type: named
             unit:
               type:
@@ -1791,7 +1791,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_bed_preference
+                  name: text
                   type: named
             dietary:
               type:
@@ -1829,7 +1829,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_smoking_preference
+                  name: text
                   type: named
             special_requests:
               type:
@@ -1848,7 +1848,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_age_group
+                  name: text
                   type: named
             birth_date:
               type:
@@ -1880,7 +1880,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_gender
+                  name: text
                   type: named
             id:
               type:
@@ -2001,7 +2001,7 @@ definition:
                 type: named
             type:
               type:
-                name: identity_id_document_type
+                name: text
                 type: named
           foreign_keys:
             id_documents_attachment_id_fkey:
@@ -2184,7 +2184,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: booking_cancel_reason
+                  name: text
                   type: named
             cancel_time:
               type:
@@ -2206,10 +2206,8 @@ definition:
                   type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             customer:
               type:
                 type: nullable
@@ -2288,7 +2286,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: booking_booking_state
+                  name: text
                   type: named
             total_id:
               type:
@@ -2335,10 +2333,8 @@ definition:
           fields:
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             credential_ref:
               type:
                 type: nullable
@@ -2385,13 +2381,13 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_state
+                  name: text
                   type: named
             type:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_type
+                  name: text
                   type: named
             update_time:
               type:
@@ -2452,7 +2448,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_state
+                  name: text
                   type: named
           foreign_keys: {}
         insert_channel_sync_statuses_response:
@@ -2479,10 +2475,8 @@ definition:
                 type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             etag:
               type:
                 type: nullable
@@ -2511,7 +2505,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_mapping_state
+                  name: text
                   type: named
             unit:
               type:
@@ -2775,7 +2769,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_bed_preference
+                  name: text
                   type: named
             dietary:
               type:
@@ -2813,7 +2807,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_smoking_preference
+                  name: text
                   type: named
             special_requests:
               type:
@@ -2848,7 +2842,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_age_group
+                  name: text
                   type: named
             birth_date:
               type:
@@ -2880,7 +2874,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_gender
+                  name: text
                   type: named
             id:
               type:
@@ -2989,7 +2983,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_id_document_type
+                  name: text
                   type: named
           foreign_keys: {}
         insert_identity_id_documents_response:
@@ -3018,10 +3012,8 @@ definition:
                   type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             display_name:
               type:
                 type: nullable
@@ -3085,10 +3077,8 @@ definition:
           fields:
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             display_name:
               type:
                 type: nullable
@@ -3127,13 +3117,13 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_organisation_role
+                  name: text
                   type: named
             state:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_member_state
+                  name: text
                   type: named
             update_time:
               type:
@@ -3172,10 +3162,8 @@ definition:
                   type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             display_name:
               type:
                 name: text
@@ -3216,7 +3204,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_organisation_state
+                  name: text
                   type: named
             update_time:
               type:
@@ -3245,7 +3233,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: promocode_discount_amount_case
+                  name: text
                   type: named
             amount_off_id:
               type:
@@ -3374,10 +3362,8 @@ definition:
                 type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             description:
               type:
                 type: nullable
@@ -3436,7 +3422,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: promocode_promo_code_state
+                  name: text
                   type: named
             update_time:
               type:
@@ -3627,7 +3613,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_pricing_unit
+                  name: text
                   type: named
             taxable:
               type:
@@ -3666,10 +3652,8 @@ definition:
                   type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             etag:
               type:
                 type: nullable
@@ -3722,13 +3706,25 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_licence_state
+                  name: text
+                  type: named
+            target:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
             type:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_licence_type
+                  name: text
+                  type: named
+            unit:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
             update_time:
               type:
@@ -3838,7 +3834,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_media_type
+                  name: text
                   type: named
             uri:
               type:
@@ -3928,10 +3924,8 @@ definition:
                   type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             description:
               type:
                 type: nullable
@@ -3970,7 +3964,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_property_state
+                  name: text
                   type: named
             tags:
               type:
@@ -4068,7 +4062,7 @@ definition:
                 type: named
             percent:
               type:
-                name: float8
+                name: numeric
                 type: named
             unit_id:
               type:
@@ -4261,7 +4255,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_media_type
+                  name: text
                   type: named
             unit_id:
               type:
@@ -4335,7 +4329,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_booking_mode
+                  name: text
                   type: named
             capacity:
               type:
@@ -4345,10 +4339,8 @@ definition:
                   type: named
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             description:
               type:
                 type: nullable
@@ -4395,7 +4387,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_pricing_unit
+                  name: text
                   type: named
             property_id:
               type:
@@ -4405,7 +4397,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_unit_state
+                  name: text
                   type: named
             tags:
               type:
@@ -4425,7 +4417,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_unit_type
+                  name: text
                   type: named
             update_time:
               type:
@@ -4452,10 +4444,8 @@ definition:
           fields:
             create_time:
               type:
-                type: nullable
-                underlying_type:
-                  name: timestamptz
-                  type: named
+                name: timestamptz
+                type: named
             date_range_id:
               type:
                 type: nullable
@@ -4470,7 +4460,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: schedule_exception_kind
+                  name: text
                   type: named
             name:
               type:
@@ -4490,7 +4480,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: schedule_availability_exception_span_case
+                  name: text
                   type: named
             unit_id:
               type:
@@ -4985,7 +4975,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: shared_type
+                  name: text
                   type: named
           foreign_keys: {}
         insert_shared_price_components_response:
@@ -5077,13 +5067,13 @@ definition:
                 type: named
             role:
               type:
-                name: organisation_organisation_role
+                name: text
                 type: named
             state:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_member_state
+                  name: text
                   type: named
             update_time:
               type:
@@ -5163,7 +5153,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_organisation_state
+                  name: text
                   type: named
             update_time:
               type:
@@ -5176,7 +5166,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: promocode_discount_amount_case
+                  name: text
                   type: named
             amount_off_id:
               type:
@@ -5342,7 +5332,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: promocode_promo_code_state
+                  name: text
                   type: named
             update_time:
               type:
@@ -5498,7 +5488,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_pricing_unit
+                  name: text
                   type: named
             taxable:
               type:
@@ -5585,12 +5575,24 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_licence_state
+                  name: text
+                  type: named
+            target:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
             type:
               type:
-                name: property_licence_type
+                name: text
                 type: named
+            unit:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
             update_time:
               type:
                 name: timestamptz
@@ -5685,7 +5687,7 @@ definition:
                   type: named
             type:
               type:
-                name: property_media_type
+                name: text
                 type: named
             uri:
               type:
@@ -5788,7 +5790,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_property_state
+                  name: text
                   type: named
             tags:
               type:
@@ -5884,7 +5886,7 @@ definition:
                 type: named
             percent:
               type:
-                name: float8
+                name: numeric
                 type: named
             unit_id:
               type:
@@ -6053,7 +6055,7 @@ definition:
                   type: named
             type:
               type:
-                name: property_media_type
+                name: text
                 type: named
             unit_id:
               type:
@@ -6079,7 +6081,7 @@ definition:
                   type: named
             booking_mode:
               type:
-                name: property_booking_mode
+                name: text
                 type: named
             capacity:
               type:
@@ -6137,7 +6139,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_pricing_unit
+                  name: text
                   type: named
             property_id:
               type:
@@ -6147,7 +6149,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_unit_state
+                  name: text
                   type: named
             tags:
               type:
@@ -6165,7 +6167,7 @@ definition:
                 type: named
             type:
               type:
-                name: property_unit_type
+                name: text
                 type: named
             update_time:
               type:
@@ -6229,7 +6231,7 @@ definition:
                 type: named
             kind:
               type:
-                name: schedule_exception_kind
+                name: text
                 type: named
             name:
               type:
@@ -6249,7 +6251,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: schedule_availability_exception_span_case
+                  name: text
                   type: named
             unit_id:
               type:
@@ -6628,7 +6630,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: shared_type
+                  name: text
                   type: named
           foreign_keys:
             price_components_amount_id_fkey:
@@ -7395,7 +7397,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: booking_cancel_reason
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_resource_cancel_time:
@@ -7587,7 +7589,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: booking_booking_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_booking_resource_total_id:
@@ -7738,7 +7740,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_channel_resource_type:
@@ -7747,7 +7749,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: channel_channel_type
+                name: text
                 type: named
           foreign_keys: {}
         update_column_channel_resource_update_time:
@@ -7829,7 +7831,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_channel_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_channel_unit_mappings_channel_id:
@@ -7907,7 +7909,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: channel_mapping_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_channel_unit_mappings_unit:
@@ -8250,7 +8252,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_bed_preference
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_identity_guest_preferences_dietary:
@@ -8318,7 +8320,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_smoking_preference
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_identity_guest_preferences_special_requests:
@@ -8344,7 +8346,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_age_group
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_identity_guests_birth_date:
@@ -8406,7 +8408,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: identity_gender
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_identity_guests_id:
@@ -8574,7 +8576,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: identity_id_document_type
+                name: text
                 type: named
           foreign_keys: {}
         update_column_identity_users_avatar_url:
@@ -8763,7 +8765,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: organisation_organisation_role
+                name: text
                 type: named
           foreign_keys: {}
         update_column_organisation_members_state:
@@ -8774,7 +8776,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_member_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_organisation_members_update_time:
@@ -8896,7 +8898,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: organisation_organisation_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_organisation_resource_update_time:
@@ -8916,7 +8918,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: promocode_discount_amount_case
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_promocode_discounts_amount_off_id:
@@ -9178,7 +9180,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: promocode_promo_code_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_promocode_resource_update_time:
@@ -9374,7 +9376,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_pricing_unit
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_property_fees_taxable:
@@ -9518,7 +9520,18 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_licence_state
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_property_licences_target:
+          description: Update the 'target' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_property_licences_type:
@@ -9527,8 +9540,19 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: property_licence_type
+                name: text
                 type: named
+          foreign_keys: {}
+        update_column_property_licences_unit:
+          description: Update the 'unit' column in the 'property_licences' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
           foreign_keys: {}
         update_column_property_licences_update_time:
           description: Update the 'update_time' column in the 'property_licences' collection
@@ -9667,7 +9691,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: property_media_type
+                name: text
                 type: named
           foreign_keys: {}
         update_column_property_medias_uri:
@@ -9844,7 +9868,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_property_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_property_properties_tags:
@@ -9964,7 +9988,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: float8
+                name: numeric
                 type: named
           foreign_keys: {}
         update_column_property_taxes_unit_id:
@@ -10224,7 +10248,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: property_media_type
+                name: text
                 type: named
           foreign_keys: {}
         update_column_property_unit_medias_unit_id:
@@ -10262,7 +10286,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: property_booking_mode
+                name: text
                 type: named
           foreign_keys: {}
         update_column_property_units_capacity:
@@ -10411,7 +10435,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_pricing_unit
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_property_units_property_id:
@@ -10431,7 +10455,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: property_unit_state
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_property_units_tags:
@@ -10464,7 +10488,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: property_unit_type
+                name: text
                 type: named
           foreign_keys: {}
         update_column_property_units_update_time:
@@ -10511,7 +10535,7 @@ definition:
             _set:
               description: Set the column to this value
               type:
-                name: schedule_exception_kind
+                name: text
                 type: named
           foreign_keys: {}
         update_column_schedule_availability_exceptions_name:
@@ -10551,7 +10575,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: schedule_availability_exception_span_case
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_schedule_availability_exceptions_unit_id:
@@ -11117,7 +11141,7 @@ definition:
               type:
                 type: nullable
                 underlying_type:
-                  name: shared_type
+                  name: text
                   type: named
           foreign_keys: {}
         update_column_shared_time_windows_end_time:
@@ -12597,12 +12621,26 @@ definition:
                 underlying_type:
                   name: update_column_property_licences_state
                   type: named
+            target:
+              description: Update the 'target' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_target
+                  type: named
             type:
               description: Update the 'type' column in the 'property_licences' collection.
               type:
                 type: nullable
                 underlying_type:
                   name: update_column_property_licences_type
+                  type: named
+            unit:
+              description: Update the 'unit' column in the 'property_licences' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_property_licences_unit
                   type: named
             update_time:
               description: Update the 'update_time' column in the 'property_licences' collection.
@@ -17360,73 +17398,6 @@ definition:
             type: named
       request_arguments: null
       scalar_types:
-        booking_booking_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: booking_booking_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - PENDING_HOLD
-              - CONFIRMED
-              - CANCELLED
-              - EXPIRED
-              - COMPLETED
-              - NO_SHOW
-            type: enum
-        booking_cancel_reason:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: booking_cancel_reason
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - REQUESTED_BY_CUSTOMER
-              - REQUESTED_BY_OPERATOR
-              - PAYMENT_FAILED
-              - NO_SHOW
-              - OTHER
-            type: enum
         bool:
           aggregate_functions:
             bool_and:
@@ -17508,103 +17479,6 @@ definition:
           extraction_functions: {}
           representation:
             type: json
-        channel_channel_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: channel_channel_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - CONNECTED
-              - DISABLED
-              - ERROR
-            type: enum
-        channel_channel_type:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: channel_channel_type
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - AGODA
-              - BOOKING_COM
-              - EXPEDIA
-              - AIRBNB
-              - MAKEMYTRIP
-              - GOIBIBO
-              - GDS
-              - DIRECT
-            type: enum
-        channel_mapping_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: channel_mapping_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - MAPPED
-              - UNMAPPED
-            type: enum
         date:
           aggregate_functions:
             max:
@@ -17632,241 +17506,6 @@ definition:
           extraction_functions: {}
           representation:
             type: date
-        float8:
-          aggregate_functions:
-            avg:
-              result_type: float8
-              type: average
-            max:
-              type: max
-            min:
-              type: min
-            stddev:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: float8
-                  type: named
-              type: custom
-            stddev_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: float8
-                  type: named
-              type: custom
-            stddev_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: float8
-                  type: named
-              type: custom
-            sum:
-              result_type: float8
-              type: sum
-            var_pop:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: float8
-                  type: named
-              type: custom
-            var_samp:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: float8
-                  type: named
-              type: custom
-            variance:
-              result_type:
-                type: nullable
-                underlying_type:
-                  name: float8
-                  type: named
-              type: custom
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: float8
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            type: float64
-        identity_age_group:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: identity_age_group
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - ADULT
-              - CHILD
-              - INFANT
-            type: enum
-        identity_bed_preference:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: identity_bed_preference
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - NO_PREFERENCE
-              - KING
-              - QUEEN
-              - TWIN
-              - SINGLE
-            type: enum
-        identity_gender:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: identity_gender
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - MALE
-              - FEMALE
-              - OTHER
-              - UNDISCLOSED
-            type: enum
-        identity_id_document_type:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: identity_id_document_type
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - PASSPORT
-              - NATIONAL_ID
-              - DRIVING_LICENSE
-              - AADHAAR
-              - VOTER_ID
-              - OTHER
-            type: enum
-        identity_smoking_preference:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: identity_smoking_preference
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - NON_SMOKING
-              - SMOKING
-            type: enum
         int4:
           aggregate_functions:
             avg:
@@ -18233,190 +17872,6 @@ definition:
           extraction_functions: {}
           representation:
             type: bigdecimal
-        organisation_member_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: organisation_member_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - INVITED
-              - ACTIVE
-              - SUSPENDED
-            type: enum
-        organisation_organisation_role:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: organisation_organisation_role
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - OWNER
-              - ADMIN
-              - MEMBER
-              - VIEWER
-            type: enum
-        organisation_organisation_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: organisation_organisation_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - ACTIVE
-              - SUSPENDED
-            type: enum
-        promocode_discount_amount_case:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: promocode_discount_amount_case
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - PERCENT_OFF
-              - AMOUNT_OFF
-            type: enum
-        promocode_promo_code_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: promocode_promo_code_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - ACTIVE
-              - DISABLED
-              - EXPIRED
-            type: enum
-        property_booking_mode:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: property_booking_mode
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - TIME_SLOT
-              - NIGHTLY
-            type: enum
         property_licence_state:
           aggregate_functions:
             max:
@@ -18481,255 +17936,6 @@ definition:
               - TOURISM
               - HEALTH
               - OTHER
-            type: enum
-        property_media_type:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: property_media_type
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - IMAGE
-              - VIDEO
-              - DOCUMENT
-              - FLOORPLAN
-              - VIRTUAL_TOUR
-            type: enum
-        property_pricing_unit:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: property_pricing_unit
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - PER_BOOKING
-              - PER_NIGHT
-              - PER_PERSON
-            type: enum
-        property_property_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: property_property_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - ACTIVE
-              - ARCHIVED
-            type: enum
-        property_unit_state:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: property_unit_state
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - ACTIVE
-              - ARCHIVED
-            type: enum
-        property_unit_type:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: property_unit_type
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - PROVIDER
-              - ROOM
-              - EQUIPMENT
-              - LODGING
-              - SPACE
-            type: enum
-        schedule_availability_exception_span_case:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: schedule_availability_exception_span_case
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - WINDOW
-              - DATE_RANGE
-            type: enum
-        schedule_exception_kind:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: schedule_exception_kind
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - CLOSURE
-              - EXTRA_HOURS
-            type: enum
-        shared_type:
-          aggregate_functions:
-            max:
-              type: max
-            min:
-              type: min
-          comparison_operators:
-            _eq:
-              type: equal
-            _gt:
-              type: greater_than
-            _gte:
-              type: greater_than_or_equal
-            _in:
-              type: in
-            _lt:
-              type: less_than
-            _lte:
-              type: less_than_or_equal
-            _neq:
-              argument_type:
-                name: shared_type
-                type: named
-              type: custom
-          extraction_functions: {}
-          representation:
-            one_of:
-              - BASE
-              - FEE
-              - TAX
-              - DISCOUNT
             type: enum
         text:
           aggregate_functions:

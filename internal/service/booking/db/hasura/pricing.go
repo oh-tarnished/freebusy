@@ -53,7 +53,7 @@ func (r *BookingRepository) pricingInputs(ctx context.Context, unit *propertysch
 		return pricing.Inputs{}, mapHasuraErr(err)
 	}
 	for i := range taxes {
-		in.Taxes = append(in.Taxes, pricing.Tax{Code: taxes[i].Code, DisplayName: deref(taxes[i].DisplayName), Percent: taxes[i].Percent})
+		in.Taxes = append(in.Taxes, pricing.Tax{Code: taxes[i].Code, DisplayName: deref(taxes[i].DisplayName), Percent: fromBigdec(taxes[i].Percent)})
 	}
 
 	los, err := r.svc.Query.Property.LosDiscounts.List(ctx, losdiscountsql.List().Where(losdiscountsql.UnitId.Eq(unit.Id)))

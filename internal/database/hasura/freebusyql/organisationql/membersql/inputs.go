@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one OrganisationMembers row.
 type CreateInput struct {
-	CreateTime     string `json:"createTime,omitzero"`
+	CreateTime     string `json:"createTime"`
 	DisplayName    string `json:"displayName,omitzero"`
 	Email          string `json:"email"`
 	Etag           string `json:"etag,omitzero"`

@@ -12,7 +12,7 @@ type CreateInput struct {
 	Attributes   json.RawMessage `json:"attributes,omitzero"`
 	BookingMode  string          `json:"bookingMode,omitzero"`
 	Capacity     int32           `json:"capacity,omitzero"`
-	CreateTime   string          `json:"createTime,omitzero"`
+	CreateTime   string          `json:"createTime"`
 	Description  string          `json:"description,omitzero"`
 	DisplayName  string          `json:"displayName"`
 	Duration     string          `json:"duration,omitzero"`

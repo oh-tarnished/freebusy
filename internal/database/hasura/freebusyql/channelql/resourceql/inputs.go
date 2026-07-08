@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one ChannelResource row.
 type CreateInput struct {
-	CreateTime         string `json:"createTime,omitzero"`
+	CreateTime         string `json:"createTime"`
 	CredentialRef      string `json:"credentialRef,omitzero"`
 	DisplayName        string `json:"displayName,omitzero"`
 	Etag               string `json:"etag,omitzero"`

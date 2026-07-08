@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one PromocodeResource row.
 type CreateInput struct {
 	Code            string        `json:"code"`
-	CreateTime      string        `json:"createTime,omitzero"`
+	CreateTime      string        `json:"createTime"`
 	Description     string        `json:"description,omitzero"`
 	Disabled        bool          `json:"disabled,omitzero"`
 	DiscountId      string        `json:"discountId"`

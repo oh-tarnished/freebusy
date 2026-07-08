@@ -358,7 +358,7 @@ definition:
   description: Update the 'state' column in the 'property_licences' collection
   fields:
     - name: set
-      type: Enum
+      type: String_1
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnPropertyLicencesState
@@ -386,11 +386,43 @@ definition:
 kind: ObjectType
 version: v1
 definition:
+  name: UpdateColumnPropertyLicencesTarget
+  description: Update the 'target' column in the 'property_licences' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPropertyLicencesTarget
+    inputTypeName: UpdateColumnPropertyLicencesTargetInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_property_licences_target
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPropertyLicencesTarget
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
   name: UpdateColumnPropertyLicencesType
   description: Update the 'type' column in the 'property_licences' collection
   fields:
     - name: set
-      type: Enum!
+      type: String_1!
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnPropertyLicencesType
@@ -408,6 +440,38 @@ kind: TypePermissions
 version: v1
 definition:
   typeName: UpdateColumnPropertyLicencesType
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnPropertyLicencesUnit
+  description: Update the 'unit' column in the 'property_licences' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnPropertyLicencesUnit
+    inputTypeName: UpdateColumnPropertyLicencesUnitInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_property_licences_unit
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnPropertyLicencesUnit
   permissions:
     - role: admin
       output:
@@ -490,9 +554,15 @@ definition:
     - name: state
       type: UpdateColumnPropertyLicencesState
       description: Update the 'state' column in the 'property_licences' collection.
+    - name: target
+      type: UpdateColumnPropertyLicencesTarget
+      description: Update the 'target' column in the 'property_licences' collection.
     - name: type
       type: UpdateColumnPropertyLicencesType
       description: Update the 'type' column in the 'property_licences' collection.
+    - name: unit
+      type: UpdateColumnPropertyLicencesUnit
+      description: Update the 'unit' column in the 'property_licences' collection.
     - name: updateTime
       type: UpdateColumnPropertyLicencesUpdateTime
       description: Update the 'update_time' column in the 'property_licences' collection.
@@ -539,9 +609,15 @@ definition:
         state:
           column:
             name: state
+        target:
+          column:
+            name: target
         type:
           column:
             name: type
+        unit:
+          column:
+            name: unit
         updateTime:
           column:
             name: update_time
@@ -567,7 +643,9 @@ definition:
           - notes
           - propertyId
           - state
+          - target
           - type
+          - unit
           - updateTime
 
 ---
