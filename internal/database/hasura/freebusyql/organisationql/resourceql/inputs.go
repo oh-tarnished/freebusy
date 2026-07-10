@@ -13,7 +13,7 @@ type CreateInput struct {
 	CreateTime   string          `json:"createTime"`
 	DisplayName  string          `json:"displayName"`
 	Etag         string          `json:"etag,omitzero"`
-	ID           string          `json:"id"`
+	Id           string          `json:"id"`
 	MemberCount  graphql.Int64   `json:"memberCount,omitzero"`
 	Name         string          `json:"name"`
 	Settings     json.RawMessage `json:"settings,omitzero"`
@@ -33,7 +33,7 @@ type UpdateInput struct {
 	// Update the 'etag' column in the 'organisation_resource' collection.
 	Etag graphql.Nullable[string] `json:"etag"`
 	// Update the 'id' column in the 'organisation_resource' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'member_count' column in the 'organisation_resource' collection.
 	MemberCount graphql.Nullable[graphql.Int64] `json:"memberCount"`
 	// Update the 'name' column in the 'organisation_resource' collection.

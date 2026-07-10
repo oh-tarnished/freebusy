@@ -10,14 +10,14 @@ import (
 // them with And/Or/Not.
 var (
 	Description = graphql.StringField{Col: "description"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	MimeType    = graphql.StringField{Col: "mimeType"}
 	Primary     = graphql.BoolField{Col: "primary"}
 	SortOrder   = graphql.Int64Field{Col: "sortOrder"}
 	Title       = graphql.StringField{Col: "title"}
 	Type        = graphql.StringField{Col: "type"}
 	UnitId      = graphql.StringField{Col: "unitId"}
-	URI         = graphql.StringField{Col: "uri"}
+	Uri         = graphql.StringField{Col: "uri"}
 )
 
 // And matches rows satisfying every predicate.

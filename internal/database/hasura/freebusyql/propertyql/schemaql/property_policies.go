@@ -16,7 +16,7 @@ type DeletePropertyPoliciesByIdResponse struct {
 		CheckinTime  *string   `graphql:"checkinTime"`
 		CheckoutTime *string   `graphql:"checkoutTime"`
 		HouseRules   []*string `graphql:"houseRules"`
-		ID           string    `graphql:"id"`
+		Id           string    `graphql:"id"`
 		Notes        *string   `graphql:"notes"`
 	} `graphql:"returning"`
 }
@@ -30,7 +30,7 @@ type InsertPropertyPoliciesResponse struct {
 		CheckinTime  *string   `graphql:"checkinTime"`
 		CheckoutTime *string   `graphql:"checkoutTime"`
 		HouseRules   []*string `graphql:"houseRules"`
-		ID           string    `graphql:"id"`
+		Id           string    `graphql:"id"`
 		Notes        *string   `graphql:"notes"`
 	} `graphql:"returning"`
 }
@@ -40,7 +40,7 @@ type PropertyPolicies struct {
 	CheckinTime  *string   `graphql:"checkinTime"`
 	CheckoutTime *string   `graphql:"checkoutTime"`
 	HouseRules   []*string `graphql:"houseRules"`
-	ID           string    `graphql:"id"`
+	Id           string    `graphql:"id"`
 	Notes        *string   `graphql:"notes"`
 }
 
@@ -63,7 +63,7 @@ type PropertyPoliciesAggExp struct {
 		Min           *string          `graphql:"min"`
 		Sum           *json.RawMessage `graphql:"sum" scalar:"true"`
 	} `graphql:"checkoutTime"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -86,7 +86,7 @@ type UpdatePropertyPoliciesByIdResponse struct {
 		CheckinTime  *string   `graphql:"checkinTime"`
 		CheckoutTime *string   `graphql:"checkoutTime"`
 		HouseRules   []*string `graphql:"houseRules"`
-		ID           string    `graphql:"id"`
+		Id           string    `graphql:"id"`
 		Notes        *string   `graphql:"notes"`
 	} `graphql:"returning"`
 }

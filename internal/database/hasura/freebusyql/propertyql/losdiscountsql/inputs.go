@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one PropertyLosDiscounts row.
 type CreateInput struct {
 	AmountOffId string `json:"amountOffId,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	MinNights   int32  `json:"minNights"`
 	PercentOff  int32  `json:"percentOff,omitzero"`
 	UnitId      string `json:"unitId"`
@@ -20,7 +20,7 @@ type UpdateInput struct {
 	// Update the 'amount_off_id' column in the 'property_los_discounts' collection.
 	AmountOffId graphql.Nullable[string] `json:"amountOffId"`
 	// Update the 'id' column in the 'property_los_discounts' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'min_nights' column in the 'property_los_discounts' collection.
 	MinNights graphql.Nullable[int32] `json:"minNights"`
 	// Update the 'percent_off' column in the 'property_los_discounts' collection.

@@ -15,11 +15,11 @@ type DeleteSharedAttachmentsByIdResponse struct {
 	Returning []struct {
 		Content    *json.RawMessage `graphql:"content" scalar:"true"`
 		Filename   *string          `graphql:"filename"`
-		ID         string           `graphql:"id"`
+		Id         string           `graphql:"id"`
 		MimeType   *string          `graphql:"mimeType"`
 		SizeBytes  *graphql.Int64   `graphql:"sizeBytes"`
 		UploadTime *string          `graphql:"uploadTime"`
-		URI        *string          `graphql:"uri"`
+		Uri        *string          `graphql:"uri"`
 	} `graphql:"returning"`
 }
 
@@ -31,11 +31,11 @@ type InsertSharedAttachmentsResponse struct {
 	Returning []struct {
 		Content    *json.RawMessage `graphql:"content" scalar:"true"`
 		Filename   *string          `graphql:"filename"`
-		ID         string           `graphql:"id"`
+		Id         string           `graphql:"id"`
 		MimeType   *string          `graphql:"mimeType"`
 		SizeBytes  *graphql.Int64   `graphql:"sizeBytes"`
 		UploadTime *string          `graphql:"uploadTime"`
-		URI        *string          `graphql:"uri"`
+		Uri        *string          `graphql:"uri"`
 	} `graphql:"returning"`
 }
 
@@ -43,11 +43,11 @@ type InsertSharedAttachmentsResponse struct {
 type SharedAttachments struct {
 	Content    *json.RawMessage `graphql:"content" scalar:"true"`
 	Filename   *string          `graphql:"filename"`
-	ID         string           `graphql:"id"`
+	Id         string           `graphql:"id"`
 	MimeType   *string          `graphql:"mimeType"`
 	SizeBytes  *graphql.Int64   `graphql:"sizeBytes"`
 	UploadTime *string          `graphql:"uploadTime"`
-	URI        *string          `graphql:"uri"`
+	Uri        *string          `graphql:"uri"`
 }
 
 // SharedAttachmentsAggExp is the SharedAttachmentsAggExp model.
@@ -65,7 +65,7 @@ type SharedAttachmentsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"filename"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -100,7 +100,7 @@ type SharedAttachmentsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"uploadTime"`
-	URI struct {
+	Uri struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -116,10 +116,10 @@ type UpdateSharedAttachmentsByIdResponse struct {
 	Returning []struct {
 		Content    *json.RawMessage `graphql:"content" scalar:"true"`
 		Filename   *string          `graphql:"filename"`
-		ID         string           `graphql:"id"`
+		Id         string           `graphql:"id"`
 		MimeType   *string          `graphql:"mimeType"`
 		SizeBytes  *graphql.Int64   `graphql:"sizeBytes"`
 		UploadTime *string          `graphql:"uploadTime"`
-		URI        *string          `graphql:"uri"`
+		Uri        *string          `graphql:"uri"`
 	} `graphql:"returning"`
 }

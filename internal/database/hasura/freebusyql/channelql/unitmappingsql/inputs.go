@@ -13,7 +13,7 @@ type CreateInput struct {
 	Etag               string `json:"etag,omitzero"`
 	ExternalRatePlanId string `json:"externalRatePlanId,omitzero"`
 	ExternalRoomTypeId string `json:"externalRoomTypeId"`
-	ID                 string `json:"id"`
+	Id                 string `json:"id"`
 	Name               string `json:"name"`
 	State              string `json:"state,omitzero"`
 	Unit               string `json:"unit"`
@@ -33,7 +33,7 @@ type UpdateInput struct {
 	// Update the 'external_room_type_id' column in the 'channel_unit_mappings' collection.
 	ExternalRoomTypeId graphql.Nullable[string] `json:"externalRoomTypeId"`
 	// Update the 'id' column in the 'channel_unit_mappings' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'name' column in the 'channel_unit_mappings' collection.
 	Name graphql.Nullable[string] `json:"name"`
 	// Update the 'state' column in the 'channel_unit_mappings' collection.

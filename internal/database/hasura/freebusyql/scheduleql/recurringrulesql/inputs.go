@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one ScheduleRecurringRules row.
 type CreateInput struct {
 	Closes     string `json:"closes,omitzero"`
-	ID         string `json:"id"`
+	Id         string `json:"id"`
 	Opens      string `json:"opens,omitzero"`
 	Rrule      string `json:"rrule"`
 	ScheduleId string `json:"scheduleId"`
@@ -20,7 +20,7 @@ type UpdateInput struct {
 	// Update the 'closes' column in the 'schedule_recurring_rules' collection.
 	Closes graphql.Nullable[string] `json:"closes"`
 	// Update the 'id' column in the 'schedule_recurring_rules' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'opens' column in the 'schedule_recurring_rules' collection.
 	Opens graphql.Nullable[string] `json:"opens"`
 	// Update the 'rrule' column in the 'schedule_recurring_rules' collection.

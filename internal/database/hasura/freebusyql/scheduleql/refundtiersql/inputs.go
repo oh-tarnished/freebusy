@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	CancellationPolicyId string `json:"cancellationPolicyId"`
 	Cutoff               string `json:"cutoff"`
-	ID                   string `json:"id"`
+	Id                   string `json:"id"`
 	RefundPercent        int32  `json:"refundPercent"`
 }
 
@@ -21,7 +21,7 @@ type UpdateInput struct {
 	// Update the 'cutoff' column in the 'schedule_refund_tiers' collection.
 	Cutoff graphql.Nullable[string] `json:"cutoff"`
 	// Update the 'id' column in the 'schedule_refund_tiers' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'refund_percent' column in the 'schedule_refund_tiers' collection.
 	RefundPercent graphql.Nullable[int32] `json:"refundPercent"`
 }

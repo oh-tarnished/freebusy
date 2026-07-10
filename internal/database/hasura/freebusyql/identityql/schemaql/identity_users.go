@@ -17,7 +17,7 @@ type DeleteIdentityUsersByIdResponse struct {
 		DisplayName *string `graphql:"displayName"`
 		Email       *string `graphql:"email"`
 		Etag        *string `graphql:"etag"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Locale      *string `graphql:"locale"`
 		Name        string  `graphql:"name"`
 		TimeZone    *string `graphql:"timeZone"`
@@ -32,7 +32,7 @@ type IdentityUsers struct {
 	DisplayName *string `graphql:"displayName"`
 	Email       *string `graphql:"email"`
 	Etag        *string `graphql:"etag"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	Locale      *string `graphql:"locale"`
 	Name        string  `graphql:"name"`
 	TimeZone    *string `graphql:"timeZone"`
@@ -72,7 +72,7 @@ type IdentityUsersAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -115,7 +115,7 @@ type InsertIdentityUsersResponse struct {
 		DisplayName *string `graphql:"displayName"`
 		Email       *string `graphql:"email"`
 		Etag        *string `graphql:"etag"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Locale      *string `graphql:"locale"`
 		Name        string  `graphql:"name"`
 		TimeZone    *string `graphql:"timeZone"`
@@ -134,7 +134,7 @@ type UpdateIdentityUsersByIdResponse struct {
 		DisplayName *string `graphql:"displayName"`
 		Email       *string `graphql:"email"`
 		Etag        *string `graphql:"etag"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Locale      *string `graphql:"locale"`
 		Name        string  `graphql:"name"`
 		TimeZone    *string `graphql:"timeZone"`

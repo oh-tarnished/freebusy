@@ -12,7 +12,7 @@ var (
 	BuffersId            = graphql.StringField{Col: "buffersId"}
 	CancellationPolicyId = graphql.StringField{Col: "cancellationPolicyId"}
 	Etag                 = graphql.StringField{Col: "etag"}
-	ID                   = graphql.StringField{Col: "id"}
+	Id                   = graphql.StringField{Col: "id"}
 	Name                 = graphql.StringField{Col: "name"}
 	PropertyId           = graphql.StringField{Col: "propertyId"}
 	StayConstraintsId    = graphql.StringField{Col: "stayConstraintsId"}

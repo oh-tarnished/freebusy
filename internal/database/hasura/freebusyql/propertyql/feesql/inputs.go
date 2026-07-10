@@ -11,7 +11,7 @@ type CreateInput struct {
 	AmountId    string `json:"amountId,omitzero"`
 	Code        string `json:"code"`
 	DisplayName string `json:"displayName,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Percent     int32  `json:"percent,omitzero"`
 	PricingUnit string `json:"pricingUnit,omitzero"`
 	Taxable     bool   `json:"taxable,omitzero"`
@@ -27,7 +27,7 @@ type UpdateInput struct {
 	// Update the 'display_name' column in the 'property_fees' collection.
 	DisplayName graphql.Nullable[string] `json:"displayName"`
 	// Update the 'id' column in the 'property_fees' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'percent' column in the 'property_fees' collection.
 	Percent graphql.Nullable[int32] `json:"percent"`
 	// Update the 'pricing_unit' column in the 'property_fees' collection.

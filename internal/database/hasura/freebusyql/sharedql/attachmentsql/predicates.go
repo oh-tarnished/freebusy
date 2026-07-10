@@ -11,11 +11,11 @@ import (
 var (
 	Content    = graphql.JSONField{Col: "content"}
 	Filename   = graphql.StringField{Col: "filename"}
-	ID         = graphql.StringField{Col: "id"}
+	Id         = graphql.StringField{Col: "id"}
 	MimeType   = graphql.StringField{Col: "mimeType"}
 	SizeBytes  = graphql.Int64Field{Col: "sizeBytes"}
 	UploadTime = graphql.StringField{Col: "uploadTime"}
-	URI        = graphql.StringField{Col: "uri"}
+	Uri        = graphql.StringField{Col: "uri"}
 )
 
 // And matches rows satisfying every predicate.

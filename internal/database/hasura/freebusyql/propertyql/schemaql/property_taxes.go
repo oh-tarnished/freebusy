@@ -14,7 +14,7 @@ type DeletePropertyTaxesByIdResponse struct {
 	Returning []struct {
 		Code        string             `graphql:"code"`
 		DisplayName *string            `graphql:"displayName"`
-		ID          string             `graphql:"id"`
+		Id          string             `graphql:"id"`
 		Percent     graphql.Bigdecimal `graphql:"percent"`
 		UnitId      string             `graphql:"unitId"`
 	} `graphql:"returning"`
@@ -28,7 +28,7 @@ type InsertPropertyTaxesResponse struct {
 	Returning []struct {
 		Code        string             `graphql:"code"`
 		DisplayName *string            `graphql:"displayName"`
-		ID          string             `graphql:"id"`
+		Id          string             `graphql:"id"`
 		Percent     graphql.Bigdecimal `graphql:"percent"`
 		UnitId      string             `graphql:"unitId"`
 	} `graphql:"returning"`
@@ -38,7 +38,7 @@ type InsertPropertyTaxesResponse struct {
 type PropertyTaxes struct {
 	Code        string             `graphql:"code"`
 	DisplayName *string            `graphql:"displayName"`
-	ID          string             `graphql:"id"`
+	Id          string             `graphql:"id"`
 	Percent     graphql.Bigdecimal `graphql:"percent"`
 	UnitId      string             `graphql:"unitId"`
 }
@@ -58,7 +58,7 @@ type PropertyTaxesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"displayName"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -94,7 +94,7 @@ type UpdatePropertyTaxesByIdResponse struct {
 	Returning []struct {
 		Code        string             `graphql:"code"`
 		DisplayName *string            `graphql:"displayName"`
-		ID          string             `graphql:"id"`
+		Id          string             `graphql:"id"`
 		Percent     graphql.Bigdecimal `graphql:"percent"`
 		UnitId      string             `graphql:"unitId"`
 	} `graphql:"returning"`

@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	ArrivalDate     string `json:"arrivalDate,omitzero"`
 	EntryPort       string `json:"entryPort,omitzero"`
-	ID              string `json:"id"`
+	Id              string `json:"id"`
 	NextDestination string `json:"nextDestination,omitzero"`
 	Origin          string `json:"origin,omitzero"`
 	VisaExpiryDate  string `json:"visaExpiryDate,omitzero"`
@@ -28,7 +28,7 @@ type UpdateInput struct {
 	// Update the 'entry_port' column in the 'identity_foreigner_details' collection.
 	EntryPort graphql.Nullable[string] `json:"entryPort"`
 	// Update the 'id' column in the 'identity_foreigner_details' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'next_destination' column in the 'identity_foreigner_details' collection.
 	NextDestination graphql.Nullable[string] `json:"nextDestination"`
 	// Update the 'origin' column in the 'identity_foreigner_details' collection.

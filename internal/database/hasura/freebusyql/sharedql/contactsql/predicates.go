@@ -11,7 +11,7 @@ import (
 var (
 	DisplayName = graphql.StringField{Col: "displayName"}
 	Email       = graphql.StringField{Col: "email"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	PhoneNumber = graphql.StringField{Col: "phoneNumber"}
 )
 

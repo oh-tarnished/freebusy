@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	CreateTime  string `json:"createTime"`
 	DateRangeId string `json:"dateRangeId,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Kind        string `json:"kind,omitzero"`
 	Name        string `json:"name"`
 	PropertyId  string `json:"propertyId"`
@@ -27,7 +27,7 @@ type UpdateInput struct {
 	// Update the 'date_range_id' column in the 'schedule_availability_exceptions' collection.
 	DateRangeId graphql.Nullable[string] `json:"dateRangeId"`
 	// Update the 'id' column in the 'schedule_availability_exceptions' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'kind' column in the 'schedule_availability_exceptions' collection.
 	Kind graphql.Nullable[string] `json:"kind"`
 	// Update the 'name' column in the 'schedule_availability_exceptions' collection.

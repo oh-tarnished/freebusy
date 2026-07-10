@@ -11,7 +11,7 @@ import (
 var (
 	Adults   = graphql.Int64Field{Col: "adults"}
 	Children = graphql.Int64Field{Col: "children"}
-	ID       = graphql.StringField{Col: "id"}
+	Id       = graphql.StringField{Col: "id"}
 	Infants  = graphql.Int64Field{Col: "infants"}
 )
 

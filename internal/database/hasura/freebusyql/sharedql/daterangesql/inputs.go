@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one SharedDateRanges row.
 type CreateInput struct {
 	EndDate   string `json:"endDate"`
-	ID        string `json:"id"`
+	Id        string `json:"id"`
 	StartDate string `json:"startDate"`
 }
 
@@ -18,7 +18,7 @@ type UpdateInput struct {
 	// Update the 'end_date' column in the 'shared_date_ranges' collection.
 	EndDate graphql.Nullable[string] `json:"endDate"`
 	// Update the 'id' column in the 'shared_date_ranges' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'start_date' column in the 'shared_date_ranges' collection.
 	StartDate graphql.Nullable[string] `json:"startDate"`
 }

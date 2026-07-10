@@ -21,7 +21,7 @@ type DeletePropertyUnitsByIdResponse struct {
 		DisplayName  string           `graphql:"displayName"`
 		Duration     *string          `graphql:"duration"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		MaxOccupancy *int32           `graphql:"maxOccupancy"`
 		Name         string           `graphql:"name"`
 		PriceId      *string          `graphql:"priceId"`
@@ -49,7 +49,7 @@ type InsertPropertyUnitsResponse struct {
 		DisplayName  string           `graphql:"displayName"`
 		Duration     *string          `graphql:"duration"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		MaxOccupancy *int32           `graphql:"maxOccupancy"`
 		Name         string           `graphql:"name"`
 		PriceId      *string          `graphql:"priceId"`
@@ -73,7 +73,7 @@ type PropertyUnits struct {
 	DisplayName  string           `graphql:"displayName"`
 	Duration     *string          `graphql:"duration"`
 	Etag         *string          `graphql:"etag"`
-	ID           string           `graphql:"id"`
+	Id           string           `graphql:"id"`
 	MaxOccupancy *int32           `graphql:"maxOccupancy"`
 	Name         string           `graphql:"name"`
 	PriceId      *string          `graphql:"priceId"`
@@ -146,7 +146,7 @@ type PropertyUnitsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -233,7 +233,7 @@ type UpdatePropertyUnitsByIdResponse struct {
 		DisplayName  string           `graphql:"displayName"`
 		Duration     *string          `graphql:"duration"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		MaxOccupancy *int32           `graphql:"maxOccupancy"`
 		Name         string           `graphql:"name"`
 		PriceId      *string          `graphql:"priceId"`

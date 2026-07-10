@@ -12,7 +12,7 @@ type DeletePromocodeUsageLimitsByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID               string         `graphql:"id"`
+		Id               string         `graphql:"id"`
 		MaxRedemptions   *graphql.Int64 `graphql:"maxRedemptions"`
 		PerCustomerLimit *int32         `graphql:"perCustomerLimit"`
 	} `graphql:"returning"`
@@ -24,7 +24,7 @@ type InsertPromocodeUsageLimitsResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID               string         `graphql:"id"`
+		Id               string         `graphql:"id"`
 		MaxRedemptions   *graphql.Int64 `graphql:"maxRedemptions"`
 		PerCustomerLimit *int32         `graphql:"perCustomerLimit"`
 	} `graphql:"returning"`
@@ -32,7 +32,7 @@ type InsertPromocodeUsageLimitsResponse struct {
 
 // PromocodeUsageLimits is the PromocodeUsageLimits model.
 type PromocodeUsageLimits struct {
-	ID               string         `graphql:"id"`
+	Id               string         `graphql:"id"`
 	MaxRedemptions   *graphql.Int64 `graphql:"maxRedemptions"`
 	PerCustomerLimit *int32         `graphql:"perCustomerLimit"`
 }
@@ -40,7 +40,7 @@ type PromocodeUsageLimits struct {
 // PromocodeUsageLimitsAggExp is the PromocodeUsageLimitsAggExp model.
 type PromocodeUsageLimitsAggExp struct {
 	Count graphql.Int64 `graphql:"_count"`
-	ID    struct {
+	Id    struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -88,7 +88,7 @@ type UpdatePromocodeUsageLimitsByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID               string         `graphql:"id"`
+		Id               string         `graphql:"id"`
 		MaxRedemptions   *graphql.Int64 `graphql:"maxRedemptions"`
 		PerCustomerLimit *int32         `graphql:"perCustomerLimit"`
 	} `graphql:"returning"`

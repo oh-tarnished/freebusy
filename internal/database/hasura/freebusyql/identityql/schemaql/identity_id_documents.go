@@ -14,7 +14,7 @@ type DeleteIdentityIdDocumentsByIdResponse struct {
 	Returning []struct {
 		AttachmentId   *string `graphql:"attachmentId"`
 		ExpiryDate     *string `graphql:"expiryDate"`
-		ID             string  `graphql:"id"`
+		Id             string  `graphql:"id"`
 		IssueDate      *string `graphql:"issueDate"`
 		IssuePlace     *string `graphql:"issuePlace"`
 		IssuingCountry *string `graphql:"issuingCountry"`
@@ -27,7 +27,7 @@ type DeleteIdentityIdDocumentsByIdResponse struct {
 type IdentityIdDocuments struct {
 	AttachmentId   *string `graphql:"attachmentId"`
 	ExpiryDate     *string `graphql:"expiryDate"`
-	ID             string  `graphql:"id"`
+	Id             string  `graphql:"id"`
 	IssueDate      *string `graphql:"issueDate"`
 	IssuePlace     *string `graphql:"issuePlace"`
 	IssuingCountry *string `graphql:"issuingCountry"`
@@ -50,7 +50,7 @@ type IdentityIdDocumentsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"expiryDate"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -96,7 +96,7 @@ type InsertIdentityIdDocumentsResponse struct {
 	Returning []struct {
 		AttachmentId   *string `graphql:"attachmentId"`
 		ExpiryDate     *string `graphql:"expiryDate"`
-		ID             string  `graphql:"id"`
+		Id             string  `graphql:"id"`
 		IssueDate      *string `graphql:"issueDate"`
 		IssuePlace     *string `graphql:"issuePlace"`
 		IssuingCountry *string `graphql:"issuingCountry"`
@@ -113,7 +113,7 @@ type UpdateIdentityIdDocumentsByIdResponse struct {
 	Returning []struct {
 		AttachmentId   *string `graphql:"attachmentId"`
 		ExpiryDate     *string `graphql:"expiryDate"`
-		ID             string  `graphql:"id"`
+		Id             string  `graphql:"id"`
 		IssueDate      *string `graphql:"issueDate"`
 		IssuePlace     *string `graphql:"issuePlace"`
 		IssuingCountry *string `graphql:"issuingCountry"`

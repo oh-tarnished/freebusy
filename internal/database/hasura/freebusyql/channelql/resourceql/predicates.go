@@ -14,7 +14,7 @@ var (
 	DisplayName        = graphql.StringField{Col: "displayName"}
 	Etag               = graphql.StringField{Col: "etag"}
 	ExternalPropertyId = graphql.StringField{Col: "externalPropertyId"}
-	ID                 = graphql.StringField{Col: "id"}
+	Id                 = graphql.StringField{Col: "id"}
 	LastSyncTime       = graphql.StringField{Col: "lastSyncTime"}
 	Name               = graphql.StringField{Col: "name"}
 	Property           = graphql.StringField{Col: "property"}

@@ -11,7 +11,7 @@ import (
 var (
 	CheckinTime  = graphql.StringField{Col: "checkinTime"}
 	CheckoutTime = graphql.StringField{Col: "checkoutTime"}
-	ID           = graphql.StringField{Col: "id"}
+	Id           = graphql.StringField{Col: "id"}
 	Notes        = graphql.StringField{Col: "notes"}
 )
 

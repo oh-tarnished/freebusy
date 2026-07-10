@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one PropertyUnitsLink row.
 type CreateInput struct {
-	ID         string `json:"id"`
+	Id         string `json:"id"`
 	PropertyId string `json:"propertyId"`
 	UnitId     string `json:"unitId"`
 	UnitName   string `json:"unitName"`
@@ -17,7 +17,7 @@ type CreateInput struct {
 // UpdateInput holds the fields to change on a PropertyUnitsLink row; each set field becomes a column update.
 type UpdateInput struct {
 	// Update the 'id' column in the 'property_units_link' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'property_id' column in the 'property_units_link' collection.
 	PropertyId graphql.Nullable[string] `json:"propertyId"`
 	// Update the 'unit_id' column in the 'property_units_link' collection.

@@ -14,7 +14,7 @@ type DeleteScheduleExceptionsByIdResponse struct {
 	Returning []struct {
 		AvailabilityExceptionId   string `graphql:"availabilityExceptionId"`
 		AvailabilityExceptionName string `graphql:"availabilityExceptionName"`
-		ID                        string `graphql:"id"`
+		Id                        string `graphql:"id"`
 		ScheduleId                string `graphql:"scheduleId"`
 	} `graphql:"returning"`
 }
@@ -27,7 +27,7 @@ type InsertScheduleExceptionsResponse struct {
 	Returning []struct {
 		AvailabilityExceptionId   string `graphql:"availabilityExceptionId"`
 		AvailabilityExceptionName string `graphql:"availabilityExceptionName"`
-		ID                        string `graphql:"id"`
+		Id                        string `graphql:"id"`
 		ScheduleId                string `graphql:"scheduleId"`
 	} `graphql:"returning"`
 }
@@ -36,7 +36,7 @@ type InsertScheduleExceptionsResponse struct {
 type ScheduleExceptions struct {
 	AvailabilityExceptionId   string `graphql:"availabilityExceptionId"`
 	AvailabilityExceptionName string `graphql:"availabilityExceptionName"`
-	ID                        string `graphql:"id"`
+	Id                        string `graphql:"id"`
 	ScheduleId                string `graphql:"scheduleId"`
 }
 
@@ -55,7 +55,7 @@ type ScheduleExceptionsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"availabilityExceptionName"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -77,7 +77,7 @@ type UpdateScheduleExceptionsByIdResponse struct {
 	Returning []struct {
 		AvailabilityExceptionId   string `graphql:"availabilityExceptionId"`
 		AvailabilityExceptionName string `graphql:"availabilityExceptionName"`
-		ID                        string `graphql:"id"`
+		Id                        string `graphql:"id"`
 		ScheduleId                string `graphql:"scheduleId"`
 	} `graphql:"returning"`
 }

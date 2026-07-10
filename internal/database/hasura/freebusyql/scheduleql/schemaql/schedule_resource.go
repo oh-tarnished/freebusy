@@ -15,7 +15,7 @@ type DeleteScheduleResourceByIdResponse struct {
 		BuffersId            *string `graphql:"buffersId"`
 		CancellationPolicyId *string `graphql:"cancellationPolicyId"`
 		Etag                 *string `graphql:"etag"`
-		ID                   string  `graphql:"id"`
+		Id                   string  `graphql:"id"`
 		Name                 string  `graphql:"name"`
 		PropertyId           string  `graphql:"propertyId"`
 		StayConstraintsId    *string `graphql:"stayConstraintsId"`
@@ -31,7 +31,7 @@ type InsertScheduleResourceResponse struct {
 		BuffersId            *string `graphql:"buffersId"`
 		CancellationPolicyId *string `graphql:"cancellationPolicyId"`
 		Etag                 *string `graphql:"etag"`
-		ID                   string  `graphql:"id"`
+		Id                   string  `graphql:"id"`
 		Name                 string  `graphql:"name"`
 		PropertyId           string  `graphql:"propertyId"`
 		StayConstraintsId    *string `graphql:"stayConstraintsId"`
@@ -43,7 +43,7 @@ type ScheduleResource struct {
 	BuffersId            *string `graphql:"buffersId"`
 	CancellationPolicyId *string `graphql:"cancellationPolicyId"`
 	Etag                 *string `graphql:"etag"`
-	ID                   string  `graphql:"id"`
+	Id                   string  `graphql:"id"`
 	Name                 string  `graphql:"name"`
 	PropertyId           string  `graphql:"propertyId"`
 	StayConstraintsId    *string `graphql:"stayConstraintsId"`
@@ -70,7 +70,7 @@ type ScheduleResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -105,7 +105,7 @@ type UpdateScheduleResourceByIdResponse struct {
 		BuffersId            *string `graphql:"buffersId"`
 		CancellationPolicyId *string `graphql:"cancellationPolicyId"`
 		Etag                 *string `graphql:"etag"`
-		ID                   string  `graphql:"id"`
+		Id                   string  `graphql:"id"`
 		Name                 string  `graphql:"name"`
 		PropertyId           string  `graphql:"propertyId"`
 		StayConstraintsId    *string `graphql:"stayConstraintsId"`

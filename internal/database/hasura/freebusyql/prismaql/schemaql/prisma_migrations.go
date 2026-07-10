@@ -15,7 +15,7 @@ type DeletePrismaMigrationsByIdResponse struct {
 		AppliedStepsCount int32   `graphql:"appliedStepsCount"`
 		Checksum          string  `graphql:"checksum"`
 		FinishedAt        *string `graphql:"finishedAt"`
-		ID                string  `graphql:"id"`
+		Id                string  `graphql:"id"`
 		Logs              *string `graphql:"logs"`
 		MigrationName     string  `graphql:"migrationName"`
 		RolledBackAt      *string `graphql:"rolledBackAt"`
@@ -32,7 +32,7 @@ type InsertPrismaMigrationsResponse struct {
 		AppliedStepsCount int32   `graphql:"appliedStepsCount"`
 		Checksum          string  `graphql:"checksum"`
 		FinishedAt        *string `graphql:"finishedAt"`
-		ID                string  `graphql:"id"`
+		Id                string  `graphql:"id"`
 		Logs              *string `graphql:"logs"`
 		MigrationName     string  `graphql:"migrationName"`
 		RolledBackAt      *string `graphql:"rolledBackAt"`
@@ -45,7 +45,7 @@ type PrismaMigrations struct {
 	AppliedStepsCount int32   `graphql:"appliedStepsCount"`
 	Checksum          string  `graphql:"checksum"`
 	FinishedAt        *string `graphql:"finishedAt"`
-	ID                string  `graphql:"id"`
+	Id                string  `graphql:"id"`
 	Logs              *string `graphql:"logs"`
 	MigrationName     string  `graphql:"migrationName"`
 	RolledBackAt      *string `graphql:"rolledBackAt"`
@@ -84,7 +84,7 @@ type PrismaMigrationsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"finishedAt"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -125,7 +125,7 @@ type UpdatePrismaMigrationsByIdResponse struct {
 		AppliedStepsCount int32   `graphql:"appliedStepsCount"`
 		Checksum          string  `graphql:"checksum"`
 		FinishedAt        *string `graphql:"finishedAt"`
-		ID                string  `graphql:"id"`
+		Id                string  `graphql:"id"`
 		Logs              *string `graphql:"logs"`
 		MigrationName     string  `graphql:"migrationName"`
 		RolledBackAt      *string `graphql:"rolledBackAt"`

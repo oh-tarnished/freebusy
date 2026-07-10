@@ -13,7 +13,7 @@ type DeletePropertyRateOverridesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		DateRangeId *string `graphql:"dateRangeId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PriceId     string  `graphql:"priceId"`
 		UnitId      string  `graphql:"unitId"`
 		Weekdays    *string `graphql:"weekdays"`
@@ -27,7 +27,7 @@ type InsertPropertyRateOverridesResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		DateRangeId *string `graphql:"dateRangeId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PriceId     string  `graphql:"priceId"`
 		UnitId      string  `graphql:"unitId"`
 		Weekdays    *string `graphql:"weekdays"`
@@ -37,7 +37,7 @@ type InsertPropertyRateOverridesResponse struct {
 // PropertyRateOverrides is the PropertyRateOverrides model.
 type PropertyRateOverrides struct {
 	DateRangeId *string `graphql:"dateRangeId"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	PriceId     string  `graphql:"priceId"`
 	UnitId      string  `graphql:"unitId"`
 	Weekdays    *string `graphql:"weekdays"`
@@ -52,7 +52,7 @@ type PropertyRateOverridesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"dateRangeId"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -85,7 +85,7 @@ type UpdatePropertyRateOverridesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		DateRangeId *string `graphql:"dateRangeId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PriceId     string  `graphql:"priceId"`
 		UnitId      string  `graphql:"unitId"`
 		Weekdays    *string `graphql:"weekdays"`

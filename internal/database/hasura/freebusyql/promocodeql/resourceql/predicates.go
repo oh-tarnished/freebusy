@@ -16,7 +16,7 @@ var (
 	DiscountId      = graphql.StringField{Col: "discountId"}
 	DisplayName     = graphql.StringField{Col: "displayName"}
 	Etag            = graphql.StringField{Col: "etag"}
-	ID              = graphql.StringField{Col: "id"}
+	Id              = graphql.StringField{Col: "id"}
 	LimitsId        = graphql.StringField{Col: "limitsId"}
 	Name            = graphql.StringField{Col: "name"}
 	RedemptionCount = graphql.Int64Field{Col: "redemptionCount"}

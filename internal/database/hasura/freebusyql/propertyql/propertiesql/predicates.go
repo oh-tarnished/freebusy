@@ -15,7 +15,7 @@ var (
 	Description  = graphql.StringField{Col: "description"}
 	DisplayName  = graphql.StringField{Col: "displayName"}
 	Etag         = graphql.StringField{Col: "etag"}
-	ID           = graphql.StringField{Col: "id"}
+	Id           = graphql.StringField{Col: "id"}
 	Name         = graphql.StringField{Col: "name"}
 	Organisation = graphql.StringField{Col: "organisation"}
 	PolicyId     = graphql.StringField{Col: "policyId"}

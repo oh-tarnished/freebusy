@@ -12,7 +12,7 @@ type DeletePromocodeScopesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID            string  `graphql:"id"`
+		Id            string  `graphql:"id"`
 		MinSubtotalId *string `graphql:"minSubtotalId"`
 	} `graphql:"returning"`
 }
@@ -23,21 +23,21 @@ type InsertPromocodeScopesResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID            string  `graphql:"id"`
+		Id            string  `graphql:"id"`
 		MinSubtotalId *string `graphql:"minSubtotalId"`
 	} `graphql:"returning"`
 }
 
 // PromocodeScopes is the PromocodeScopes model.
 type PromocodeScopes struct {
-	ID            string  `graphql:"id"`
+	Id            string  `graphql:"id"`
 	MinSubtotalId *string `graphql:"minSubtotalId"`
 }
 
 // PromocodeScopesAggExp is the PromocodeScopesAggExp model.
 type PromocodeScopesAggExp struct {
 	Count graphql.Int64 `graphql:"_count"`
-	ID    struct {
+	Id    struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -57,7 +57,7 @@ type UpdatePromocodeScopesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID            string  `graphql:"id"`
+		Id            string  `graphql:"id"`
 		MinSubtotalId *string `graphql:"minSubtotalId"`
 	} `graphql:"returning"`
 }

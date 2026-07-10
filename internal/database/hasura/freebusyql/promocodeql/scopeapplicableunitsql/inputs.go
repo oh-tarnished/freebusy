@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one PromocodeScopeApplicableUnits row.
 type CreateInput struct {
-	ID       string `json:"id"`
+	Id       string `json:"id"`
 	ScopeId  string `json:"scopeId"`
 	UnitId   string `json:"unitId"`
 	UnitName string `json:"unitName"`
@@ -17,7 +17,7 @@ type CreateInput struct {
 // UpdateInput holds the fields to change on a PromocodeScopeApplicableUnits row; each set field becomes a column update.
 type UpdateInput struct {
 	// Update the 'id' column in the 'promocode_scope_applicable_units' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'scope_id' column in the 'promocode_scope_applicable_units' collection.
 	ScopeId graphql.Nullable[string] `json:"scopeId"`
 	// Update the 'unit_id' column in the 'promocode_scope_applicable_units' collection.

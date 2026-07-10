@@ -11,7 +11,7 @@ type CreateInput struct {
 	AmountAppliedId string `json:"amountAppliedId,omitzero"`
 	Booking         string `json:"booking"`
 	Customer        string `json:"customer"`
-	ID              string `json:"id"`
+	Id              string `json:"id"`
 	Name            string `json:"name"`
 	PromoCodeId     string `json:"promoCodeId"`
 	RedeemedTime    string `json:"redeemedTime,omitzero"`
@@ -26,7 +26,7 @@ type UpdateInput struct {
 	// Update the 'customer' column in the 'promocode_redemptions' collection.
 	Customer graphql.Nullable[string] `json:"customer"`
 	// Update the 'id' column in the 'promocode_redemptions' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'name' column in the 'promocode_redemptions' collection.
 	Name graphql.Nullable[string] `json:"name"`
 	// Update the 'promo_code_id' column in the 'promocode_redemptions' collection.

@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one PromocodeUsageLimits row.
 type CreateInput struct {
-	ID               string        `json:"id"`
+	Id               string        `json:"id"`
 	MaxRedemptions   graphql.Int64 `json:"maxRedemptions,omitzero"`
 	PerCustomerLimit int32         `json:"perCustomerLimit,omitzero"`
 }
@@ -16,7 +16,7 @@ type CreateInput struct {
 // UpdateInput holds the fields to change on a PromocodeUsageLimits row; each set field becomes a column update.
 type UpdateInput struct {
 	// Update the 'id' column in the 'promocode_usage_limits' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'max_redemptions' column in the 'promocode_usage_limits' collection.
 	MaxRedemptions graphql.Nullable[graphql.Int64] `json:"maxRedemptions"`
 	// Update the 'per_customer_limit' column in the 'promocode_usage_limits' collection.

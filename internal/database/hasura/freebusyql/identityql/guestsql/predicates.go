@@ -16,7 +16,7 @@ var (
 	Email              = graphql.StringField{Col: "email"}
 	ForeignerId        = graphql.StringField{Col: "foreignerId"}
 	Gender             = graphql.StringField{Col: "gender"}
-	ID                 = graphql.StringField{Col: "id"}
+	Id                 = graphql.StringField{Col: "id"}
 	IdDocumentId       = graphql.StringField{Col: "idDocumentId"}
 	LocalAddressId     = graphql.StringField{Col: "localAddressId"}
 	Nationality        = graphql.StringField{Col: "nationality"}

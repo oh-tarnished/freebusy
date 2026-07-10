@@ -21,7 +21,7 @@ type BookingResource struct {
 	Etag           *string          `graphql:"etag"`
 	HoldExpireTime *string          `graphql:"holdExpireTime"`
 	HoldTtl        *string          `graphql:"holdTtl"`
-	ID             string           `graphql:"id"`
+	Id             string           `graphql:"id"`
 	Name           string           `graphql:"name"`
 	Notes          *string          `graphql:"notes"`
 	OccupancyId    *string          `graphql:"occupancyId"`
@@ -110,7 +110,7 @@ type BookingResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"holdTtl"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -236,7 +236,7 @@ type DeleteBookingResourceByIdResponse struct {
 		Etag           *string          `graphql:"etag"`
 		HoldExpireTime *string          `graphql:"holdExpireTime"`
 		HoldTtl        *string          `graphql:"holdTtl"`
-		ID             string           `graphql:"id"`
+		Id             string           `graphql:"id"`
 		Name           string           `graphql:"name"`
 		Notes          *string          `graphql:"notes"`
 		OccupancyId    *string          `graphql:"occupancyId"`
@@ -271,7 +271,7 @@ type InsertBookingResourceResponse struct {
 		Etag           *string          `graphql:"etag"`
 		HoldExpireTime *string          `graphql:"holdExpireTime"`
 		HoldTtl        *string          `graphql:"holdTtl"`
-		ID             string           `graphql:"id"`
+		Id             string           `graphql:"id"`
 		Name           string           `graphql:"name"`
 		Notes          *string          `graphql:"notes"`
 		OccupancyId    *string          `graphql:"occupancyId"`
@@ -306,7 +306,7 @@ type UpdateBookingResourceByIdResponse struct {
 		Etag           *string          `graphql:"etag"`
 		HoldExpireTime *string          `graphql:"holdExpireTime"`
 		HoldTtl        *string          `graphql:"holdTtl"`
-		ID             string           `graphql:"id"`
+		Id             string           `graphql:"id"`
 		Name           string           `graphql:"name"`
 		Notes          *string          `graphql:"notes"`
 		OccupancyId    *string          `graphql:"occupancyId"`

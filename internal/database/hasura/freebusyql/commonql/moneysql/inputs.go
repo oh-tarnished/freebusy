@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one CommonMoneys row.
 type CreateInput struct {
 	CurrencyCode string        `json:"currencyCode,omitzero"`
-	ID           string        `json:"id"`
+	Id           string        `json:"id"`
 	Nanos        int32         `json:"nanos,omitzero"`
 	Units        graphql.Int64 `json:"units,omitzero"`
 }
@@ -19,7 +19,7 @@ type UpdateInput struct {
 	// Update the 'currency_code' column in the 'common_moneys' collection.
 	CurrencyCode graphql.Nullable[string] `json:"currencyCode"`
 	// Update the 'id' column in the 'common_moneys' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'nanos' column in the 'common_moneys' collection.
 	Nanos graphql.Nullable[int32] `json:"nanos"`
 	// Update the 'units' column in the 'common_moneys' collection.

@@ -9,7 +9,7 @@ import (
 // CommonMoneys is the CommonMoneys model.
 type CommonMoneys struct {
 	CurrencyCode *string        `graphql:"currencyCode"`
-	ID           string         `graphql:"id"`
+	Id           string         `graphql:"id"`
 	Nanos        *int32         `graphql:"nanos"`
 	Units        *graphql.Int64 `graphql:"units"`
 }
@@ -23,7 +23,7 @@ type CommonMoneysAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"currencyCode"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -72,7 +72,7 @@ type DeleteCommonMoneysByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		CurrencyCode *string        `graphql:"currencyCode"`
-		ID           string         `graphql:"id"`
+		Id           string         `graphql:"id"`
 		Nanos        *int32         `graphql:"nanos"`
 		Units        *graphql.Int64 `graphql:"units"`
 	} `graphql:"returning"`
@@ -85,7 +85,7 @@ type InsertCommonMoneysResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		CurrencyCode *string        `graphql:"currencyCode"`
-		ID           string         `graphql:"id"`
+		Id           string         `graphql:"id"`
 		Nanos        *int32         `graphql:"nanos"`
 		Units        *graphql.Int64 `graphql:"units"`
 	} `graphql:"returning"`
@@ -98,7 +98,7 @@ type UpdateCommonMoneysByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		CurrencyCode *string        `graphql:"currencyCode"`
-		ID           string         `graphql:"id"`
+		Id           string         `graphql:"id"`
 		Nanos        *int32         `graphql:"nanos"`
 		Units        *graphql.Int64 `graphql:"units"`
 	} `graphql:"returning"`

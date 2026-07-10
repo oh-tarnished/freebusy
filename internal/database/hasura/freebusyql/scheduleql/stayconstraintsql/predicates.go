@@ -13,7 +13,7 @@ var (
 	AdvanceMinDays   = graphql.Int64Field{Col: "advanceMinDays"}
 	CheckinWeekdays  = graphql.StringField{Col: "checkinWeekdays"}
 	CheckoutWeekdays = graphql.StringField{Col: "checkoutWeekdays"}
-	ID               = graphql.StringField{Col: "id"}
+	Id               = graphql.StringField{Col: "id"}
 	MaxNights        = graphql.Int64Field{Col: "maxNights"}
 	MinNights        = graphql.Int64Field{Col: "minNights"}
 )

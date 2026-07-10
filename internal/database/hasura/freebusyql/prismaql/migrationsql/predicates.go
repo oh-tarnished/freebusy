@@ -12,7 +12,7 @@ var (
 	AppliedStepsCount = graphql.Int64Field{Col: "appliedStepsCount"}
 	Checksum          = graphql.StringField{Col: "checksum"}
 	FinishedAt        = graphql.StringField{Col: "finishedAt"}
-	ID                = graphql.StringField{Col: "id"}
+	Id                = graphql.StringField{Col: "id"}
 	Logs              = graphql.StringField{Col: "logs"}
 	MigrationName     = graphql.StringField{Col: "migrationName"}
 	RolledBackAt      = graphql.StringField{Col: "rolledBackAt"}

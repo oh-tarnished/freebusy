@@ -10,7 +10,7 @@ import (
 // them with And/Or/Not.
 var (
 	FailedCount  = graphql.Int64Field{Col: "failedCount"}
-	ID           = graphql.StringField{Col: "id"}
+	Id           = graphql.StringField{Col: "id"}
 	LastError    = graphql.StringField{Col: "lastError"}
 	LastSyncTime = graphql.StringField{Col: "lastSyncTime"}
 	Name         = graphql.StringField{Col: "name"}

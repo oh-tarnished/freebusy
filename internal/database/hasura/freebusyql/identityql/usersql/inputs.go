@@ -13,7 +13,7 @@ type CreateInput struct {
 	DisplayName string `json:"displayName,omitzero"`
 	Email       string `json:"email,omitzero"`
 	Etag        string `json:"etag,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Locale      string `json:"locale,omitzero"`
 	Name        string `json:"name"`
 	TimeZone    string `json:"timeZone,omitzero"`
@@ -33,7 +33,7 @@ type UpdateInput struct {
 	// Update the 'etag' column in the 'identity_users' collection.
 	Etag graphql.Nullable[string] `json:"etag"`
 	// Update the 'id' column in the 'identity_users' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'locale' column in the 'identity_users' collection.
 	Locale graphql.Nullable[string] `json:"locale"`
 	// Update the 'name' column in the 'identity_users' collection.

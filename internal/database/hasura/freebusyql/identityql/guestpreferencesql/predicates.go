@@ -11,7 +11,7 @@ import (
 var (
 	Bed             = graphql.StringField{Col: "bed"}
 	FloorPreference = graphql.Int64Field{Col: "floorPreference"}
-	ID              = graphql.StringField{Col: "id"}
+	Id              = graphql.StringField{Col: "id"}
 	LoyaltyNumber   = graphql.StringField{Col: "loyaltyNumber"}
 	Notes           = graphql.StringField{Col: "notes"}
 	Smoking         = graphql.StringField{Col: "smoking"}

@@ -14,7 +14,7 @@ type DeleteScheduleBufferSettingsByIdResponse struct {
 	Returning []struct {
 		EndDelta   *string `graphql:"endDelta"`
 		Gap        *string `graphql:"gap"`
-		ID         string  `graphql:"id"`
+		Id         string  `graphql:"id"`
 		MaxAdvance *string `graphql:"maxAdvance"`
 		MinNotice  *string `graphql:"minNotice"`
 		StartDelta *string `graphql:"startDelta"`
@@ -29,7 +29,7 @@ type InsertScheduleBufferSettingsResponse struct {
 	Returning []struct {
 		EndDelta   *string `graphql:"endDelta"`
 		Gap        *string `graphql:"gap"`
-		ID         string  `graphql:"id"`
+		Id         string  `graphql:"id"`
 		MaxAdvance *string `graphql:"maxAdvance"`
 		MinNotice  *string `graphql:"minNotice"`
 		StartDelta *string `graphql:"startDelta"`
@@ -40,7 +40,7 @@ type InsertScheduleBufferSettingsResponse struct {
 type ScheduleBufferSettings struct {
 	EndDelta   *string `graphql:"endDelta"`
 	Gap        *string `graphql:"gap"`
-	ID         string  `graphql:"id"`
+	Id         string  `graphql:"id"`
 	MaxAdvance *string `graphql:"maxAdvance"`
 	MinNotice  *string `graphql:"minNotice"`
 	StartDelta *string `graphql:"startDelta"`
@@ -61,7 +61,7 @@ type ScheduleBufferSettingsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"gap"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -95,7 +95,7 @@ type UpdateScheduleBufferSettingsByIdResponse struct {
 	Returning []struct {
 		EndDelta   *string `graphql:"endDelta"`
 		Gap        *string `graphql:"gap"`
-		ID         string  `graphql:"id"`
+		Id         string  `graphql:"id"`
 		MaxAdvance *string `graphql:"maxAdvance"`
 		MinNotice  *string `graphql:"minNotice"`
 		StartDelta *string `graphql:"startDelta"`

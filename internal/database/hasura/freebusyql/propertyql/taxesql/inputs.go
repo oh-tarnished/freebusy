@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	Code        string             `json:"code"`
 	DisplayName string             `json:"displayName,omitzero"`
-	ID          string             `json:"id"`
+	Id          string             `json:"id"`
 	Percent     graphql.Bigdecimal `json:"percent"`
 	UnitId      string             `json:"unitId"`
 }
@@ -22,7 +22,7 @@ type UpdateInput struct {
 	// Update the 'display_name' column in the 'property_taxes' collection.
 	DisplayName graphql.Nullable[string] `json:"displayName"`
 	// Update the 'id' column in the 'property_taxes' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'percent' column in the 'property_taxes' collection.
 	Percent graphql.Nullable[graphql.Bigdecimal] `json:"percent"`
 	// Update the 'unit_id' column in the 'property_taxes' collection.

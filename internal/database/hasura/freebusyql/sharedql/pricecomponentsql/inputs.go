@@ -12,7 +12,7 @@ type CreateInput struct {
 	BookingId   string `json:"bookingId"`
 	Code        string `json:"code,omitzero"`
 	DisplayName string `json:"displayName,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Type        string `json:"type,omitzero"`
 }
 
@@ -27,7 +27,7 @@ type UpdateInput struct {
 	// Update the 'display_name' column in the 'shared_price_components' collection.
 	DisplayName graphql.Nullable[string] `json:"displayName"`
 	// Update the 'id' column in the 'shared_price_components' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'type' column in the 'shared_price_components' collection.
 	Type graphql.Nullable[string] `json:"type"`
 }

@@ -9,7 +9,7 @@ import (
 // ChannelSyncStatuses is the ChannelSyncStatuses model.
 type ChannelSyncStatuses struct {
 	FailedCount  *int32  `graphql:"failedCount"`
-	ID           string  `graphql:"id"`
+	Id           string  `graphql:"id"`
 	LastError    *string `graphql:"lastError"`
 	LastSyncTime *string `graphql:"lastSyncTime"`
 	Name         string  `graphql:"name"`
@@ -37,7 +37,7 @@ type ChannelSyncStatusesAggExp struct {
 		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
 		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"failedCount"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -93,7 +93,7 @@ type DeleteChannelSyncStatusesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		FailedCount  *int32  `graphql:"failedCount"`
-		ID           string  `graphql:"id"`
+		Id           string  `graphql:"id"`
 		LastError    *string `graphql:"lastError"`
 		LastSyncTime *string `graphql:"lastSyncTime"`
 		Name         string  `graphql:"name"`
@@ -109,7 +109,7 @@ type InsertChannelSyncStatusesResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		FailedCount  *int32  `graphql:"failedCount"`
-		ID           string  `graphql:"id"`
+		Id           string  `graphql:"id"`
 		LastError    *string `graphql:"lastError"`
 		LastSyncTime *string `graphql:"lastSyncTime"`
 		Name         string  `graphql:"name"`
@@ -125,7 +125,7 @@ type UpdateChannelSyncStatusesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		FailedCount  *int32  `graphql:"failedCount"`
-		ID           string  `graphql:"id"`
+		Id           string  `graphql:"id"`
 		LastError    *string `graphql:"lastError"`
 		LastSyncTime *string `graphql:"lastSyncTime"`
 		Name         string  `graphql:"name"`

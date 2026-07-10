@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	AvailabilityExceptionId   string `json:"availabilityExceptionId"`
 	AvailabilityExceptionName string `json:"availabilityExceptionName"`
-	ID                        string `json:"id"`
+	Id                        string `json:"id"`
 	ScheduleId                string `json:"scheduleId"`
 }
 
@@ -21,7 +21,7 @@ type UpdateInput struct {
 	// Update the 'availability_exception_name' column in the 'schedule_exceptions' collection.
 	AvailabilityExceptionName graphql.Nullable[string] `json:"availabilityExceptionName"`
 	// Update the 'id' column in the 'schedule_exceptions' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'schedule_id' column in the 'schedule_exceptions' collection.
 	ScheduleId graphql.Nullable[string] `json:"scheduleId"`
 }

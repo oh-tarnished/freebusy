@@ -19,7 +19,7 @@ type DeletePropertyPropertiesByIdResponse struct {
 		Description  *string          `graphql:"description"`
 		DisplayName  string           `graphql:"displayName"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		Name         string           `graphql:"name"`
 		Organisation string           `graphql:"organisation"`
 		PolicyId     *string          `graphql:"policyId"`
@@ -42,7 +42,7 @@ type InsertPropertyPropertiesResponse struct {
 		Description  *string          `graphql:"description"`
 		DisplayName  string           `graphql:"displayName"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		Name         string           `graphql:"name"`
 		Organisation string           `graphql:"organisation"`
 		PolicyId     *string          `graphql:"policyId"`
@@ -61,7 +61,7 @@ type PropertyProperties struct {
 	Description  *string          `graphql:"description"`
 	DisplayName  string           `graphql:"displayName"`
 	Etag         *string          `graphql:"etag"`
-	ID           string           `graphql:"id"`
+	Id           string           `graphql:"id"`
 	Name         string           `graphql:"name"`
 	Organisation string           `graphql:"organisation"`
 	PolicyId     *string          `graphql:"policyId"`
@@ -108,7 +108,7 @@ type PropertyPropertiesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -164,7 +164,7 @@ type UpdatePropertyPropertiesByIdResponse struct {
 		Description  *string          `graphql:"description"`
 		DisplayName  string           `graphql:"displayName"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		Name         string           `graphql:"name"`
 		Organisation string           `graphql:"organisation"`
 		PolicyId     *string          `graphql:"policyId"`

@@ -6,10 +6,10 @@ import (
 	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
-// Filter fields for PromocodeUsageLimits. Build predicates like ID.Eq(v) and combine
+// Filter fields for PromocodeUsageLimits. Build predicates like Id.Eq(v) and combine
 // them with And/Or/Not.
 var (
-	ID               = graphql.StringField{Col: "id"}
+	Id               = graphql.StringField{Col: "id"}
 	MaxRedemptions   = graphql.Int64Field{Col: "maxRedemptions"}
 	PerCustomerLimit = graphql.Int64Field{Col: "perCustomerLimit"}
 )

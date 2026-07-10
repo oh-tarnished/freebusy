@@ -15,7 +15,7 @@ type DeletePromocodeRedemptionsByIdResponse struct {
 		AmountAppliedId *string `graphql:"amountAppliedId"`
 		Booking         string  `graphql:"booking"`
 		Customer        string  `graphql:"customer"`
-		ID              string  `graphql:"id"`
+		Id              string  `graphql:"id"`
 		Name            string  `graphql:"name"`
 		PromoCodeId     string  `graphql:"promoCodeId"`
 		RedeemedTime    *string `graphql:"redeemedTime"`
@@ -31,7 +31,7 @@ type InsertPromocodeRedemptionsResponse struct {
 		AmountAppliedId *string `graphql:"amountAppliedId"`
 		Booking         string  `graphql:"booking"`
 		Customer        string  `graphql:"customer"`
-		ID              string  `graphql:"id"`
+		Id              string  `graphql:"id"`
 		Name            string  `graphql:"name"`
 		PromoCodeId     string  `graphql:"promoCodeId"`
 		RedeemedTime    *string `graphql:"redeemedTime"`
@@ -43,7 +43,7 @@ type PromocodeRedemptions struct {
 	AmountAppliedId *string `graphql:"amountAppliedId"`
 	Booking         string  `graphql:"booking"`
 	Customer        string  `graphql:"customer"`
-	ID              string  `graphql:"id"`
+	Id              string  `graphql:"id"`
 	Name            string  `graphql:"name"`
 	PromoCodeId     string  `graphql:"promoCodeId"`
 	RedeemedTime    *string `graphql:"redeemedTime"`
@@ -70,7 +70,7 @@ type PromocodeRedemptionsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"customer"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -105,7 +105,7 @@ type UpdatePromocodeRedemptionsByIdResponse struct {
 		AmountAppliedId *string `graphql:"amountAppliedId"`
 		Booking         string  `graphql:"booking"`
 		Customer        string  `graphql:"customer"`
-		ID              string  `graphql:"id"`
+		Id              string  `graphql:"id"`
 		Name            string  `graphql:"name"`
 		PromoCodeId     string  `graphql:"promoCodeId"`
 		RedeemedTime    *string `graphql:"redeemedTime"`

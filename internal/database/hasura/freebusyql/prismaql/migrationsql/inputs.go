@@ -11,7 +11,7 @@ type CreateInput struct {
 	AppliedStepsCount int32  `json:"appliedStepsCount,omitzero"`
 	Checksum          string `json:"checksum"`
 	FinishedAt        string `json:"finishedAt,omitzero"`
-	ID                string `json:"id"`
+	Id                string `json:"id"`
 	Logs              string `json:"logs,omitzero"`
 	MigrationName     string `json:"migrationName"`
 	RolledBackAt      string `json:"rolledBackAt,omitzero"`
@@ -27,7 +27,7 @@ type UpdateInput struct {
 	// Update the 'finished_at' column in the '_prisma_migrations' collection.
 	FinishedAt graphql.Nullable[string] `json:"finishedAt"`
 	// Update the 'id' column in the '_prisma_migrations' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'logs' column in the '_prisma_migrations' collection.
 	Logs graphql.Nullable[string] `json:"logs"`
 	// Update the 'migration_name' column in the '_prisma_migrations' collection.

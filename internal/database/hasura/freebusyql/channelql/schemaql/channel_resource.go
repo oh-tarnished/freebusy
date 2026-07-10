@@ -13,7 +13,7 @@ type ChannelResource struct {
 	DisplayName        *string `graphql:"displayName"`
 	Etag               *string `graphql:"etag"`
 	ExternalPropertyId *string `graphql:"externalPropertyId"`
-	ID                 string  `graphql:"id"`
+	Id                 string  `graphql:"id"`
 	LastSyncTime       *string `graphql:"lastSyncTime"`
 	Name               string  `graphql:"name"`
 	Property           string  `graphql:"property"`
@@ -55,7 +55,7 @@ type ChannelResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"externalPropertyId"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -110,7 +110,7 @@ type DeleteChannelResourceByIdResponse struct {
 		DisplayName        *string `graphql:"displayName"`
 		Etag               *string `graphql:"etag"`
 		ExternalPropertyId *string `graphql:"externalPropertyId"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		LastSyncTime       *string `graphql:"lastSyncTime"`
 		Name               string  `graphql:"name"`
 		Property           string  `graphql:"property"`
@@ -131,7 +131,7 @@ type InsertChannelResourceResponse struct {
 		DisplayName        *string `graphql:"displayName"`
 		Etag               *string `graphql:"etag"`
 		ExternalPropertyId *string `graphql:"externalPropertyId"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		LastSyncTime       *string `graphql:"lastSyncTime"`
 		Name               string  `graphql:"name"`
 		Property           string  `graphql:"property"`
@@ -152,7 +152,7 @@ type UpdateChannelResourceByIdResponse struct {
 		DisplayName        *string `graphql:"displayName"`
 		Etag               *string `graphql:"etag"`
 		ExternalPropertyId *string `graphql:"externalPropertyId"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		LastSyncTime       *string `graphql:"lastSyncTime"`
 		Name               string  `graphql:"name"`
 		Property           string  `graphql:"property"`

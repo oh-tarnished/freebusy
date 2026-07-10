@@ -16,7 +16,7 @@ type DeletePropertyUnitLicencesByIdResponse struct {
 		CreateTime       string  `graphql:"createTime"`
 		Etag             *string `graphql:"etag"`
 		ExpiryDate       *string `graphql:"expiryDate"`
-		ID               string  `graphql:"id"`
+		Id               string  `graphql:"id"`
 		IssueDate        *string `graphql:"issueDate"`
 		IssuingAuthority *string `graphql:"issuingAuthority"`
 		LicenceNumber    *string `graphql:"licenceNumber"`
@@ -40,7 +40,7 @@ type InsertPropertyUnitLicencesResponse struct {
 		CreateTime       string  `graphql:"createTime"`
 		Etag             *string `graphql:"etag"`
 		ExpiryDate       *string `graphql:"expiryDate"`
-		ID               string  `graphql:"id"`
+		Id               string  `graphql:"id"`
 		IssueDate        *string `graphql:"issueDate"`
 		IssuingAuthority *string `graphql:"issuingAuthority"`
 		LicenceNumber    *string `graphql:"licenceNumber"`
@@ -60,7 +60,7 @@ type PropertyUnitLicences struct {
 	CreateTime       string  `graphql:"createTime"`
 	Etag             *string `graphql:"etag"`
 	ExpiryDate       *string `graphql:"expiryDate"`
-	ID               string  `graphql:"id"`
+	Id               string  `graphql:"id"`
 	IssueDate        *string `graphql:"issueDate"`
 	IssuingAuthority *string `graphql:"issuingAuthority"`
 	LicenceNumber    *string `graphql:"licenceNumber"`
@@ -100,7 +100,7 @@ type PropertyUnitLicencesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"expiryDate"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -178,7 +178,7 @@ type UpdatePropertyUnitLicencesByIdResponse struct {
 		CreateTime       string  `graphql:"createTime"`
 		Etag             *string `graphql:"etag"`
 		ExpiryDate       *string `graphql:"expiryDate"`
-		ID               string  `graphql:"id"`
+		Id               string  `graphql:"id"`
 		IssueDate        *string `graphql:"issueDate"`
 		IssuingAuthority *string `graphql:"issuingAuthority"`
 		LicenceNumber    *string `graphql:"licenceNumber"`

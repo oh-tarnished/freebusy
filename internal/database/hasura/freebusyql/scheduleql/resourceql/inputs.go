@@ -11,7 +11,7 @@ type CreateInput struct {
 	BuffersId            string `json:"buffersId,omitzero"`
 	CancellationPolicyId string `json:"cancellationPolicyId,omitzero"`
 	Etag                 string `json:"etag,omitzero"`
-	ID                   string `json:"id"`
+	Id                   string `json:"id"`
 	Name                 string `json:"name"`
 	PropertyId           string `json:"propertyId"`
 	StayConstraintsId    string `json:"stayConstraintsId,omitzero"`
@@ -26,7 +26,7 @@ type UpdateInput struct {
 	// Update the 'etag' column in the 'schedule_resource' collection.
 	Etag graphql.Nullable[string] `json:"etag"`
 	// Update the 'id' column in the 'schedule_resource' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'name' column in the 'schedule_resource' collection.
 	Name graphql.Nullable[string] `json:"name"`
 	// Update the 'property_id' column in the 'schedule_resource' collection.

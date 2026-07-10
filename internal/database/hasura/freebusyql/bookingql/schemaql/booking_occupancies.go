@@ -10,7 +10,7 @@ import (
 type BookingOccupancies struct {
 	Adults   *int32 `graphql:"adults"`
 	Children *int32 `graphql:"children"`
-	ID       string `graphql:"id"`
+	Id       string `graphql:"id"`
 	Infants  *int32 `graphql:"infants"`
 }
 
@@ -51,7 +51,7 @@ type BookingOccupanciesAggExp struct {
 		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
 		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"children"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -84,7 +84,7 @@ type DeleteBookingOccupanciesByIdResponse struct {
 	Returning []struct {
 		Adults   *int32 `graphql:"adults"`
 		Children *int32 `graphql:"children"`
-		ID       string `graphql:"id"`
+		Id       string `graphql:"id"`
 		Infants  *int32 `graphql:"infants"`
 	} `graphql:"returning"`
 }
@@ -97,7 +97,7 @@ type InsertBookingOccupanciesResponse struct {
 	Returning []struct {
 		Adults   *int32 `graphql:"adults"`
 		Children *int32 `graphql:"children"`
-		ID       string `graphql:"id"`
+		Id       string `graphql:"id"`
 		Infants  *int32 `graphql:"infants"`
 	} `graphql:"returning"`
 }
@@ -110,7 +110,7 @@ type UpdateBookingOccupanciesByIdResponse struct {
 	Returning []struct {
 		Adults   *int32 `graphql:"adults"`
 		Children *int32 `graphql:"children"`
-		ID       string `graphql:"id"`
+		Id       string `graphql:"id"`
 		Infants  *int32 `graphql:"infants"`
 	} `graphql:"returning"`
 }

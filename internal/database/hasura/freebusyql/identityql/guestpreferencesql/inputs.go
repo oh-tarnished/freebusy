@@ -12,7 +12,7 @@ type CreateInput struct {
 	Bed             string    `json:"bed,omitzero"`
 	Dietary         []*string `json:"dietary,omitzero"`
 	FloorPreference int32     `json:"floorPreference,omitzero"`
-	ID              string    `json:"id"`
+	Id              string    `json:"id"`
 	LoyaltyNumber   string    `json:"loyaltyNumber,omitzero"`
 	Notes           string    `json:"notes,omitzero"`
 	Smoking         string    `json:"smoking,omitzero"`
@@ -30,7 +30,7 @@ type UpdateInput struct {
 	// Update the 'floor_preference' column in the 'identity_guest_preferences' collection.
 	FloorPreference graphql.Nullable[int32] `json:"floorPreference"`
 	// Update the 'id' column in the 'identity_guest_preferences' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'loyalty_number' column in the 'identity_guest_preferences' collection.
 	LoyaltyNumber graphql.Nullable[string] `json:"loyaltyNumber"`
 	// Update the 'notes' column in the 'identity_guest_preferences' collection.

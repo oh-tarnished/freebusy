@@ -14,7 +14,7 @@ var (
 	DisplayName = graphql.StringField{Col: "displayName"}
 	Email       = graphql.StringField{Col: "email"}
 	Etag        = graphql.StringField{Col: "etag"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	Locale      = graphql.StringField{Col: "locale"}
 	Name        = graphql.StringField{Col: "name"}
 	TimeZone    = graphql.StringField{Col: "timeZone"}

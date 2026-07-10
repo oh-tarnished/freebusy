@@ -13,7 +13,7 @@ type DeletePropertyLosDiscountsByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		AmountOffId *string `graphql:"amountOffId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		MinNights   int32   `graphql:"minNights"`
 		PercentOff  *int32  `graphql:"percentOff"`
 		UnitId      string  `graphql:"unitId"`
@@ -27,7 +27,7 @@ type InsertPropertyLosDiscountsResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		AmountOffId *string `graphql:"amountOffId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		MinNights   int32   `graphql:"minNights"`
 		PercentOff  *int32  `graphql:"percentOff"`
 		UnitId      string  `graphql:"unitId"`
@@ -37,7 +37,7 @@ type InsertPropertyLosDiscountsResponse struct {
 // PropertyLosDiscounts is the PropertyLosDiscounts model.
 type PropertyLosDiscounts struct {
 	AmountOffId *string `graphql:"amountOffId"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	MinNights   int32   `graphql:"minNights"`
 	PercentOff  *int32  `graphql:"percentOff"`
 	UnitId      string  `graphql:"unitId"`
@@ -52,7 +52,7 @@ type PropertyLosDiscountsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"amountOffId"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -107,7 +107,7 @@ type UpdatePropertyLosDiscountsByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		AmountOffId *string `graphql:"amountOffId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		MinNights   int32   `graphql:"minNights"`
 		PercentOff  *int32  `graphql:"percentOff"`
 		UnitId      string  `graphql:"unitId"`

@@ -17,7 +17,7 @@ type DeleteOrganisationResourceByIdResponse struct {
 		CreateTime   string           `graphql:"createTime"`
 		DisplayName  string           `graphql:"displayName"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		MemberCount  *graphql.Int64   `graphql:"memberCount"`
 		Name         string           `graphql:"name"`
 		Settings     *json.RawMessage `graphql:"settings" scalar:"true"`
@@ -37,7 +37,7 @@ type InsertOrganisationResourceResponse struct {
 		CreateTime   string           `graphql:"createTime"`
 		DisplayName  string           `graphql:"displayName"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		MemberCount  *graphql.Int64   `graphql:"memberCount"`
 		Name         string           `graphql:"name"`
 		Settings     *json.RawMessage `graphql:"settings" scalar:"true"`
@@ -53,7 +53,7 @@ type OrganisationResource struct {
 	CreateTime   string           `graphql:"createTime"`
 	DisplayName  string           `graphql:"displayName"`
 	Etag         *string          `graphql:"etag"`
-	ID           string           `graphql:"id"`
+	Id           string           `graphql:"id"`
 	MemberCount  *graphql.Int64   `graphql:"memberCount"`
 	Name         string           `graphql:"name"`
 	Settings     *json.RawMessage `graphql:"settings" scalar:"true"`
@@ -89,7 +89,7 @@ type OrganisationResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -152,7 +152,7 @@ type UpdateOrganisationResourceByIdResponse struct {
 		CreateTime   string           `graphql:"createTime"`
 		DisplayName  string           `graphql:"displayName"`
 		Etag         *string          `graphql:"etag"`
-		ID           string           `graphql:"id"`
+		Id           string           `graphql:"id"`
 		MemberCount  *graphql.Int64   `graphql:"memberCount"`
 		Name         string           `graphql:"name"`
 		Settings     *json.RawMessage `graphql:"settings" scalar:"true"`

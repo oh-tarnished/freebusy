@@ -14,7 +14,7 @@ var (
 	Etag               = graphql.StringField{Col: "etag"}
 	ExternalRatePlanId = graphql.StringField{Col: "externalRatePlanId"}
 	ExternalRoomTypeId = graphql.StringField{Col: "externalRoomTypeId"}
-	ID                 = graphql.StringField{Col: "id"}
+	Id                 = graphql.StringField{Col: "id"}
 	Name               = graphql.StringField{Col: "name"}
 	State              = graphql.StringField{Col: "state"}
 	Unit               = graphql.StringField{Col: "unit"}

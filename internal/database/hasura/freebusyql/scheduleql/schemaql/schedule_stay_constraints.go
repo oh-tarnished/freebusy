@@ -16,7 +16,7 @@ type DeleteScheduleStayConstraintsByIdResponse struct {
 		AdvanceMinDays   *int32  `graphql:"advanceMinDays"`
 		CheckinWeekdays  *string `graphql:"checkinWeekdays"`
 		CheckoutWeekdays *string `graphql:"checkoutWeekdays"`
-		ID               string  `graphql:"id"`
+		Id               string  `graphql:"id"`
 		MaxNights        *int32  `graphql:"maxNights"`
 		MinNights        *int32  `graphql:"minNights"`
 	} `graphql:"returning"`
@@ -32,7 +32,7 @@ type InsertScheduleStayConstraintsResponse struct {
 		AdvanceMinDays   *int32  `graphql:"advanceMinDays"`
 		CheckinWeekdays  *string `graphql:"checkinWeekdays"`
 		CheckoutWeekdays *string `graphql:"checkoutWeekdays"`
-		ID               string  `graphql:"id"`
+		Id               string  `graphql:"id"`
 		MaxNights        *int32  `graphql:"maxNights"`
 		MinNights        *int32  `graphql:"minNights"`
 	} `graphql:"returning"`
@@ -44,7 +44,7 @@ type ScheduleStayConstraints struct {
 	AdvanceMinDays   *int32  `graphql:"advanceMinDays"`
 	CheckinWeekdays  *string `graphql:"checkinWeekdays"`
 	CheckoutWeekdays *string `graphql:"checkoutWeekdays"`
-	ID               string  `graphql:"id"`
+	Id               string  `graphql:"id"`
 	MaxNights        *int32  `graphql:"maxNights"`
 	MinNights        *int32  `graphql:"minNights"`
 }
@@ -98,7 +98,7 @@ type ScheduleStayConstraintsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"checkoutWeekdays"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -150,7 +150,7 @@ type UpdateScheduleStayConstraintsByIdResponse struct {
 		AdvanceMinDays   *int32  `graphql:"advanceMinDays"`
 		CheckinWeekdays  *string `graphql:"checkinWeekdays"`
 		CheckoutWeekdays *string `graphql:"checkoutWeekdays"`
-		ID               string  `graphql:"id"`
+		Id               string  `graphql:"id"`
 		MaxNights        *int32  `graphql:"maxNights"`
 		MinNights        *int32  `graphql:"minNights"`
 	} `graphql:"returning"`

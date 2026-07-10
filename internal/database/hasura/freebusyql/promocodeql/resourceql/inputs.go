@@ -15,7 +15,7 @@ type CreateInput struct {
 	DiscountId      string        `json:"discountId"`
 	DisplayName     string        `json:"displayName,omitzero"`
 	Etag            string        `json:"etag,omitzero"`
-	ID              string        `json:"id"`
+	Id              string        `json:"id"`
 	LimitsId        string        `json:"limitsId,omitzero"`
 	Name            string        `json:"name"`
 	RedemptionCount graphql.Int64 `json:"redemptionCount,omitzero"`
@@ -42,7 +42,7 @@ type UpdateInput struct {
 	// Update the 'etag' column in the 'promocode_resource' collection.
 	Etag graphql.Nullable[string] `json:"etag"`
 	// Update the 'id' column in the 'promocode_resource' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'limits_id' column in the 'promocode_resource' collection.
 	LimitsId graphql.Nullable[string] `json:"limitsId"`
 	// Update the 'name' column in the 'promocode_resource' collection.

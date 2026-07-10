@@ -8,11 +8,11 @@ import (
 
 // CreateInput holds the settable fields for creating one ScheduleCancellationPolicies row.
 type CreateInput struct {
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
 // UpdateInput holds the fields to change on a ScheduleCancellationPolicies row; each set field becomes a column update.
 type UpdateInput struct {
 	// Update the 'id' column in the 'schedule_cancellation_policies' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 }

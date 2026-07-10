@@ -8,14 +8,14 @@ import (
 
 // CreateInput holds the settable fields for creating one PromocodeScopes row.
 type CreateInput struct {
-	ID            string `json:"id"`
+	Id            string `json:"id"`
 	MinSubtotalId string `json:"minSubtotalId,omitzero"`
 }
 
 // UpdateInput holds the fields to change on a PromocodeScopes row; each set field becomes a column update.
 type UpdateInput struct {
 	// Update the 'id' column in the 'promocode_scopes' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'min_subtotal_id' column in the 'promocode_scopes' collection.
 	MinSubtotalId graphql.Nullable[string] `json:"minSubtotalId"`
 }

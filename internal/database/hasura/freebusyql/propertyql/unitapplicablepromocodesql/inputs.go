@@ -8,7 +8,7 @@ import (
 
 // CreateInput holds the settable fields for creating one PropertyUnitApplicablePromoCodes row.
 type CreateInput struct {
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	PromoCodeId string `json:"promoCodeId"`
 	UnitId      string `json:"unitId"`
 }
@@ -16,7 +16,7 @@ type CreateInput struct {
 // UpdateInput holds the fields to change on a PropertyUnitApplicablePromoCodes row; each set field becomes a column update.
 type UpdateInput struct {
 	// Update the 'id' column in the 'property_unit_applicable_promo_codes' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'promo_code_id' column in the 'property_unit_applicable_promo_codes' collection.
 	PromoCodeId graphql.Nullable[string] `json:"promoCodeId"`
 	// Update the 'unit_id' column in the 'property_unit_applicable_promo_codes' collection.

@@ -16,7 +16,7 @@ type DeleteOrganisationMembersByIdResponse struct {
 		DisplayName    *string `graphql:"displayName"`
 		Email          string  `graphql:"email"`
 		Etag           *string `graphql:"etag"`
-		ID             string  `graphql:"id"`
+		Id             string  `graphql:"id"`
 		Inviter        *string `graphql:"inviter"`
 		Name           string  `graphql:"name"`
 		OrganisationId string  `graphql:"organisationId"`
@@ -37,7 +37,7 @@ type InsertOrganisationMembersResponse struct {
 		DisplayName    *string `graphql:"displayName"`
 		Email          string  `graphql:"email"`
 		Etag           *string `graphql:"etag"`
-		ID             string  `graphql:"id"`
+		Id             string  `graphql:"id"`
 		Inviter        *string `graphql:"inviter"`
 		Name           string  `graphql:"name"`
 		OrganisationId string  `graphql:"organisationId"`
@@ -54,7 +54,7 @@ type OrganisationMembers struct {
 	DisplayName    *string `graphql:"displayName"`
 	Email          string  `graphql:"email"`
 	Etag           *string `graphql:"etag"`
-	ID             string  `graphql:"id"`
+	Id             string  `graphql:"id"`
 	Inviter        *string `graphql:"inviter"`
 	Name           string  `graphql:"name"`
 	OrganisationId string  `graphql:"organisationId"`
@@ -91,7 +91,7 @@ type OrganisationMembersAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -151,7 +151,7 @@ type UpdateOrganisationMembersByIdResponse struct {
 		DisplayName    *string `graphql:"displayName"`
 		Email          string  `graphql:"email"`
 		Etag           *string `graphql:"etag"`
-		ID             string  `graphql:"id"`
+		Id             string  `graphql:"id"`
 		Inviter        *string `graphql:"inviter"`
 		Name           string  `graphql:"name"`
 		OrganisationId string  `graphql:"organisationId"`

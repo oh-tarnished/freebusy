@@ -13,7 +13,7 @@ var (
 	DisplayName    = graphql.StringField{Col: "displayName"}
 	Email          = graphql.StringField{Col: "email"}
 	Etag           = graphql.StringField{Col: "etag"}
-	ID             = graphql.StringField{Col: "id"}
+	Id             = graphql.StringField{Col: "id"}
 	Inviter        = graphql.StringField{Col: "inviter"}
 	Name           = graphql.StringField{Col: "name"}
 	OrganisationId = graphql.StringField{Col: "organisationId"}

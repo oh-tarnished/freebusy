@@ -13,7 +13,7 @@ type DeleteSharedDateRangesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		EndDate   string `graphql:"endDate"`
-		ID        string `graphql:"id"`
+		Id        string `graphql:"id"`
 		StartDate string `graphql:"startDate"`
 	} `graphql:"returning"`
 }
@@ -25,7 +25,7 @@ type InsertSharedDateRangesResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		EndDate   string `graphql:"endDate"`
-		ID        string `graphql:"id"`
+		Id        string `graphql:"id"`
 		StartDate string `graphql:"startDate"`
 	} `graphql:"returning"`
 }
@@ -33,7 +33,7 @@ type InsertSharedDateRangesResponse struct {
 // SharedDateRanges is the SharedDateRanges model.
 type SharedDateRanges struct {
 	EndDate   string `graphql:"endDate"`
-	ID        string `graphql:"id"`
+	Id        string `graphql:"id"`
 	StartDate string `graphql:"startDate"`
 }
 
@@ -46,7 +46,7 @@ type SharedDateRangesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"endDate"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -67,7 +67,7 @@ type UpdateSharedDateRangesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		EndDate   string `graphql:"endDate"`
-		ID        string `graphql:"id"`
+		Id        string `graphql:"id"`
 		StartDate string `graphql:"startDate"`
 	} `graphql:"returning"`
 }

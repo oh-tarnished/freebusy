@@ -9,14 +9,14 @@ import (
 // CreateInput holds the settable fields for creating one PropertyUnitMedias row.
 type CreateInput struct {
 	Description string `json:"description,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	MimeType    string `json:"mimeType,omitzero"`
 	Primary     bool   `json:"primary,omitzero"`
 	SortOrder   int32  `json:"sortOrder,omitzero"`
 	Title       string `json:"title,omitzero"`
 	Type        string `json:"type,omitzero"`
 	UnitId      string `json:"unitId"`
-	URI         string `json:"uri"`
+	Uri         string `json:"uri"`
 }
 
 // UpdateInput holds the fields to change on a PropertyUnitMedias row; each set field becomes a column update.
@@ -24,7 +24,7 @@ type UpdateInput struct {
 	// Update the 'description' column in the 'property_unit_medias' collection.
 	Description graphql.Nullable[string] `json:"description"`
 	// Update the 'id' column in the 'property_unit_medias' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'mime_type' column in the 'property_unit_medias' collection.
 	MimeType graphql.Nullable[string] `json:"mimeType"`
 	// Update the 'primary' column in the 'property_unit_medias' collection.
@@ -38,5 +38,5 @@ type UpdateInput struct {
 	// Update the 'unit_id' column in the 'property_unit_medias' collection.
 	UnitId graphql.Nullable[string] `json:"unitId"`
 	// Update the 'uri' column in the 'property_unit_medias' collection.
-	URI graphql.Nullable[string] `json:"uri"`
+	Uri graphql.Nullable[string] `json:"uri"`
 }

@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	EndDelta   string `json:"endDelta,omitzero"`
 	Gap        string `json:"gap,omitzero"`
-	ID         string `json:"id"`
+	Id         string `json:"id"`
 	MaxAdvance string `json:"maxAdvance,omitzero"`
 	MinNotice  string `json:"minNotice,omitzero"`
 	StartDelta string `json:"startDelta,omitzero"`
@@ -23,7 +23,7 @@ type UpdateInput struct {
 	// Update the 'gap' column in the 'schedule_buffer_settings' collection.
 	Gap graphql.Nullable[string] `json:"gap"`
 	// Update the 'id' column in the 'schedule_buffer_settings' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'max_advance' column in the 'schedule_buffer_settings' collection.
 	MaxAdvance graphql.Nullable[string] `json:"maxAdvance"`
 	// Update the 'min_notice' column in the 'schedule_buffer_settings' collection.

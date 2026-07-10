@@ -11,7 +11,7 @@ import (
 var (
 	Code        = graphql.StringField{Col: "code"}
 	DisplayName = graphql.StringField{Col: "displayName"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	Percent     = graphql.StringField{Col: "percent"}
 	UnitId      = graphql.StringField{Col: "unitId"}
 )

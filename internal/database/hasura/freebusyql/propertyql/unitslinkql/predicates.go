@@ -6,10 +6,10 @@ import (
 	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
-// Filter fields for PropertyUnitsLink. Build predicates like ID.Eq(v) and combine
+// Filter fields for PropertyUnitsLink. Build predicates like Id.Eq(v) and combine
 // them with And/Or/Not.
 var (
-	ID         = graphql.StringField{Col: "id"}
+	Id         = graphql.StringField{Col: "id"}
 	PropertyId = graphql.StringField{Col: "propertyId"}
 	UnitId     = graphql.StringField{Col: "unitId"}
 	UnitName   = graphql.StringField{Col: "unitName"}

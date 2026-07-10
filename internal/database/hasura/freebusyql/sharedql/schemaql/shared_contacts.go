@@ -14,7 +14,7 @@ type DeleteSharedContactsByIdResponse struct {
 	Returning []struct {
 		DisplayName *string `graphql:"displayName"`
 		Email       *string `graphql:"email"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PhoneNumber *string `graphql:"phoneNumber"`
 	} `graphql:"returning"`
 }
@@ -27,7 +27,7 @@ type InsertSharedContactsResponse struct {
 	Returning []struct {
 		DisplayName *string `graphql:"displayName"`
 		Email       *string `graphql:"email"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PhoneNumber *string `graphql:"phoneNumber"`
 	} `graphql:"returning"`
 }
@@ -36,7 +36,7 @@ type InsertSharedContactsResponse struct {
 type SharedContacts struct {
 	DisplayName *string `graphql:"displayName"`
 	Email       *string `graphql:"email"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	PhoneNumber *string `graphql:"phoneNumber"`
 }
 
@@ -55,7 +55,7 @@ type SharedContactsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"email"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -77,7 +77,7 @@ type UpdateSharedContactsByIdResponse struct {
 	Returning []struct {
 		DisplayName *string `graphql:"displayName"`
 		Email       *string `graphql:"email"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PhoneNumber *string `graphql:"phoneNumber"`
 	} `graphql:"returning"`
 }

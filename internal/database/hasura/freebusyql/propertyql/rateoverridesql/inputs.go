@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one PropertyRateOverrides row.
 type CreateInput struct {
 	DateRangeId string `json:"dateRangeId,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	PriceId     string `json:"priceId"`
 	UnitId      string `json:"unitId"`
 	Weekdays    string `json:"weekdays,omitzero"`
@@ -20,7 +20,7 @@ type UpdateInput struct {
 	// Update the 'date_range_id' column in the 'property_rate_overrides' collection.
 	DateRangeId graphql.Nullable[string] `json:"dateRangeId"`
 	// Update the 'id' column in the 'property_rate_overrides' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'price_id' column in the 'property_rate_overrides' collection.
 	PriceId graphql.Nullable[string] `json:"priceId"`
 	// Update the 'unit_id' column in the 'property_rate_overrides' collection.

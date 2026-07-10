@@ -11,7 +11,7 @@ import (
 var (
 	AttachmentId   = graphql.StringField{Col: "attachmentId"}
 	ExpiryDate     = graphql.StringField{Col: "expiryDate"}
-	ID             = graphql.StringField{Col: "id"}
+	Id             = graphql.StringField{Col: "id"}
 	IssueDate      = graphql.StringField{Col: "issueDate"}
 	IssuePlace     = graphql.StringField{Col: "issuePlace"}
 	IssuingCountry = graphql.StringField{Col: "issuingCountry"}

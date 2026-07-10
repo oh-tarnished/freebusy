@@ -11,11 +11,11 @@ import (
 type CreateInput struct {
 	Content    json.RawMessage `json:"content,omitzero"`
 	Filename   string          `json:"filename,omitzero"`
-	ID         string          `json:"id"`
+	Id         string          `json:"id"`
 	MimeType   string          `json:"mimeType,omitzero"`
 	SizeBytes  graphql.Int64   `json:"sizeBytes,omitzero"`
 	UploadTime string          `json:"uploadTime,omitzero"`
-	URI        string          `json:"uri,omitzero"`
+	Uri        string          `json:"uri,omitzero"`
 }
 
 // UpdateInput holds the fields to change on a SharedAttachments row; each set field becomes a column update.
@@ -25,7 +25,7 @@ type UpdateInput struct {
 	// Update the 'filename' column in the 'shared_attachments' collection.
 	Filename graphql.Nullable[string] `json:"filename"`
 	// Update the 'id' column in the 'shared_attachments' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'mime_type' column in the 'shared_attachments' collection.
 	MimeType graphql.Nullable[string] `json:"mimeType"`
 	// Update the 'size_bytes' column in the 'shared_attachments' collection.
@@ -33,5 +33,5 @@ type UpdateInput struct {
 	// Update the 'upload_time' column in the 'shared_attachments' collection.
 	UploadTime graphql.Nullable[string] `json:"uploadTime"`
 	// Update the 'uri' column in the 'shared_attachments' collection.
-	URI graphql.Nullable[string] `json:"uri"`
+	Uri graphql.Nullable[string] `json:"uri"`
 }

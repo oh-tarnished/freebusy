@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	AttachmentId   string `json:"attachmentId,omitzero"`
 	ExpiryDate     string `json:"expiryDate,omitzero"`
-	ID             string `json:"id"`
+	Id             string `json:"id"`
 	IssueDate      string `json:"issueDate,omitzero"`
 	IssuePlace     string `json:"issuePlace,omitzero"`
 	IssuingCountry string `json:"issuingCountry,omitzero"`
@@ -25,7 +25,7 @@ type UpdateInput struct {
 	// Update the 'expiry_date' column in the 'identity_id_documents' collection.
 	ExpiryDate graphql.Nullable[string] `json:"expiryDate"`
 	// Update the 'id' column in the 'identity_id_documents' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'issue_date' column in the 'identity_id_documents' collection.
 	IssueDate graphql.Nullable[string] `json:"issueDate"`
 	// Update the 'issue_place' column in the 'identity_id_documents' collection.

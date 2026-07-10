@@ -13,7 +13,7 @@ var (
 	BookingId   = graphql.StringField{Col: "bookingId"}
 	Code        = graphql.StringField{Col: "code"}
 	DisplayName = graphql.StringField{Col: "displayName"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	Type        = graphql.StringField{Col: "type"}
 )
 

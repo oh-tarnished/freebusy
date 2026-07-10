@@ -21,7 +21,7 @@ type CreateInput struct {
 	Etag           string          `json:"etag,omitzero"`
 	HoldExpireTime string          `json:"holdExpireTime,omitzero"`
 	HoldTtl        string          `json:"holdTtl,omitzero"`
-	ID             string          `json:"id"`
+	Id             string          `json:"id"`
 	Name           string          `json:"name"`
 	Notes          string          `json:"notes,omitzero"`
 	OccupancyId    string          `json:"occupancyId,omitzero"`
@@ -64,7 +64,7 @@ type UpdateInput struct {
 	// Update the 'hold_ttl' column in the 'booking_resource' collection.
 	HoldTtl graphql.Nullable[string] `json:"holdTtl"`
 	// Update the 'id' column in the 'booking_resource' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'name' column in the 'booking_resource' collection.
 	Name graphql.Nullable[string] `json:"name"`
 	// Update the 'notes' column in the 'booking_resource' collection.

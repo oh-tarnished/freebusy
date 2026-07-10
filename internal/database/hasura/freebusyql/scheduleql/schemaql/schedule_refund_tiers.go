@@ -14,7 +14,7 @@ type DeleteScheduleRefundTiersByIdResponse struct {
 	Returning []struct {
 		CancellationPolicyId string `graphql:"cancellationPolicyId"`
 		Cutoff               string `graphql:"cutoff"`
-		ID                   string `graphql:"id"`
+		Id                   string `graphql:"id"`
 		RefundPercent        int32  `graphql:"refundPercent"`
 	} `graphql:"returning"`
 }
@@ -27,7 +27,7 @@ type InsertScheduleRefundTiersResponse struct {
 	Returning []struct {
 		CancellationPolicyId string `graphql:"cancellationPolicyId"`
 		Cutoff               string `graphql:"cutoff"`
-		ID                   string `graphql:"id"`
+		Id                   string `graphql:"id"`
 		RefundPercent        int32  `graphql:"refundPercent"`
 	} `graphql:"returning"`
 }
@@ -36,7 +36,7 @@ type InsertScheduleRefundTiersResponse struct {
 type ScheduleRefundTiers struct {
 	CancellationPolicyId string `graphql:"cancellationPolicyId"`
 	Cutoff               string `graphql:"cutoff"`
-	ID                   string `graphql:"id"`
+	Id                   string `graphql:"id"`
 	RefundPercent        int32  `graphql:"refundPercent"`
 }
 
@@ -55,7 +55,7 @@ type ScheduleRefundTiersAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"cutoff"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -88,7 +88,7 @@ type UpdateScheduleRefundTiersByIdResponse struct {
 	Returning []struct {
 		CancellationPolicyId string `graphql:"cancellationPolicyId"`
 		Cutoff               string `graphql:"cutoff"`
-		ID                   string `graphql:"id"`
+		Id                   string `graphql:"id"`
 		RefundPercent        int32  `graphql:"refundPercent"`
 	} `graphql:"returning"`
 }

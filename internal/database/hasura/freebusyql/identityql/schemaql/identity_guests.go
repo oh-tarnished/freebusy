@@ -12,7 +12,7 @@ type DeleteIdentityGuestsByBookingIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID string `graphql:"id"`
+		Id string `graphql:"id"`
 	} `graphql:"returning"`
 }
 
@@ -29,7 +29,7 @@ type DeleteIdentityGuestsByIdResponse struct {
 		Email              *string `graphql:"email"`
 		ForeignerId        *string `graphql:"foreignerId"`
 		Gender             *string `graphql:"gender"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		IdDocumentId       *string `graphql:"idDocumentId"`
 		LocalAddressId     *string `graphql:"localAddressId"`
 		Nationality        *string `graphql:"nationality"`
@@ -49,7 +49,7 @@ type IdentityGuests struct {
 	Email              *string `graphql:"email"`
 	ForeignerId        *string `graphql:"foreignerId"`
 	Gender             *string `graphql:"gender"`
-	ID                 string  `graphql:"id"`
+	Id                 string  `graphql:"id"`
 	IdDocumentId       *string `graphql:"idDocumentId"`
 	LocalAddressId     *string `graphql:"localAddressId"`
 	Nationality        *string `graphql:"nationality"`
@@ -104,7 +104,7 @@ type IdentityGuestsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"gender"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -168,7 +168,7 @@ type InsertIdentityGuestsResponse struct {
 		Email              *string `graphql:"email"`
 		ForeignerId        *string `graphql:"foreignerId"`
 		Gender             *string `graphql:"gender"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		IdDocumentId       *string `graphql:"idDocumentId"`
 		LocalAddressId     *string `graphql:"localAddressId"`
 		Nationality        *string `graphql:"nationality"`
@@ -192,7 +192,7 @@ type UpdateIdentityGuestsByIdResponse struct {
 		Email              *string `graphql:"email"`
 		ForeignerId        *string `graphql:"foreignerId"`
 		Gender             *string `graphql:"gender"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		IdDocumentId       *string `graphql:"idDocumentId"`
 		LocalAddressId     *string `graphql:"localAddressId"`
 		Nationality        *string `graphql:"nationality"`

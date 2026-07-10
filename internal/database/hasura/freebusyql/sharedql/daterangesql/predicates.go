@@ -10,7 +10,7 @@ import (
 // them with And/Or/Not.
 var (
 	EndDate   = graphql.StringField{Col: "endDate"}
-	ID        = graphql.StringField{Col: "id"}
+	Id        = graphql.StringField{Col: "id"}
 	StartDate = graphql.StringField{Col: "startDate"}
 )
 

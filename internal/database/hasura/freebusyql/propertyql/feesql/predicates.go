@@ -12,7 +12,7 @@ var (
 	AmountId    = graphql.StringField{Col: "amountId"}
 	Code        = graphql.StringField{Col: "code"}
 	DisplayName = graphql.StringField{Col: "displayName"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	Percent     = graphql.Int64Field{Col: "percent"}
 	PricingUnit = graphql.StringField{Col: "pricingUnit"}
 	Taxable     = graphql.BoolField{Col: "taxable"}

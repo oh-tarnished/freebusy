@@ -13,7 +13,7 @@ type CreateInput struct {
 	DisplayName        string `json:"displayName,omitzero"`
 	Etag               string `json:"etag,omitzero"`
 	ExternalPropertyId string `json:"externalPropertyId,omitzero"`
-	ID                 string `json:"id"`
+	Id                 string `json:"id"`
 	LastSyncTime       string `json:"lastSyncTime,omitzero"`
 	Name               string `json:"name"`
 	Property           string `json:"property"`
@@ -35,7 +35,7 @@ type UpdateInput struct {
 	// Update the 'external_property_id' column in the 'channel_resource' collection.
 	ExternalPropertyId graphql.Nullable[string] `json:"externalPropertyId"`
 	// Update the 'id' column in the 'channel_resource' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'last_sync_time' column in the 'channel_resource' collection.
 	LastSyncTime graphql.Nullable[string] `json:"lastSyncTime"`
 	// Update the 'name' column in the 'channel_resource' collection.

@@ -10,7 +10,7 @@ import (
 // them with And/Or/Not.
 var (
 	AdministrativeArea = graphql.StringField{Col: "administrativeArea"}
-	ID                 = graphql.StringField{Col: "id"}
+	Id                 = graphql.StringField{Col: "id"}
 	LanguageCode       = graphql.StringField{Col: "languageCode"}
 	Locality           = graphql.StringField{Col: "locality"}
 	Organization       = graphql.StringField{Col: "organization"}

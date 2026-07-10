@@ -12,7 +12,7 @@ var (
 	AmountAppliedId = graphql.StringField{Col: "amountAppliedId"}
 	Booking         = graphql.StringField{Col: "booking"}
 	Customer        = graphql.StringField{Col: "customer"}
-	ID              = graphql.StringField{Col: "id"}
+	Id              = graphql.StringField{Col: "id"}
 	Name            = graphql.StringField{Col: "name"}
 	PromoCodeId     = graphql.StringField{Col: "promoCodeId"}
 	RedeemedTime    = graphql.StringField{Col: "redeemedTime"}

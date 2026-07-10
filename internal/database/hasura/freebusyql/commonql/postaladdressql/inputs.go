@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	AddressLines       []*string `json:"addressLines,omitzero"`
 	AdministrativeArea string    `json:"administrativeArea,omitzero"`
-	ID                 string    `json:"id"`
+	Id                 string    `json:"id"`
 	LanguageCode       string    `json:"languageCode,omitzero"`
 	Locality           string    `json:"locality,omitzero"`
 	Organization       string    `json:"organization,omitzero"`
@@ -29,7 +29,7 @@ type UpdateInput struct {
 	// Update the 'administrative_area' column in the 'common_postal_address' collection.
 	AdministrativeArea graphql.Nullable[string] `json:"administrativeArea"`
 	// Update the 'id' column in the 'common_postal_address' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'language_code' column in the 'common_postal_address' collection.
 	LanguageCode graphql.Nullable[string] `json:"languageCode"`
 	// Update the 'locality' column in the 'common_postal_address' collection.

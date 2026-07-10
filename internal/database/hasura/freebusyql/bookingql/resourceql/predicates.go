@@ -21,7 +21,7 @@ var (
 	Etag           = graphql.StringField{Col: "etag"}
 	HoldExpireTime = graphql.StringField{Col: "holdExpireTime"}
 	HoldTtl        = graphql.StringField{Col: "holdTtl"}
-	ID             = graphql.StringField{Col: "id"}
+	Id             = graphql.StringField{Col: "id"}
 	Name           = graphql.StringField{Col: "name"}
 	Notes          = graphql.StringField{Col: "notes"}
 	OccupancyId    = graphql.StringField{Col: "occupancyId"}

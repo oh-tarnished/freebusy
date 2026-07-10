@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one ChannelSyncStatuses row.
 type CreateInput struct {
 	FailedCount  int32  `json:"failedCount,omitzero"`
-	ID           string `json:"id"`
+	Id           string `json:"id"`
 	LastError    string `json:"lastError,omitzero"`
 	LastSyncTime string `json:"lastSyncTime,omitzero"`
 	Name         string `json:"name"`
@@ -22,7 +22,7 @@ type UpdateInput struct {
 	// Update the 'failed_count' column in the 'channel_sync_statuses' collection.
 	FailedCount graphql.Nullable[int32] `json:"failedCount"`
 	// Update the 'id' column in the 'channel_sync_statuses' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'last_error' column in the 'channel_sync_statuses' collection.
 	LastError graphql.Nullable[string] `json:"lastError"`
 	// Update the 'last_sync_time' column in the 'channel_sync_statuses' collection.

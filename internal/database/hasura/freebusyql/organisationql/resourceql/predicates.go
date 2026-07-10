@@ -13,7 +13,7 @@ var (
 	CreateTime   = graphql.StringField{Col: "createTime"}
 	DisplayName  = graphql.StringField{Col: "displayName"}
 	Etag         = graphql.StringField{Col: "etag"}
-	ID           = graphql.StringField{Col: "id"}
+	Id           = graphql.StringField{Col: "id"}
 	MemberCount  = graphql.Int64Field{Col: "memberCount"}
 	Name         = graphql.StringField{Col: "name"}
 	Settings     = graphql.JSONField{Col: "settings"}

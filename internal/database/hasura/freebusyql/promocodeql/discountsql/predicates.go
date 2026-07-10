@@ -11,7 +11,7 @@ import (
 var (
 	AmountCase  = graphql.StringField{Col: "amountCase"}
 	AmountOffId = graphql.StringField{Col: "amountOffId"}
-	ID          = graphql.StringField{Col: "id"}
+	Id          = graphql.StringField{Col: "id"}
 	PercentOff  = graphql.Int64Field{Col: "percentOff"}
 )
 

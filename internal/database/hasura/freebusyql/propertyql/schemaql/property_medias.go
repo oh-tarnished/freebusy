@@ -13,14 +13,14 @@ type DeletePropertyMediasByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		Description *string `graphql:"description"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		MimeType    *string `graphql:"mimeType"`
 		Primary     *bool   `graphql:"primary"`
 		PropertyId  string  `graphql:"propertyId"`
 		SortOrder   *int32  `graphql:"sortOrder"`
 		Title       *string `graphql:"title"`
 		Type        string  `graphql:"type"`
-		URI         string  `graphql:"uri"`
+		Uri         string  `graphql:"uri"`
 	} `graphql:"returning"`
 }
 
@@ -31,28 +31,28 @@ type InsertPropertyMediasResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		Description *string `graphql:"description"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		MimeType    *string `graphql:"mimeType"`
 		Primary     *bool   `graphql:"primary"`
 		PropertyId  string  `graphql:"propertyId"`
 		SortOrder   *int32  `graphql:"sortOrder"`
 		Title       *string `graphql:"title"`
 		Type        string  `graphql:"type"`
-		URI         string  `graphql:"uri"`
+		Uri         string  `graphql:"uri"`
 	} `graphql:"returning"`
 }
 
 // PropertyMedias is the PropertyMedias model.
 type PropertyMedias struct {
 	Description *string `graphql:"description"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	MimeType    *string `graphql:"mimeType"`
 	Primary     *bool   `graphql:"primary"`
 	PropertyId  string  `graphql:"propertyId"`
 	SortOrder   *int32  `graphql:"sortOrder"`
 	Title       *string `graphql:"title"`
 	Type        string  `graphql:"type"`
-	URI         string  `graphql:"uri"`
+	Uri         string  `graphql:"uri"`
 }
 
 // PropertyMediasAggExp is the PropertyMediasAggExp model.
@@ -64,7 +64,7 @@ type PropertyMediasAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"description"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -118,7 +118,7 @@ type PropertyMediasAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"type"`
-	URI struct {
+	Uri struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -133,13 +133,13 @@ type UpdatePropertyMediasByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		Description *string `graphql:"description"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		MimeType    *string `graphql:"mimeType"`
 		Primary     *bool   `graphql:"primary"`
 		PropertyId  string  `graphql:"propertyId"`
 		SortOrder   *int32  `graphql:"sortOrder"`
 		Title       *string `graphql:"title"`
 		Type        string  `graphql:"type"`
-		URI         string  `graphql:"uri"`
+		Uri         string  `graphql:"uri"`
 	} `graphql:"returning"`
 }

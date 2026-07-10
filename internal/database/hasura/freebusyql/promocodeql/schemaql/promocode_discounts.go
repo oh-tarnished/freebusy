@@ -14,7 +14,7 @@ type DeletePromocodeDiscountsByIdResponse struct {
 	Returning []struct {
 		AmountCase  *string `graphql:"amountCase"`
 		AmountOffId *string `graphql:"amountOffId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PercentOff  *int32  `graphql:"percentOff"`
 	} `graphql:"returning"`
 }
@@ -27,7 +27,7 @@ type InsertPromocodeDiscountsResponse struct {
 	Returning []struct {
 		AmountCase  *string `graphql:"amountCase"`
 		AmountOffId *string `graphql:"amountOffId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PercentOff  *int32  `graphql:"percentOff"`
 	} `graphql:"returning"`
 }
@@ -36,7 +36,7 @@ type InsertPromocodeDiscountsResponse struct {
 type PromocodeDiscounts struct {
 	AmountCase  *string `graphql:"amountCase"`
 	AmountOffId *string `graphql:"amountOffId"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	PercentOff  *int32  `graphql:"percentOff"`
 }
 
@@ -55,7 +55,7 @@ type PromocodeDiscountsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"amountOffId"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -88,7 +88,7 @@ type UpdatePromocodeDiscountsByIdResponse struct {
 	Returning []struct {
 		AmountCase  *string `graphql:"amountCase"`
 		AmountOffId *string `graphql:"amountOffId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		PercentOff  *int32  `graphql:"percentOff"`
 	} `graphql:"returning"`
 }

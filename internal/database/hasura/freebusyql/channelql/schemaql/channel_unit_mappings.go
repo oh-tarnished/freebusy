@@ -13,7 +13,7 @@ type ChannelUnitMappings struct {
 	Etag               *string `graphql:"etag"`
 	ExternalRatePlanId *string `graphql:"externalRatePlanId"`
 	ExternalRoomTypeId string  `graphql:"externalRoomTypeId"`
-	ID                 string  `graphql:"id"`
+	Id                 string  `graphql:"id"`
 	Name               string  `graphql:"name"`
 	State              *string `graphql:"state"`
 	Unit               string  `graphql:"unit"`
@@ -53,7 +53,7 @@ type ChannelUnitMappingsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"externalRoomTypeId"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -96,7 +96,7 @@ type DeleteChannelUnitMappingsByIdResponse struct {
 		Etag               *string `graphql:"etag"`
 		ExternalRatePlanId *string `graphql:"externalRatePlanId"`
 		ExternalRoomTypeId string  `graphql:"externalRoomTypeId"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		Name               string  `graphql:"name"`
 		State              *string `graphql:"state"`
 		Unit               string  `graphql:"unit"`
@@ -115,7 +115,7 @@ type InsertChannelUnitMappingsResponse struct {
 		Etag               *string `graphql:"etag"`
 		ExternalRatePlanId *string `graphql:"externalRatePlanId"`
 		ExternalRoomTypeId string  `graphql:"externalRoomTypeId"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		Name               string  `graphql:"name"`
 		State              *string `graphql:"state"`
 		Unit               string  `graphql:"unit"`
@@ -134,7 +134,7 @@ type UpdateChannelUnitMappingsByIdResponse struct {
 		Etag               *string `graphql:"etag"`
 		ExternalRatePlanId *string `graphql:"externalRatePlanId"`
 		ExternalRoomTypeId string  `graphql:"externalRoomTypeId"`
-		ID                 string  `graphql:"id"`
+		Id                 string  `graphql:"id"`
 		Name               string  `graphql:"name"`
 		State              *string `graphql:"state"`
 		Unit               string  `graphql:"unit"`

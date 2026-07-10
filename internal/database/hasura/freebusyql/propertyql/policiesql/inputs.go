@@ -11,7 +11,7 @@ type CreateInput struct {
 	CheckinTime  string    `json:"checkinTime,omitzero"`
 	CheckoutTime string    `json:"checkoutTime,omitzero"`
 	HouseRules   []*string `json:"houseRules,omitzero"`
-	ID           string    `json:"id"`
+	Id           string    `json:"id"`
 	Notes        string    `json:"notes,omitzero"`
 }
 
@@ -24,7 +24,7 @@ type UpdateInput struct {
 	// Update the 'house_rules' column in the 'property_policies' collection.
 	HouseRules graphql.Nullable[[]*string] `json:"houseRules"`
 	// Update the 'id' column in the 'property_policies' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'notes' column in the 'property_policies' collection.
 	Notes graphql.Nullable[string] `json:"notes"`
 }

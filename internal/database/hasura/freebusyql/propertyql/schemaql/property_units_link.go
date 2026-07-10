@@ -12,7 +12,7 @@ type DeletePropertyUnitsLinkByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID         string `graphql:"id"`
+		Id         string `graphql:"id"`
 		PropertyId string `graphql:"propertyId"`
 		UnitId     string `graphql:"unitId"`
 		UnitName   string `graphql:"unitName"`
@@ -25,7 +25,7 @@ type InsertPropertyUnitsLinkResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID         string `graphql:"id"`
+		Id         string `graphql:"id"`
 		PropertyId string `graphql:"propertyId"`
 		UnitId     string `graphql:"unitId"`
 		UnitName   string `graphql:"unitName"`
@@ -34,7 +34,7 @@ type InsertPropertyUnitsLinkResponse struct {
 
 // PropertyUnitsLink is the PropertyUnitsLink model.
 type PropertyUnitsLink struct {
-	ID         string `graphql:"id"`
+	Id         string `graphql:"id"`
 	PropertyId string `graphql:"propertyId"`
 	UnitId     string `graphql:"unitId"`
 	UnitName   string `graphql:"unitName"`
@@ -43,7 +43,7 @@ type PropertyUnitsLink struct {
 // PropertyUnitsLinkAggExp is the PropertyUnitsLinkAggExp model.
 type PropertyUnitsLinkAggExp struct {
 	Count graphql.Int64 `graphql:"_count"`
-	ID    struct {
+	Id    struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -75,7 +75,7 @@ type UpdatePropertyUnitsLinkByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID         string `graphql:"id"`
+		Id         string `graphql:"id"`
 		PropertyId string `graphql:"propertyId"`
 		UnitId     string `graphql:"unitId"`
 		UnitName   string `graphql:"unitName"`

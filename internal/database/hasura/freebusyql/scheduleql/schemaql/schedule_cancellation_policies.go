@@ -12,7 +12,7 @@ type DeleteScheduleCancellationPoliciesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID string `graphql:"id"`
+		Id string `graphql:"id"`
 	} `graphql:"returning"`
 }
 
@@ -22,19 +22,19 @@ type InsertScheduleCancellationPoliciesResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID string `graphql:"id"`
+		Id string `graphql:"id"`
 	} `graphql:"returning"`
 }
 
 // ScheduleCancellationPolicies is the ScheduleCancellationPolicies model.
 type ScheduleCancellationPolicies struct {
-	ID string `graphql:"id"`
+	Id string `graphql:"id"`
 }
 
 // ScheduleCancellationPoliciesAggExp is the ScheduleCancellationPoliciesAggExp model.
 type ScheduleCancellationPoliciesAggExp struct {
 	Count graphql.Int64 `graphql:"_count"`
-	ID    struct {
+	Id    struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -48,6 +48,6 @@ type UpdateScheduleCancellationPoliciesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID string `graphql:"id"`
+		Id string `graphql:"id"`
 	} `graphql:"returning"`
 }

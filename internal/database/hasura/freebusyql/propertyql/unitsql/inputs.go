@@ -17,7 +17,7 @@ type CreateInput struct {
 	DisplayName  string          `json:"displayName"`
 	Duration     string          `json:"duration,omitzero"`
 	Etag         string          `json:"etag,omitzero"`
-	ID           string          `json:"id"`
+	Id           string          `json:"id"`
 	MaxOccupancy int32           `json:"maxOccupancy,omitzero"`
 	Name         string          `json:"name"`
 	PriceId      string          `json:"priceId,omitzero"`
@@ -49,7 +49,7 @@ type UpdateInput struct {
 	// Update the 'etag' column in the 'property_units' collection.
 	Etag graphql.Nullable[string] `json:"etag"`
 	// Update the 'id' column in the 'property_units' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'max_occupancy' column in the 'property_units' collection.
 	MaxOccupancy graphql.Nullable[int32] `json:"maxOccupancy"`
 	// Update the 'name' column in the 'property_units' collection.

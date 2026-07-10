@@ -1,5 +1,5 @@
 # Hasura DDN metadata regeneration. Invoked as `just hasura <recipe>`.
-# Recipes run from the repo root so hasura/ + generateql paths resolve unchanged.
+# Recipes run from the repo root so hasura/ + buf template paths resolve unchanged.
 set working-directory := '../..'
 
 # Connector link name + endpoint to poll/verify. Override via env or CLI.
@@ -12,7 +12,7 @@ default:
     @just --list hasura
 
 # Regenerate the Hasura DDN metadata after the Postgres schema changes (e.g. a
-# `just migrate` that added/renamed tables), then refresh the generateql Go
+# `just migrate` that added/renamed tables), then refresh the freebusyql Go
 # client so the hasura repository layer can use the new shape.
 #
 # DDN serves its GraphQL API from metadata (the .hml models), not live from
@@ -34,7 +34,7 @@ default:
 #
 # Env toggles:
 #   SKIP_RESTART=1   skip rebuilding/restarting the local engine
-#   SKIP_CLIENT=1    skip the final `generateql generate`
+#   SKIP_CLIENT=1    skip the final client regeneration (buf generate)
 
 # Re-introspect + regenerate DDN metadata (optionally scoped to a domain).
 [group('hasura')]
@@ -129,13 +129,14 @@ regen domain="":
       sleep 1
     done
 
-    # 6. Refresh the generateql Go client from the now-current schema.
+    # 6. Refresh the typed Go client from the now-current schema. protoc-gen-orm's
+    #    graphql target introspects the engine and regenerates freebusyql (along
+    #    with the other orm outputs) — no separate generateql tool required.
     if [[ "${SKIP_CLIENT:-}" == "1" ]]; then
-      log "SKIP_CLIENT=1 — skipping generateql generate"
+      log "SKIP_CLIENT=1 — skipping client regeneration"
     else
-      command -v generateql >/dev/null 2>&1 || die "generateql not found on PATH (skip with SKIP_CLIENT=1)"
-      log "regenerating generateql client"
-      ( cd "$REPO_ROOT" && generateql generate )
+      log "regenerating freebusyql client (buf generate, target=graphql)"
+      ( cd "$REPO_ROOT" && buf generate --template tools/protobuf/buf/orm.buf.gen.yaml )
     fi
 
     log "done — verify with:"

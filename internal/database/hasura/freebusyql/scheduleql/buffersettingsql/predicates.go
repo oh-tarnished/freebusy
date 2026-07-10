@@ -11,7 +11,7 @@ import (
 var (
 	EndDelta   = graphql.StringField{Col: "endDelta"}
 	Gap        = graphql.StringField{Col: "gap"}
-	ID         = graphql.StringField{Col: "id"}
+	Id         = graphql.StringField{Col: "id"}
 	MaxAdvance = graphql.StringField{Col: "maxAdvance"}
 	MinNotice  = graphql.StringField{Col: "minNotice"}
 	StartDelta = graphql.StringField{Col: "startDelta"}

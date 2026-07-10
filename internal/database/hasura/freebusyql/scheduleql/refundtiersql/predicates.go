@@ -11,7 +11,7 @@ import (
 var (
 	CancellationPolicyId = graphql.StringField{Col: "cancellationPolicyId"}
 	Cutoff               = graphql.StringField{Col: "cutoff"}
-	ID                   = graphql.StringField{Col: "id"}
+	Id                   = graphql.StringField{Col: "id"}
 	RefundPercent        = graphql.Int64Field{Col: "refundPercent"}
 )
 

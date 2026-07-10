@@ -14,7 +14,7 @@ type DeleteScheduleAvailabilityExceptionsByIdResponse struct {
 	Returning []struct {
 		CreateTime  string  `graphql:"createTime"`
 		DateRangeId *string `graphql:"dateRangeId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Kind        string  `graphql:"kind"`
 		Name        string  `graphql:"name"`
 		PropertyId  string  `graphql:"propertyId"`
@@ -33,7 +33,7 @@ type InsertScheduleAvailabilityExceptionsResponse struct {
 	Returning []struct {
 		CreateTime  string  `graphql:"createTime"`
 		DateRangeId *string `graphql:"dateRangeId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Kind        string  `graphql:"kind"`
 		Name        string  `graphql:"name"`
 		PropertyId  string  `graphql:"propertyId"`
@@ -48,7 +48,7 @@ type InsertScheduleAvailabilityExceptionsResponse struct {
 type ScheduleAvailabilityExceptions struct {
 	CreateTime  string  `graphql:"createTime"`
 	DateRangeId *string `graphql:"dateRangeId"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	Kind        string  `graphql:"kind"`
 	Name        string  `graphql:"name"`
 	PropertyId  string  `graphql:"propertyId"`
@@ -73,7 +73,7 @@ type ScheduleAvailabilityExceptionsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"dateRangeId"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -131,7 +131,7 @@ type UpdateScheduleAvailabilityExceptionsByIdResponse struct {
 	Returning []struct {
 		CreateTime  string  `graphql:"createTime"`
 		DateRangeId *string `graphql:"dateRangeId"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Kind        string  `graphql:"kind"`
 		Name        string  `graphql:"name"`
 		PropertyId  string  `graphql:"propertyId"`

@@ -9,7 +9,7 @@ import (
 // CreateInput holds the settable fields for creating one SharedTimeWindows row.
 type CreateInput struct {
 	EndTime   string `json:"endTime"`
-	ID        string `json:"id"`
+	Id        string `json:"id"`
 	StartTime string `json:"startTime"`
 }
 
@@ -18,7 +18,7 @@ type UpdateInput struct {
 	// Update the 'end_time' column in the 'shared_time_windows' collection.
 	EndTime graphql.Nullable[string] `json:"endTime"`
 	// Update the 'id' column in the 'shared_time_windows' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'start_time' column in the 'shared_time_windows' collection.
 	StartTime graphql.Nullable[string] `json:"startTime"`
 }

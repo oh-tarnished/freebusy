@@ -12,7 +12,7 @@ type CreateInput struct {
 	CreateTime       string `json:"createTime"`
 	Etag             string `json:"etag,omitzero"`
 	ExpiryDate       string `json:"expiryDate,omitzero"`
-	ID               string `json:"id"`
+	Id               string `json:"id"`
 	IssueDate        string `json:"issueDate,omitzero"`
 	IssuingAuthority string `json:"issuingAuthority,omitzero"`
 	LicenceNumber    string `json:"licenceNumber,omitzero"`
@@ -37,7 +37,7 @@ type UpdateInput struct {
 	// Update the 'expiry_date' column in the 'property_licences' collection.
 	ExpiryDate graphql.Nullable[string] `json:"expiryDate"`
 	// Update the 'id' column in the 'property_licences' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'issue_date' column in the 'property_licences' collection.
 	IssueDate graphql.Nullable[string] `json:"issueDate"`
 	// Update the 'issuing_authority' column in the 'property_licences' collection.

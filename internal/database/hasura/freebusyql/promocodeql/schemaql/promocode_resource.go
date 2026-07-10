@@ -19,7 +19,7 @@ type DeletePromocodeResourceByIdResponse struct {
 		DiscountId      string         `graphql:"discountId"`
 		DisplayName     *string        `graphql:"displayName"`
 		Etag            *string        `graphql:"etag"`
-		ID              string         `graphql:"id"`
+		Id              string         `graphql:"id"`
 		LimitsId        *string        `graphql:"limitsId"`
 		Name            string         `graphql:"name"`
 		RedemptionCount *graphql.Int64 `graphql:"redemptionCount"`
@@ -43,7 +43,7 @@ type InsertPromocodeResourceResponse struct {
 		DiscountId      string         `graphql:"discountId"`
 		DisplayName     *string        `graphql:"displayName"`
 		Etag            *string        `graphql:"etag"`
-		ID              string         `graphql:"id"`
+		Id              string         `graphql:"id"`
 		LimitsId        *string        `graphql:"limitsId"`
 		Name            string         `graphql:"name"`
 		RedemptionCount *graphql.Int64 `graphql:"redemptionCount"`
@@ -63,7 +63,7 @@ type PromocodeResource struct {
 	DiscountId      string         `graphql:"discountId"`
 	DisplayName     *string        `graphql:"displayName"`
 	Etag            *string        `graphql:"etag"`
-	ID              string         `graphql:"id"`
+	Id              string         `graphql:"id"`
 	LimitsId        *string        `graphql:"limitsId"`
 	Name            string         `graphql:"name"`
 	RedemptionCount *graphql.Int64 `graphql:"redemptionCount"`
@@ -119,7 +119,7 @@ type PromocodeResourceAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"etag"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -193,7 +193,7 @@ type UpdatePromocodeResourceByIdResponse struct {
 		DiscountId      string         `graphql:"discountId"`
 		DisplayName     *string        `graphql:"displayName"`
 		Etag            *string        `graphql:"etag"`
-		ID              string         `graphql:"id"`
+		Id              string         `graphql:"id"`
 		LimitsId        *string        `graphql:"limitsId"`
 		Name            string         `graphql:"name"`
 		RedemptionCount *graphql.Int64 `graphql:"redemptionCount"`

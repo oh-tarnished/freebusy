@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	DisplayName string `json:"displayName,omitzero"`
 	Email       string `json:"email,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	PhoneNumber string `json:"phoneNumber,omitzero"`
 }
 
@@ -21,7 +21,7 @@ type UpdateInput struct {
 	// Update the 'email' column in the 'shared_contacts' collection.
 	Email graphql.Nullable[string] `json:"email"`
 	// Update the 'id' column in the 'shared_contacts' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'phone_number' column in the 'shared_contacts' collection.
 	PhoneNumber graphql.Nullable[string] `json:"phoneNumber"`
 }

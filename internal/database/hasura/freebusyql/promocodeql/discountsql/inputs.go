@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	AmountCase  string `json:"amountCase,omitzero"`
 	AmountOffId string `json:"amountOffId,omitzero"`
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	PercentOff  int32  `json:"percentOff,omitzero"`
 }
 
@@ -21,7 +21,7 @@ type UpdateInput struct {
 	// Update the 'amount_off_id' column in the 'promocode_discounts' collection.
 	AmountOffId graphql.Nullable[string] `json:"amountOffId"`
 	// Update the 'id' column in the 'promocode_discounts' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'percent_off' column in the 'promocode_discounts' collection.
 	PercentOff graphql.Nullable[int32] `json:"percentOff"`
 }

@@ -11,7 +11,7 @@ import (
 var (
 	AvailabilityExceptionId   = graphql.StringField{Col: "availabilityExceptionId"}
 	AvailabilityExceptionName = graphql.StringField{Col: "availabilityExceptionName"}
-	ID                        = graphql.StringField{Col: "id"}
+	Id                        = graphql.StringField{Col: "id"}
 	ScheduleId                = graphql.StringField{Col: "scheduleId"}
 )
 

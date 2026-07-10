@@ -10,7 +10,7 @@ import (
 type CreateInput struct {
 	Adults   int32  `json:"adults,omitzero"`
 	Children int32  `json:"children,omitzero"`
-	ID       string `json:"id"`
+	Id       string `json:"id"`
 	Infants  int32  `json:"infants,omitzero"`
 }
 
@@ -21,7 +21,7 @@ type UpdateInput struct {
 	// Update the 'children' column in the 'booking_occupancies' collection.
 	Children graphql.Nullable[int32] `json:"children"`
 	// Update the 'id' column in the 'booking_occupancies' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'infants' column in the 'booking_occupancies' collection.
 	Infants graphql.Nullable[int32] `json:"infants"`
 }

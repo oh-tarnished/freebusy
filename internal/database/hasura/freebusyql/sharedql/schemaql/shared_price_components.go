@@ -16,7 +16,7 @@ type DeleteSharedPriceComponentsByIdResponse struct {
 		BookingId   string  `graphql:"bookingId"`
 		Code        *string `graphql:"code"`
 		DisplayName *string `graphql:"displayName"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Type        *string `graphql:"type"`
 	} `graphql:"returning"`
 }
@@ -31,7 +31,7 @@ type InsertSharedPriceComponentsResponse struct {
 		BookingId   string  `graphql:"bookingId"`
 		Code        *string `graphql:"code"`
 		DisplayName *string `graphql:"displayName"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Type        *string `graphql:"type"`
 	} `graphql:"returning"`
 }
@@ -42,7 +42,7 @@ type SharedPriceComponents struct {
 	BookingId   string  `graphql:"bookingId"`
 	Code        *string `graphql:"code"`
 	DisplayName *string `graphql:"displayName"`
-	ID          string  `graphql:"id"`
+	Id          string  `graphql:"id"`
 	Type        *string `graphql:"type"`
 }
 
@@ -73,7 +73,7 @@ type SharedPriceComponentsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"displayName"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -97,7 +97,7 @@ type UpdateSharedPriceComponentsByIdResponse struct {
 		BookingId   string  `graphql:"bookingId"`
 		Code        *string `graphql:"code"`
 		DisplayName *string `graphql:"displayName"`
-		ID          string  `graphql:"id"`
+		Id          string  `graphql:"id"`
 		Type        *string `graphql:"type"`
 	} `graphql:"returning"`
 }

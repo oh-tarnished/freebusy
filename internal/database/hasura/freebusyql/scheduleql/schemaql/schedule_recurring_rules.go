@@ -13,7 +13,7 @@ type DeleteScheduleRecurringRulesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		Closes     *string `graphql:"closes"`
-		ID         string  `graphql:"id"`
+		Id         string  `graphql:"id"`
 		Opens      *string `graphql:"opens"`
 		Rrule      string  `graphql:"rrule"`
 		ScheduleId string  `graphql:"scheduleId"`
@@ -27,7 +27,7 @@ type InsertScheduleRecurringRulesResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		Closes     *string `graphql:"closes"`
-		ID         string  `graphql:"id"`
+		Id         string  `graphql:"id"`
 		Opens      *string `graphql:"opens"`
 		Rrule      string  `graphql:"rrule"`
 		ScheduleId string  `graphql:"scheduleId"`
@@ -37,7 +37,7 @@ type InsertScheduleRecurringRulesResponse struct {
 // ScheduleRecurringRules is the ScheduleRecurringRules model.
 type ScheduleRecurringRules struct {
 	Closes     *string `graphql:"closes"`
-	ID         string  `graphql:"id"`
+	Id         string  `graphql:"id"`
 	Opens      *string `graphql:"opens"`
 	Rrule      string  `graphql:"rrule"`
 	ScheduleId string  `graphql:"scheduleId"`
@@ -52,7 +52,7 @@ type ScheduleRecurringRulesAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"closes"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -85,7 +85,7 @@ type UpdateScheduleRecurringRulesByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		Closes     *string `graphql:"closes"`
-		ID         string  `graphql:"id"`
+		Id         string  `graphql:"id"`
 		Opens      *string `graphql:"opens"`
 		Rrule      string  `graphql:"rrule"`
 		ScheduleId string  `graphql:"scheduleId"`

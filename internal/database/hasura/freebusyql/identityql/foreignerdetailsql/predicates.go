@@ -11,7 +11,7 @@ import (
 var (
 	ArrivalDate     = graphql.StringField{Col: "arrivalDate"}
 	EntryPort       = graphql.StringField{Col: "entryPort"}
-	ID              = graphql.StringField{Col: "id"}
+	Id              = graphql.StringField{Col: "id"}
 	NextDestination = graphql.StringField{Col: "nextDestination"}
 	Origin          = graphql.StringField{Col: "origin"}
 	VisaExpiryDate  = graphql.StringField{Col: "visaExpiryDate"}

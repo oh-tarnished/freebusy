@@ -15,7 +15,7 @@ type CreateInput struct {
 	Email              string `json:"email,omitzero"`
 	ForeignerId        string `json:"foreignerId,omitzero"`
 	Gender             string `json:"gender,omitzero"`
-	ID                 string `json:"id"`
+	Id                 string `json:"id"`
 	IdDocumentId       string `json:"idDocumentId,omitzero"`
 	LocalAddressId     string `json:"localAddressId,omitzero"`
 	Nationality        string `json:"nationality,omitzero"`
@@ -42,7 +42,7 @@ type UpdateInput struct {
 	// Update the 'gender' column in the 'identity_guests' collection.
 	Gender graphql.Nullable[string] `json:"gender"`
 	// Update the 'id' column in the 'identity_guests' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'id_document_id' column in the 'identity_guests' collection.
 	IdDocumentId graphql.Nullable[string] `json:"idDocumentId"`
 	// Update the 'local_address_id' column in the 'identity_guests' collection.

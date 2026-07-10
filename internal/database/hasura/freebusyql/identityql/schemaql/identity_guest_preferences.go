@@ -16,7 +16,7 @@ type DeleteIdentityGuestPreferencesByIdResponse struct {
 		Bed             *string   `graphql:"bed"`
 		Dietary         []*string `graphql:"dietary"`
 		FloorPreference *int32    `graphql:"floorPreference"`
-		ID              string    `graphql:"id"`
+		Id              string    `graphql:"id"`
 		LoyaltyNumber   *string   `graphql:"loyaltyNumber"`
 		Notes           *string   `graphql:"notes"`
 		Smoking         *string   `graphql:"smoking"`
@@ -30,7 +30,7 @@ type IdentityGuestPreferences struct {
 	Bed             *string   `graphql:"bed"`
 	Dietary         []*string `graphql:"dietary"`
 	FloorPreference *int32    `graphql:"floorPreference"`
-	ID              string    `graphql:"id"`
+	Id              string    `graphql:"id"`
 	LoyaltyNumber   *string   `graphql:"loyaltyNumber"`
 	Notes           *string   `graphql:"notes"`
 	Smoking         *string   `graphql:"smoking"`
@@ -63,7 +63,7 @@ type IdentityGuestPreferencesAggExp struct {
 		VarSamp       *graphql.Bigdecimal `graphql:"var_samp"`
 		Variance      *graphql.Bigdecimal `graphql:"variance"`
 	} `graphql:"floorPreference"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -99,7 +99,7 @@ type InsertIdentityGuestPreferencesResponse struct {
 		Bed             *string   `graphql:"bed"`
 		Dietary         []*string `graphql:"dietary"`
 		FloorPreference *int32    `graphql:"floorPreference"`
-		ID              string    `graphql:"id"`
+		Id              string    `graphql:"id"`
 		LoyaltyNumber   *string   `graphql:"loyaltyNumber"`
 		Notes           *string   `graphql:"notes"`
 		Smoking         *string   `graphql:"smoking"`
@@ -117,7 +117,7 @@ type UpdateIdentityGuestPreferencesByIdResponse struct {
 		Bed             *string   `graphql:"bed"`
 		Dietary         []*string `graphql:"dietary"`
 		FloorPreference *int32    `graphql:"floorPreference"`
-		ID              string    `graphql:"id"`
+		Id              string    `graphql:"id"`
 		LoyaltyNumber   *string   `graphql:"loyaltyNumber"`
 		Notes           *string   `graphql:"notes"`
 		Smoking         *string   `graphql:"smoking"`

@@ -14,7 +14,7 @@ type DeleteIdentityForeignerDetailsByIdResponse struct {
 	Returning []struct {
 		ArrivalDate     *string `graphql:"arrivalDate"`
 		EntryPort       *string `graphql:"entryPort"`
-		ID              string  `graphql:"id"`
+		Id              string  `graphql:"id"`
 		NextDestination *string `graphql:"nextDestination"`
 		Origin          *string `graphql:"origin"`
 		VisaExpiryDate  *string `graphql:"visaExpiryDate"`
@@ -30,7 +30,7 @@ type DeleteIdentityForeignerDetailsByIdResponse struct {
 type IdentityForeignerDetails struct {
 	ArrivalDate     *string `graphql:"arrivalDate"`
 	EntryPort       *string `graphql:"entryPort"`
-	ID              string  `graphql:"id"`
+	Id              string  `graphql:"id"`
 	NextDestination *string `graphql:"nextDestination"`
 	Origin          *string `graphql:"origin"`
 	VisaExpiryDate  *string `graphql:"visaExpiryDate"`
@@ -56,7 +56,7 @@ type IdentityForeignerDetailsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"entryPort"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -120,7 +120,7 @@ type InsertIdentityForeignerDetailsResponse struct {
 	Returning []struct {
 		ArrivalDate     *string `graphql:"arrivalDate"`
 		EntryPort       *string `graphql:"entryPort"`
-		ID              string  `graphql:"id"`
+		Id              string  `graphql:"id"`
 		NextDestination *string `graphql:"nextDestination"`
 		Origin          *string `graphql:"origin"`
 		VisaExpiryDate  *string `graphql:"visaExpiryDate"`
@@ -140,7 +140,7 @@ type UpdateIdentityForeignerDetailsByIdResponse struct {
 	Returning []struct {
 		ArrivalDate     *string `graphql:"arrivalDate"`
 		EntryPort       *string `graphql:"entryPort"`
-		ID              string  `graphql:"id"`
+		Id              string  `graphql:"id"`
 		NextDestination *string `graphql:"nextDestination"`
 		Origin          *string `graphql:"origin"`
 		VisaExpiryDate  *string `graphql:"visaExpiryDate"`

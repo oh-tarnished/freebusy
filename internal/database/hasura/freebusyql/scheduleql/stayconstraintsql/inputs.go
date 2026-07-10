@@ -12,7 +12,7 @@ type CreateInput struct {
 	AdvanceMinDays   int32  `json:"advanceMinDays,omitzero"`
 	CheckinWeekdays  string `json:"checkinWeekdays,omitzero"`
 	CheckoutWeekdays string `json:"checkoutWeekdays,omitzero"`
-	ID               string `json:"id"`
+	Id               string `json:"id"`
 	MaxNights        int32  `json:"maxNights,omitzero"`
 	MinNights        int32  `json:"minNights,omitzero"`
 }
@@ -28,7 +28,7 @@ type UpdateInput struct {
 	// Update the 'checkout_weekdays' column in the 'schedule_stay_constraints' collection.
 	CheckoutWeekdays graphql.Nullable[string] `json:"checkoutWeekdays"`
 	// Update the 'id' column in the 'schedule_stay_constraints' collection.
-	ID graphql.Nullable[string] `json:"id"`
+	Id graphql.Nullable[string] `json:"id"`
 	// Update the 'max_nights' column in the 'schedule_stay_constraints' collection.
 	MaxNights graphql.Nullable[int32] `json:"maxNights"`
 	// Update the 'min_nights' column in the 'schedule_stay_constraints' collection.

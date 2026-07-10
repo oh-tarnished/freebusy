@@ -13,7 +13,7 @@ var (
 	CreateTime       = graphql.StringField{Col: "createTime"}
 	Etag             = graphql.StringField{Col: "etag"}
 	ExpiryDate       = graphql.StringField{Col: "expiryDate"}
-	ID               = graphql.StringField{Col: "id"}
+	Id               = graphql.StringField{Col: "id"}
 	IssueDate        = graphql.StringField{Col: "issueDate"}
 	IssuingAuthority = graphql.StringField{Col: "issuingAuthority"}
 	LicenceNumber    = graphql.StringField{Col: "licenceNumber"}

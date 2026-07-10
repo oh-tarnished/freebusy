@@ -12,7 +12,7 @@ type DeletePromocodeScopeApplicablePropertiesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID         string `graphql:"id"`
+		Id         string `graphql:"id"`
 		PropertyId string `graphql:"propertyId"`
 		ScopeId    string `graphql:"scopeId"`
 	} `graphql:"returning"`
@@ -24,7 +24,7 @@ type InsertPromocodeScopeApplicablePropertiesResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID         string `graphql:"id"`
+		Id         string `graphql:"id"`
 		PropertyId string `graphql:"propertyId"`
 		ScopeId    string `graphql:"scopeId"`
 	} `graphql:"returning"`
@@ -32,7 +32,7 @@ type InsertPromocodeScopeApplicablePropertiesResponse struct {
 
 // PromocodeScopeApplicableProperties is the PromocodeScopeApplicableProperties model.
 type PromocodeScopeApplicableProperties struct {
-	ID         string `graphql:"id"`
+	Id         string `graphql:"id"`
 	PropertyId string `graphql:"propertyId"`
 	ScopeId    string `graphql:"scopeId"`
 }
@@ -40,7 +40,7 @@ type PromocodeScopeApplicableProperties struct {
 // PromocodeScopeApplicablePropertiesAggExp is the PromocodeScopeApplicablePropertiesAggExp model.
 type PromocodeScopeApplicablePropertiesAggExp struct {
 	Count graphql.Int64 `graphql:"_count"`
-	ID    struct {
+	Id    struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -66,7 +66,7 @@ type UpdatePromocodeScopeApplicablePropertiesByIdResponse struct {
 	AffectedRows int32 `graphql:"affectedRows"`
 	// Data from rows affected by the mutation
 	Returning []struct {
-		ID         string `graphql:"id"`
+		Id         string `graphql:"id"`
 		PropertyId string `graphql:"propertyId"`
 		ScopeId    string `graphql:"scopeId"`
 	} `graphql:"returning"`

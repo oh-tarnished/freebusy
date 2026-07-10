@@ -13,7 +13,7 @@ type DeleteSharedTimeWindowsByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		EndTime   string `graphql:"endTime"`
-		ID        string `graphql:"id"`
+		Id        string `graphql:"id"`
 		StartTime string `graphql:"startTime"`
 	} `graphql:"returning"`
 }
@@ -25,7 +25,7 @@ type InsertSharedTimeWindowsResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		EndTime   string `graphql:"endTime"`
-		ID        string `graphql:"id"`
+		Id        string `graphql:"id"`
 		StartTime string `graphql:"startTime"`
 	} `graphql:"returning"`
 }
@@ -33,7 +33,7 @@ type InsertSharedTimeWindowsResponse struct {
 // SharedTimeWindows is the SharedTimeWindows model.
 type SharedTimeWindows struct {
 	EndTime   string `graphql:"endTime"`
-	ID        string `graphql:"id"`
+	Id        string `graphql:"id"`
 	StartTime string `graphql:"startTime"`
 }
 
@@ -46,7 +46,7 @@ type SharedTimeWindowsAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"endTime"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -67,7 +67,7 @@ type UpdateSharedTimeWindowsByIdResponse struct {
 	// Data from rows affected by the mutation
 	Returning []struct {
 		EndTime   string `graphql:"endTime"`
-		ID        string `graphql:"id"`
+		Id        string `graphql:"id"`
 		StartTime string `graphql:"startTime"`
 	} `graphql:"returning"`
 }

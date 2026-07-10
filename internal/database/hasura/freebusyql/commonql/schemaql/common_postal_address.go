@@ -10,7 +10,7 @@ import (
 type CommonPostalAddress struct {
 	AddressLines       []*string `graphql:"addressLines"`
 	AdministrativeArea *string   `graphql:"administrativeArea"`
-	ID                 string    `graphql:"id"`
+	Id                 string    `graphql:"id"`
 	LanguageCode       *string   `graphql:"languageCode"`
 	Locality           *string   `graphql:"locality"`
 	Organization       *string   `graphql:"organization"`
@@ -31,7 +31,7 @@ type CommonPostalAddressAggExp struct {
 		Max           *string       `graphql:"max"`
 		Min           *string       `graphql:"min"`
 	} `graphql:"administrativeArea"`
-	ID struct {
+	Id struct {
 		Count         graphql.Int64 `graphql:"_count"`
 		CountDistinct graphql.Int64 `graphql:"_count_distinct"`
 		Max           *string       `graphql:"max"`
@@ -106,7 +106,7 @@ type DeleteCommonPostalAddressByIdResponse struct {
 	Returning []struct {
 		AddressLines       []*string `graphql:"addressLines"`
 		AdministrativeArea *string   `graphql:"administrativeArea"`
-		ID                 string    `graphql:"id"`
+		Id                 string    `graphql:"id"`
 		LanguageCode       *string   `graphql:"languageCode"`
 		Locality           *string   `graphql:"locality"`
 		Organization       *string   `graphql:"organization"`
@@ -127,7 +127,7 @@ type InsertCommonPostalAddressResponse struct {
 	Returning []struct {
 		AddressLines       []*string `graphql:"addressLines"`
 		AdministrativeArea *string   `graphql:"administrativeArea"`
-		ID                 string    `graphql:"id"`
+		Id                 string    `graphql:"id"`
 		LanguageCode       *string   `graphql:"languageCode"`
 		Locality           *string   `graphql:"locality"`
 		Organization       *string   `graphql:"organization"`
@@ -148,7 +148,7 @@ type UpdateCommonPostalAddressByIdResponse struct {
 	Returning []struct {
 		AddressLines       []*string `graphql:"addressLines"`
 		AdministrativeArea *string   `graphql:"administrativeArea"`
-		ID                 string    `graphql:"id"`
+		Id                 string    `graphql:"id"`
 		LanguageCode       *string   `graphql:"languageCode"`
 		Locality           *string   `graphql:"locality"`
 		Organization       *string   `graphql:"organization"`
