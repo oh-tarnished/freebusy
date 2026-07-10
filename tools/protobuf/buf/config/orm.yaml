@@ -32,3 +32,17 @@ datasources:
 otel:
   enabled: true               # override the otel opt's master switch
   metrics: false              # spans only — bakes tracing.WithoutMetrics() into the default config
+
+# graphql configures the typed Hasura client generation (target=graphql in
+# orm.buf.gen.yaml), replacing the standalone generateql tool: the plugin
+# introspects the local DDN engine and emits the freebusyql client. After a
+# schema change, rebuild the engine first (`just hasura regen`), then regenerate.
+graphql:
+  endpoint: http://localhost:3280/graphql
+  max_depth: 1 # relation inlining depth
+
+generate:
+  - target: graphql
+    package: freebusyql
+    go_module: github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql
+    dump_schema: true # keep the introspection snapshot at freebusyql/schema.json

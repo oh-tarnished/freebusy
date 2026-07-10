@@ -21,7 +21,7 @@ option (orm.v1.datasource) = {
   database: "freebusy"
   schema: "promocode"
   provider: "postgres"
-  url: "postgresql://user:pass@localhost:5432/freebusy"
+  url: "postgresql://postgres:postgrespassword@localhost:5432/freebusydb"
 };
 
 // A redeemable discount applied to a booking's subtotal. Scoped by a redemption

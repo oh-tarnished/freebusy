@@ -67,6 +67,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) string {
 		Id:          orgID,
 		Name:        "organisations/" + orgID,
 		DisplayName: "it-org",
+		CreateTime:  now,
 		UpdateTime:  now,
 	}); err != nil {
 		t.Fatalf("seed organisation: %v", err)
@@ -77,6 +78,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) string {
 		DisplayName:  "it-property",
 		Organisation: orgID,
 		TimeZone:     "UTC",
+		CreateTime:   now,
 		UpdateTime:   now,
 	}); err != nil {
 		t.Fatalf("seed property: %v", err)
@@ -91,6 +93,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) string {
 		Capacity:     1,
 		MaxOccupancy: 2,
 		BookingMode:  "NIGHTLY",
+		CreateTime:   now,
 		UpdateTime:   now,
 	}); err != nil {
 		t.Fatalf("seed unit: %v", err)

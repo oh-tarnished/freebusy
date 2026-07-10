@@ -618,8 +618,8 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\rredeemed_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\fredeemedTime\x12>\n" +
 	"\x0eamount_applied\x18\x05 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\ramountApplied:v\xeaAm\n" +
 	" freebusy.promocode.v1/Redemption\x120promoCodes/{promo_code}/redemptions/{redemption}*\vredemptions2\n" +
-	"redemption\x8a\xb5\x18\x02\x18\x01B\xd5\x02\x82\xb5\x18O\n" +
-	"\bfreebusy\x12\tpromocode\x1a.postgresql://user:pass@localhost:5432/freebusy\"\bpostgres\n" +
+	"redemption\x8a\xb5\x18\x02\x18\x01B\xe7\x02\x82\xb5\x18a\n" +
+	"\bfreebusy\x12\tpromocode\x1a@postgresql://postgres:postgrespassword@localhost:5432/freebusydb\"\bpostgres\n" +
 	"\x19com.freebusy.promocode.v1B\x0ePromocodeProtoP\x01Z_github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1;promocodepbv1\xa2\x02\x03FPX\xaa\x02\x15Freebusy.Promocode.V1\xca\x02\x15Freebusy\\Promocode\\V1\xe2\x02!Freebusy\\Promocode\\V1\\GPBMetadata\xea\x02\x17Freebusy::Promocode::V1b\x06proto3"
 
 var (

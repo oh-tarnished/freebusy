@@ -2,10 +2,6 @@ version: v2
 modules:
   - path: protobuf
     name: buf.build/oh-tarnished-registry/freebusy
-  # Local checkout of the orm options module: takes precedence over the BSR
-  # copy pinned in buf.lock, so new orm.v1 options are usable before a push.
-  - path: orm/protobuf
-    name: buf.build/the-protobuf-project/orm
 breaking:
   use:
     - FILE

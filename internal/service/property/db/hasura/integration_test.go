@@ -67,6 +67,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) (propertyName, unitName str
 		Id:          orgID,
 		Name:        "organisations/" + orgID,
 		DisplayName: "it-org",
+		CreateTime:  now,
 		UpdateTime:  now,
 	}); err != nil {
 		t.Fatalf("seed organisation: %v", err)
@@ -78,6 +79,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) (propertyName, unitName str
 		DisplayName:  "it-property",
 		Organisation: orgID,
 		TimeZone:     "UTC",
+		CreateTime:   now,
 		UpdateTime:   now,
 	}); err != nil {
 		t.Fatalf("seed property: %v", err)
@@ -92,6 +94,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) (propertyName, unitName str
 		Capacity:     1,
 		MaxOccupancy: 2,
 		BookingMode:  "NIGHTLY",
+		CreateTime:   now,
 		UpdateTime:   now,
 	}); err != nil {
 		t.Fatalf("seed unit: %v", err)
@@ -99,9 +102,10 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) (propertyName, unitName str
 	return propertyName, unitName
 }
 
-// TestLicenceLifecycleLive walks a property licence through create (with an
-// inline attachment) → get → expiry_date filter → masked update → delete, and
-// a unit licence through create → the DeleteUnit force guard.
+// TestLicenceLifecycleLive walks a property-wide licence through create (with
+// an inline attachment) → get → expiry_date filter → masked update → delete,
+// and a per-unit licence through create → target/unit filters → the DeleteUnit
+// force guard.
 func TestLicenceLifecycleLive(t *testing.T) {
 	svc := liveService(t)
 	repo := NewPropertyRepository(svc)
@@ -109,7 +113,7 @@ func TestLicenceLifecycleLive(t *testing.T) {
 	propertyName, unitName := seedUnit(t, svc)
 
 	content := []byte("%PDF-1.4 fake fire-safety certificate\x00\x01\x02")
-	created, err := repo.CreatePropertyLicence(ctx, propertyName, &propertypbv1.PropertyLicence{
+	created, err := repo.CreateLicence(ctx, propertyName, &propertypbv1.Licence{
 		Type:             propertypbv1.LicenceType_LICENCE_TYPE_FIRE_SAFETY,
 		LicenceNumber:    "FS-2026-001",
 		IssuingAuthority: "it-authority",
@@ -123,15 +127,18 @@ func TestLicenceLifecycleLive(t *testing.T) {
 		},
 	})
 	if err != nil {
-		t.Fatalf("CreatePropertyLicence: %v", err)
+		t.Fatalf("CreateLicence: %v", err)
 	}
 	if created.GetState() != propertypbv1.LicenceState_LICENCE_STATE_ACTIVE {
 		t.Fatalf("created state = %v, want ACTIVE", created.GetState())
 	}
+	if created.GetTarget() != propertypbv1.LicenceTarget_LICENCE_TARGET_PROPERTY {
+		t.Fatalf("created target = %v, want PROPERTY", created.GetTarget())
+	}
 
-	got, err := repo.GetPropertyLicence(ctx, created.GetName())
+	got, err := repo.GetLicence(ctx, created.GetName())
 	if err != nil {
-		t.Fatalf("GetPropertyLicence: %v", err)
+		t.Fatalf("GetLicence: %v", err)
 	}
 	if !bytes.Equal(got.GetAttachment().GetContent(), content) {
 		t.Fatalf("attachment content did not round-trip: got %d bytes %q, want %d bytes",
@@ -142,29 +149,29 @@ func TestLicenceLifecycleLive(t *testing.T) {
 	}
 
 	// The renewal-reminder query: due on/before the horizon → included.
-	due, _, err := repo.ListPropertyLicences(ctx, propertyName, listParams(t, "expiry_date <= 2026-09-01"))
+	due, _, err := repo.ListLicences(ctx, propertyName, listParams(t, "expiry_date <= 2026-09-01"))
 	if err != nil {
-		t.Fatalf("ListPropertyLicences (due): %v", err)
+		t.Fatalf("ListLicences (due): %v", err)
 	}
 	if len(due) != 1 || due[0].GetName() != created.GetName() {
 		t.Fatalf("due list = %d items, want the created licence", len(due))
 	}
 	// Not yet due at an earlier horizon → excluded.
-	notDue, _, err := repo.ListPropertyLicences(ctx, propertyName, listParams(t, "expiry_date <= 2026-07-01"))
+	notDue, _, err := repo.ListLicences(ctx, propertyName, listParams(t, "expiry_date <= 2026-07-01"))
 	if err != nil {
-		t.Fatalf("ListPropertyLicences (not due): %v", err)
+		t.Fatalf("ListLicences (not due): %v", err)
 	}
 	if len(notDue) != 0 {
 		t.Fatalf("not-due list = %d items, want 0", len(notDue))
 	}
 
 	// Masked update: renew the number without touching the attachment.
-	updated, err := repo.UpdatePropertyLicence(ctx, &propertypbv1.PropertyLicence{
+	updated, err := repo.UpdateLicence(ctx, &propertypbv1.Licence{
 		Name:          created.GetName(),
 		LicenceNumber: "FS-2026-002",
 	}, (&fieldmaskpb.FieldMask{Paths: []string{"licence_number"}}).GetPaths())
 	if err != nil {
-		t.Fatalf("UpdatePropertyLicence: %v", err)
+		t.Fatalf("UpdateLicence: %v", err)
 	}
 	if updated.GetLicenceNumber() != "FS-2026-002" {
 		t.Fatalf("licence_number = %q, want FS-2026-002", updated.GetLicenceNumber())
@@ -173,20 +180,35 @@ func TestLicenceLifecycleLive(t *testing.T) {
 		t.Fatal("masked update must preserve the attachment")
 	}
 
-	// Unit licence + the DeleteUnit force guard.
-	unitLic, err := repo.CreateUnitLicence(ctx, unitName, &propertypbv1.UnitLicence{
+	// Per-unit licence: created under the same property parent, targeted at the
+	// unit; discoverable via target and unit filters; guards DeleteUnit.
+	unitLic, err := repo.CreateLicence(ctx, propertyName, &propertypbv1.Licence{
+		Unit:       unitName,
 		Type:       propertypbv1.LicenceType_LICENCE_TYPE_LIQUOR,
 		ExpiryDate: &date.Date{Year: 2026, Month: 12, Day: 31},
 	})
 	if err != nil {
-		t.Fatalf("CreateUnitLicence: %v", err)
+		t.Fatalf("CreateLicence (unit): %v", err)
 	}
-	unitDue, _, err := repo.ListUnitLicences(ctx, unitName, listParams(t, "type = LIQUOR"))
+	if unitLic.GetTarget() != propertypbv1.LicenceTarget_LICENCE_TARGET_UNIT {
+		t.Fatalf("unit licence target = %v, want UNIT", unitLic.GetTarget())
+	}
+	if unitLic.GetUnit() != unitName {
+		t.Fatalf("unit licence unit = %q, want %q", unitLic.GetUnit(), unitName)
+	}
+	unitOnly, _, err := repo.ListLicences(ctx, propertyName, listParams(t, "unit = "+unitName+" type = LIQUOR"))
 	if err != nil {
-		t.Fatalf("ListUnitLicences: %v", err)
+		t.Fatalf("ListLicences (unit filter): %v", err)
 	}
-	if len(unitDue) != 1 || unitDue[0].GetName() != unitLic.GetName() {
-		t.Fatalf("unit licence list = %d items, want the created licence", len(unitDue))
+	if len(unitOnly) != 1 || unitOnly[0].GetName() != unitLic.GetName() {
+		t.Fatalf("unit-filtered list = %d items, want the unit licence", len(unitOnly))
+	}
+	propertyWide, _, err := repo.ListLicences(ctx, propertyName, listParams(t, "target = LICENCE_TARGET_PROPERTY"))
+	if err != nil {
+		t.Fatalf("ListLicences (target filter): %v", err)
+	}
+	if len(propertyWide) != 1 || propertyWide[0].GetName() != created.GetName() {
+		t.Fatalf("target-filtered list = %d items, want the property-wide licence", len(propertyWide))
 	}
 	if err := repo.DeleteUnit(ctx, unitName, false); !errors.Is(err, types.ErrInvalidArgument) {
 		t.Fatalf("DeleteUnit without force = %v, want ErrInvalidArgument", err)
@@ -194,15 +216,15 @@ func TestLicenceLifecycleLive(t *testing.T) {
 	if err := repo.DeleteUnit(ctx, unitName, true); err != nil {
 		t.Fatalf("DeleteUnit with force: %v", err)
 	}
-	if _, err := repo.GetUnitLicence(ctx, unitLic.GetName()); !errors.Is(err, types.ErrNotFound) {
+	if _, err := repo.GetLicence(ctx, unitLic.GetName()); !errors.Is(err, types.ErrNotFound) {
 		t.Fatalf("unit licence after forced unit delete = %v, want ErrNotFound", err)
 	}
 
 	// Delete the property licence; its attachment row goes with it.
-	if err := repo.DeletePropertyLicence(ctx, created.GetName()); err != nil {
-		t.Fatalf("DeletePropertyLicence: %v", err)
+	if err := repo.DeleteLicence(ctx, created.GetName()); err != nil {
+		t.Fatalf("DeleteLicence: %v", err)
 	}
-	if _, err := repo.GetPropertyLicence(ctx, created.GetName()); !errors.Is(err, types.ErrNotFound) {
+	if _, err := repo.GetLicence(ctx, created.GetName()); !errors.Is(err, types.ErrNotFound) {
 		t.Fatalf("get after delete = %v, want ErrNotFound", err)
 	}
 }
