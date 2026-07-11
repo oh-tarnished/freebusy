@@ -7,6 +7,7 @@ package schedule
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	scheduledb "github.com/oh-tarnished/freebusy/internal/service/schedule/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
@@ -72,17 +73,13 @@ func (s *Server) ListAvailabilityExceptions(ctx context.Context, req *schedulepb
 	if req.GetParent() == "" {
 		return nil, status.Error(codes.InvalidArgument, "parent is required")
 	}
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *schedulepbv1.ListAvailabilityExceptionsResponse
-	err = traced(ctx, "ListAvailabilityExceptions", func(ctx context.Context) error {
-		items, next, err := s.repo.ListAvailabilityExceptions(ctx, req.GetParent(), types.ListParams{
+	err := traced(ctx, "ListAvailabilityExceptions", func(ctx context.Context) error {
+		items, next, err := s.repo.ListAvailabilityExceptions(ctx, req.GetParent(), repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)

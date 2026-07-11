@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -127,34 +126,4 @@ func deleteScheduleChildren(ctx context.Context, tx *gorm.DB, oldBuffers, oldSta
 		}
 	}
 	return nil
-}
-
-// DeleteAvailabilityException removes an exception and the TimeWindow / DateRange
-// value-object its span referenced.
-func (r *ScheduleRepository) DeleteAvailabilityException(ctx context.Context, name string) error {
-	id, err := types.AvailabilityExceptionID(name)
-	if err != nil {
-		return err
-	}
-	err = r.db.Transaction(func(tx *gorm.DB) error {
-		var existing schedule.AvailabilityException
-		if e := tx.WithContext(ctx).First(&existing, "id = ?", id).Error; e != nil {
-			return e
-		}
-		if e := schedule.NewAvailabilityExceptionStore(tx).DeleteByID(ctx, id); e != nil {
-			return e
-		}
-		if existing.WindowID != nil {
-			if e := shared.NewTimeWindowStore(tx).DeleteByID(ctx, *existing.WindowID); e != nil {
-				return e
-			}
-		}
-		if existing.DateRangeID != nil {
-			if e := shared.NewDateRangeStore(tx).DeleteByID(ctx, *existing.DateRangeID); e != nil {
-				return e
-			}
-		}
-		return nil
-	})
-	return mapGormErr(err)
 }

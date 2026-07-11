@@ -6,7 +6,6 @@ import (
 
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
-	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 
@@ -28,15 +27,6 @@ func roundTripSchedule(in *schedulepbv1.Schedule) *schedulepbv1.Schedule {
 		g.schedule.RecurringRules = append(g.schedule.RecurringRules, *r)
 	}
 	return scheduleFromModel(g.schedule)
-}
-
-func roundTripException(in *schedulepbv1.AvailabilityException) *schedulepbv1.AvailabilityException {
-	g := buildExceptionGraph(in, "p1", "u1")
-	g.exc.ID = "e1"
-	g.exc.Name = in.GetName()
-	g.exc.Window = g.window
-	g.exc.DateRange = g.dates
-	return exceptionFromModel(g.exc)
 }
 
 func TestScheduleRoundTrip(t *testing.T) {
@@ -77,30 +67,5 @@ func TestScheduleRoundTrip(t *testing.T) {
 	if cp := out.GetCancellationPolicy(); len(cp.GetTiers()) != 2 ||
 		cp.GetTiers()[0].GetCutoff().AsDuration() != 48*time.Hour || cp.GetTiers()[0].GetRefundPercent() != 100 {
 		t.Fatalf("cancellation policy not preserved: %+v", cp)
-	}
-}
-
-func TestAvailabilityExceptionRoundTrip(t *testing.T) {
-	in := &schedulepbv1.AvailabilityException{
-		Name: "properties/p1/units/u1/availabilityExceptions/e1",
-		Kind: schedulepbv1.ExceptionKind_EXCEPTION_KIND_CLOSURE,
-		Span: &schedulepbv1.AvailabilityException_DateRange{
-			DateRange: &sharedpbv1.DateRange{
-				StartDate: &date.Date{Year: 2026, Month: 12, Day: 24},
-				EndDate:   &date.Date{Year: 2026, Month: 12, Day: 27},
-			},
-		},
-		Reason: "Christmas closure",
-	}
-	out := roundTripException(in)
-
-	if out.GetKind() != schedulepbv1.ExceptionKind_EXCEPTION_KIND_CLOSURE || out.GetReason() != "Christmas closure" {
-		t.Fatalf("kind/reason not preserved: %+v", out)
-	}
-	if dr := out.GetDateRange(); dr == nil || dr.GetStartDate().GetDay() != 24 || dr.GetEndDate().GetDay() != 27 {
-		t.Fatalf("date range span not preserved: %+v", dr)
-	}
-	if out.GetWindow() != nil {
-		t.Fatalf("window span must be unset: %+v", out.GetWindow())
 	}
 }

@@ -8,9 +8,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"gorm.io/gorm"
@@ -33,10 +31,6 @@ func preloadSchedule(db *gorm.DB) *gorm.DB {
 		Preload("StayConstraints").
 		Preload("CancellationPolicy.RefundTiers").
 		Preload("RecurringRules")
-}
-
-func preloadException(db *gorm.DB) *gorm.DB {
-	return db.Preload("Window").Preload("DateRange")
 }
 
 // persist inserts a schedule graph: belongs-to children (buffers, stay
@@ -85,20 +79,6 @@ func (g *scheduleGraph) persistChildren(ctx context.Context, tx *gorm.DB) error 
 	return nil
 }
 
-func (g *exceptionGraph) persist(ctx context.Context, tx *gorm.DB) error {
-	if g.window != nil {
-		if e := shared.NewTimeWindowStore(tx).Create(ctx, g.window); e != nil {
-			return e
-		}
-	}
-	if g.dates != nil {
-		if e := shared.NewDateRangeStore(tx).Create(ctx, g.dates); e != nil {
-			return e
-		}
-	}
-	return schedule.NewAvailabilityExceptionStore(tx).Create(ctx, g.exc)
-}
-
 // --- Schedule ----------------------------------------------------------------
 
 // GetSchedule returns a unit's schedule configuration. When none is stored yet
@@ -139,51 +119,4 @@ func (r *ScheduleRepository) exceptionNames(ctx context.Context, unitID string) 
 		names = append(names, rows[i].Name)
 	}
 	return names, nil
-}
-
-// --- AvailabilityException ---------------------------------------------------
-
-func (r *ScheduleRepository) CreateAvailabilityException(ctx context.Context, parent string, e *schedulepbv1.AvailabilityException) (*schedulepbv1.AvailabilityException, error) {
-	propertyID, unitID, id, name, err := types.ResolveAvailabilityExceptionName(parent, e.GetName())
-	if err != nil {
-		return nil, err
-	}
-	g := buildExceptionGraph(e, propertyID, unitID)
-	g.exc.ID = id
-	g.exc.Name = name
-	if err := r.db.Transaction(func(tx *gorm.DB) error {
-		return g.persist(ctx, tx)
-	}); err != nil {
-		return nil, mapGormErr(err)
-	}
-	return r.GetAvailabilityException(ctx, name)
-}
-
-func (r *ScheduleRepository) GetAvailabilityException(ctx context.Context, name string) (*schedulepbv1.AvailabilityException, error) {
-	id, err := types.AvailabilityExceptionID(name)
-	if err != nil {
-		return nil, err
-	}
-	var m schedule.AvailabilityException
-	if err := preloadException(r.db.WithContext(ctx)).First(&m, "id = ?", id).Error; err != nil {
-		return nil, mapGormErr(err)
-	}
-	return exceptionFromModel(&m), nil
-}
-
-func (r *ScheduleRepository) ListAvailabilityExceptions(ctx context.Context, parent string, params types.ListParams) ([]*schedulepbv1.AvailabilityException, string, error) {
-	unitID, err := types.UnitID(parent)
-	if err != nil {
-		return nil, "", err
-	}
-	models, next, err := filterx.Gorm[schedule.AvailabilityException](schedule.AvailabilityExceptionFilterSpec).
-		List(ctx, preloadException(r.db).Where("unit_id = ?", unitID), types.FilterxInput(params))
-	if err != nil {
-		return nil, "", mapGormErr(types.MapFilterxErr(err))
-	}
-	items := make([]*schedulepbv1.AvailabilityException, 0, len(models))
-	for i := range models {
-		items = append(items, exceptionFromModel(&models[i]))
-	}
-	return items, next, nil
 }

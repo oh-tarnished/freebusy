@@ -5,10 +5,8 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
-	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
-	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -101,48 +99,6 @@ func weekdaysFromStr(s *string) []sharedpbv1.Weekday {
 		out = append(out, sharedpbv1.Weekday(sharedpbv1.Weekday_value[strings.TrimSpace(n)]))
 	}
 	return out
-}
-
-func timeWindowToModel(w *sharedpbv1.TimeWindow) *shared.TimeWindow {
-	if w == nil {
-		return nil
-	}
-	return &shared.TimeWindow{
-		ID:        ulid.GenerateString(),
-		StartTime: w.GetStartTime().AsTime(),
-		EndTime:   w.GetEndTime().AsTime(),
-	}
-}
-
-func timeWindowFromModel(w *shared.TimeWindow) *sharedpbv1.TimeWindow {
-	if w == nil {
-		return nil
-	}
-	return &sharedpbv1.TimeWindow{
-		StartTime: timestamppb.New(w.StartTime),
-		EndTime:   timestamppb.New(w.EndTime),
-	}
-}
-
-func dateRangeToModel(d *sharedpbv1.DateRange) *shared.DateRange {
-	if d == nil {
-		return nil
-	}
-	return &shared.DateRange{
-		ID:        ulid.GenerateString(),
-		StartDate: dateToTime(d.GetStartDate()),
-		EndDate:   dateToTime(d.GetEndDate()),
-	}
-}
-
-func dateRangeFromModel(d *shared.DateRange) *sharedpbv1.DateRange {
-	if d == nil {
-		return nil
-	}
-	return &sharedpbv1.DateRange{
-		StartDate: timeToDate(d.StartDate),
-		EndDate:   timeToDate(d.EndDate),
-	}
 }
 
 func kindToModel(k schedulepbv1.ExceptionKind) schedule.ExceptionKind {

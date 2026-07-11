@@ -7,7 +7,6 @@ import (
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
 	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -121,34 +120,6 @@ func queueScheduleChildDeletes(tx *runtime.Tx, r *ScheduleRepository, refs sched
 		var res scheduleschema.DeleteScheduleStayConstraintsByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.StayConstraints.DeleteOp(*refs.stayID, &res))
 	}
-}
-
-// DeleteAvailabilityException removes an exception and the TimeWindow / DateRange
-// value-object its span referenced, in one batch.
-func (r *ScheduleRepository) DeleteAvailabilityException(ctx context.Context, name string) error {
-	id, err := types.AvailabilityExceptionID(name)
-	if err != nil {
-		return err
-	}
-	res, err := r.svc.Query.Schedule.AvailabilityExceptions.Get(ctx, id)
-	if err != nil {
-		return mapHasuraErr(err)
-	}
-	if res == nil {
-		return types.ErrNotFound
-	}
-	tx := r.svc.Mutation.Tx()
-	var delRes scheduleschema.DeleteScheduleAvailabilityExceptionsByIdResponse
-	tx.Add(r.svc.Mutation.Schedule.AvailabilityExceptions.DeleteOp(id, &delRes))
-	if res.WindowId != nil {
-		var out sharedschema.DeleteSharedTimeWindowsByIdResponse
-		tx.Add(r.svc.Mutation.Shared.TimeWindows.DeleteOp(*res.WindowId, &out))
-	}
-	if res.DateRangeId != nil {
-		var out sharedschema.DeleteSharedDateRangesByIdResponse
-		tx.Add(r.svc.Mutation.Shared.DateRanges.DeleteOp(*res.DateRangeId, &out))
-	}
-	return mapHasuraErr(tx.Commit(ctx))
 }
 
 // nullableStr maps an empty optional string to a SQL NULL update and a non-empty

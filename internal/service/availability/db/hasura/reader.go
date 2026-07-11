@@ -124,7 +124,7 @@ func (r *AvailabilityReader) pricing(ctx context.Context, u *propertyschema.Prop
 	}
 	taxes := make([]pricing.Tax, 0, len(taxRows))
 	for i := range taxRows {
-		taxes = append(taxes, pricing.Tax{Code: taxRows[i].Code, DisplayName: deref(taxRows[i].DisplayName), Percent: fromBigdec(taxRows[i].Percent)})
+		taxes = append(taxes, pricing.Tax{Code: taxRows[i].Code, DisplayName: deref(taxRows[i].DisplayName), Percent: taxRows[i].Percent})
 	}
 	losRows, err := r.svc.Query.Property.LosDiscounts.List(ctx, losdiscountsql.List().Where(losdiscountsql.UnitId.Eq(u.Id)))
 	if err != nil {

@@ -3,6 +3,7 @@ package identity
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	identitydb "github.com/oh-tarnished/freebusy/internal/service/identity/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -66,17 +67,13 @@ func (s *Server) GetUser(ctx context.Context, req *identitypbv1.GetUserRequest) 
 
 // ListUsers returns a page of users.
 func (s *Server) ListUsers(ctx context.Context, req *identitypbv1.ListUsersRequest) (*identitypbv1.ListUsersResponse, error) {
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *identitypbv1.ListUsersResponse
-	err = traced(ctx, "ListUsers", func(ctx context.Context) error {
-		items, next, err := s.repo.ListUsers(ctx, types.ListParams{
+	err := traced(ctx, "ListUsers", func(ctx context.Context) error {
+		items, next, err := s.repo.ListUsers(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)
