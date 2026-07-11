@@ -3,6 +3,7 @@ package gorm
 import (
 	"context"
 	"fmt"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
@@ -57,7 +58,7 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 		existing.Attributes = g.property.Attributes
 		existing.AddressID = g.property.AddressID
 		existing.PolicyID = g.property.PolicyID
-		existing.Etag = ptr(ulid.GenerateString())
+		existing.Etag = repox.Ptr(ulid.GenerateString())
 		existing.Address, existing.Policy, existing.Medias, existing.Units, existing.UnitsLink = nil, nil, nil, nil, nil
 		existing.Licences = nil
 		if e := property.NewPropertyStore(tx).Update(ctx, &existing); e != nil {
@@ -88,7 +89,7 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 		return nil
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetProperty(ctx, p.GetName())
 }
@@ -114,11 +115,11 @@ func (r *PropertyRepository) setPropertyState(ctx context.Context, name string, 
 			return e
 		}
 		existing.State = &state
-		existing.Etag = ptr(ulid.GenerateString())
+		existing.Etag = repox.Ptr(ulid.GenerateString())
 		return property.NewPropertyStore(tx).Update(ctx, &existing)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetProperty(ctx, name)
 }
@@ -165,7 +166,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 		existing.Tags = g.unit.Tags
 		existing.Attributes = g.unit.Attributes
 		existing.PriceID = g.unit.PriceID
-		existing.Etag = ptr(ulid.GenerateString())
+		existing.Etag = repox.Ptr(ulid.GenerateString())
 		existing.Price, existing.RateOverrides, existing.LosDiscounts = nil, nil, nil
 		existing.Fees, existing.Taxes, existing.UnitMedias = nil, nil, nil
 		existing.UnitApplicablePromoCodes, existing.UnitsLink, existing.Property = nil, nil, nil
@@ -188,7 +189,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 		return deleteValueObjects(ctx, tx, oldMoney, oldDates)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetUnit(ctx, u.GetName())
 }
@@ -225,7 +226,7 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 		}
 		return deleteValueObjects(ctx, tx, money, dates)
 	})
-	return mapGormErr(err)
+	return repox.MapGormErr(err)
 }
 
 // collectUnitValueObjects returns the ids of the Money and DateRange rows a

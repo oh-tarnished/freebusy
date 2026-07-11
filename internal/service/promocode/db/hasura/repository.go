@@ -8,8 +8,7 @@ package hasura
 
 import (
 	"context"
-	"errors"
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
@@ -24,7 +23,6 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
-	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // PromoCodeRepository is the Hasura-backed promo code repository. Hasura exposes
@@ -92,7 +90,7 @@ func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.Prom
 	tx.Add(r.svc.Mutation.Promocode.Resource.CreateOp(g.resource, &resourceRes))
 
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.Get(ctx, name)
 }
@@ -105,7 +103,7 @@ func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodep
 	}
 	res, err := r.svc.Query.Promocode.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -117,7 +115,7 @@ func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodep
 func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*promocodepbv1.PromoCode, error) {
 	res, err := r.svc.Query.Promocode.Resource.Find(ctx, resourceql.List().Where(resourceql.Code.Eq(code)))
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -141,7 +139,7 @@ func (r *PromoCodeRepository) List(ctx context.Context, in repox.ListInput) ([]*
 			Filter:    conds,
 		})
 	if err != nil {
-		return nil, "", mapHasuraErr(repox.MapFilterxErr(err))
+		return nil, "", dbutil.MapHasuraErr(repox.MapFilterxErr(err))
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(rows))
@@ -173,13 +171,13 @@ func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.Prom
 
 	d, err := r.svc.Query.Promocode.Discounts.Get(ctx, res.DiscountId)
 	if err != nil {
-		return parts{}, promoRefs{}, mapHasuraErr(err)
+		return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.discount = d
 	if d != nil && d.AmountOffId != nil {
 		m, err := r.svc.Query.Common.Moneys.Get(ctx, *d.AmountOffId)
 		if err != nil {
-			return parts{}, promoRefs{}, mapHasuraErr(err)
+			return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.amountOff = m
 		refs.moneyIDs = append(refs.moneyIDs, *d.AmountOffId)
@@ -188,27 +186,27 @@ func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.Prom
 	if res.WindowId != nil {
 		w, err := r.svc.Query.Promocode.RedemptionWindows.Get(ctx, *res.WindowId)
 		if err != nil {
-			return parts{}, promoRefs{}, mapHasuraErr(err)
+			return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.window = w
 	}
 	if res.LimitsId != nil {
 		l, err := r.svc.Query.Promocode.UsageLimits.Get(ctx, *res.LimitsId)
 		if err != nil {
-			return parts{}, promoRefs{}, mapHasuraErr(err)
+			return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.limits = l
 	}
 	if res.ScopeId != nil {
 		s, err := r.svc.Query.Promocode.Scopes.Get(ctx, *res.ScopeId)
 		if err != nil {
-			return parts{}, promoRefs{}, mapHasuraErr(err)
+			return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.scope = s
 		if s != nil && s.MinSubtotalId != nil {
 			m, err := r.svc.Query.Common.Moneys.Get(ctx, *s.MinSubtotalId)
 			if err != nil {
-				return parts{}, promoRefs{}, mapHasuraErr(err)
+				return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 			}
 			p.minSub = m
 			refs.moneyIDs = append(refs.moneyIDs, *s.MinSubtotalId)
@@ -216,7 +214,7 @@ func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.Prom
 		resRows, err := r.svc.Query.Promocode.ScopeApplicableProperties.List(ctx,
 			scopeapplicablepropertiesql.List().Where(scopeapplicablepropertiesql.ScopeId.Eq(*res.ScopeId)))
 		if err != nil {
-			return parts{}, promoRefs{}, mapHasuraErr(err)
+			return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.properties = resRows
 		for i := range resRows {
@@ -225,7 +223,7 @@ func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.Prom
 		offRows, err := r.svc.Query.Promocode.ScopeApplicableUnits.List(ctx,
 			scopeapplicableunitsql.List().Where(scopeapplicableunitsql.ScopeId.Eq(*res.ScopeId)))
 		if err != nil {
-			return parts{}, promoRefs{}, mapHasuraErr(err)
+			return parts{}, promoRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.units = offRows
 		for i := range offRows {
@@ -233,22 +231,4 @@ func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.Prom
 		}
 	}
 	return p, refs, nil
-}
-
-// mapHasuraErr translates GraphQL/runtime errors into the repository sentinels so
-// the service layer stays free of storage-specific error types.
-func mapHasuraErr(err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, graphql.ErrConflict):
-		return types.ErrConflict
-	}
-	// Best-effort unique-violation detection (the engine surfaces it as a generic
-	// constraint error in the GraphQL message).
-	msg := strings.ToLower(err.Error())
-	if strings.Contains(msg, "unique") || strings.Contains(msg, "duplicate") {
-		return types.ErrAlreadyExists
-	}
-	return err
 }

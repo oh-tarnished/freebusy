@@ -42,7 +42,7 @@ func NewServer(name, version string, opts ...options.Options) (*Server, error) {
 	serverOpts.Version = version
 
 	ctx, cancel := context.WithCancel(context.Background())
-	svc, err := newServiceInstance()
+	svc, err := newServiceInstance(nil)
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("create service instance: %w", err)
@@ -63,18 +63,15 @@ func NewServer(name, version string, opts ...options.Options) (*Server, error) {
 	}, nil
 }
 
-// serviceOptions builds the hybrid-server options: the protovalidate request
-// interceptor, the gRPC/HTTP/MCP registrations, plus, when a certificate/key
-// pair is configured, the TLS option. The pair is validated up front so a bad
-// path returns a clear error instead of the panic grpc.WithCertificates would
-// raise.
+// serviceOptions builds the hybrid-server options: protovalidate request
+// validation (enforced by runtime-go across gRPC, the HTTP gateway, and every
+// MCP tool call), the gRPC/HTTP/MCP registrations, plus, when a
+// certificate/key pair is configured, the TLS option. The pair is validated up
+// front so a bad path returns a clear error instead of the panic
+// grpc.WithCertificates would raise.
 func serviceOptions(svc *Service) ([]grpc.Option, error) {
-	validate, err := validationInterceptor()
-	if err != nil {
-		return nil, err
-	}
 	opts := []grpc.Option{
-		grpc.WithUnaryInterceptors(validate),
+		grpc.WithValidation(),
 		registerGRPCServers(svc),
 		registerHTTPGateways(),
 		registerMCPServices(svc),
@@ -131,7 +128,7 @@ func (s *Server) Restart() error {
 	}
 
 	s.ctx, s.cancel = context.WithCancel(context.Background())
-	svc, err := newServiceInstance()
+	svc, err := newServiceInstance(nil)
 	if err != nil {
 		return fmt.Errorf("recreate service instance during restart: %w", err)
 	}

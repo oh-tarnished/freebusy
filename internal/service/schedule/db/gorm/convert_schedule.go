@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 )
@@ -56,7 +57,7 @@ func buildScheduleGraph(s *schedulepbv1.Schedule, propertyID string) *scheduleGr
 		for _, t := range cp.GetTiers() {
 			g.refundTiers = append(g.refundTiers, &schedule.RefundTier{
 				ID:            ulid.GenerateString(),
-				Cutoff:        deref(durationToStr(t.GetCutoff())),
+				Cutoff:        repox.Deref(durationToStr(t.GetCutoff())),
 				RefundPercent: t.GetRefundPercent(),
 			})
 		}
@@ -81,7 +82,7 @@ func scheduleFromModel(m *schedule.Schedule) *schedulepbv1.Schedule {
 		Buffers:            bufferFromModel(m.Buffers),
 		StayConstraints:    stayFromModel(m.StayConstraints),
 		CancellationPolicy: cancellationFromModel(m.CancellationPolicy),
-		Etag:               deref(m.Etag),
+		Etag:               repox.Deref(m.Etag),
 	}
 	for i := range m.RecurringRules {
 		out.RecurringRules = append(out.RecurringRules, recurringFromModel(&m.RecurringRules[i]))
@@ -92,8 +93,8 @@ func scheduleFromModel(m *schedule.Schedule) *schedulepbv1.Schedule {
 func recurringFromModel(r *schedule.RecurringRule) *schedulepbv1.RecurringRule {
 	return &schedulepbv1.RecurringRule{
 		Rrule:  r.Rrule,
-		Opens:  deref(r.Opens),
-		Closes: deref(r.Closes),
+		Opens:  repox.Deref(r.Opens),
+		Closes: repox.Deref(r.Closes),
 	}
 }
 
@@ -115,12 +116,12 @@ func stayFromModel(s *schedule.StayConstraints) *schedulepbv1.StayConstraints {
 		return nil
 	}
 	return &schedulepbv1.StayConstraints{
-		MinNights:        deref(s.MinNights),
-		MaxNights:        deref(s.MaxNights),
+		MinNights:        repox.Deref(s.MinNights),
+		MaxNights:        repox.Deref(s.MaxNights),
 		CheckinWeekdays:  weekdaysFromStr(s.CheckinWeekdays),
 		CheckoutWeekdays: weekdaysFromStr(s.CheckoutWeekdays),
-		AdvanceMinDays:   deref(s.AdvanceMinDays),
-		AdvanceMaxDays:   deref(s.AdvanceMaxDays),
+		AdvanceMinDays:   repox.Deref(s.AdvanceMinDays),
+		AdvanceMaxDays:   repox.Deref(s.AdvanceMaxDays),
 	}
 }
 

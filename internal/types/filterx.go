@@ -1,9 +1,6 @@
 package types
 
 import (
-	"errors"
-	"fmt"
-
 	filterx "github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 )
@@ -40,14 +37,3 @@ func Filterx(conds []FilterCondition) []filterx.Condition {
 	return out
 }
 
-// MapFilterxErr rewraps the engines' invalid-input sentinel as
-// ErrInvalidArgument so the service layer's status mapping stays unchanged.
-func MapFilterxErr(err error) error {
-	if err == nil {
-		return nil
-	}
-	if errors.Is(err, filterx.ErrInvalid) {
-		return fmt.Errorf("%w: %s", ErrInvalidArgument, err.Error())
-	}
-	return err
-}

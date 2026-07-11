@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
@@ -35,7 +36,7 @@ func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
 			"update_time": now,
 		})
 	if res.Error != nil {
-		return 0, mapGormErr(res.Error)
+		return 0, repox.MapGormErr(res.Error)
 	}
 	return res.RowsAffected, nil
 }
@@ -63,7 +64,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 		if e := tx.WithContext(ctx).Select("id", "max_occupancy").First(&unit, "id = ?", m.UnitID).Error; e != nil {
 			return e
 		}
-		if !party.Fits(deref(unit.MaxOccupancy), deref(m.Units), occupancy, guests) {
+		if !party.Fits(repox.Deref(unit.MaxOccupancy), repox.Deref(m.Units), occupancy, guests) {
 			return types.ErrInvalidArgument
 		}
 
@@ -81,7 +82,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 		} else {
 			m.OccupancyID = nil
 		}
-		m.Etag = ptr(ulid.GenerateString())
+		m.Etag = repox.Ptr(ulid.GenerateString())
 		if e := booking.NewBookingStore(tx).Update(ctx, &m); e != nil {
 			return e
 		}
@@ -93,7 +94,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 		return persistGuests(ctx, tx, buildGuestGraphs(guests, id))
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetBooking(ctx, name)
 }
@@ -117,11 +118,11 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 		m.State = &state
 		m.ConfirmTime = &now
 		m.HoldExpireTime = nil
-		m.Etag = ptr(ulid.GenerateString())
+		m.Etag = repox.Ptr(ulid.GenerateString())
 		return booking.NewBookingStore(tx).Update(ctx, &m)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetBooking(ctx, name)
 }
@@ -150,8 +151,8 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 		m.State = &state
 		m.CancelTime = &now
 		m.CancelReason = cancelReasonToModel(reason)
-		m.RefundPercent = ptr(pct)
-		m.Etag = ptr(ulid.GenerateString())
+		m.RefundPercent = repox.Ptr(pct)
+		m.Etag = repox.Ptr(ulid.GenerateString())
 		m.Contact, m.Window, m.Price, m.Discount, m.Total, m.RefundAmount = nil, nil, nil, nil, nil, nil
 		if amount != nil {
 			refund := moneyToModel(amount)
@@ -163,7 +164,7 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 		return booking.NewBookingStore(tx).Update(ctx, &m)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetBooking(ctx, name)
 }
@@ -177,11 +178,11 @@ func (r *BookingRepository) PreviewCancellation(ctx context.Context, name string
 	}
 	var m booking.Booking
 	if err = preloadBooking(r.db.WithContext(ctx)).First(&m, "id = ?", id).Error; err != nil {
-		return false, 0, nil, nil, "", mapGormErr(err)
+		return false, 0, nil, nil, "", repox.MapGormErr(err)
 	}
 	percent, amount, summary, err = r.computeRefund(ctx, r.db.WithContext(ctx), &m)
 	if err != nil {
-		return false, 0, nil, nil, "", mapGormErr(err)
+		return false, 0, nil, nil, "", repox.MapGormErr(err)
 	}
 	total := common.MoneyToProto(m.Total)
 	nonRefundable = moneySub(total, amount)
@@ -222,7 +223,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 			return e
 		}
 		var promo *promocode.PromoCode
-		if pid := deref(m.PromoCodeID); pid != "" {
+		if pid := repox.Deref(m.PromoCodeID); pid != "" {
 			var p promocode.PromoCode
 			if e := tx.WithContext(ctx).
 				Preload("Discount").Preload("Discount.AmountOff").
@@ -243,7 +244,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		if unit.Capacity != nil && *unit.Capacity > 0 {
 			capacity = int64(*unit.Capacity)
 		}
-		requested := deref(m.Units)
+		requested := repox.Deref(m.Units)
 		if requested < 1 {
 			requested = 1
 		}
@@ -288,7 +289,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		m.PriceID = priceID
 		m.DiscountID = discountID
 		m.TotalID = totalID
-		m.Etag = ptr(ulid.GenerateString())
+		m.Etag = repox.Ptr(ulid.GenerateString())
 		m.Contact, m.Window, m.Price, m.Discount, m.Total, m.RefundAmount = nil, nil, nil, nil, nil, nil
 		if e := booking.NewBookingStore(tx).Update(ctx, &m); e != nil {
 			return e
@@ -310,7 +311,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		return nil
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	out, err := r.GetBooking(ctx, name)
 	if err != nil {

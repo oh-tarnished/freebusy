@@ -6,6 +6,7 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
@@ -63,7 +64,7 @@ func (r *AvailabilityReader) buildUnitInfo(ctx context.Context, u *propertyschem
 		Mode:        u.BookingMode,
 		Capacity:    1,
 		TimeZone:    u.TimeZone,
-		Duration:    durationFromStr(deref(u.Duration)),
+		Duration:    durationFromStr(repox.Deref(u.Duration)),
 		Archived:    u.State != nil && *u.State == "ARCHIVED",
 	}
 	if u.Capacity != nil && *u.Capacity > 0 {
@@ -116,7 +117,7 @@ func (r *AvailabilityReader) pricing(ctx context.Context, u *propertyschema.Prop
 				return nil, nil, nil, nil, err
 			}
 		}
-		fees = append(fees, pricing.Fee{Code: f.Code, DisplayName: deref(f.DisplayName), PricingUnit: deref(f.PricingUnit), Percent: f.Percent, Amount: amt, Taxable: deref(f.Taxable)})
+		fees = append(fees, pricing.Fee{Code: f.Code, DisplayName: repox.Deref(f.DisplayName), PricingUnit: repox.Deref(f.PricingUnit), Percent: f.Percent, Amount: amt, Taxable: repox.Deref(f.Taxable)})
 	}
 	taxRows, err := r.svc.Query.Property.Taxes.List(ctx, taxesql.List().Where(taxesql.UnitId.Eq(u.Id)))
 	if err != nil {
@@ -124,7 +125,7 @@ func (r *AvailabilityReader) pricing(ctx context.Context, u *propertyschema.Prop
 	}
 	taxes := make([]pricing.Tax, 0, len(taxRows))
 	for i := range taxRows {
-		taxes = append(taxes, pricing.Tax{Code: taxRows[i].Code, DisplayName: deref(taxRows[i].DisplayName), Percent: taxRows[i].Percent})
+		taxes = append(taxes, pricing.Tax{Code: taxRows[i].Code, DisplayName: repox.Deref(taxRows[i].DisplayName), Percent: taxRows[i].Percent})
 	}
 	losRows, err := r.svc.Query.Property.LosDiscounts.List(ctx, losdiscountsql.List().Where(losdiscountsql.UnitId.Eq(u.Id)))
 	if err != nil {
@@ -165,11 +166,11 @@ func (r *AvailabilityReader) applySchedulePolicy(ctx context.Context, info *engi
 			return mapErr(err)
 		}
 		if b != nil {
-			info.MinNotice = durationFromStr(deref(b.MinNotice))
-			info.MaxAdvance = durationFromStr(deref(b.MaxAdvance))
-			info.Gap = durationFromStr(deref(b.Gap))
-			info.StartDelta = durationFromStr(deref(b.StartDelta))
-			info.EndDelta = durationFromStr(deref(b.EndDelta))
+			info.MinNotice = durationFromStr(repox.Deref(b.MinNotice))
+			info.MaxAdvance = durationFromStr(repox.Deref(b.MaxAdvance))
+			info.Gap = durationFromStr(repox.Deref(b.Gap))
+			info.StartDelta = durationFromStr(repox.Deref(b.StartDelta))
+			info.EndDelta = durationFromStr(repox.Deref(b.EndDelta))
 		}
 	}
 	rules, err := r.svc.Query.Schedule.RecurringRules.List(ctx, recurringsql.List().Where(recurringsql.ScheduleId.Eq(sched.Id)))
@@ -177,7 +178,7 @@ func (r *AvailabilityReader) applySchedulePolicy(ctx context.Context, info *engi
 		return mapErr(err)
 	}
 	for i := range rules {
-		info.Recurring = append(info.Recurring, rrule.Rule{RRule: rules[i].Rrule, Opens: deref(rules[i].Opens), Closes: deref(rules[i].Closes)})
+		info.Recurring = append(info.Recurring, rrule.Rule{RRule: rules[i].Rrule, Opens: repox.Deref(rules[i].Opens), Closes: repox.Deref(rules[i].Closes)})
 	}
 	return nil
 }

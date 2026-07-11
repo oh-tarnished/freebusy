@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
@@ -23,16 +24,6 @@ import (
 
 const defaultHoldTTL = 15 * time.Minute
 
-func ptr[T any](v T) *T { return &v }
-
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
 func strOrNil(s string) *string {
 	if s == "" {
 		return nil
@@ -44,7 +35,7 @@ func durationToStr(d *durationpb.Duration) *string {
 	if d == nil {
 		return nil
 	}
-	return ptr(d.AsDuration().String())
+	return repox.Ptr(d.AsDuration().String())
 }
 
 func structToJSON(s *structpb.Struct) []byte {
@@ -67,8 +58,8 @@ func moneyToModel(m *money.Money) *common.Money {
 	return &common.Money{
 		ID:           ulid.GenerateString(),
 		CurrencyCode: strOrNil(m.GetCurrencyCode()),
-		Units:        ptr(m.GetUnits()),
-		Nanos:        ptr(m.GetNanos()),
+		Units:        repox.Ptr(m.GetUnits()),
+		Nanos:        repox.Ptr(m.GetNanos()),
 	}
 }
 
@@ -168,20 +159,6 @@ func promoCodeNameOrEmpty(id *string) string {
 	name, err := types.PromoCodeName(*id)
 	if err != nil {
 		return ""
-	}
-	return name
-}
-
-// lastSegment returns the final path component of an AIP resource name, or ""
-// for an empty input — used to reduce a full name to the bare id an FK stores.
-func lastSegment(name string) string {
-	if name == "" {
-		return ""
-	}
-	for i := len(name) - 1; i >= 0; i-- {
-		if name[i] == '/' {
-			return name[i+1:]
-		}
 	}
 	return name
 }

@@ -7,6 +7,8 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"strings"
 	"time"
 
@@ -28,21 +30,6 @@ import (
 )
 
 const rfc3339 = time.RFC3339
-
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
-func tsToStr(ts *timestamppb.Timestamp) string {
-	if ts == nil {
-		return ""
-	}
-	return ts.AsTime().UTC().Format(rfc3339)
-}
 
 func strToTS(s string) *timestamppb.Timestamp {
 	if s == "" {
@@ -95,14 +82,6 @@ func jsonToStruct(b []byte) *structpb.Struct {
 	return s
 }
 
-// lastSegment returns the final path component of an AIP resource name.
-func lastSegment(name string) string {
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		return name[i+1:]
-	}
-	return name
-}
-
 // --- value-object conversions ------------------------------------------------
 
 // moneyInput builds an insert input for a Money value-object row with a fresh id.
@@ -120,9 +99,9 @@ func moneyFromSchema(m *commonschema.CommonMoneys) *money.Money {
 		return nil
 	}
 	return &money.Money{
-		CurrencyCode: deref(m.CurrencyCode),
-		Units:        int64(deref(m.Units)),
-		Nanos:        deref(m.Nanos),
+		CurrencyCode: repox.Deref(m.CurrencyCode),
+		Units:        int64(repox.Deref(m.Units)),
+		Nanos:        repox.Deref(m.Nanos),
 	}
 }
 
@@ -143,17 +122,17 @@ func contactFromSchema(c *sharedschema.SharedContacts) *sharedpbv1.Contact {
 		return nil
 	}
 	return &sharedpbv1.Contact{
-		DisplayName: deref(c.DisplayName),
-		Email:       deref(c.Email),
-		PhoneNumber: deref(c.PhoneNumber),
+		DisplayName: repox.Deref(c.DisplayName),
+		Email:       repox.Deref(c.Email),
+		PhoneNumber: repox.Deref(c.PhoneNumber),
 	}
 }
 
 func windowInput(w *sharedpbv1.TimeWindow) timewindowsql.CreateInput {
 	return timewindowsql.CreateInput{
 		Id:        ulid.GenerateString(),
-		StartTime: tsToStr(w.GetStartTime()),
-		EndTime:   tsToStr(w.GetEndTime()),
+		StartTime: dbutil.TsToStr(w.GetStartTime()),
+		EndTime:   dbutil.TsToStr(w.GetEndTime()),
 	}
 }
 
@@ -228,26 +207,26 @@ func bookingFromParts(p bookingParts) *bookingpbv1.Booking {
 		Unit:           p.unitName,
 		Customer:       userNameOrEmpty(r.Customer),
 		Contact:        contactFromSchema(p.contact),
-		Units:          deref(r.Units),
+		Units:          repox.Deref(r.Units),
 		Window:         windowFromSchema(p.window),
-		AssignedUnit:   deref(r.AssignedUnit),
+		AssignedUnit:   repox.Deref(r.AssignedUnit),
 		State:          stateFromStr(r.State),
-		HoldExpireTime: strToTS(deref(r.HoldExpireTime)),
+		HoldExpireTime: strToTS(repox.Deref(r.HoldExpireTime)),
 		Price:          p.price,
 		PromoCode:      promoCodeNameOrEmpty(r.PromoCode),
 		Discount:       p.discount,
 		Total:          p.total,
-		Notes:          deref(r.Notes),
-		Attributes:     jsonToStruct(deref(r.Attributes)),
+		Notes:          repox.Deref(r.Notes),
+		Attributes:     jsonToStruct(repox.Deref(r.Attributes)),
 		CancelReason:   cancelReasonFromStr(r.CancelReason),
 		CreateTime:     strToTS(r.CreateTime),
 		UpdateTime:     strToTS(r.UpdateTime),
-		ConfirmTime:    strToTS(deref(r.ConfirmTime)),
-		CancelTime:     strToTS(deref(r.CancelTime)),
+		ConfirmTime:    strToTS(repox.Deref(r.ConfirmTime)),
+		CancelTime:     strToTS(repox.Deref(r.CancelTime)),
 		RefundAmount:   p.refund,
-		RefundPercent:  deref(r.RefundPercent),
-		HoldTtl:        durationFromStr(deref(r.HoldTtl)),
-		Etag:           deref(r.Etag),
+		RefundPercent:  repox.Deref(r.RefundPercent),
+		HoldTtl:        durationFromStr(repox.Deref(r.HoldTtl)),
+		Etag:           repox.Deref(r.Etag),
 	}
 }
 

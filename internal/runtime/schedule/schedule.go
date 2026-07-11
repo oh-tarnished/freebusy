@@ -8,10 +8,11 @@ package schedule
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	scheduledb "github.com/oh-tarnished/freebusy/internal/service/schedule/db"
+	"github.com/oh-tarnished/freebusy/internal/service/schedule/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"google.golang.org/grpc/codes"
@@ -24,11 +25,17 @@ import (
 // provider-agnostic db.ScheduleRepository.
 type Server struct {
 	schedulepbv1.UnimplementedScheduleServiceServer
-	repo scheduledb.ScheduleRepository
+	repo db.ScheduleRepository
+}
+
+// New builds the schedule service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo scheduledb.ScheduleRepository) *Server {
+func NewServer(repo db.ScheduleRepository) *Server {
 	return &Server{repo: repo}
 }
 

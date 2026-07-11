@@ -2,8 +2,7 @@ package hasura
 
 import (
 	"context"
-	"errors"
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
 	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
@@ -26,7 +25,7 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 	}
 	existing, err := r.svc.Query.Schedule.Resource.Find(ctx, resourceql.List().Where(resourceql.Name.Eq(s.GetName())))
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	exists := existing != nil
 	if exists && s.GetEtag() != "" && existing.Etag != nil && s.GetEtag() != *existing.Etag {
@@ -62,9 +61,9 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 
 	if exists {
 		patch := resourceql.UpdateInput{
-			BuffersId:            nullableStr(g.schedule.BuffersId),
-			StayConstraintsId:    nullableStr(g.schedule.StayConstraintsId),
-			CancellationPolicyId: nullableStr(g.schedule.CancellationPolicyId),
+			BuffersId:            dbutil.NullableStr(g.schedule.BuffersId),
+			StayConstraintsId:    dbutil.NullableStr(g.schedule.StayConstraintsId),
+			CancellationPolicyId: dbutil.NullableStr(g.schedule.CancellationPolicyId),
 			Etag:                 graphql.Value(ulid.GenerateString()),
 		}
 		var updRes scheduleschema.UpdateScheduleResourceByIdResponse
@@ -81,7 +80,7 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 	}
 
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetSchedule(ctx, s.GetName())
 }
@@ -120,28 +119,4 @@ func queueScheduleChildDeletes(tx *runtime.Tx, r *ScheduleRepository, refs sched
 		var res scheduleschema.DeleteScheduleStayConstraintsByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.StayConstraints.DeleteOp(*refs.stayID, &res))
 	}
-}
-
-// nullableStr maps an empty optional string to a SQL NULL update and a non-empty
-// one to a value update, so clearing a section clears its FK column.
-func nullableStr(s string) graphql.Nullable[string] {
-	if s == "" {
-		return graphql.Null[string]()
-	}
-	return graphql.Value(s)
-}
-
-// mapHasuraErr translates GraphQL/runtime errors into the repository sentinels.
-func mapHasuraErr(err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, graphql.ErrConflict):
-		return types.ErrConflict
-	}
-	msg := strings.ToLower(err.Error())
-	if strings.Contains(msg, "unique") || strings.Contains(msg, "duplicate") {
-		return types.ErrAlreadyExists
-	}
-	return err
 }

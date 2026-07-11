@@ -37,11 +37,11 @@ type OrganisationRepository interface {
 }
 
 // New returns the OrganisationRepository for the configured provider
-// ([database].provider; GORM by default, Hasura opt-in), built on the generated
+// (conn.Provider), built on the generated
 // repositories.
 func New(conn *database.Connection) OrganisationRepository {
 	c := repox.Conn{Gorm: conn.PgSQLConn}
-	if database.ProviderFromConfig() == database.ProviderHasura {
+	if conn.Provider == database.ProviderHasura {
 		c = repox.Conn{GraphQL: conn.Hasura}
 	}
 	return &repos{gen: organisation.New(c)}

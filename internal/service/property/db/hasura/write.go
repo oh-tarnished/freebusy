@@ -2,9 +2,8 @@ package hasura
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
@@ -32,7 +31,7 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 	}
 	res, err := r.svc.Query.Property.Properties.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -63,14 +62,14 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 	patch := propertiesql.UpdateInput{
 		Organisation: graphql.Value(g.property.Organisation),
 		DisplayName:  graphql.Value(g.property.DisplayName),
-		Description:  nullableStr(g.property.Description),
+		Description:  dbutil.NullableStr(g.property.Description),
 		TimeZone:     graphql.Value(g.property.TimeZone),
 		Tags:         graphql.Value(g.property.Tags),
 		Attributes:   graphql.Value(g.property.Attributes),
-		AddressId:    nullableStr(g.property.AddressId),
-		PolicyId:     nullableStr(g.property.PolicyId),
+		AddressId:    dbutil.NullableStr(g.property.AddressId),
+		PolicyId:     dbutil.NullableStr(g.property.PolicyId),
 		Etag:         graphql.Value(ulid.GenerateString()),
-		UpdateTime:   graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:   graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	var updRes pschema.UpdatePropertyPropertiesByIdResponse
 	tx.Add(r.svc.Mutation.Property.Properties.UpdateOp(id, patch, &updRes))
@@ -83,7 +82,7 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 	queuePropertyChildDeletes(tx, r, old)
 
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetProperty(ctx, p.GetName())
 }
@@ -104,10 +103,10 @@ func (r *PropertyRepository) setPropertyState(ctx context.Context, name, state s
 	patch := propertiesql.UpdateInput{
 		State:      graphql.Value(state),
 		Etag:       graphql.Value(ulid.GenerateString()),
-		UpdateTime: graphql.Value(tsToStr(timestamppb.New(time.Now().UTC()))),
+		UpdateTime: graphql.Value(dbutil.TsToStr(timestamppb.New(time.Now().UTC()))),
 	}
 	if _, err := r.svc.Mutation.Property.Properties.Update(ctx, id, patch); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetProperty(ctx, name)
 }
@@ -123,7 +122,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 	}
 	res, err := r.svc.Query.Property.Units.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -149,18 +148,18 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 	}
 	patch := unitsql.UpdateInput{
 		DisplayName:  graphql.Value(g.unit.DisplayName),
-		Description:  nullableStr(g.unit.Description),
+		Description:  dbutil.NullableStr(g.unit.Description),
 		Type:         graphql.Value(g.unit.Type),
 		Capacity:     graphql.Value(g.unit.Capacity),
 		MaxOccupancy: graphql.Value(g.unit.MaxOccupancy),
 		TimeZone:     graphql.Value(g.unit.TimeZone),
-		PricingUnit:  nullableStr(g.unit.PricingUnit),
-		Duration:     nullableStr(g.unit.Duration),
+		PricingUnit:  dbutil.NullableStr(g.unit.PricingUnit),
+		Duration:     dbutil.NullableStr(g.unit.Duration),
 		Tags:         graphql.Value(g.unit.Tags),
 		Attributes:   graphql.Value(g.unit.Attributes),
-		PriceId:      nullableStr(g.unit.PriceId),
+		PriceId:      dbutil.NullableStr(g.unit.PriceId),
 		Etag:         graphql.Value(ulid.GenerateString()),
-		UpdateTime:   graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:   graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	var updRes pschema.UpdatePropertyUnitsByIdResponse
 	tx.Add(r.svc.Mutation.Property.Units.UpdateOp(id, patch, &updRes))
@@ -169,7 +168,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 	queueUnitChildDeletes(tx, r, old)
 
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetUnit(ctx, u.GetName())
 }
@@ -185,7 +184,7 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 	}
 	res, err := r.svc.Query.Property.Units.Get(ctx, id)
 	if err != nil {
-		return mapHasuraErr(err)
+		return dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return types.ErrNotFound
@@ -196,7 +195,7 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 	}
 	licences, err := r.svc.Query.Property.Licences.List(ctx, licencesql.List().Where(licencesql.Unit.Eq(id)))
 	if err != nil {
-		return mapHasuraErr(err)
+		return dbutil.MapHasuraErr(err)
 	}
 	if len(licences) > 0 && !force {
 		return fmt.Errorf("%w: unit has %d licences; set force to delete them too",
@@ -214,7 +213,7 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 	var delRes pschema.DeletePropertyUnitsByIdResponse
 	tx.Add(r.svc.Mutation.Property.Units.DeleteOp(id, &delRes))
 	queueValueObjectDeletes(tx, r, refs.moneyIDs, refs.dateIDs)
-	return mapHasuraErr(tx.Commit(ctx))
+	return dbutil.MapHasuraErr(tx.Commit(ctx))
 }
 
 // queuePropertyChildDeletes appends deletes for a property's superseded media
@@ -273,28 +272,4 @@ func queueValueObjectDeletes(tx *runtime.Tx, r *PropertyRepository, moneyIDs, da
 		var out sharedschema.DeleteSharedDateRangesByIdResponse
 		tx.Add(r.svc.Mutation.Shared.DateRanges.DeleteOp(did, &out))
 	}
-}
-
-// nullableStr maps an empty optional string to a SQL NULL update and a non-empty
-// one to a value update, so clearing a field in the proto clears the column.
-func nullableStr(s string) graphql.Nullable[string] {
-	if s == "" {
-		return graphql.Null[string]()
-	}
-	return graphql.Value(s)
-}
-
-// mapHasuraErr translates GraphQL/runtime errors into the repository sentinels.
-func mapHasuraErr(err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, graphql.ErrConflict):
-		return types.ErrConflict
-	}
-	msg := strings.ToLower(err.Error())
-	if strings.Contains(msg, "unique") || strings.Contains(msg, "duplicate") {
-		return types.ErrAlreadyExists
-	}
-	return err
 }

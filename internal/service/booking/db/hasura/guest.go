@@ -1,6 +1,7 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"strings"
 	"time"
 
@@ -41,7 +42,7 @@ func occupancyFromSchema(o *bookingschema.BookingOccupancies) *bookingpbv1.Occup
 	if o == nil {
 		return nil
 	}
-	return &bookingpbv1.Occupancy{Adults: deref(o.Adults), Children: deref(o.Children), Infants: deref(o.Infants)}
+	return &bookingpbv1.Occupancy{Adults: repox.Deref(o.Adults), Children: repox.Deref(o.Children), Infants: repox.Deref(o.Infants)}
 }
 
 // --- guest graph -------------------------------------------------------------
@@ -140,13 +141,13 @@ func buildGuestGraphs(guests []*identitypbv1.Guest, bookingID string) []guestGra
 func guestFromSchema(g *identityschema.IdentityGuests, doc *identityschema.IdentityIdDocuments, f *identityschema.IdentityForeignerDetails, p *identityschema.IdentityGuestPreferences, perm, loc *commonschema.CommonPostalAddress) *identitypbv1.Guest {
 	out := &identitypbv1.Guest{
 		DisplayName:      g.DisplayName,
-		Primary:          deref(g.Primary),
+		Primary:          repox.Deref(g.Primary),
 		Gender:           genderFromStr(g.Gender),
-		BirthDate:        strToDate(deref(g.BirthDate)),
+		BirthDate:        strToDate(repox.Deref(g.BirthDate)),
 		AgeGroup:         ageGroupFromStr(g.AgeGroup),
-		Nationality:      deref(g.Nationality),
-		Email:            deref(g.Email),
-		PhoneNumber:      deref(g.PhoneNumber),
+		Nationality:      repox.Deref(g.Nationality),
+		Email:            repox.Deref(g.Email),
+		PhoneNumber:      repox.Deref(g.PhoneNumber),
 		PermanentAddress: addressFromSchema(perm),
 		LocalAddress:     addressFromSchema(loc),
 	}
@@ -154,24 +155,24 @@ func guestFromSchema(g *identityschema.IdentityGuests, doc *identityschema.Ident
 		out.IdDocument = &identitypbv1.IdDocument{
 			Type:           idDocTypeFromStr(doc.Type),
 			Number:         doc.Number,
-			IssuingCountry: deref(doc.IssuingCountry),
-			IssuePlace:     deref(doc.IssuePlace),
-			IssueDate:      strToDate(deref(doc.IssueDate)),
-			ExpiryDate:     strToDate(deref(doc.ExpiryDate)),
+			IssuingCountry: repox.Deref(doc.IssuingCountry),
+			IssuePlace:     repox.Deref(doc.IssuePlace),
+			IssueDate:      strToDate(repox.Deref(doc.IssueDate)),
+			ExpiryDate:     strToDate(repox.Deref(doc.ExpiryDate)),
 		}
 	}
 	if f != nil {
 		out.Foreigner = &identitypbv1.ForeignerDetails{
-			VisaNumber:      deref(f.VisaNumber),
-			VisaType:        deref(f.VisaType),
-			VisaIssuePlace:  deref(f.VisaIssuePlace),
-			VisaIssueDate:   strToDate(deref(f.VisaIssueDate)),
-			VisaExpiryDate:  strToDate(deref(f.VisaExpiryDate)),
-			ArrivalDate:     strToDate(deref(f.ArrivalDate)),
-			EntryPort:       deref(f.EntryPort),
-			Origin:          deref(f.Origin),
-			NextDestination: deref(f.NextDestination),
-			VisitPurpose:    deref(f.VisitPurpose),
+			VisaNumber:      repox.Deref(f.VisaNumber),
+			VisaType:        repox.Deref(f.VisaType),
+			VisaIssuePlace:  repox.Deref(f.VisaIssuePlace),
+			VisaIssueDate:   strToDate(repox.Deref(f.VisaIssueDate)),
+			VisaExpiryDate:  strToDate(repox.Deref(f.VisaExpiryDate)),
+			ArrivalDate:     strToDate(repox.Deref(f.ArrivalDate)),
+			EntryPort:       repox.Deref(f.EntryPort),
+			Origin:          repox.Deref(f.Origin),
+			NextDestination: repox.Deref(f.NextDestination),
+			VisitPurpose:    repox.Deref(f.VisitPurpose),
 		}
 	}
 	if p != nil {
@@ -180,10 +181,10 @@ func guestFromSchema(g *identityschema.IdentityGuests, doc *identityschema.Ident
 			Bed:             bedFromStr(p.Bed),
 			Dietary:         fromStrPtrs(p.Dietary),
 			Accessibility:   fromStrPtrs(p.Accessibility),
-			FloorPreference: deref(p.FloorPreference),
-			LoyaltyNumber:   deref(p.LoyaltyNumber),
+			FloorPreference: repox.Deref(p.FloorPreference),
+			LoyaltyNumber:   repox.Deref(p.LoyaltyNumber),
 			SpecialRequests: fromStrPtrs(p.SpecialRequests),
-			Notes:           deref(p.Notes),
+			Notes:           repox.Deref(p.Notes),
 		}
 	}
 	return out
@@ -216,17 +217,17 @@ func addressFromSchema(a *commonschema.CommonPostalAddress) *postaladdress.Posta
 		return nil
 	}
 	return &postaladdress.PostalAddress{
-		Revision:           deref(a.Revision),
-		RegionCode:         deref(a.RegionCode),
-		LanguageCode:       deref(a.LanguageCode),
-		PostalCode:         deref(a.PostalCode),
-		SortingCode:        deref(a.SortingCode),
-		AdministrativeArea: deref(a.AdministrativeArea),
-		Locality:           deref(a.Locality),
-		Sublocality:        deref(a.Sublocality),
+		Revision:           repox.Deref(a.Revision),
+		RegionCode:         repox.Deref(a.RegionCode),
+		LanguageCode:       repox.Deref(a.LanguageCode),
+		PostalCode:         repox.Deref(a.PostalCode),
+		SortingCode:        repox.Deref(a.SortingCode),
+		AdministrativeArea: repox.Deref(a.AdministrativeArea),
+		Locality:           repox.Deref(a.Locality),
+		Sublocality:        repox.Deref(a.Sublocality),
 		AddressLines:       fromStrPtrs(a.AddressLines),
 		Recipients:         fromStrPtrs(a.Recipients),
-		Organization:       deref(a.Organization),
+		Organization:       repox.Deref(a.Organization),
 	}
 }
 

@@ -16,13 +16,10 @@ package e2e
 import (
 	"context"
 	"errors"
-	"net/url"
-	"os"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/identity"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/organisation"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/property"
@@ -36,23 +33,10 @@ import (
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func TestRepositorySmoke_OrganisationGorm(t *testing.T) {
-	dsn := os.Getenv("FREEBUSY_TEST_POSTGRES_DSN")
-	if dsn == "" {
-		t.Skip("FREEBUSY_TEST_POSTGRES_DSN not set — live repository smoke test skipped")
-	}
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger:         logger.Default.LogMode(logger.Silent),
-		TranslateError: true, // sentinel errors (ErrDuplicatedKey) like database.Open
-	})
-	if err != nil {
-		t.Fatalf("open postgres: %v", err)
-	}
+	db := openTestGorm(t)
 	orgLifecycle(t, organisation.NewGorm(db), identity.NewGorm(db))
 }
 
@@ -60,18 +44,7 @@ func TestRepositorySmoke_OrganisationGorm(t *testing.T) {
 // through the GraphQL adapters against a live DDN engine — one behavior, two
 // generated backends.
 func TestRepositorySmoke_OrganisationGraphQL(t *testing.T) {
-	raw := os.Getenv("FREEBUSY_TEST_GRAPHQL_URL")
-	if raw == "" {
-		t.Skip("FREEBUSY_TEST_GRAPHQL_URL not set — live repository smoke test skipped")
-	}
-	u, err := url.Parse(raw)
-	if err != nil {
-		t.Fatalf("parse %s: %v", raw, err)
-	}
-	svc, err := freebusyql.Connect(u)
-	if err != nil {
-		t.Fatalf("connect %s: %v", raw, err)
-	}
+	svc := connectTestGraphQL(t)
 	orgLifecycle(t, organisation.NewGraphQL(svc), identity.NewGraphQL(svc))
 }
 
@@ -205,17 +178,7 @@ func orgLifecycle(t *testing.T, repos organisation.Repositories, idRepos identit
 // is created, preloaded, mask-switched, and cleaned up entirely by generated
 // code — including the property_id/unit_id ancestor wiring the FKs enforce.
 func TestRepositorySmoke_ScheduleExceptionGorm(t *testing.T) {
-	dsn := os.Getenv("FREEBUSY_TEST_POSTGRES_DSN")
-	if dsn == "" {
-		t.Skip("FREEBUSY_TEST_POSTGRES_DSN not set — live repository smoke test skipped")
-	}
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger:         logger.Default.LogMode(logger.Silent),
-		TranslateError: true,
-	})
-	if err != nil {
-		t.Fatalf("open postgres: %v", err)
-	}
+	db := openTestGorm(t)
 	exceptionLifecycle(t, organisation.NewGorm(db), property.NewGorm(db), schedule.NewGorm(db))
 }
 
@@ -223,18 +186,7 @@ func TestRepositorySmoke_ScheduleExceptionGorm(t *testing.T) {
 // through the GraphQL adapters (insert-then-reference, follow-up hydration,
 // patch replacement) against a live DDN engine.
 func TestRepositorySmoke_ScheduleExceptionGraphQL(t *testing.T) {
-	raw := os.Getenv("FREEBUSY_TEST_GRAPHQL_URL")
-	if raw == "" {
-		t.Skip("FREEBUSY_TEST_GRAPHQL_URL not set — live repository smoke test skipped")
-	}
-	u, err := url.Parse(raw)
-	if err != nil {
-		t.Fatalf("parse %s: %v", raw, err)
-	}
-	svc, err := freebusyql.Connect(u)
-	if err != nil {
-		t.Fatalf("connect %s: %v", raw, err)
-	}
+	svc := connectTestGraphQL(t)
 	exceptionLifecycle(t, organisation.NewGraphQL(svc), property.NewGraphQL(svc), schedule.NewGraphQL(svc))
 }
 

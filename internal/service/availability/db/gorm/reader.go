@@ -7,6 +7,7 @@ package gorm
 import (
 	"context"
 	"errors"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
@@ -141,8 +142,8 @@ func buildUnitInfo(u *property.Unit, sched *schedule.Schedule) *engine.UnitInfo 
 		rr := &sched.RecurringRules[i]
 		info.Recurring = append(info.Recurring, rrule.Rule{
 			RRule:  rr.Rrule,
-			Opens:  deref(rr.Opens),
-			Closes: deref(rr.Closes),
+			Opens:  repox.Deref(rr.Opens),
+			Closes: repox.Deref(rr.Closes),
 		})
 	}
 	return info
@@ -216,7 +217,7 @@ func (r *AvailabilityReader) SearchUnits(ctx context.Context, propertyRef, organ
 	}
 	where, args, err := filterx.Gorm[property.Unit](property.UnitFilterSpec).Where(types.Filterx(conds))
 	if err != nil {
-		return nil, types.MapFilterxErr(err)
+		return nil, repox.MapFilterxErr(err)
 	}
 	if where != "" {
 		q = q.Where(where, args...)

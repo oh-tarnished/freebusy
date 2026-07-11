@@ -2,6 +2,7 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	exceptionsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
@@ -38,7 +39,7 @@ func (r *ScheduleRepository) GetSchedule(ctx context.Context, name string) (*sch
 	}
 	res, err := r.svc.Query.Schedule.Resource.Find(ctx, resourceql.List().Where(resourceql.Name.Eq(name)))
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	var out *schedulepbv1.Schedule
 	if res == nil {
@@ -68,14 +69,14 @@ func (r *ScheduleRepository) hydrateSchedule(ctx context.Context, res *schedules
 	if res.BuffersId != nil {
 		b, err := r.svc.Query.Schedule.BufferSettings.Get(ctx, *res.BuffersId)
 		if err != nil {
-			return scheduleParts{}, scheduleRefs{}, mapHasuraErr(err)
+			return scheduleParts{}, scheduleRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.buffers = b
 	}
 	if res.StayConstraintsId != nil {
 		s, err := r.svc.Query.Schedule.StayConstraints.Get(ctx, *res.StayConstraintsId)
 		if err != nil {
-			return scheduleParts{}, scheduleRefs{}, mapHasuraErr(err)
+			return scheduleParts{}, scheduleRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.stay = s
 	}
@@ -84,14 +85,14 @@ func (r *ScheduleRepository) hydrateSchedule(ctx context.Context, res *schedules
 		tiers, err := r.svc.Query.Schedule.RefundTiers.List(ctx,
 			refundschema.List().Where(refundschema.CancellationPolicyId.Eq(*res.CancellationPolicyId)))
 		if err != nil {
-			return scheduleParts{}, scheduleRefs{}, mapHasuraErr(err)
+			return scheduleParts{}, scheduleRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.refundTiers = tiers
 	}
 	rules, err := r.svc.Query.Schedule.RecurringRules.List(ctx,
 		recurringschema.List().Where(recurringschema.ScheduleId.Eq(res.Id)))
 	if err != nil {
-		return scheduleParts{}, scheduleRefs{}, mapHasuraErr(err)
+		return scheduleParts{}, scheduleRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.recurring = rules
 	for i := range rules {
@@ -105,7 +106,7 @@ func (r *ScheduleRepository) exceptionNames(ctx context.Context, unitID string) 
 	rows, err := r.svc.Query.Schedule.AvailabilityExceptions.List(ctx,
 		exceptionsql.List().Where(exceptionsql.UnitId.Eq(unitID)).OrderBy(exceptionsql.CreateTime.Asc()))
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	names := make([]string, 0, len(rows))
 	for i := range rows {

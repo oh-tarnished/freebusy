@@ -175,12 +175,12 @@ func (r *PropertyRepository) CreateProperty(ctx context.Context, p *propertypbv1
 	g := buildPropertyGraph(p)
 	g.property.ID = id
 	g.property.Name = name
-	g.property.Etag = ptr(ulid.GenerateString())
+	g.property.Etag = repox.Ptr(ulid.GenerateString())
 
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
 		return g.persist(ctx, tx)
 	}); err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetProperty(ctx, name)
 }
@@ -193,7 +193,7 @@ func (r *PropertyRepository) GetProperty(ctx context.Context, name string) (*pro
 	}
 	var m property.Property
 	if err := preloadProperty(r.db.WithContext(ctx)).First(&m, "id = ?", id).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return propertyFromModel(&m), nil
 }
@@ -207,7 +207,7 @@ func (r *PropertyRepository) ListProperties(ctx context.Context, in repox.ListIn
 	models, next, err := filterx.Gorm[property.Property](property.PropertyFilterSpec).
 		List(ctx, preloadProperty(r.db), fin)
 	if err != nil {
-		return nil, "", mapGormErr(types.MapFilterxErr(err))
+		return nil, "", repox.MapGormErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Property, 0, len(models))
 	for i := range models {
@@ -228,12 +228,12 @@ func (r *PropertyRepository) CreateUnit(ctx context.Context, parent string, u *p
 	g := buildUnitGraph(u, propertyID)
 	g.unit.ID = id
 	g.unit.Name = name
-	g.unit.Etag = ptr(ulid.GenerateString())
+	g.unit.Etag = repox.Ptr(ulid.GenerateString())
 
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
 		return g.persist(ctx, tx)
 	}); err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetUnit(ctx, name)
 }
@@ -246,7 +246,7 @@ func (r *PropertyRepository) GetUnit(ctx context.Context, name string) (*propert
 	}
 	var m property.Unit
 	if err := preloadUnit(r.db.WithContext(ctx)).First(&m, "id = ?", id).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return unitFromModel(&m), nil
 }
@@ -264,7 +264,7 @@ func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, in re
 	models, next, err := filterx.Gorm[property.Unit](property.UnitFilterSpec).
 		List(ctx, preloadUnit(r.db).Where("property_id = ?", propertyID), fin)
 	if err != nil {
-		return nil, "", mapGormErr(types.MapFilterxErr(err))
+		return nil, "", repox.MapGormErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Unit, 0, len(models))
 	for i := range models {

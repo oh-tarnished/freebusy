@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
@@ -188,7 +189,7 @@ func (r *BookingRepository) loadGuests(ctx context.Context, bookingID string) ([
 		Where("booking_id = ?", bookingID).
 		Order("id").
 		Find(&models).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	out := make([]*identitypbv1.Guest, 0, len(models))
 	for i := range models {

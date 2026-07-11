@@ -2,11 +2,12 @@ package availability
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database"
 	"sort"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	availdb "github.com/oh-tarnished/freebusy/internal/service/availability/db"
+	"github.com/oh-tarnished/freebusy/internal/service/availability/db"
 	"github.com/oh-tarnished/freebusy/internal/service/availability/engine"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
@@ -19,11 +20,17 @@ import (
 // Server implements availabilitypbv1.AvailabilityServiceServer over the read port.
 type Server struct {
 	availabilitypbv1.UnimplementedAvailabilityServiceServer
-	reader availdb.AvailabilityReader
+	reader db.AvailabilityReader
+}
+
+// New builds the availability service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by reader.
-func NewServer(reader availdb.AvailabilityReader) *Server {
+func NewServer(reader db.AvailabilityReader) *Server {
 	return &Server{reader: reader}
 }
 

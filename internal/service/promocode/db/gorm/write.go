@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
@@ -54,7 +55,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		existing.WindowID = g.promo.WindowID
 		existing.LimitsID = g.promo.LimitsID
 		existing.ScopeID = g.promo.ScopeID
-		existing.Etag = ptr(ulid.GenerateString())
+		existing.Etag = repox.Ptr(ulid.GenerateString())
 		existing.Discount, existing.Window, existing.Limits, existing.Scope = nil, nil, nil, nil
 		existing.Redemptions = nil
 		if e := promocode.NewPromoCodeStore(tx).Update(ctx, &existing); e != nil {
@@ -63,7 +64,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		return deleteChildren(ctx, tx, old)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.Get(ctx, pc.GetName())
 }
@@ -88,7 +89,7 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 		}
 		return deleteChildren(ctx, tx, refs)
 	})
-	return mapGormErr(err)
+	return repox.MapGormErr(err)
 }
 
 // promoRefs captures the ids of a promo code's child rows and Money rows so they

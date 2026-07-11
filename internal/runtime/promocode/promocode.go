@@ -8,11 +8,12 @@ package promocode
 import (
 	"context"
 	"errors"
+	"github.com/oh-tarnished/freebusy/internal/database"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
 	promocodesvc "github.com/oh-tarnished/freebusy/internal/service/promocode"
-	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
+	"github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"google.golang.org/grpc/codes"
@@ -26,11 +27,17 @@ import (
 // the promocode db factory.
 type Server struct {
 	promocodepbv1.UnimplementedPromoCodeServiceServer
-	repo promocodedb.PromoCodeRepository
+	repo db.PromoCodeRepository
+}
+
+// New builds the promocode service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo promocodedb.PromoCodeRepository) *Server {
+func NewServer(repo db.PromoCodeRepository) *Server {
 	return &Server{repo: repo}
 }
 

@@ -53,10 +53,10 @@ type singleton interface {
 }
 
 // New returns the ScheduleRepository for the configured provider
-// ([database].provider; GORM by default, Hasura opt-in): generated
+// (conn.Provider): generated
 // repositories for exceptions, the provider's singleton for the Schedule.
 func New(conn *database.Connection) ScheduleRepository {
-	if database.ProviderFromConfig() == database.ProviderHasura {
+	if conn.Provider == database.ProviderHasura {
 		return &repos{
 			singleton: hasura.NewScheduleRepository(conn.Hasura),
 			gen:       schedgen.New(repox.Conn{GraphQL: conn.Hasura}),

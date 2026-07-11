@@ -12,6 +12,7 @@ import (
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
+	"github.com/oh-tarnished/runtime-go/grpc"
 	"google.golang.org/genproto/googleapis/type/money"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,9 +23,11 @@ import (
 // The interceptor enforces the buf.validate rules annotated on the protos:
 // the BookingGuests singleton name must match ^bookings/[^/]+/guests$ and
 // occupancy counts are >= 0. Valid requests pass through to the handler
-// untouched.
+// untouched. The interceptor itself lives in runtime-go (grpc.WithValidation /
+// grpc.NewValidationInterceptor); these tests pin its behavior against
+// freebusy's protos.
 func TestValidationInterceptor(t *testing.T) {
-	intercept, err := validationInterceptor()
+	intercept, err := grpc.NewValidationInterceptor()
 	if err != nil {
 		t.Fatalf("build interceptor: %v", err)
 	}
@@ -75,7 +78,7 @@ func TestValidationInterceptor(t *testing.T) {
 // missing required fields, malformed resource names, unset oneofs, and
 // out-of-range values — and pass well-formed requests through.
 func TestValidationInterceptor_Services(t *testing.T) {
-	intercept, err := validationInterceptor()
+	intercept, err := grpc.NewValidationInterceptor()
 	if err != nil {
 		t.Fatalf("build interceptor: %v", err)
 	}

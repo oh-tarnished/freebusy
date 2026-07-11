@@ -1,6 +1,8 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
@@ -37,9 +39,9 @@ type propertyGraph struct {
 
 func buildPropertyGraph(p *propertypbv1.Property, now time.Time) *propertyGraph {
 	g := &propertyGraph{}
-	nowStr := tsToStr(timestamppb.New(now))
+	nowStr := dbutil.TsToStr(timestamppb.New(now))
 	g.property = propertiesql.CreateInput{
-		Organisation: lastSegment(p.GetOrganisation()),
+		Organisation: repox.LastSegment(p.GetOrganisation()),
 		DisplayName:  p.GetDisplayName(),
 		Description:  p.GetDescription(),
 		TimeZone:     p.GetTimeZone(),
@@ -97,7 +99,7 @@ func propertyFromParts(p propertyParts) *propertypbv1.Property {
 		Name:         res.Name,
 		Organisation: orgName(res.Organisation),
 		DisplayName:  res.DisplayName,
-		Description:  deref(res.Description),
+		Description:  repox.Deref(res.Description),
 		Address:      addressFromModel(p.address),
 		TimeZone:     res.TimeZone,
 		Policy:       policyFromModel(p.policy),
@@ -106,7 +108,7 @@ func propertyFromParts(p propertyParts) *propertypbv1.Property {
 		State:        propertyStateFromStr(res.State),
 		CreateTime:   strToTS(res.CreateTime),
 		UpdateTime:   strToTS(res.UpdateTime),
-		Etag:         deref(res.Etag),
+		Etag:         repox.Deref(res.Etag),
 		Units:        p.unitNames,
 		Licences:     p.licenceNames,
 	}
@@ -124,7 +126,7 @@ func policyFromModel(p *pschema.PropertyPolicies) *propertypbv1.Policy {
 		CheckinTime:  strToTOD(p.CheckinTime),
 		CheckoutTime: strToTOD(p.CheckoutTime),
 		HouseRules:   strPtrsToSlice(p.HouseRules),
-		Notes:        deref(p.Notes),
+		Notes:        repox.Deref(p.Notes),
 	}
 }
 
@@ -132,11 +134,11 @@ func mediaFromModel(m *pschema.PropertyMedias) *propertypbv1.Media {
 	return &propertypbv1.Media{
 		Uri:         m.Uri,
 		Type:        mediaTypeFromStr(m.Type),
-		Title:       deref(m.Title),
-		Description: deref(m.Description),
-		MimeType:    deref(m.MimeType),
-		SortOrder:   deref(m.SortOrder),
-		Primary:     deref(m.Primary),
+		Title:       repox.Deref(m.Title),
+		Description: repox.Deref(m.Description),
+		MimeType:    repox.Deref(m.MimeType),
+		SortOrder:   repox.Deref(m.SortOrder),
+		Primary:     repox.Deref(m.Primary),
 	}
 }
 
@@ -164,7 +166,7 @@ type unitGraph struct {
 
 func buildUnitGraph(u *propertypbv1.Unit, propertyID string, now time.Time) *unitGraph {
 	g := &unitGraph{}
-	nowStr := tsToStr(timestamppb.New(now))
+	nowStr := dbutil.TsToStr(timestamppb.New(now))
 	g.unit = unitsql.CreateInput{
 		DisplayName:  u.GetDisplayName(),
 		Description:  u.GetDescription(),
@@ -275,11 +277,11 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 	out := &propertypbv1.Unit{
 		Name:         res.Name,
 		DisplayName:  res.DisplayName,
-		Description:  deref(res.Description),
+		Description:  repox.Deref(res.Description),
 		Type:         unitTypeFromStr(res.Type),
 		BookingMode:  bookingModeFromStr(res.BookingMode),
-		Capacity:     deref(res.Capacity),
-		MaxOccupancy: deref(res.MaxOccupancy),
+		Capacity:     repox.Deref(res.Capacity),
+		MaxOccupancy: repox.Deref(res.MaxOccupancy),
 		TimeZone:     res.TimeZone,
 		Price:        moneyFromModel(p.price),
 		PricingUnit:  pricingUnitFromStr(res.PricingUnit),
@@ -289,7 +291,7 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 		State:        unitStateFromStr(res.State),
 		CreateTime:   strToTS(res.CreateTime),
 		UpdateTime:   strToTS(res.UpdateTime),
-		Etag:         deref(res.Etag),
+		Etag:         repox.Deref(res.Etag),
 	}
 	for i := range p.rateOverrides {
 		r := &p.rateOverrides[i]
@@ -304,7 +306,7 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 	}
 	for i := range p.losDiscounts {
 		l := &p.losDiscounts[i]
-		ld := &propertypbv1.LosDiscount{MinNights: l.MinNights, PercentOff: deref(l.PercentOff)}
+		ld := &propertypbv1.LosDiscount{MinNights: l.MinNights, PercentOff: repox.Deref(l.PercentOff)}
 		if l.AmountOffId != nil {
 			ld.AmountOff = moneyFromModel(p.moneyByID[*l.AmountOffId])
 		}
@@ -314,10 +316,10 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 		f := &p.fees[i]
 		fee := &propertypbv1.Fee{
 			Code:        f.Code,
-			DisplayName: deref(f.DisplayName),
-			Percent:     deref(f.Percent),
+			DisplayName: repox.Deref(f.DisplayName),
+			Percent:     repox.Deref(f.Percent),
 			PricingUnit: pricingUnitFromStr(f.PricingUnit),
-			Taxable:     deref(f.Taxable),
+			Taxable:     repox.Deref(f.Taxable),
 		}
 		if f.AmountId != nil {
 			fee.Amount = moneyFromModel(p.moneyByID[*f.AmountId])
@@ -327,7 +329,7 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 	for i := range p.taxes {
 		out.Taxes = append(out.Taxes, &propertypbv1.Tax{
 			Code:        p.taxes[i].Code,
-			DisplayName: deref(p.taxes[i].DisplayName),
+			DisplayName: repox.Deref(p.taxes[i].DisplayName),
 			Percent:     p.taxes[i].Percent,
 		})
 	}
@@ -344,11 +346,11 @@ func unitMediaFromModel(m *pschema.PropertyUnitMedias) *propertypbv1.UnitMedia {
 	return &propertypbv1.UnitMedia{
 		Uri:         m.Uri,
 		Type:        mediaTypeFromStr(m.Type),
-		Title:       deref(m.Title),
-		Description: deref(m.Description),
-		MimeType:    deref(m.MimeType),
-		SortOrder:   deref(m.SortOrder),
-		Primary:     deref(m.Primary),
+		Title:       repox.Deref(m.Title),
+		Description: repox.Deref(m.Description),
+		MimeType:    repox.Deref(m.MimeType),
+		SortOrder:   repox.Deref(m.SortOrder),
+		Primary:     repox.Deref(m.Primary),
 	}
 }
 

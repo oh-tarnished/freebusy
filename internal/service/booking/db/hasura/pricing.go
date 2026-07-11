@@ -2,6 +2,8 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	scopeunitsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
 	feesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
@@ -28,7 +30,7 @@ func (r *BookingRepository) pricingInputs(ctx context.Context, unit *propertysch
 
 	fees, err := r.svc.Query.Property.Fees.List(ctx, feesql.List().Where(feesql.UnitId.Eq(unit.Id)))
 	if err != nil {
-		return pricing.Inputs{}, mapHasuraErr(err)
+		return pricing.Inputs{}, dbutil.MapHasuraErr(err)
 	}
 	for i := range fees {
 		f := &fees[i]
@@ -40,25 +42,25 @@ func (r *BookingRepository) pricingInputs(ctx context.Context, unit *propertysch
 		}
 		in.Fees = append(in.Fees, pricing.Fee{
 			Code:        f.Code,
-			DisplayName: deref(f.DisplayName),
-			PricingUnit: deref(f.PricingUnit),
+			DisplayName: repox.Deref(f.DisplayName),
+			PricingUnit: repox.Deref(f.PricingUnit),
 			Percent:     f.Percent,
 			Amount:      amt,
-			Taxable:     deref(f.Taxable),
+			Taxable:     repox.Deref(f.Taxable),
 		})
 	}
 
 	taxes, err := r.svc.Query.Property.Taxes.List(ctx, taxesql.List().Where(taxesql.UnitId.Eq(unit.Id)))
 	if err != nil {
-		return pricing.Inputs{}, mapHasuraErr(err)
+		return pricing.Inputs{}, dbutil.MapHasuraErr(err)
 	}
 	for i := range taxes {
-		in.Taxes = append(in.Taxes, pricing.Tax{Code: taxes[i].Code, DisplayName: deref(taxes[i].DisplayName), Percent: taxes[i].Percent})
+		in.Taxes = append(in.Taxes, pricing.Tax{Code: taxes[i].Code, DisplayName: repox.Deref(taxes[i].DisplayName), Percent: taxes[i].Percent})
 	}
 
 	los, err := r.svc.Query.Property.LosDiscounts.List(ctx, losdiscountsql.List().Where(losdiscountsql.UnitId.Eq(unit.Id)))
 	if err != nil {
-		return pricing.Inputs{}, mapHasuraErr(err)
+		return pricing.Inputs{}, dbutil.MapHasuraErr(err)
 	}
 	for i := range los {
 		d := &los[i]
@@ -89,17 +91,17 @@ func (r *BookingRepository) pricingInputs(ctx context.Context, unit *propertysch
 func (r *BookingRepository) loadPromo(ctx context.Context, promoID string) (*pricing.Promo, error) {
 	res, err := r.svc.Query.Promocode.Resource.Get(ctx, promoID)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, nil
 	}
-	p := &pricing.Promo{Code: res.Code, DisplayName: deref(res.DisplayName)}
+	p := &pricing.Promo{Code: res.Code, DisplayName: repox.Deref(res.DisplayName)}
 
 	if res.DiscountId != "" {
 		d, err := r.svc.Query.Promocode.Discounts.Get(ctx, res.DiscountId)
 		if err != nil {
-			return nil, mapHasuraErr(err)
+			return nil, dbutil.MapHasuraErr(err)
 		}
 		if d != nil {
 			p.PercentOff = d.PercentOff
@@ -113,7 +115,7 @@ func (r *BookingRepository) loadPromo(ctx context.Context, promoID string) (*pri
 	if res.ScopeId != nil {
 		scope, err := r.svc.Query.Promocode.Scopes.Get(ctx, *res.ScopeId)
 		if err != nil {
-			return nil, mapHasuraErr(err)
+			return nil, dbutil.MapHasuraErr(err)
 		}
 		if scope != nil && scope.MinSubtotalId != nil {
 			if p.MinSubtotal, err = r.money(ctx, *scope.MinSubtotalId); err != nil {
@@ -122,7 +124,7 @@ func (r *BookingRepository) loadPromo(ctx context.Context, promoID string) (*pri
 		}
 		units, err := r.svc.Query.Promocode.ScopeApplicableUnits.List(ctx, scopeunitsql.List().Where(scopeunitsql.ScopeId.Eq(*res.ScopeId)))
 		if err != nil {
-			return nil, mapHasuraErr(err)
+			return nil, dbutil.MapHasuraErr(err)
 		}
 		for i := range units {
 			p.ApplicableUnitIDs = append(p.ApplicableUnitIDs, units[i].UnitId)
@@ -134,7 +136,7 @@ func (r *BookingRepository) loadPromo(ctx context.Context, promoID string) (*pri
 func (r *BookingRepository) money(ctx context.Context, id string) (*money.Money, error) {
 	m, err := r.svc.Query.Common.Moneys.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return moneyFromSchema(m), nil
 }

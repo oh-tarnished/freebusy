@@ -2,10 +2,11 @@ package identity
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	identitydb "github.com/oh-tarnished/freebusy/internal/service/identity/db"
+	"github.com/oh-tarnished/freebusy/internal/service/identity/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"google.golang.org/grpc/codes"
@@ -24,11 +25,17 @@ const callerHeader = "x-user-id"
 // provider-agnostic db.UserRepository.
 type Server struct {
 	identitypbv1.UnimplementedIdentityServiceServer
-	repo identitydb.UserRepository
+	repo db.UserRepository
+}
+
+// New builds the identity service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo identitydb.UserRepository) *Server {
+func NewServer(repo db.UserRepository) *Server {
 	return &Server{repo: repo}
 }
 

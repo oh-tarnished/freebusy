@@ -2,9 +2,9 @@ package hasura
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
@@ -33,13 +33,13 @@ import (
 // chronological order. Intended to be called periodically by the hold sweeper.
 func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
 	now := time.Now().UTC()
-	nowStr := tsToStr(timestamppb.New(now))
+	nowStr := dbutil.TsToStr(timestamppb.New(now))
 	rows, err := r.svc.Query.Booking.Resource.List(ctx, resourceql.List().Where(resourceql.And(
 		resourceql.State.Eq("PENDING_HOLD"),
 		resourceql.HoldExpireTime.Lt(nowStr),
 	)))
 	if err != nil {
-		return 0, mapHasuraErr(err)
+		return 0, dbutil.MapHasuraErr(err)
 	}
 	var expired int64
 	for i := range rows {
@@ -49,7 +49,7 @@ func (r *BookingRepository) ExpireHolds(ctx context.Context) (int64, error) {
 			UpdateTime: graphql.Value(nowStr),
 		}
 		if _, err := r.svc.Mutation.Booking.Resource.Update(ctx, rows[i].Id, patch); err != nil {
-			return expired, mapHasuraErr(err)
+			return expired, dbutil.MapHasuraErr(err)
 		}
 		expired++
 	}
@@ -74,7 +74,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 	}
 	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -86,12 +86,12 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 	// Re-validate the party against the unit's max occupancy.
 	unit, err := r.svc.Query.Property.Units.Get(ctx, res.Unit)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if unit == nil {
 		return nil, types.ErrNotFound
 	}
-	if !party.Fits(deref(unit.MaxOccupancy), deref(res.Units), occupancy, guests) {
+	if !party.Fits(repox.Deref(unit.MaxOccupancy), repox.Deref(res.Units), occupancy, guests) {
 		return nil, types.ErrInvalidArgument
 	}
 
@@ -101,7 +101,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 	occID := ""
 	if newOcc != nil {
 		if _, e := r.svc.Mutation.Booking.Occupancies.Create(ctx, *newOcc); e != nil {
-			return nil, mapHasuraErr(e)
+			return nil, dbutil.MapHasuraErr(e)
 		}
 		occID = newOcc.Id
 	}
@@ -113,22 +113,22 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 		match = resourceql.And(match, resourceql.Etag.Eq(*res.Etag))
 	}
 	patch := resourceql.UpdateInput{
-		OccupancyId: nullableStr(occID),
+		OccupancyId: dbutil.NullableStr(occID),
 		Etag:        graphql.Value(ulid.GenerateString()),
-		UpdateTime:  graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:  graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	if _, e := r.svc.Mutation.Booking.Resource.UpdateIfMatch(ctx, id, patch, match); e != nil {
 		if occID != "" {
 			_, _ = r.svc.Mutation.Booking.Occupancies.Delete(ctx, occID) // reap the orphan
 		}
-		return nil, mapHasuraErr(e)
+		return nil, dbutil.MapHasuraErr(e)
 	}
 
 	// The etag is bumped — this writer owns the replace section. Swap the party
 	// and drop the superseded occupancy in one atomic batch.
 	oldGuests, err := r.svc.Query.Identity.Guests.List(ctx, guestsql.List().Where(guestsql.BookingId.Eq(id)))
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	tx := r.svc.Mutation.Tx()
 	if res.OccupancyId != nil {
@@ -138,7 +138,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 	queueGuestDeletes(tx, r, id, oldGuests)
 	queueGuestInserts(tx, r, buildGuestGraphs(guests, id))
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetBooking(ctx, name)
 }
@@ -151,7 +151,7 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 	}
 	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -162,10 +162,10 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 	now := time.Now().UTC()
 	patch := resourceql.UpdateInput{
 		State:          graphql.Value("CONFIRMED"),
-		ConfirmTime:    graphql.Value(tsToStr(timestamppb.New(now))),
+		ConfirmTime:    graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 		HoldExpireTime: graphql.Null[string](),
 		Etag:           graphql.Value(ulid.GenerateString()),
-		UpdateTime:     graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:     graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	// CAS: only a still-held, unchanged booking confirms; a concurrent cancel,
 	// expiry, or double-confirm loses the race and gets Conflict instead of
@@ -175,7 +175,7 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 		match = resourceql.And(match, resourceql.Etag.Eq(*res.Etag))
 	}
 	if _, err := r.svc.Mutation.Booking.Resource.UpdateIfMatch(ctx, id, patch, match); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetBooking(ctx, name)
 }
@@ -189,7 +189,7 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 	}
 	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -204,11 +204,11 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 	now := time.Now().UTC()
 	patch := resourceql.UpdateInput{
 		State:         graphql.Value("CANCELLED"),
-		CancelTime:    graphql.Value(tsToStr(timestamppb.New(now))),
-		CancelReason:  nullableStr(cancelReasonToStr(reason)),
+		CancelTime:    graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
+		CancelReason:  dbutil.NullableStr(cancelReasonToStr(reason)),
 		RefundPercent: graphql.Value(pct),
 		Etag:          graphql.Value(ulid.GenerateString()),
-		UpdateTime:    graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:    graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	// CAS: the cancel only lands if the booking hasn't reached a terminal state
 	// (or been otherwise modified) since the read above. The refund Money insert
@@ -230,7 +230,7 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 	var updRes bookingschema.UpdateBookingResourceByIdResponse
 	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes, resourceql.Update().PreCheck(match)))
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if updRes.AffectedRows == 0 {
 		if refundID != "" {
@@ -250,7 +250,7 @@ func (r *BookingRepository) PreviewCancellation(ctx context.Context, name string
 	}
 	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
 	if err != nil {
-		return false, 0, nil, nil, "", mapHasuraErr(err)
+		return false, 0, nil, nil, "", dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return false, 0, nil, nil, "", types.ErrNotFound
@@ -281,7 +281,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	}
 	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -296,13 +296,13 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	}
 	unit, err := r.svc.Query.Property.Units.Get(ctx, unitID)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if unit == nil {
 		return nil, types.ErrNotFound
 	}
 
-	requested := int64(deref(res.Units))
+	requested := int64(repox.Deref(res.Units))
 	if requested < 1 {
 		requested = 1
 	}
@@ -318,7 +318,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		return nil, types.ErrConflict
 	}
 
-	in, err := r.pricingInputs(ctx, unit, deref(res.PromoCode))
+	in, err := r.pricingInputs(ctx, unit, repox.Deref(res.PromoCode))
 	if err != nil {
 		return nil, err
 	}
@@ -349,11 +349,11 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	patch := resourceql.UpdateInput{
 		Unit:       graphql.Value(unitID),
 		WindowId:   graphql.Value(window.Id),
-		PriceId:    nullableStr(priceID),
-		DiscountId: nullableStr(discountID),
-		TotalId:    nullableStr(totalID),
+		PriceId:    dbutil.NullableStr(priceID),
+		DiscountId: dbutil.NullableStr(discountID),
+		TotalId:    dbutil.NullableStr(totalID),
 		Etag:       graphql.Value(ulid.GenerateString()),
-		UpdateTime: graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime: graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 
 	// Stage 1: create the replacement rows (window + price breakdown). Additive
@@ -363,7 +363,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	ins.Add(r.svc.Mutation.Shared.TimeWindows.CreateOp(window, &winRes))
 	queueMoneyInserts(ins, r, priceIn, discountIn, totalIn)
 	if err := ins.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 
 	// Stage 2: CAS-repoint the booking onto the new rows. A concurrent write
@@ -388,7 +388,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 			}
 		}
 		_ = reap.Commit(ctx) // best-effort: a failed reap only leaves orphans
-		return nil, mapHasuraErr(casErr)
+		return nil, dbutil.MapHasuraErr(casErr)
 	}
 
 	// Stage 3: drop the superseded window and Money rows. The booking is already
@@ -426,7 +426,7 @@ func (r *BookingRepository) computeRefund(ctx context.Context, res *bookingschem
 	}
 	unit, err := r.svc.Query.Property.Units.Get(ctx, res.Unit)
 	if err != nil {
-		return 0, nil, "", mapHasuraErr(err)
+		return 0, nil, "", dbutil.MapHasuraErr(err)
 	}
 	if unit == nil {
 		return 0, nil, "non-refundable", nil
@@ -437,7 +437,7 @@ func (r *BookingRepository) computeRefund(ctx context.Context, res *bookingschem
 	}
 	sched, err := r.svc.Query.Schedule.Resource.Find(ctx, schedresourceql.List().Where(schedresourceql.Name.Eq(scheduleName)))
 	if err != nil {
-		return 0, nil, "", mapHasuraErr(err)
+		return 0, nil, "", dbutil.MapHasuraErr(err)
 	}
 	if sched == nil || sched.CancellationPolicyId == nil {
 		return 0, nil, "non-refundable (no cancellation policy)", nil
@@ -445,7 +445,7 @@ func (r *BookingRepository) computeRefund(ctx context.Context, res *bookingschem
 	tiers, err := r.svc.Query.Schedule.RefundTiers.List(ctx,
 		refundtiersql.List().Where(refundtiersql.CancellationPolicyId.Eq(*sched.CancellationPolicyId)))
 	if err != nil {
-		return 0, nil, "", mapHasuraErr(err)
+		return 0, nil, "", dbutil.MapHasuraErr(err)
 	}
 	if len(tiers) == 0 {
 		return 0, nil, "non-refundable", nil
@@ -476,15 +476,6 @@ func (r *BookingRepository) computeRefund(ctx context.Context, res *bookingschem
 	return bestPct, moneyPct(total, bestPct), fmt.Sprintf("%d%% refund for the applicable tier", bestPct), nil
 }
 
-// nullableStr maps an empty optional string to a SQL NULL update and a non-empty
-// one to a value update.
-func nullableStr(s string) graphql.Nullable[string] {
-	if s == "" {
-		return graphql.Null[string]()
-	}
-	return graphql.Value(s)
-}
-
 // moneyPct returns pct percent of m.
 func moneyPct(m *money.Money, pct int32) *money.Money {
 	if m == nil {
@@ -504,19 +495,4 @@ func moneySub(a, b *money.Money) *money.Money {
 	}
 	total := (a.GetUnits()*1_000_000_000 + int64(a.GetNanos())) - (b.GetUnits()*1_000_000_000 + int64(b.GetNanos()))
 	return &money.Money{CurrencyCode: a.GetCurrencyCode(), Units: total / 1_000_000_000, Nanos: int32(total % 1_000_000_000)}
-}
-
-// mapHasuraErr translates GraphQL/runtime errors into the repository sentinels.
-func mapHasuraErr(err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, graphql.ErrConflict):
-		return types.ErrConflict
-	}
-	msg := strings.ToLower(err.Error())
-	if strings.Contains(msg, "unique") || strings.Contains(msg, "duplicate") {
-		return types.ErrAlreadyExists
-	}
-	return err
 }

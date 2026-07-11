@@ -62,9 +62,9 @@ var (
 )
 
 // New returns the PromoCodeRepository for the configured provider, built over the
-// matching handle on conn ([database].provider; GORM by default, Hasura opt-in).
+// matching handle on conn (conn.Provider).
 func New(conn *database.Connection) PromoCodeRepository {
-	if database.ProviderFromConfig() == database.ProviderHasura {
+	if conn.Provider == database.ProviderHasura {
 		return hasura.NewPromoCodeRepository(conn.Hasura)
 	}
 	return gorm.NewPromoCodeRepository(conn.PgSQLConn)

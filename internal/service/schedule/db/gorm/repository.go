@@ -7,6 +7,7 @@ package gorm
 import (
 	"context"
 	"errors"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -97,7 +98,7 @@ func (r *ScheduleRepository) GetSchedule(ctx context.Context, name string) (*sch
 	case errors.Is(err, gorm.ErrRecordNotFound):
 		out = &schedulepbv1.Schedule{Name: name}
 	default:
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	names, err := r.exceptionNames(ctx, unitID)
 	if err != nil {
@@ -112,7 +113,7 @@ func (r *ScheduleRepository) exceptionNames(ctx context.Context, unitID string) 
 	var rows []schedule.AvailabilityException
 	if err := r.db.WithContext(ctx).Model(&schedule.AvailabilityException{}).
 		Where("unit_id = ?", unitID).Order("create_time").Find(&rows).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	names := make([]string, 0, len(rows))
 	for i := range rows {

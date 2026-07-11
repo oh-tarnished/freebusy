@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"strings"
 	"time"
 
@@ -22,11 +23,11 @@ func feesOf(u *property.Unit) []pricing.Fee {
 		}
 		out = append(out, pricing.Fee{
 			Code:        f.Code,
-			DisplayName: deref(f.DisplayName),
+			DisplayName: repox.Deref(f.DisplayName),
 			PricingUnit: pu,
 			Percent:     f.Percent,
 			Amount:      moneyFromModel(f.Amount),
-			Taxable:     deref(f.Taxable),
+			Taxable:     repox.Deref(f.Taxable),
 		})
 	}
 	return out
@@ -35,7 +36,7 @@ func feesOf(u *property.Unit) []pricing.Fee {
 func taxesOf(u *property.Unit) []pricing.Tax {
 	out := make([]pricing.Tax, 0, len(u.Taxes))
 	for i := range u.Taxes {
-		out = append(out, pricing.Tax{Code: u.Taxes[i].Code, DisplayName: deref(u.Taxes[i].DisplayName), Percent: u.Taxes[i].Percent})
+		out = append(out, pricing.Tax{Code: u.Taxes[i].Code, DisplayName: repox.Deref(u.Taxes[i].DisplayName), Percent: u.Taxes[i].Percent})
 	}
 	return out
 }
@@ -73,12 +74,4 @@ func weekdaysFromStr(s *string) []time.Weekday {
 		}
 	}
 	return out
-}
-
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
 }

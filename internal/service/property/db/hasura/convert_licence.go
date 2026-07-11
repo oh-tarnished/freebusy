@@ -4,6 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"strings"
 	"time"
 
@@ -92,7 +94,7 @@ func attachmentInput(a *sharedpbv1.Attachment, now time.Time) *attachmentsql.Cre
 		SizeBytes:  graphql.Int64(a.GetSizeBytes()),
 		Content:    bytesToRaw(a.GetContent()),
 		Uri:        a.GetUri(),
-		UploadTime: tsToStr(timestamppb.New(now)),
+		UploadTime: dbutil.TsToStr(timestamppb.New(now)),
 	}
 }
 
@@ -101,12 +103,12 @@ func attachmentFromModel(a *sharedschema.SharedAttachments) *sharedpbv1.Attachme
 		return nil
 	}
 	return &sharedpbv1.Attachment{
-		Filename:   deref(a.Filename),
-		MimeType:   deref(a.MimeType),
-		SizeBytes:  int64(deref(a.SizeBytes)),
+		Filename:   repox.Deref(a.Filename),
+		MimeType:   repox.Deref(a.MimeType),
+		SizeBytes:  int64(repox.Deref(a.SizeBytes)),
 		Content:    rawToBytes(a.Content),
-		Uri:        deref(a.Uri),
-		UploadTime: strToTS(deref(a.UploadTime)),
+		Uri:        repox.Deref(a.Uri),
+		UploadTime: strToTS(repox.Deref(a.UploadTime)),
 	}
 }
 
@@ -128,7 +130,7 @@ type licenceGraph struct {
 // derives from whether unitID is set. Identity (id, name), state, and etag
 // stay with the caller.
 func buildLicenceGraph(l *propertypbv1.Licence, propertyID string, unitID *string, now time.Time) *licenceGraph {
-	nowStr := tsToStr(timestamppb.New(now))
+	nowStr := dbutil.TsToStr(timestamppb.New(now))
 	target := "PROPERTY"
 	if unitID != nil {
 		target = "UNIT"
@@ -136,7 +138,7 @@ func buildLicenceGraph(l *propertypbv1.Licence, propertyID string, unitID *strin
 	g := &licenceGraph{
 		licence: licencesql.CreateInput{
 			Target:           target,
-			Unit:             deref(unitID),
+			Unit:             repox.Deref(unitID),
 			Type:             licenceTypeToStr(l.GetType()),
 			LicenceNumber:    l.GetLicenceNumber(),
 			IssuingAuthority: l.GetIssuingAuthority(),
@@ -168,15 +170,15 @@ func licenceFromParts(res *pschema.PropertyLicences, att *sharedschema.SharedAtt
 		Target:           licenceTargetFromStr(res.Target),
 		Unit:             unit,
 		Type:             licenceTypeFromStr(res.Type),
-		LicenceNumber:    deref(res.LicenceNumber),
-		IssuingAuthority: deref(res.IssuingAuthority),
-		IssueDate:        strToDate(deref(res.IssueDate)),
-		ExpiryDate:       strToDate(deref(res.ExpiryDate)),
+		LicenceNumber:    repox.Deref(res.LicenceNumber),
+		IssuingAuthority: repox.Deref(res.IssuingAuthority),
+		IssueDate:        strToDate(repox.Deref(res.IssueDate)),
+		ExpiryDate:       strToDate(repox.Deref(res.ExpiryDate)),
 		Attachment:       attachmentFromModel(att),
-		Notes:            deref(res.Notes),
+		Notes:            repox.Deref(res.Notes),
 		State:            licenceStateFromStr(res.State),
 		CreateTime:       strToTS(res.CreateTime),
 		UpdateTime:       strToTS(res.UpdateTime),
-		Etag:             deref(res.Etag),
+		Etag:             repox.Deref(res.Etag),
 	}
 }

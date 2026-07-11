@@ -2,6 +2,7 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
@@ -30,7 +31,7 @@ func (r *PropertyRepository) attachment(ctx context.Context, id *string) (*share
 	}
 	a, err := r.svc.Query.Shared.Attachments.Get(ctx, *id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return a, nil
 }
@@ -65,7 +66,7 @@ func (r *PropertyRepository) CreateLicence(ctx context.Context, parent string, l
 	var licRes pschema.InsertPropertyLicencesResponse
 	tx.Add(r.svc.Mutation.Property.Licences.CreateOp(g.licence, &licRes))
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetLicence(ctx, name)
 }
@@ -78,7 +79,7 @@ func (r *PropertyRepository) GetLicence(ctx context.Context, name string) (*prop
 	}
 	res, err := r.svc.Query.Property.Licences.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -106,7 +107,7 @@ func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, in
 		Scope(licencesql.PropertyId.Eq(propertyID)).
 		List(ctx, fin)
 	if err != nil {
-		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
+		return nil, "", dbutil.MapHasuraErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Licence, 0, len(rows))
 	for i := range rows {
@@ -129,7 +130,7 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 	}
 	res, err := r.svc.Query.Property.Licences.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -158,14 +159,14 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 	}
 	patch := licencesql.UpdateInput{
 		Type:             graphql.Value(g.licence.Type),
-		LicenceNumber:    nullableStr(g.licence.LicenceNumber),
-		IssuingAuthority: nullableStr(g.licence.IssuingAuthority),
-		IssueDate:        nullableStr(g.licence.IssueDate),
-		ExpiryDate:       nullableStr(g.licence.ExpiryDate),
-		Notes:            nullableStr(g.licence.Notes),
-		AttachmentId:     nullableStr(g.licence.AttachmentId),
+		LicenceNumber:    dbutil.NullableStr(g.licence.LicenceNumber),
+		IssuingAuthority: dbutil.NullableStr(g.licence.IssuingAuthority),
+		IssueDate:        dbutil.NullableStr(g.licence.IssueDate),
+		ExpiryDate:       dbutil.NullableStr(g.licence.ExpiryDate),
+		Notes:            dbutil.NullableStr(g.licence.Notes),
+		AttachmentId:     dbutil.NullableStr(g.licence.AttachmentId),
 		Etag:             graphql.Value(ulid.GenerateString()),
-		UpdateTime:       graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:       graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	var updRes pschema.UpdatePropertyLicencesByIdResponse
 	tx.Add(r.svc.Mutation.Property.Licences.UpdateOp(id, patch, &updRes))
@@ -174,7 +175,7 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 		tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*res.AttachmentId, &out))
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetLicence(ctx, l.GetName())
 }
@@ -187,7 +188,7 @@ func (r *PropertyRepository) DeleteLicence(ctx context.Context, name string) err
 	}
 	res, err := r.svc.Query.Property.Licences.Get(ctx, id)
 	if err != nil {
-		return mapHasuraErr(err)
+		return dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return types.ErrNotFound
@@ -199,5 +200,5 @@ func (r *PropertyRepository) DeleteLicence(ctx context.Context, name string) err
 		var out sharedschema.DeleteSharedAttachmentsByIdResponse
 		tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*res.AttachmentId, &out))
 	}
-	return mapHasuraErr(tx.Commit(ctx))
+	return dbutil.MapHasuraErr(tx.Commit(ctx))
 }

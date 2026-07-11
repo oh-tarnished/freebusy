@@ -4,11 +4,15 @@ go 1.26.4
 
 replace github.com/oh-tarnished/freebusy/protobuf => ./protobuf
 
+// Temporary: the MCP interceptor/lifecycle seams are not yet in a tagged
+// gateway release. Drop this replace when grpc-mcp-gateway vNEXT is tagged.
+replace github.com/the-protobuf-project/grpc-mcp-gateway => ./grpc-mcp-gateway
+
 require (
-	buf.build/go/protovalidate v1.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.12.3
 	github.com/machanirobotics/pulse/pulse-go v0.0.0-20260524060824-a62605622128
+	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/oh-tarnished/freebusy/protobuf v0.0.0-00010101000000-000000000000
 	github.com/oh-tarnished/runtime-go/config v0.0.0-20260625174747-ee0fd6e44bef
 	github.com/oh-tarnished/runtime-go/grpc v0.0.0-20260625174747-ee0fd6e44bef
@@ -26,12 +30,10 @@ require (
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260415201107-50325440f8f2.1 // indirect
-	cel.dev/expr v0.25.1 // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/ClickHouse/ch-go v0.61.5 // indirect
 	github.com/ClickHouse/clickhouse-go/v2 v2.30.0 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
-	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -57,7 +59,6 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/google/cel-go v0.28.0 // indirect
 	github.com/google/jsonschema-go v0.4.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
@@ -89,7 +90,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.23 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/modelcontextprotocol/go-sdk v1.6.1 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/oklog/ulid/v2 v2.1.1 // indirect
 	github.com/olekukonko/cat v0.0.0-20250911104152-50322a0618f6 // indirect

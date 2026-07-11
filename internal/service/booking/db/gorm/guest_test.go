@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"testing"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
@@ -50,7 +51,7 @@ func TestGuestGraphRoundTrip(t *testing.T) {
 	}
 
 	g := buildGuestGraph(in, "booking-1")
-	if g.guest.BookingID != "booking-1" || g.guest.DisplayName != "Asha Kumar" || !deref(g.guest.Primary) {
+	if g.guest.BookingID != "booking-1" || g.guest.DisplayName != "Asha Kumar" || !repox.Deref(g.guest.Primary) {
 		t.Fatalf("guest row wrong: %+v", g.guest)
 	}
 	if g.idDocument == nil || g.foreigner == nil || g.preferences == nil {

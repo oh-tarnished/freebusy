@@ -56,21 +56,6 @@ func preloadBooking(db *gorm.DB) *gorm.DB {
 		Preload("Occupancy")
 }
 
-// mapGormErr translates GORM sentinel errors into the provider-neutral errors in
-// internal/types.
-func mapGormErr(err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, gorm.ErrRecordNotFound):
-		return types.ErrNotFound
-	case errors.Is(err, gorm.ErrDuplicatedKey):
-		return types.ErrAlreadyExists
-	default:
-		return err
-	}
-}
-
 // CreateBooking places a PENDING_HOLD on a unit for a window. It loads the unit
 // (for capacity, price, booking mode, timezone), verifies capacity against
 // overlapping active bookings, computes a base price, and persists the booking
@@ -95,19 +80,19 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 		Preload("Taxes").
 		Preload("LosDiscounts").Preload("LosDiscounts.AmountOff").
 		First(&unit, "id = ?", unitID).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 
 	// Load the promo code (with its discount and scope) when one is applied, so the
 	// pricing engine can evaluate its scope and discount.
 	var promo *promocode.PromoCode
-	if pid := lastSegment(b.GetPromoCode()); pid != "" {
+	if pid := repox.LastSegment(b.GetPromoCode()); pid != "" {
 		var p promocode.PromoCode
 		if err := r.db.WithContext(ctx).
 			Preload("Discount").Preload("Discount.AmountOff").
 			Preload("Scope").Preload("Scope.MinSubtotal").Preload("Scope.ScopeApplicableUnits").
 			First(&p, "id = ?", pid).Error; err != nil {
-			return nil, mapGormErr(err)
+			return nil, repox.MapGormErr(err)
 		}
 		promo = &p
 	}
@@ -119,7 +104,7 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 
 	// Occupancy: the staying party must fit the unit's max occupancy across the
 	// reserved units (guests × max_occupancy). Zero max_occupancy means unbounded.
-	if !party.Fits(deref(unit.MaxOccupancy), requested, b.GetOccupancy(), b.GetGuests()) {
+	if !party.Fits(repox.Deref(unit.MaxOccupancy), requested, b.GetOccupancy(), b.GetGuests()) {
 		return nil, types.ErrInvalidArgument
 	}
 	occupancy := occupancyToModel(b.GetOccupancy())
@@ -155,15 +140,15 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 		ID:             id,
 		Name:           name,
 		UnitID:         unitID,
-		CustomerID:     strOrNil(lastSegment(b.GetCustomer())),
-		Units:          ptr(requested),
+		CustomerID:     strOrNil(repox.LastSegment(b.GetCustomer())),
+		Units:          repox.Ptr(requested),
 		State:          &state,
 		HoldExpireTime: &holdExpire,
-		PromoCodeID:    strOrNil(lastSegment(b.GetPromoCode())),
+		PromoCodeID:    strOrNil(repox.LastSegment(b.GetPromoCode())),
 		Notes:          strOrNil(b.GetNotes()),
 		Attributes:     structToJSON(b.GetAttributes()),
 		HoldTtl:        durationToStr(b.GetHoldTtl()),
-		Etag:           ptr(ulid.GenerateString()),
+		Etag:           repox.Ptr(ulid.GenerateString()),
 		WindowID:       window.ID,
 	}
 	if contact != nil {
@@ -231,7 +216,7 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 		return persistGuests(ctx, tx, guestGraphs)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	out, err := r.GetBooking(ctx, name)
 	if err != nil {
@@ -250,7 +235,7 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 	}
 	var m booking.Booking
 	if err := preloadBooking(r.db.WithContext(ctx)).First(&m, "id = ?", id).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	unitName, err := r.unitName(ctx, m.UnitID)
 	if err != nil {
@@ -274,7 +259,7 @@ func (r *BookingRepository) ListBookings(ctx context.Context, in repox.ListInput
 	models, next, err := filterx.Gorm[booking.Booking](booking.BookingFilterSpec).
 		List(ctx, preloadBooking(r.db), fin)
 	if err != nil {
-		return nil, "", mapGormErr(types.MapFilterxErr(err))
+		return nil, "", repox.MapGormErr(repox.MapFilterxErr(err))
 	}
 	unitNames, err := r.unitNames(ctx, models)
 	if err != nil {
@@ -301,7 +286,7 @@ func (r *BookingRepository) unitName(ctx context.Context, unitID string) (string
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return "", nil
 		}
-		return "", mapGormErr(err)
+		return "", repox.MapGormErr(err)
 	}
 	return u.Name, nil
 }
@@ -322,7 +307,7 @@ func (r *BookingRepository) unitNames(ctx context.Context, bookings []booking.Bo
 	}
 	var units []property.Unit
 	if err := r.db.WithContext(ctx).Select("id", "name").Where("id IN ?", ids).Find(&units).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	for i := range units {
 		out[units[i].ID] = units[i].Name

@@ -3,6 +3,7 @@ package gorm
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 )
@@ -27,7 +28,7 @@ func buildPropertyGraph(pc *propertypbv1.Property) *propertyGraph {
 	g.property = property.PropertyFromProto(pc)
 	g.property.Name = "" // identity is the repository's
 	g.property.Etag = nil
-	g.property.OrganisationID = lastSegment(pc.GetOrganisation())
+	g.property.OrganisationID = repox.LastSegment(pc.GetOrganisation())
 	if a := common.PostalAddressFromProto(pc.GetAddress()); a != nil {
 		a.ID = ulid.GenerateString()
 		g.address = a

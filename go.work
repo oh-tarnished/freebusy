@@ -5,3 +5,6 @@ use (
 	./protobuf
 	../runtime-go/grpc
 )
+
+// Temporary: local gateway clone until vNEXT is tagged (see go.mod replace).
+use ./grpc-mcp-gateway

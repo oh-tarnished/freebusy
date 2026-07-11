@@ -2,6 +2,7 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
@@ -42,7 +43,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 
 	res, err := r.svc.Query.Promocode.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -96,16 +97,16 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 	// 2. Repoint the resource row at the new children and bump the etag.
 	patch := resourceql.UpdateInput{
 		Code:        graphql.Value(g.resource.Code),
-		DisplayName: nullableStr(g.resource.DisplayName),
-		Description: nullableStr(g.resource.Description),
+		DisplayName: dbutil.NullableStr(g.resource.DisplayName),
+		Description: dbutil.NullableStr(g.resource.Description),
 		Disabled:    graphql.Value(g.resource.Disabled),
 		State:       graphql.Value(g.resource.State),
 		DiscountId:  graphql.Value(g.resource.DiscountId),
-		WindowId:    nullableStr(g.resource.WindowId),
-		LimitsId:    nullableStr(g.resource.LimitsId),
-		ScopeId:     nullableStr(g.resource.ScopeId),
+		WindowId:    dbutil.NullableStr(g.resource.WindowId),
+		LimitsId:    dbutil.NullableStr(g.resource.LimitsId),
+		ScopeId:     dbutil.NullableStr(g.resource.ScopeId),
 		Etag:        graphql.Value(ulid.GenerateString()),
-		UpdateTime:  graphql.Value(tsToStr(timestamppb.New(now))),
+		UpdateTime:  graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
 	var updRes pcschema.UpdatePromocodeResourceByIdResponse
 	tx.Add(r.svc.Mutation.Promocode.Resource.UpdateOp(id, patch, &updRes))
@@ -114,7 +115,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 	queueChildDeletes(tx, r, old)
 
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.Get(ctx, pc.GetName())
 }
@@ -128,7 +129,7 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 	}
 	res, err := r.svc.Query.Promocode.Resource.Get(ctx, id)
 	if err != nil {
-		return mapHasuraErr(err)
+		return dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return types.ErrNotFound
@@ -145,7 +146,7 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 	tx.Add(r.svc.Mutation.Promocode.Resource.DeleteOp(id, &delRes))
 	queueChildDeletes(tx, r, refs)
 
-	return mapHasuraErr(tx.Commit(ctx))
+	return dbutil.MapHasuraErr(tx.Commit(ctx))
 }
 
 // queueChildDeletes appends deletes for a promo code's child rows to tx in
@@ -180,13 +181,4 @@ func queueChildDeletes(tx *runtime.Tx, r *PromoCodeRepository, refs promoRefs) {
 		var out commonschema.DeleteCommonMoneysByIdResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.DeleteOp(mid, &out))
 	}
-}
-
-// nullableStr maps an empty optional string to a SQL NULL update and a non-empty
-// one to a value update, so clearing a field in the proto clears the column.
-func nullableStr(s string) graphql.Nullable[string] {
-	if s == "" {
-		return graphql.Null[string]()
-	}
-	return graphql.Value(s)
 }

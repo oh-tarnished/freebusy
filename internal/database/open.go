@@ -14,9 +14,6 @@ import (
 // returns a Connection carrying the live handle for that provider. The caller
 // passes the Connection to NewFactory.
 func Open() (*Connection, error) {
-	if testBackend != nil {
-		return testBackend.conn, nil
-	}
 	switch providerFromConfig() {
 	case ProviderHasura:
 		return openHasura()
@@ -32,7 +29,7 @@ func openGorm() (*Connection, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open postgres: %w", err)
 	}
-	return &Connection{PgSQLConn: db}, nil
+	return &Connection{PgSQLConn: db, Provider: ProviderGorm}, nil
 }
 
 // openHasura connects the typed GraphQL client to the configured endpoint,
@@ -52,5 +49,5 @@ func openHasura() (*Connection, error) {
 	if err != nil {
 		return nil, fmt.Errorf("connect hasura: %w", err)
 	}
-	return &Connection{Hasura: svc}, nil
+	return &Connection{Hasura: svc, Provider: ProviderHasura}, nil
 }

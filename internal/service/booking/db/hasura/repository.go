@@ -2,6 +2,7 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
@@ -57,7 +58,7 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	}
 	unit, err := r.svc.Query.Property.Units.Get(ctx, unitID)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if unit == nil {
 		return nil, types.ErrNotFound
@@ -70,13 +71,13 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 
 	// Occupancy: the staying party must fit the unit's max occupancy across the
 	// reserved units. Zero max_occupancy means unbounded.
-	if !party.Fits(deref(unit.MaxOccupancy), requested, b.GetOccupancy(), b.GetGuests()) {
+	if !party.Fits(repox.Deref(unit.MaxOccupancy), requested, b.GetOccupancy(), b.GetGuests()) {
 		return nil, types.ErrInvalidArgument
 	}
 	occupancy := occupancyInput(b.GetOccupancy())
 	guestGraphs := buildGuestGraphs(b.GetGuests(), id)
 
-	promoID := lastSegment(b.GetPromoCode())
+	promoID := repox.LastSegment(b.GetPromoCode())
 
 	// Full price breakdown (base × nights, LOS + promo discounts, fees, taxes).
 	in, err := r.pricingInputs(ctx, unit, promoID)
@@ -126,18 +127,18 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 		Id:             id,
 		Name:           name,
 		Unit:           unitID,
-		Customer:       lastSegment(b.GetCustomer()),
+		Customer:       repox.LastSegment(b.GetCustomer()),
 		Units:          requested,
 		State:          "PENDING_HOLD",
-		HoldExpireTime: tsToStr(timestamppb.New(now.Add(ttl))),
+		HoldExpireTime: dbutil.TsToStr(timestamppb.New(now.Add(ttl))),
 		PromoCode:      promoID,
 		Notes:          b.GetNotes(),
 		Attributes:     structToJSON(b.GetAttributes()),
 		HoldTtl:        durationToStr(b.GetHoldTtl()),
 		Etag:           ulid.GenerateString(),
 		WindowId:       window.Id,
-		CreateTime:     tsToStr(timestamppb.New(now)),
-		UpdateTime:     tsToStr(timestamppb.New(now)),
+		CreateTime:     dbutil.TsToStr(timestamppb.New(now)),
+		UpdateTime:     dbutil.TsToStr(timestamppb.New(now)),
 	}
 	if contact != nil {
 		bi.ContactId = contact.Id
@@ -173,7 +174,7 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	tx.Add(r.svc.Mutation.Booking.Resource.CreateOp(bi, &bRes))
 	queueGuestInserts(tx, r, guestGraphs)
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 
 	out, err := r.GetBooking(ctx, name)
@@ -204,7 +205,7 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 	}
 	res, err := r.svc.Query.Booking.Resource.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -221,7 +222,7 @@ func (r *BookingRepository) ListBookings(ctx context.Context, in repox.ListInput
 	rows, next, err := filterx.Hasura(booking.BookingFilterSpec, r.svc.Query.Booking.Resource).
 		List(ctx, fin)
 	if err != nil {
-		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
+		return nil, "", dbutil.MapHasuraErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*bookingpbv1.Booking, 0, len(rows))
 	for i := range rows {
@@ -247,14 +248,14 @@ func (r *BookingRepository) hydrateBooking(ctx context.Context, res *bookingsche
 	if res.ContactId != nil {
 		c, err := r.svc.Query.Shared.Contacts.Get(ctx, *res.ContactId)
 		if err != nil {
-			return nil, mapHasuraErr(err)
+			return nil, dbutil.MapHasuraErr(err)
 		}
 		parts.contact = c
 	}
 	if res.WindowId != "" {
 		w, err := r.svc.Query.Shared.TimeWindows.Get(ctx, res.WindowId)
 		if err != nil {
-			return nil, mapHasuraErr(err)
+			return nil, dbutil.MapHasuraErr(err)
 		}
 		parts.window = w
 	}
@@ -283,7 +284,7 @@ func (r *BookingRepository) hydrateBooking(ctx context.Context, res *bookingsche
 	if res.OccupancyId != nil {
 		occ, err := r.svc.Query.Booking.Occupancies.Get(ctx, *res.OccupancyId)
 		if err != nil {
-			return nil, mapHasuraErr(err)
+			return nil, dbutil.MapHasuraErr(err)
 		}
 		out.Occupancy = occupancyFromSchema(occ)
 	}
@@ -300,7 +301,7 @@ func (r *BookingRepository) hydrateBooking(ctx context.Context, res *bookingsche
 func (r *BookingRepository) loadGuests(ctx context.Context, bookingID string) ([]*identitypbv1.Guest, error) {
 	rows, err := r.svc.Query.Identity.Guests.List(ctx, guestsql.List().Where(guestsql.BookingId.Eq(bookingID)).OrderBy(guestsql.Id.Asc()))
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	out := make([]*identitypbv1.Guest, 0, len(rows))
 	for i := range rows {
@@ -311,27 +312,27 @@ func (r *BookingRepository) loadGuests(ctx context.Context, bookingID string) ([
 		var perm, loc *commonschema.CommonPostalAddress
 		if g.IdDocumentId != nil {
 			if doc, err = r.svc.Query.Identity.IdDocuments.Get(ctx, *g.IdDocumentId); err != nil {
-				return nil, mapHasuraErr(err)
+				return nil, dbutil.MapHasuraErr(err)
 			}
 		}
 		if g.ForeignerId != nil {
 			if foreigner, err = r.svc.Query.Identity.ForeignerDetails.Get(ctx, *g.ForeignerId); err != nil {
-				return nil, mapHasuraErr(err)
+				return nil, dbutil.MapHasuraErr(err)
 			}
 		}
 		if g.PreferencesId != nil {
 			if prefs, err = r.svc.Query.Identity.GuestPreferences.Get(ctx, *g.PreferencesId); err != nil {
-				return nil, mapHasuraErr(err)
+				return nil, dbutil.MapHasuraErr(err)
 			}
 		}
 		if g.PermanentAddressId != nil {
 			if perm, err = r.svc.Query.Common.PostalAddress.Get(ctx, *g.PermanentAddressId); err != nil {
-				return nil, mapHasuraErr(err)
+				return nil, dbutil.MapHasuraErr(err)
 			}
 		}
 		if g.LocalAddressId != nil {
 			if loc, err = r.svc.Query.Common.PostalAddress.Get(ctx, *g.LocalAddressId); err != nil {
-				return nil, mapHasuraErr(err)
+				return nil, dbutil.MapHasuraErr(err)
 			}
 		}
 		out = append(out, guestFromSchema(g, doc, foreigner, prefs, perm, loc))
@@ -349,7 +350,7 @@ func (r *BookingRepository) reservedUnits(ctx context.Context, unitID string, ta
 	}
 	rows, err := r.svc.Query.Booking.Resource.List(ctx, resourceql.List().Where(resourceql.And(preds...)))
 	if err != nil {
-		return 0, mapHasuraErr(err)
+		return 0, dbutil.MapHasuraErr(err)
 	}
 	var sum int64
 	for i := range rows {
@@ -358,7 +359,7 @@ func (r *BookingRepository) reservedUnits(ctx context.Context, unitID string, ta
 		}
 		w, err := r.svc.Query.Shared.TimeWindows.Get(ctx, rows[i].WindowId)
 		if err != nil {
-			return 0, mapHasuraErr(err)
+			return 0, dbutil.MapHasuraErr(err)
 		}
 		if w == nil || !overlaps(w, target) {
 			continue
@@ -380,7 +381,7 @@ func (r *BookingRepository) unitName(ctx context.Context, unitID string) (string
 	}
 	u, err := r.svc.Query.Property.Units.Get(ctx, unitID)
 	if err != nil {
-		return "", mapHasuraErr(err)
+		return "", dbutil.MapHasuraErr(err)
 	}
 	if u == nil {
 		return "", nil

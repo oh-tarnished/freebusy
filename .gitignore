@@ -4,3 +4,6 @@
 .venv
 
 .DS_Store
+# Local generator/library clones (consumed via go.mod replace / local plugin builds)
+orm/
+grpc-mcp-gateway/

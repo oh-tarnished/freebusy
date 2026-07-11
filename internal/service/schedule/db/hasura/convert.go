@@ -8,6 +8,8 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"strings"
 	"time"
 
@@ -35,16 +37,6 @@ const (
 	dateLayout = "2006-01-02"
 )
 
-func ptr[T any](v T) *T { return &v }
-
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
 func strOrNil(s string) *string {
 	if s == "" {
 		return nil
@@ -53,13 +45,6 @@ func strOrNil(s string) *string {
 }
 
 // --- scalar (de)serialization matching the GraphQL string columns --------------
-
-func tsToStr(ts *timestamppb.Timestamp) string {
-	if ts == nil {
-		return ""
-	}
-	return ts.AsTime().UTC().Format(rfc3339)
-}
 
 func strToTS(s string) *timestamppb.Timestamp {
 	if s == "" {
@@ -143,14 +128,6 @@ func kindFromStr(s string) schedulepbv1.ExceptionKind {
 		return schedulepbv1.ExceptionKind_EXCEPTION_KIND_UNSPECIFIED
 	}
 	return schedulepbv1.ExceptionKind(schedulepbv1.ExceptionKind_value["EXCEPTION_KIND_"+s])
-}
-
-// lastSegment returns the final path component of an AIP resource name.
-func lastSegment(name string) string {
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		return name[i+1:]
-	}
-	return name
 }
 
 // --- schedule graph (insert inputs) ------------------------------------------
@@ -245,25 +222,25 @@ type scheduleRefs struct {
 func scheduleFromParts(p scheduleParts) *schedulepbv1.Schedule {
 	out := &schedulepbv1.Schedule{
 		Name: p.res.Name,
-		Etag: deref(p.res.Etag),
+		Etag: repox.Deref(p.res.Etag),
 	}
 	if p.buffers != nil {
 		out.Buffers = &schedulepbv1.BufferSettings{
-			StartDelta: durationFromStr(deref(p.buffers.StartDelta)),
-			EndDelta:   durationFromStr(deref(p.buffers.EndDelta)),
-			MinNotice:  durationFromStr(deref(p.buffers.MinNotice)),
-			MaxAdvance: durationFromStr(deref(p.buffers.MaxAdvance)),
-			Gap:        durationFromStr(deref(p.buffers.Gap)),
+			StartDelta: durationFromStr(repox.Deref(p.buffers.StartDelta)),
+			EndDelta:   durationFromStr(repox.Deref(p.buffers.EndDelta)),
+			MinNotice:  durationFromStr(repox.Deref(p.buffers.MinNotice)),
+			MaxAdvance: durationFromStr(repox.Deref(p.buffers.MaxAdvance)),
+			Gap:        durationFromStr(repox.Deref(p.buffers.Gap)),
 		}
 	}
 	if p.stay != nil {
 		out.StayConstraints = &schedulepbv1.StayConstraints{
-			MinNights:        deref(p.stay.MinNights),
-			MaxNights:        deref(p.stay.MaxNights),
+			MinNights:        repox.Deref(p.stay.MinNights),
+			MaxNights:        repox.Deref(p.stay.MaxNights),
 			CheckinWeekdays:  weekdaysFromStr(p.stay.CheckinWeekdays),
 			CheckoutWeekdays: weekdaysFromStr(p.stay.CheckoutWeekdays),
-			AdvanceMinDays:   deref(p.stay.AdvanceMinDays),
-			AdvanceMaxDays:   deref(p.stay.AdvanceMaxDays),
+			AdvanceMinDays:   repox.Deref(p.stay.AdvanceMinDays),
+			AdvanceMaxDays:   repox.Deref(p.stay.AdvanceMaxDays),
 		}
 	}
 	if p.hasPolicy {
@@ -279,8 +256,8 @@ func scheduleFromParts(p scheduleParts) *schedulepbv1.Schedule {
 	for i := range p.recurring {
 		out.RecurringRules = append(out.RecurringRules, &schedulepbv1.RecurringRule{
 			Rrule:  p.recurring[i].Rrule,
-			Opens:  deref(p.recurring[i].Opens),
-			Closes: deref(p.recurring[i].Closes),
+			Opens:  repox.Deref(p.recurring[i].Opens),
+			Closes: repox.Deref(p.recurring[i].Closes),
 		})
 	}
 	return out
@@ -303,14 +280,14 @@ func buildExceptionGraph(e *schedulepbv1.AvailabilityException, propertyID, unit
 		Reason:     e.GetReason(),
 		PropertyId: propertyID,
 		UnitId:     unitID,
-		CreateTime: tsToStr(timestamppb.New(now)),
+		CreateTime: dbutil.TsToStr(timestamppb.New(now)),
 	}
 	if w := e.GetWindow(); w != nil {
 		id := ulid.GenerateString()
 		g.window = &timewindowsql.CreateInput{
 			Id:        id,
-			StartTime: tsToStr(w.GetStartTime()),
-			EndTime:   tsToStr(w.GetEndTime()),
+			StartTime: dbutil.TsToStr(w.GetStartTime()),
+			EndTime:   dbutil.TsToStr(w.GetEndTime()),
 		}
 		g.exc.WindowId = id
 		g.exc.SpanCase = "WINDOW"
@@ -331,7 +308,7 @@ func exceptionFromParts(res *scheduleschema.ScheduleAvailabilityExceptions, wind
 	out := &schedulepbv1.AvailabilityException{
 		Name:       res.Name,
 		Kind:       kindFromStr(res.Kind),
-		Reason:     deref(res.Reason),
+		Reason:     repox.Deref(res.Reason),
 		CreateTime: strToTS(res.CreateTime),
 	}
 	switch {

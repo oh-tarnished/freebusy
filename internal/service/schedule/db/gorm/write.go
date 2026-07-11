@@ -3,6 +3,7 @@ package gorm
 import (
 	"context"
 	"errors"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/schedule"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -10,21 +11,6 @@ import (
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"gorm.io/gorm"
 )
-
-// mapGormErr translates GORM sentinel errors into the provider-neutral errors in
-// internal/types.
-func mapGormErr(err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, gorm.ErrRecordNotFound):
-		return types.ErrNotFound
-	case errors.Is(err, gorm.ErrDuplicatedKey):
-		return types.ErrAlreadyExists
-	default:
-		return err
-	}
-}
 
 // UpdateSchedule upserts a unit's schedule configuration and returns the result.
 // The schedule is a singleton (created on first update). An empty paths slice
@@ -76,7 +62,7 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 			existing.BuffersID = g.schedule.BuffersID
 			existing.StayConstraintsID = g.schedule.StayConstraintsID
 			existing.CancellationPolicyID = g.schedule.CancellationPolicyID
-			existing.Etag = ptr(ulid.GenerateString())
+			existing.Etag = repox.Ptr(ulid.GenerateString())
 			existing.Buffers, existing.StayConstraints, existing.CancellationPolicy = nil, nil, nil
 			existing.RecurringRules, existing.Exceptions = nil, nil
 			if e := schedule.NewScheduleStore(tx).Update(ctx, &existing); e != nil {
@@ -94,14 +80,14 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 
 		g.schedule.ID = ulid.GenerateString()
 		g.schedule.Name = s.GetName()
-		g.schedule.Etag = ptr(ulid.GenerateString())
+		g.schedule.Etag = repox.Ptr(ulid.GenerateString())
 		if e := schedule.NewScheduleStore(tx).Create(ctx, g.schedule); e != nil {
 			return e
 		}
 		return g.persistChildren(ctx, tx)
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetSchedule(ctx, s.GetName())
 }

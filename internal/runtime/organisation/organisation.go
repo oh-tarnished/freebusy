@@ -6,10 +6,11 @@ package organisation
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	organisationdb "github.com/oh-tarnished/freebusy/internal/service/organisation/db"
+	"github.com/oh-tarnished/freebusy/internal/service/organisation/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
 	"google.golang.org/grpc/codes"
@@ -22,11 +23,17 @@ import (
 // provider-agnostic db.OrganisationRepository.
 type Server struct {
 	orgpbv1.UnimplementedOrganisationServiceServer
-	repo organisationdb.OrganisationRepository
+	repo db.OrganisationRepository
+}
+
+// New builds the organisation service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo organisationdb.OrganisationRepository) *Server {
+func NewServer(repo db.OrganisationRepository) *Server {
 	return &Server{repo: repo}
 }
 

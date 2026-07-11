@@ -3,6 +3,7 @@ package hasura
 import (
 	"errors"
 	"fmt"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"strconv"
 	"strings"
 	"time"
@@ -15,14 +16,6 @@ import (
 )
 
 const rfc3339 = time.RFC3339
-
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
 
 func derefInt32(p *int32) int32 {
 	if p == nil {
@@ -71,9 +64,9 @@ func moneyFromSchema(m *commonschema.CommonMoneys) *money.Money {
 		return nil
 	}
 	return &money.Money{
-		CurrencyCode: deref(m.CurrencyCode),
-		Units:        int64(deref(m.Units)),
-		Nanos:        deref(m.Nanos),
+		CurrencyCode: repox.Deref(m.CurrencyCode),
+		Units:        int64(repox.Deref(m.Units)),
+		Nanos:        repox.Deref(m.Nanos),
 	}
 }
 

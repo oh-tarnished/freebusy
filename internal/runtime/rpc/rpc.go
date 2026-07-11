@@ -1,81 +1,30 @@
-// Package rpc carries the observability and error-mapping helpers shared by
-// every gRPC handler package under internal/runtime: a traced wrapper that
-// spans, counts, and logs each RPC, and the mapping of repository sentinel
-// errors onto gRPC status codes. Handler packages call these directly; the
-// service name rides along as a span prefix and metric attribute.
+// Package rpc is the boundary between freebusy's gRPC handlers and the
+// platform runtime: Traced hands each handler body to the shared runtime-go
+// Observer (spans, rpc.requests/rpc.errors counters, outcome logs, all emitted
+// through freebusy's pulse identity), and ToStatusErr maps freebusy's
+// repository sentinel errors onto gRPC status codes — the one piece that is
+// domain-specific and stays here.
 package rpc
 
 import (
 	"context"
 	"errors"
 
-	"github.com/machanirobotics/pulse/pulse-go"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/shared"
+	"github.com/oh-tarnished/runtime-go/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-// rpcMetrics is recorded once per RPC. The service and method names are
-// attached as metric attributes (see record) so the counters can be sliced per
-// endpoint. Errors counts only server faults (see IsServerError), not expected
-// client/business rejections like NotFound or FailedPrecondition.
-type rpcMetrics struct {
-	Requests int64 `pulse:"metric:counter:freebusy.rpc.requests"`
-	Errors   int64 `pulse:"metric:counter:freebusy.rpc.errors"`
-}
+// observer wraps handler bodies with tracing, metrics, and outcome logging;
+// built once for the process against freebusy's pulse client.
+var observer = grpc.NewObserver(shared.Pulse)
 
-// Traced runs fn inside a pulse span named "<service>/<method>", records
-// request/error counters, and logs the outcome. The RPC result is returned to
-// the caller through a closure variable; Traced only carries the error so the
-// tracing layer can set the span status. Expected client/business rejections
-// are logged at debug, not error, and excluded from the error counter.
+// Traced runs fn inside a span named "<service>/<method>" with request/error
+// counters and outcome logging. See grpc.Observer.Traced.
 func Traced(ctx context.Context, service, method string, fn func(context.Context) error) error {
-	return shared.Pulse.Tracing.Trace(ctx, service+"/"+method, nil, func(ctx context.Context, _ *pulse.Span) error {
-		err := fn(ctx)
-		record(service, method, err)
-		switch {
-		case err == nil:
-			shared.Pulse.Logger.Debug(method + " ok")
-		case IsServerError(err):
-			_ = shared.Pulse.Logger.Error(method+" failed", map[string]any{"error": err.Error()})
-		default:
-			// Expected client/business outcome (NotFound, FailedPrecondition, etc.) —
-			// returned to the caller but not a service fault.
-			shared.Pulse.Logger.Debug(method+" rejected", map[string]any{"error": err.Error()})
-		}
-		return err
-	})
-}
-
-// record emits the per-call counters tagged with the service and method names.
-// Only server faults increment Errors.
-func record(service, method string, err error) {
-	m := rpcMetrics{Requests: 1}
-	if IsServerError(err) {
-		m.Errors = 1
-	}
-	_ = shared.Pulse.Metrics.Record(m, pulse.WithAttributes(
-		pulse.StringAttribute("service", service),
-		pulse.StringAttribute("method", method),
-	))
-}
-
-// IsServerError reports whether err is a server-side fault — the codes that
-// mean the service itself misbehaved — as opposed to an expected
-// client/business outcome (NotFound, InvalidArgument, FailedPrecondition,
-// ResourceExhausted, Aborted, AlreadyExists, ...). A non-status error reads as
-// Unknown, which counts.
-func IsServerError(err error) bool {
-	if err == nil {
-		return false
-	}
-	switch status.Code(err) {
-	case codes.Internal, codes.Unknown, codes.DataLoss, codes.Unavailable, codes.DeadlineExceeded:
-		return true
-	default:
-		return false
-	}
+	return observer.Traced(ctx, service, method, fn)
 }
 
 // ToStatusErr maps repository sentinel errors onto gRPC status codes. Errors

@@ -1,7 +1,7 @@
 package gorm
 
 import (
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
@@ -24,8 +24,6 @@ import (
 // become join rows. The join columns store the full API resource name verbatim
 // so the list values round-trip exactly.
 
-func ptr[T any](v T) *T { return &v }
-
 // strOrNil maps an empty proto string (which cannot represent NULL) to a nil
 // column pointer, so unset optional strings stay NULL in the database.
 func strOrNil(s string) *string {
@@ -43,16 +41,6 @@ func tsToTime(ts *timestamppb.Timestamp) *time.Time {
 	return &t
 }
 
-// lastSegment returns the final path component of an AIP resource name
-// ("resources/r1/offerings/o1" -> "o1"), used to populate the join row's id
-// column while the full name round-trips via a separate column.
-func lastSegment(name string) string {
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		return name[i+1:]
-	}
-	return name
-}
-
 // moneyToModel builds a new Money row (with a fresh ULID id) from a proto Money,
 // or returns nil when m is nil.
 func moneyToModel(m *money.Money) *common.Money {
@@ -62,8 +50,8 @@ func moneyToModel(m *money.Money) *common.Money {
 	return &common.Money{
 		ID:           ulid.GenerateString(),
 		CurrencyCode: strOrNil(m.GetCurrencyCode()),
-		Units:        ptr(m.GetUnits()),
-		Nanos:        ptr(m.GetNanos()),
+		Units:        repox.Ptr(m.GetUnits()),
+		Nanos:        repox.Ptr(m.GetNanos()),
 	}
 }
 
@@ -71,14 +59,14 @@ func int64Wrapper(w *wrapperspb.Int64Value) *int64 {
 	if w == nil {
 		return nil
 	}
-	return ptr(w.GetValue())
+	return repox.Ptr(w.GetValue())
 }
 
 func int32Wrapper(w *wrapperspb.Int32Value) *int32 {
 	if w == nil {
 		return nil
 	}
-	return ptr(w.GetValue())
+	return repox.Ptr(w.GetValue())
 }
 
 // promoGraph is the full set of rows a single PromoCode materializes into: the
@@ -113,7 +101,7 @@ func buildGraph(pc *promocodepbv1.PromoCode) *promoGraph {
 		DisplayName: strOrNil(pc.GetDisplayName()),
 		Description: strOrNil(pc.GetDescription()),
 		State:       &state,
-		Disabled:    ptr(pc.GetDisabled()),
+		Disabled:    repox.Ptr(pc.GetDisabled()),
 	}
 
 	// Discount is required: always materialize a row. A non-nil amount_off is the
@@ -122,10 +110,10 @@ func buildGraph(pc *promocodepbv1.PromoCode) *promoGraph {
 	if amt := moneyToModel(pc.GetDiscount().GetAmountOff()); amt != nil {
 		g.moneys = append(g.moneys, amt)
 		g.discount.AmountOffID = &amt.ID
-		g.discount.AmountCase = ptr(promocode.DiscountAmountCaseAmountOff)
+		g.discount.AmountCase = repox.Ptr(promocode.DiscountAmountCaseAmountOff)
 	} else {
-		g.discount.PercentOff = ptr(pc.GetDiscount().GetPercentOff())
-		g.discount.AmountCase = ptr(promocode.DiscountAmountCasePercentOff)
+		g.discount.PercentOff = repox.Ptr(pc.GetDiscount().GetPercentOff())
+		g.discount.AmountCase = repox.Ptr(promocode.DiscountAmountCasePercentOff)
 	}
 	g.promo.DiscountID = g.discount.ID
 
@@ -164,7 +152,7 @@ func buildGraph(pc *promocodepbv1.PromoCode) *promoGraph {
 			g.units = append(g.units, &promocode.ScopeApplicableUnits{
 				ID:       ulid.GenerateString(),
 				ScopeID:  g.scope.ID,
-				UnitID:   lastSegment(name),
+				UnitID:   repox.LastSegment(name),
 				UnitName: name,
 			})
 		}

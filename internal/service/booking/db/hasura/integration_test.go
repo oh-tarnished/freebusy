@@ -17,6 +17,7 @@ package hasura
 import (
 	"context"
 	"errors"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"net/url"
 	"os"
 	"testing"
@@ -60,7 +61,7 @@ func liveService(t *testing.T) *freebusyql.Service {
 func seedUnit(t *testing.T, svc *freebusyql.Service) string {
 	t.Helper()
 	ctx := context.Background()
-	now := tsToStr(timestamppb.New(time.Now().UTC()))
+	now := dbutil.TsToStr(timestamppb.New(time.Now().UTC()))
 	orgID, propID, unitID := ulid.GenerateString(), ulid.GenerateString(), ulid.GenerateString()
 
 	if _, err := svc.Mutation.Organisation.Resource.Create(ctx, orgresourceql.CreateInput{

@@ -2,6 +2,7 @@ package hasura
 
 import (
 	"encoding/json"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"strings"
 	"time"
 
@@ -29,22 +30,6 @@ import (
 
 const dateLayout = "2006-01-02"
 
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
-// lastSegment returns the final path component of an AIP resource name.
-func lastSegment(name string) string {
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		return name[i+1:]
-	}
-	return name
-}
-
 // orgName rebuilds the "organisations/{id}" resource name from the bare id the
 // property row's organisation FK column stores (the FK references
 // organisations.id).
@@ -53,13 +38,6 @@ func orgName(id string) string {
 		return ""
 	}
 	return "organisations/" + id
-}
-
-func tsToStr(ts *timestamppb.Timestamp) string {
-	if ts == nil {
-		return ""
-	}
-	return ts.AsTime().UTC().Format(time.RFC3339Nano)
 }
 
 func strToTS(s string) *timestamppb.Timestamp {
@@ -225,9 +203,9 @@ func moneyFromModel(m *commonschema.CommonMoneys) *money.Money {
 		return nil
 	}
 	return &money.Money{
-		CurrencyCode: deref(m.CurrencyCode),
-		Units:        int64(deref(m.Units)),
-		Nanos:        deref(m.Nanos),
+		CurrencyCode: repox.Deref(m.CurrencyCode),
+		Units:        int64(repox.Deref(m.Units)),
+		Nanos:        repox.Deref(m.Nanos),
 	}
 }
 
@@ -253,17 +231,17 @@ func addressFromModel(a *commonschema.CommonPostalAddress) *postaladdress.Postal
 		return nil
 	}
 	return &postaladdress.PostalAddress{
-		Revision:           deref(a.Revision),
-		RegionCode:         deref(a.RegionCode),
-		LanguageCode:       deref(a.LanguageCode),
-		PostalCode:         deref(a.PostalCode),
-		SortingCode:        deref(a.SortingCode),
-		AdministrativeArea: deref(a.AdministrativeArea),
-		Locality:           deref(a.Locality),
-		Sublocality:        deref(a.Sublocality),
+		Revision:           repox.Deref(a.Revision),
+		RegionCode:         repox.Deref(a.RegionCode),
+		LanguageCode:       repox.Deref(a.LanguageCode),
+		PostalCode:         repox.Deref(a.PostalCode),
+		SortingCode:        repox.Deref(a.SortingCode),
+		AdministrativeArea: repox.Deref(a.AdministrativeArea),
+		Locality:           repox.Deref(a.Locality),
+		Sublocality:        repox.Deref(a.Sublocality),
 		AddressLines:       strPtrsToSlice(a.AddressLines),
 		Recipients:         strPtrsToSlice(a.Recipients),
-		Organization:       deref(a.Organization),
+		Organization:       repox.Deref(a.Organization),
 	}
 }
 

@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"testing"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
@@ -10,7 +11,7 @@ import (
 )
 
 func inr(units int64) *common.Money {
-	return &common.Money{CurrencyCode: ptr("INR"), Units: ptr(units), Nanos: ptr(int32(0))}
+	return &common.Money{CurrencyCode: repox.Ptr("INR"), Units: repox.Ptr(units), Nanos: repox.Ptr(int32(0))}
 }
 
 func componentByCode(cs []*sharedpbv1.PriceComponent, code string) *sharedpbv1.PriceComponent {
@@ -33,10 +34,10 @@ func TestComputePricingFullStack(t *testing.T) {
 		TimeZone:    "Asia/Kolkata",
 		Price:       inr(5000),
 		LosDiscounts: []property.LosDiscount{
-			{MinNights: 3, PercentOff: ptr(int32(10))},
+			{MinNights: 3, PercentOff: repox.Ptr(int32(10))},
 		},
 		Fees: []property.Fee{
-			{Code: "cleaning_fee", DisplayName: &cleaning, Amount: inr(500), Taxable: ptr(true), PricingUnit: &perBooking},
+			{Code: "cleaning_fee", DisplayName: &cleaning, Amount: inr(500), Taxable: repox.Ptr(true), PricingUnit: &perBooking},
 		},
 		Taxes: []property.Tax{
 			{Code: "gst", Percent: 12},
@@ -73,12 +74,12 @@ func TestComputePricingWithPromo(t *testing.T) {
 		TimeZone:    "Asia/Kolkata",
 		Price:       inr(5000),
 		LosDiscounts: []property.LosDiscount{
-			{MinNights: 3, PercentOff: ptr(int32(10))},
+			{MinNights: 3, PercentOff: repox.Ptr(int32(10))},
 		},
 	}
 	promo := &promocode.PromoCode{
 		Code:     "SAVE20",
-		Discount: &promocode.Discount{PercentOff: ptr(int32(20))},
+		Discount: &promocode.Discount{PercentOff: repox.Ptr(int32(20))},
 	}
 
 	p := computePricing(unit, 3, 1, promo)
@@ -104,7 +105,7 @@ func TestComputePricingPromoScopeExcludesUnit(t *testing.T) {
 	}
 	promo := &promocode.PromoCode{
 		Code:     "SUITEONLY",
-		Discount: &promocode.Discount{PercentOff: ptr(int32(50))},
+		Discount: &promocode.Discount{PercentOff: repox.Ptr(int32(50))},
 		Scope: &promocode.Scope{
 			ScopeApplicableUnits: []promocode.ScopeApplicableUnits{{UnitID: "u2"}},
 		},

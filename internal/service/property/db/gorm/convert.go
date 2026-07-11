@@ -1,7 +1,7 @@
 package gorm
 
 import (
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
@@ -22,8 +22,6 @@ import (
 // persists in one transaction; a *fromModel function re-hydrates the proto from
 // a preloaded model.
 
-func ptr[T any](v T) *T { return &v }
-
 // strOrNil maps an empty proto string (which cannot represent NULL) to a nil
 // column pointer, so unset optional strings stay NULL in the database.
 func strOrNil(s string) *string {
@@ -31,16 +29,6 @@ func strOrNil(s string) *string {
 		return nil
 	}
 	return &s
-}
-
-// lastSegment returns the final path component of an AIP resource name
-// ("promoCodes/p1" -> "p1"), used to populate a join row's id column while the
-// full name round-trips via a separate column.
-func lastSegment(name string) string {
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		return name[i+1:]
-	}
-	return name
 }
 
 // orgName rebuilds the "organisations/{id}" resource name from the bare id the
@@ -61,8 +49,8 @@ func moneyToModel(m *money.Money) *common.Money {
 	return &common.Money{
 		ID:           ulid.GenerateString(),
 		CurrencyCode: strOrNil(m.GetCurrencyCode()),
-		Units:        ptr(m.GetUnits()),
-		Nanos:        ptr(m.GetNanos()),
+		Units:        repox.Ptr(m.GetUnits()),
+		Nanos:        repox.Ptr(m.GetNanos()),
 	}
 }
 

@@ -112,12 +112,12 @@ func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.Prom
 	g := buildGraph(pc)
 	g.promo.ID = id
 	g.promo.Name = name
-	g.promo.Etag = ptr(ulid.GenerateString())
+	g.promo.Etag = repox.Ptr(ulid.GenerateString())
 
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
 		return g.persist(ctx, tx)
 	}); err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.Get(ctx, name)
 }
@@ -130,7 +130,7 @@ func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodep
 	}
 	var m promocode.PromoCode
 	if err := preloadGraph(r.db.WithContext(ctx)).First(&m, "id = ?", id).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return fromModel(&m), nil
 }
@@ -139,7 +139,7 @@ func (r *PromoCodeRepository) Get(ctx context.Context, name string) (*promocodep
 func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*promocodepbv1.PromoCode, error) {
 	var m promocode.PromoCode
 	if err := preloadGraph(r.db.WithContext(ctx)).First(&m, "code = ?", code).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return fromModel(&m), nil
 }
@@ -161,7 +161,7 @@ func (r *PromoCodeRepository) List(ctx context.Context, in repox.ListInput) ([]*
 			Filter:    conds,
 		})
 	if err != nil {
-		return nil, "", mapGormErr(repox.MapFilterxErr(err))
+		return nil, "", repox.MapGormErr(repox.MapFilterxErr(err))
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(models))

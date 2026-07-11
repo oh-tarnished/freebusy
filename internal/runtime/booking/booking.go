@@ -7,11 +7,12 @@ package booking
 import (
 	"context"
 	"errors"
+	"github.com/oh-tarnished/freebusy/internal/database"
 	"strings"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	bookingdb "github.com/oh-tarnished/freebusy/internal/service/booking/db"
+	"github.com/oh-tarnished/freebusy/internal/service/booking/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"google.golang.org/grpc/codes"
@@ -23,11 +24,17 @@ import (
 // provider-agnostic db.BookingRepository.
 type Server struct {
 	bookingpbv1.UnimplementedBookingServiceServer
-	repo bookingdb.BookingRepository
+	repo db.BookingRepository
+}
+
+// New builds the booking service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo bookingdb.BookingRepository) *Server {
+func NewServer(repo db.BookingRepository) *Server {
 	return &Server{repo: repo}
 }
 

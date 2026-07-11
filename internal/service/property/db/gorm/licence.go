@@ -38,8 +38,8 @@ func (r *PropertyRepository) CreateLicence(ctx context.Context, parent string, l
 	g := buildLicenceGraph(l, propertyID, unitID)
 	g.licence.ID = id
 	g.licence.Name = name
-	g.licence.State = ptr(property.LicenceStateActive)
-	g.licence.Etag = ptr(ulid.GenerateString())
+	g.licence.State = repox.Ptr(property.LicenceStateActive)
+	g.licence.Etag = repox.Ptr(ulid.GenerateString())
 
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
 		if g.attachment != nil {
@@ -49,7 +49,7 @@ func (r *PropertyRepository) CreateLicence(ctx context.Context, parent string, l
 		}
 		return property.NewLicenceStore(tx).Create(ctx, g.licence)
 	}); err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetLicence(ctx, name)
 }
@@ -62,7 +62,7 @@ func (r *PropertyRepository) GetLicence(ctx context.Context, name string) (*prop
 	}
 	var m property.Licence
 	if err := r.db.WithContext(ctx).Preload("Attachment").First(&m, "id = ?", id).Error; err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return licenceFromModel(&m), nil
 }
@@ -82,7 +82,7 @@ func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, in
 	models, next, err := filterx.Gorm[property.Licence](property.LicenceFilterSpec).
 		List(ctx, r.db.Preload("Attachment").Where("property_id = ?", propertyID), fin)
 	if err != nil {
-		return nil, "", mapGormErr(types.MapFilterxErr(err))
+		return nil, "", repox.MapGormErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Licence, 0, len(models))
 	for i := range models {
@@ -126,7 +126,7 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 		existing.ExpiryDate = g.licence.ExpiryDate
 		existing.Notes = g.licence.Notes
 		existing.AttachmentID = g.licence.AttachmentID
-		existing.Etag = ptr(ulid.GenerateString())
+		existing.Etag = repox.Ptr(ulid.GenerateString())
 		existing.Attachment, existing.Property, existing.Unit = nil, nil, nil
 		if e := property.NewLicenceStore(tx).Update(ctx, &existing); e != nil {
 			return e
@@ -140,7 +140,7 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 		return nil
 	})
 	if err != nil {
-		return nil, mapGormErr(err)
+		return nil, repox.MapGormErr(err)
 	}
 	return r.GetLicence(ctx, l.GetName())
 }
@@ -164,5 +164,5 @@ func (r *PropertyRepository) DeleteLicence(ctx context.Context, name string) err
 		}
 		return nil
 	})
-	return mapGormErr(err)
+	return repox.MapGormErr(err)
 }

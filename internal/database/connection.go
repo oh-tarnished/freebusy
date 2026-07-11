@@ -24,47 +24,25 @@ const (
 	ProviderHasura Provider = "hasura"
 )
 
-// Connection carries the live backend handles. Only the handle for the selected
-// provider needs to be set (PgSQLConn for GORM, Hasura for Hasura).
+// Connection carries the live backend handles plus the provider that selected
+// them. Only the handle for the selected provider needs to be set (PgSQLConn
+// for GORM, Hasura for Hasura); Provider tells every consumer — the per-domain
+// repository factories — which one to build on, so provider selection travels
+// with the connection instead of being re-read from global config.
 type Connection struct {
 	PgSQLConn *gorm.DB
 	Hasura    *freebusyql.Service
+	Provider  Provider
 }
 
-// ProviderFromConfig reports the provider selected by [database].provider in the
-// loaded config. Service db factories use it to pick which handle to build their
-// repository over; the bootstrap uses it to decide which backend to open.
-func ProviderFromConfig() Provider { return providerFromConfig() }
-
 // providerFromConfig resolves the configured provider, defaulting to GORM for an
-// empty or unrecognized value.
+// empty or unrecognized value. Only Open consults config; everything downstream
+// reads Connection.Provider.
 func providerFromConfig() Provider {
-	if testBackend != nil {
-		return testBackend.provider
-	}
 	switch strings.ToLower(strings.TrimSpace(config.Get().Database.Provider)) {
 	case string(ProviderHasura):
 		return ProviderHasura
 	default:
 		return ProviderGorm
 	}
-}
-
-// testBackend, when set, overrides both Open and providerFromConfig: the e2e
-// suites inject an explicit connection and provider so the fully assembled
-// server runs against the test backend without touching the loaded config.
-var testBackend *testOverride
-
-type testOverride struct {
-	conn     *Connection
-	provider Provider
-}
-
-// SetTestBackend forces Open to return conn and ProviderFromConfig to report
-// provider until the returned restore func runs. Test seam only — it mutates
-// package state, so don't call it concurrently with Open or with itself.
-func SetTestBackend(conn *Connection, p Provider) (restore func()) {
-	prev := testBackend
-	testBackend = &testOverride{conn: conn, provider: p}
-	return func() { testBackend = prev }
 }

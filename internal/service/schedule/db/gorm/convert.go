@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"strings"
 	"time"
 
@@ -19,16 +20,6 @@ import (
 // policy (with refund tiers); an exception carries a TimeWindow or DateRange
 // span. Durations serialize as Go-duration strings, weekday lists as comma-joined
 // enum names, matching the single string columns the ORM generates.
-
-func ptr[T any](v T) *T { return &v }
-
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
 
 func strOrNil(s string) *string {
 	if s == "" {
@@ -64,7 +55,7 @@ func durationToStr(d *durationpb.Duration) *string {
 	if d == nil {
 		return nil
 	}
-	return ptr(d.AsDuration().String())
+	return repox.Ptr(d.AsDuration().String())
 }
 
 func durationFromStr(s *string) *durationpb.Duration {
@@ -86,7 +77,7 @@ func weekdaysToStr(days []sharedpbv1.Weekday) *string {
 	for _, d := range days {
 		parts = append(parts, d.String())
 	}
-	return ptr(strings.Join(parts, ","))
+	return repox.Ptr(strings.Join(parts, ","))
 }
 
 func weekdaysFromStr(s *string) []sharedpbv1.Weekday {

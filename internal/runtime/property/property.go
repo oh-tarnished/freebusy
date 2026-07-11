@@ -8,10 +8,11 @@ package property
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
+	"github.com/oh-tarnished/freebusy/internal/service/property/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"google.golang.org/grpc/codes"
@@ -26,11 +27,17 @@ import (
 type Server struct {
 	propertypbv1.UnimplementedPropertyServiceServer
 	propertypbv1.UnimplementedLicenceServiceServer
-	repo propertydb.PropertyRepository
+	repo db.PropertyRepository
+}
+
+// New builds the property service on conn: the provider-selected repository
+// wrapped in the gRPC server implementation.
+func New(conn *database.Connection) *Server {
+	return NewServer(db.New(conn))
 }
 
 // NewServer returns a Server backed by repo.
-func NewServer(repo propertydb.PropertyRepository) *Server {
+func NewServer(repo db.PropertyRepository) *Server {
 	return &Server{repo: repo}
 }
 

@@ -8,6 +8,7 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
@@ -74,7 +75,7 @@ func (r *PropertyRepository) CreateProperty(ctx context.Context, p *propertypbv1
 		tx.Add(r.svc.Mutation.Property.Medias.CreateOp(g.medias[i], &mediaRes[i]))
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetProperty(ctx, name)
 }
@@ -86,7 +87,7 @@ func (r *PropertyRepository) GetProperty(ctx context.Context, name string) (*pro
 	}
 	res, err := r.svc.Query.Property.Properties.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -106,7 +107,7 @@ func (r *PropertyRepository) ListProperties(ctx context.Context, in repox.ListIn
 	rows, next, err := filterx.Hasura(property.PropertyFilterSpec, r.svc.Query.Property.Properties).
 		List(ctx, fin)
 	if err != nil {
-		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
+		return nil, "", dbutil.MapHasuraErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Property, 0, len(rows))
 	for i := range rows {
@@ -128,20 +129,20 @@ func (r *PropertyRepository) fetchPropertyParts(ctx context.Context, res *pschem
 	if res.AddressId != nil {
 		a, err := r.svc.Query.Common.PostalAddress.Get(ctx, *res.AddressId)
 		if err != nil {
-			return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
+			return propertyParts{}, propertyRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.address = a
 	}
 	if res.PolicyId != nil {
 		pol, err := r.svc.Query.Property.Policies.Get(ctx, *res.PolicyId)
 		if err != nil {
-			return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
+			return propertyParts{}, propertyRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.policy = pol
 	}
 	medias, err := r.svc.Query.Property.Medias.List(ctx, mediasList().Where(mediasql.PropertyId.Eq(res.Id)))
 	if err != nil {
-		return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
+		return propertyParts{}, propertyRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.medias = medias
 	for i := range medias {
@@ -149,14 +150,14 @@ func (r *PropertyRepository) fetchPropertyParts(ctx context.Context, res *pschem
 	}
 	units, err := r.svc.Query.Property.Units.List(ctx, unitsList().Where(unitsql.PropertyId.Eq(res.Id)))
 	if err != nil {
-		return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
+		return propertyParts{}, propertyRefs{}, dbutil.MapHasuraErr(err)
 	}
 	for i := range units {
 		p.unitNames = append(p.unitNames, units[i].Name)
 	}
 	licences, err := r.svc.Query.Property.Licences.List(ctx, licencesql.List().Where(licencesql.PropertyId.Eq(res.Id)))
 	if err != nil {
-		return propertyParts{}, propertyRefs{}, mapHasuraErr(err)
+		return propertyParts{}, propertyRefs{}, dbutil.MapHasuraErr(err)
 	}
 	for i := range licences {
 		p.licenceNames = append(p.licenceNames, licences[i].Name)
@@ -179,7 +180,7 @@ func (r *PropertyRepository) CreateUnit(ctx context.Context, parent string, u *p
 	tx := r.svc.Mutation.Tx()
 	queueUnitInserts(tx, r, g, id)
 	if err := tx.Commit(ctx); err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return r.GetUnit(ctx, name)
 }
@@ -191,7 +192,7 @@ func (r *PropertyRepository) GetUnit(ctx context.Context, name string) (*propert
 	}
 	res, err := r.svc.Query.Property.Units.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	if res == nil {
 		return nil, types.ErrNotFound
@@ -216,7 +217,7 @@ func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, in re
 		Scope(unitsql.PropertyId.Eq(propertyID)).
 		List(ctx, fin)
 	if err != nil {
-		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
+		return nil, "", dbutil.MapHasuraErr(repox.MapFilterxErr(err))
 	}
 	items := make([]*propertypbv1.Unit, 0, len(rows))
 	for i := range rows {
@@ -247,7 +248,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 
 	ro, err := r.svc.Query.Property.RateOverrides.List(ctx, rateOverridesList().Where(rateoverridesql.UnitId.Eq(res.Id)))
 	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+		return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.rateOverrides = ro
 	for i := range ro {
@@ -263,7 +264,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 		if ro[i].DateRangeId != nil {
 			d, err := r.svc.Query.Shared.DateRanges.Get(ctx, *ro[i].DateRangeId)
 			if err != nil {
-				return unitParts{}, unitRefs{}, mapHasuraErr(err)
+				return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 			}
 			p.dateByID[*ro[i].DateRangeId] = d
 			refs.dateIDs = append(refs.dateIDs, *ro[i].DateRangeId)
@@ -272,7 +273,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 
 	ld, err := r.svc.Query.Property.LosDiscounts.List(ctx, losDiscountsList().Where(losdiscountsql.UnitId.Eq(res.Id)))
 	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+		return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.losDiscounts = ld
 	for i := range ld {
@@ -289,7 +290,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 
 	fees, err := r.svc.Query.Property.Fees.List(ctx, feesList().Where(feesql.UnitId.Eq(res.Id)))
 	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+		return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.fees = fees
 	for i := range fees {
@@ -306,7 +307,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 
 	taxes, err := r.svc.Query.Property.Taxes.List(ctx, taxesList().Where(taxesql.UnitId.Eq(res.Id)))
 	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+		return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.taxes = taxes
 	for i := range taxes {
@@ -315,7 +316,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 
 	medias, err := r.svc.Query.Property.UnitMedias.List(ctx, unitMediasList().Where(unitmediasql.UnitId.Eq(res.Id)))
 	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+		return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.medias = medias
 	for i := range medias {
@@ -324,7 +325,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 
 	codes, err := r.svc.Query.Property.UnitApplicablePromoCodes.List(ctx, unitPromoCodesList().Where(unitapplicablepromocodesql.UnitId.Eq(res.Id)))
 	if err != nil {
-		return unitParts{}, unitRefs{}, mapHasuraErr(err)
+		return unitParts{}, unitRefs{}, dbutil.MapHasuraErr(err)
 	}
 	p.promoCodes = codes
 	for i := range codes {
@@ -337,7 +338,7 @@ func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.Pr
 func (r *PropertyRepository) money(ctx context.Context, id string) (*commonschema.CommonMoneys, error) {
 	m, err := r.svc.Query.Common.Moneys.Get(ctx, id)
 	if err != nil {
-		return nil, mapHasuraErr(err)
+		return nil, dbutil.MapHasuraErr(err)
 	}
 	return m, nil
 }

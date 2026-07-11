@@ -16,14 +16,11 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"net/url"
-	"os"
 	"testing"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal"
 	"github.com/oh-tarnished/freebusy/internal/database"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	bookingrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/booking"
 	propertyrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/property"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
@@ -43,55 +40,28 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func TestE2E_Gorm(t *testing.T) {
-	dsn := os.Getenv("FREEBUSY_TEST_POSTGRES_DSN")
-	if dsn == "" {
-		t.Skip("FREEBUSY_TEST_POSTGRES_DSN not set — live server e2e skipped")
-	}
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger:         logger.Default.LogMode(logger.Silent),
-		TranslateError: true, // sentinel errors (ErrDuplicatedKey) like database.Open
-	})
-	if err != nil {
-		t.Fatalf("open postgres: %v", err)
-	}
-	cc := dialServer(t, &database.Connection{PgSQLConn: db}, database.ProviderGorm)
+	db := openTestGorm(t)
+	cc := dialServer(t, &database.Connection{PgSQLConn: db, Provider: database.ProviderGorm})
 	serverLifecycle(t, cc, database.ProviderGorm, propertyrepo.NewGorm(db), bookingrepo.NewGorm(db))
 }
 
 // TestE2E_Hasura runs the identical client-visible lifecycle with the server
 // assembled on the Hasura DDN backend — one behavior, two providers.
 func TestE2E_Hasura(t *testing.T) {
-	raw := os.Getenv("FREEBUSY_TEST_GRAPHQL_URL")
-	if raw == "" {
-		t.Skip("FREEBUSY_TEST_GRAPHQL_URL not set — live server e2e skipped")
-	}
-	u, err := url.Parse(raw)
-	if err != nil {
-		t.Fatalf("parse %s: %v", raw, err)
-	}
-	svc, err := freebusyql.Connect(u)
-	if err != nil {
-		t.Fatalf("connect %s: %v", raw, err)
-	}
-	cc := dialServer(t, &database.Connection{Hasura: svc}, database.ProviderHasura)
+	svc := connectTestGraphQL(t)
+	cc := dialServer(t, &database.Connection{Hasura: svc, Provider: database.ProviderHasura})
 	serverLifecycle(t, cc, database.ProviderHasura, propertyrepo.NewGraphQL(svc), bookingrepo.NewGraphQL(svc))
 }
 
 // dialServer assembles the full server on conn/provider, serves it over
 // bufconn, and returns a connected client conn. Everything is torn down with
 // the test.
-func dialServer(t *testing.T, conn *database.Connection, provider database.Provider) *grpc.ClientConn {
+func dialServer(t *testing.T, conn *database.Connection) *grpc.ClientConn {
 	t.Helper()
-	restore := database.SetTestBackend(conn, provider)
-	t.Cleanup(restore)
-
-	srv, _, err := internal.NewGRPCServer()
+	srv, _, err := internal.NewGRPCServer(conn)
 	if err != nil {
 		t.Fatalf("assemble server: %v", err)
 	}

@@ -1,7 +1,8 @@
 package hasura
 
 import (
-	"strings"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
@@ -44,32 +45,6 @@ const (
 	amountCaseAmountOff  = "AMOUNT_OFF"
 )
 
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
-// lastSegment returns the final path component of an AIP resource name
-// ("resources/r1/offerings/o1" -> "o1").
-func lastSegment(name string) string {
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		return name[i+1:]
-	}
-	return name
-}
-
-// tsToStr renders a protobuf timestamp as the RFC 3339 string Hasura expects for
-// a timestamptz column; the empty string (omitted on input) means NULL.
-func tsToStr(ts *timestamppb.Timestamp) string {
-	if ts == nil {
-		return ""
-	}
-	return ts.AsTime().UTC().Format(time.RFC3339Nano)
-}
-
 // strToTS parses an RFC 3339 timestamptz string from Hasura back into a protobuf
 // timestamp, tolerating the few layouts the engine emits. A blank/unparseable
 // value yields nil.
@@ -100,9 +75,9 @@ func moneyFromModel(m *commonschema.CommonMoneys) *money.Money {
 		return nil
 	}
 	return &money.Money{
-		CurrencyCode: deref(m.CurrencyCode),
-		Units:        int64(deref(m.Units)),
-		Nanos:        deref(m.Nanos),
+		CurrencyCode: repox.Deref(m.CurrencyCode),
+		Units:        int64(repox.Deref(m.Units)),
+		Nanos:        repox.Deref(m.Nanos),
 	}
 }
 
@@ -132,7 +107,7 @@ func buildGraph(pc *promocodepbv1.PromoCode, now time.Time) *graph {
 	if pc.GetDisabled() {
 		state = stateDisabled
 	}
-	nowStr := tsToStr(timestamppb.New(now))
+	nowStr := dbutil.TsToStr(timestamppb.New(now))
 	g.resource = resourceql.CreateInput{
 		Code:        pc.GetCode(),
 		DisplayName: pc.GetDisplayName(),
@@ -162,8 +137,8 @@ func buildGraph(pc *promocodepbv1.PromoCode, now time.Time) *graph {
 		wID := ulid.GenerateString()
 		g.window = &redemptionwindowsql.CreateInput{
 			Id:        wID,
-			StartTime: tsToStr(w.GetStartTime()),
-			EndTime:   tsToStr(w.GetEndTime()),
+			StartTime: dbutil.TsToStr(w.GetStartTime()),
+			EndTime:   dbutil.TsToStr(w.GetEndTime()),
 		}
 		g.resource.WindowId = wID
 	}
@@ -202,7 +177,7 @@ func buildGraph(pc *promocodepbv1.PromoCode, now time.Time) *graph {
 			g.units = append(g.units, scopeapplicableunitsql.CreateInput{
 				Id:       ulid.GenerateString(),
 				ScopeId:  sID,
-				UnitId:   lastSegment(name),
+				UnitId:   repox.LastSegment(name),
 				UnitName: name,
 			})
 		}
@@ -231,17 +206,17 @@ func fromParts(p parts) *promocodepbv1.PromoCode {
 	pc := &promocodepbv1.PromoCode{
 		Name:            res.Name,
 		Code:            res.Code,
-		DisplayName:     deref(res.DisplayName),
-		Description:     deref(res.Description),
+		DisplayName:     repox.Deref(res.DisplayName),
+		Description:     repox.Deref(res.Description),
 		Discount:        discountFromModel(p.discount, p.amountOff),
 		Window:          windowFromModel(p.window),
 		Limits:          limitsFromModel(p.limits),
 		Scope:           scopeFromParts(p.scope, p.minSub, p.properties, p.units),
-		RedemptionCount: int64(deref(res.RedemptionCount)),
-		Disabled:        deref(res.Disabled),
+		RedemptionCount: int64(repox.Deref(res.RedemptionCount)),
+		Disabled:        repox.Deref(res.Disabled),
 		CreateTime:      strToTS(&res.CreateTime),
 		UpdateTime:      strToTS(&res.UpdateTime),
-		Etag:            deref(res.Etag),
+		Etag:            repox.Deref(res.Etag),
 	}
 	// Derive the lifecycle state from the window/flags rather than trusting the
 	// possibly-stale stored value (a code becomes EXPIRED purely with time).
@@ -257,7 +232,7 @@ func discountFromModel(d *pcschema.PromocodeDiscounts, amountOff *commonschema.C
 	if d.AmountCase != nil && *d.AmountCase == amountCaseAmountOff {
 		out.Amount = &promocodepbv1.Discount_AmountOff{AmountOff: moneyFromModel(amountOff)}
 	} else {
-		out.Amount = &promocodepbv1.Discount_PercentOff{PercentOff: deref(d.PercentOff)}
+		out.Amount = &promocodepbv1.Discount_PercentOff{PercentOff: repox.Deref(d.PercentOff)}
 	}
 	return out
 }

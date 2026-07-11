@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"testing"
 	"time"
 
@@ -52,17 +53,17 @@ func TestBookingFromModel(t *testing.T) {
 		ID:     "b1",
 		Name:   "bookings/b1",
 		UnitID: "u1",
-		Units:  ptr(int32(2)),
+		Units:  repox.Ptr(int32(2)),
 		State:  &state,
 		Window: &shared.TimeWindow{
 			StartTime: time.Date(2026, 12, 24, 8, 30, 0, 0, time.UTC),
 			EndTime:   time.Date(2026, 12, 27, 5, 30, 0, 0, time.UTC),
 		},
-		Price: &common.Money{CurrencyCode: ptr("INR"), Units: ptr(int64(24000))},
-		Total: &common.Money{CurrencyCode: ptr("INR"), Units: ptr(int64(24000))},
+		Price: &common.Money{CurrencyCode: repox.Ptr("INR"), Units: repox.Ptr(int64(24000))},
+		Total: &common.Money{CurrencyCode: repox.Ptr("INR"), Units: repox.Ptr(int64(24000))},
 		Contact: &shared.Contact{
-			DisplayName: ptr("Asha"),
-			Email:       ptr("asha@example.com"),
+			DisplayName: repox.Ptr("Asha"),
+			Email:       repox.Ptr("asha@example.com"),
 		},
 	}
 	out := bookingFromModel(m, "properties/p1/units/u1")
