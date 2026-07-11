@@ -17,7 +17,7 @@ definition:
     - name: pendingCount
       type: Int32
     - name: state
-      type: String_1
+      type: Enum
   graphql:
     typeName: InsertChannelSyncStatusesObject
     inputTypeName: InsertChannelSyncStatusesObjectInput

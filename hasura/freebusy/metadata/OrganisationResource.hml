@@ -23,7 +23,7 @@ definition:
     - name: slug
       type: String_1
     - name: state
-      type: String_1
+      type: Enum
     - name: updateTime
       type: Timestamptz!
   graphql:
@@ -116,7 +116,7 @@ definition:
         - fieldName: slug
           booleanExpressionType: TextBoolExp
         - fieldName: state
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: OrganisationOrganisationStateBoolExp
         - fieldName: updateTime
           booleanExpressionType: TimestamptzBoolExp
       comparableRelationships: []
@@ -155,7 +155,7 @@ definition:
         - fieldName: slug
           aggregateExpression: TextAggExp
         - fieldName: state
-          aggregateExpression: TextAggExp
+          aggregateExpression: OrganisationOrganisationStateAggExp
         - fieldName: updateTime
           aggregateExpression: TimestamptzAggExp
   count:
@@ -192,7 +192,7 @@ definition:
         - fieldName: slug
           orderByExpression: String1OrderByExp
         - fieldName: state
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: updateTime
           orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []

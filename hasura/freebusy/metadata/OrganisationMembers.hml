@@ -21,9 +21,9 @@ definition:
     - name: organisationId
       type: String_1!
     - name: role
-      type: String_1!
+      type: Enum!
     - name: state
-      type: String_1
+      type: Enum
     - name: updateTime
       type: Timestamptz!
     - name: user
@@ -120,9 +120,9 @@ definition:
         - fieldName: organisationId
           booleanExpressionType: TextBoolExp
         - fieldName: role
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: OrganisationOrganisationRoleBoolExp
         - fieldName: state
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: OrganisationMemberStateBoolExp
         - fieldName: updateTime
           booleanExpressionType: TimestamptzBoolExp
         - fieldName: user
@@ -161,9 +161,9 @@ definition:
         - fieldName: organisationId
           aggregateExpression: TextAggExp
         - fieldName: role
-          aggregateExpression: TextAggExp
+          aggregateExpression: OrganisationOrganisationRoleAggExp
         - fieldName: state
-          aggregateExpression: TextAggExp
+          aggregateExpression: OrganisationMemberStateAggExp
         - fieldName: updateTime
           aggregateExpression: TimestamptzAggExp
         - fieldName: user
@@ -200,9 +200,9 @@ definition:
         - fieldName: organisationId
           orderByExpression: String1OrderByExp
         - fieldName: role
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: state
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: updateTime
           orderByExpression: TimestamptzOrderByExp
         - fieldName: user

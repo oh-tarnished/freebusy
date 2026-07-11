@@ -27,11 +27,11 @@ definition:
     - name: propertyId
       type: String_1!
     - name: state
-      type: String_1
+      type: Enum
     - name: target
-      type: String_1
+      type: Enum
     - name: type
-      type: String_1!
+      type: Enum!
     - name: unit
       type: String_1
     - name: updateTime
@@ -150,11 +150,11 @@ definition:
         - fieldName: propertyId
           booleanExpressionType: TextBoolExp
         - fieldName: state
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PropertyLicenceStateBoolExp
         - fieldName: target
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PropertyLicenceTargetBoolExp
         - fieldName: type
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PropertyLicenceTypeBoolExp
         - fieldName: unit
           booleanExpressionType: TextBoolExp
         - fieldName: updateTime
@@ -199,11 +199,11 @@ definition:
         - fieldName: propertyId
           aggregateExpression: TextAggExp
         - fieldName: state
-          aggregateExpression: TextAggExp
+          aggregateExpression: PropertyLicenceStateAggExp
         - fieldName: target
-          aggregateExpression: TextAggExp
+          aggregateExpression: PropertyLicenceTargetAggExp
         - fieldName: type
-          aggregateExpression: TextAggExp
+          aggregateExpression: PropertyLicenceTypeAggExp
         - fieldName: unit
           aggregateExpression: TextAggExp
         - fieldName: updateTime
@@ -246,11 +246,11 @@ definition:
         - fieldName: propertyId
           orderByExpression: String1OrderByExp
         - fieldName: state
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: target
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: type
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: unit
           orderByExpression: String1OrderByExp
         - fieldName: updateTime

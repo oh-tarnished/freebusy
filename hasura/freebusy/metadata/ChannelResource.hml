@@ -23,9 +23,9 @@ definition:
     - name: property
       type: String_1!
     - name: state
-      type: String_1
+      type: Enum
     - name: type
-      type: String_1!
+      type: Enum!
     - name: updateTime
       type: Timestamptz!
   graphql:
@@ -122,9 +122,9 @@ definition:
         - fieldName: property
           booleanExpressionType: TextBoolExp
         - fieldName: state
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: ChannelChannelStateBoolExp
         - fieldName: type
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: ChannelChannelTypeBoolExp
         - fieldName: updateTime
           booleanExpressionType: TimestamptzBoolExp
       comparableRelationships: []
@@ -163,9 +163,9 @@ definition:
         - fieldName: property
           aggregateExpression: TextAggExp
         - fieldName: state
-          aggregateExpression: TextAggExp
+          aggregateExpression: ChannelChannelStateAggExp
         - fieldName: type
-          aggregateExpression: TextAggExp
+          aggregateExpression: ChannelChannelTypeAggExp
         - fieldName: updateTime
           aggregateExpression: TimestamptzAggExp
   count:
@@ -202,9 +202,9 @@ definition:
         - fieldName: property
           orderByExpression: String1OrderByExp
         - fieldName: state
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: type
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: updateTime
           orderByExpression: TimestamptzOrderByExp
       orderableRelationships: []

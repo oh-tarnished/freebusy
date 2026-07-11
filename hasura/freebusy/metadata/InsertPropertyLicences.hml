@@ -7,7 +7,7 @@ definition:
     - name: attachmentId
       type: String_1
     - name: createTime
-      type: Timestamptz!
+      type: Timestamptz
     - name: etag
       type: String_1
     - name: expiryDate
@@ -27,11 +27,11 @@ definition:
     - name: propertyId
       type: String_1!
     - name: state
-      type: String_1
+      type: Enum
     - name: target
-      type: String_1
+      type: Enum
     - name: type
-      type: String_1
+      type: Enum
     - name: unit
       type: String_1
     - name: updateTime

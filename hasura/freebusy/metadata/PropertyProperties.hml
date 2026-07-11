@@ -25,7 +25,7 @@ definition:
     - name: policyId
       type: String_1
     - name: state
-      type: String_1
+      type: Enum
     - name: tags
       type: "[String_1]"
     - name: timeZone
@@ -136,7 +136,7 @@ definition:
         - fieldName: policyId
           booleanExpressionType: TextBoolExp
         - fieldName: state
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PropertyPropertyStateBoolExp
         - fieldName: timeZone
           booleanExpressionType: TextBoolExp
         - fieldName: updateTime
@@ -179,7 +179,7 @@ definition:
         - fieldName: policyId
           aggregateExpression: TextAggExp
         - fieldName: state
-          aggregateExpression: TextAggExp
+          aggregateExpression: PropertyPropertyStateAggExp
         - fieldName: timeZone
           aggregateExpression: TextAggExp
         - fieldName: updateTime
@@ -220,7 +220,7 @@ definition:
         - fieldName: policyId
           orderByExpression: String1OrderByExp
         - fieldName: state
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: timeZone
           orderByExpression: String1OrderByExp
         - fieldName: updateTime

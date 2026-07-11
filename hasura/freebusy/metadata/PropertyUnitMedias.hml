@@ -17,7 +17,7 @@ definition:
     - name: title
       type: String_1
     - name: type
-      type: String_1!
+      type: Enum!
     - name: unitId
       type: String_1!
     - name: uri
@@ -98,7 +98,7 @@ definition:
         - fieldName: title
           booleanExpressionType: TextBoolExp
         - fieldName: type
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PropertyMediaTypeBoolExp
         - fieldName: unitId
           booleanExpressionType: TextBoolExp
         - fieldName: uri
@@ -133,7 +133,7 @@ definition:
         - fieldName: title
           aggregateExpression: TextAggExp
         - fieldName: type
-          aggregateExpression: TextAggExp
+          aggregateExpression: PropertyMediaTypeAggExp
         - fieldName: unitId
           aggregateExpression: TextAggExp
         - fieldName: uri
@@ -166,7 +166,7 @@ definition:
         - fieldName: title
           orderByExpression: String1OrderByExp
         - fieldName: type
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: unitId
           orderByExpression: String1OrderByExp
         - fieldName: uri

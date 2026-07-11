@@ -232,7 +232,7 @@ definition:
   description: Update the 'state' column in the 'channel_unit_mappings' collection
   fields:
     - name: set
-      type: String_1
+      type: Enum
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnChannelUnitMappingsState

@@ -198,7 +198,7 @@ definition:
   description: Update the 'state' column in the 'channel_sync_statuses' collection
   fields:
     - name: set
-      type: String_1
+      type: Enum
       description: Set the column to this value
   graphql:
     typeName: UpdateColumnChannelSyncStatusesState

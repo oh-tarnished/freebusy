@@ -11,7 +11,7 @@ definition:
     - name: id
       type: String_1!
     - name: percent
-      type: Bigdecimal!
+      type: Float64!
     - name: unitId
       type: String_1!
   graphql:
@@ -68,7 +68,7 @@ definition:
         - fieldName: id
           booleanExpressionType: TextBoolExp
         - fieldName: percent
-          booleanExpressionType: NumericBoolExp
+          booleanExpressionType: Float8BoolExp
         - fieldName: unitId
           booleanExpressionType: TextBoolExp
       comparableRelationships: []
@@ -95,7 +95,7 @@ definition:
         - fieldName: id
           aggregateExpression: TextAggExp
         - fieldName: percent
-          aggregateExpression: NumericAggExp
+          aggregateExpression: Float8AggExp
         - fieldName: unitId
           aggregateExpression: TextAggExp
   count:
@@ -120,7 +120,7 @@ definition:
         - fieldName: id
           orderByExpression: String1OrderByExp
         - fieldName: percent
-          orderByExpression: BigdecimalOrderByExp
+          orderByExpression: Float64OrderByExp
         - fieldName: unitId
           orderByExpression: String1OrderByExp
       orderableRelationships: []

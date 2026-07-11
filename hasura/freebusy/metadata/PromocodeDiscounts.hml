@@ -5,7 +5,7 @@ definition:
   name: PromocodeDiscounts
   fields:
     - name: amountCase
-      type: String_1
+      type: Enum
     - name: amountOffId
       type: String_1
     - name: id
@@ -56,7 +56,7 @@ definition:
       type: PromocodeDiscounts
       comparableFields:
         - fieldName: amountCase
-          booleanExpressionType: TextBoolExp
+          booleanExpressionType: PromocodeDiscountAmountCaseBoolExp
         - fieldName: amountOffId
           booleanExpressionType: TextBoolExp
         - fieldName: id
@@ -81,7 +81,7 @@ definition:
       aggregatedType: PromocodeDiscounts
       aggregatableFields:
         - fieldName: amountCase
-          aggregateExpression: TextAggExp
+          aggregateExpression: PromocodeDiscountAmountCaseAggExp
         - fieldName: amountOffId
           aggregateExpression: TextAggExp
         - fieldName: id
@@ -104,7 +104,7 @@ definition:
       orderedType: PromocodeDiscounts
       orderableFields:
         - fieldName: amountCase
-          orderByExpression: String1OrderByExp
+          orderByExpression: EnumOrderByExp
         - fieldName: amountOffId
           orderByExpression: String1OrderByExp
         - fieldName: id
