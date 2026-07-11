@@ -12,9 +12,9 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/database"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/promocode/db/gorm"
 	"github.com/oh-tarnished/freebusy/internal/service/promocode/db/hasura"
-	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 )
 
@@ -38,8 +38,11 @@ type PromoCodeRepository interface {
 	FindByCode(ctx context.Context, code string) (*promocodepbv1.PromoCode, error)
 
 	// List returns a page of promo codes and an opaque token for the next page
-	// (empty when there are no further results).
-	List(ctx context.Context, params types.ListParams) (items []*promocodepbv1.PromoCode, nextPageToken string, err error)
+	// (empty when there are no further results). in.Filter is the raw AIP-160
+	// expression; the provider parses and dispatches it (including the derived
+	// "state" field, which GORM answers via a handler override and Hasura
+	// rejects).
+	List(ctx context.Context, in repox.ListInput) (items []*promocodepbv1.PromoCode, nextPageToken string, err error)
 
 	// Update persists the fields named by paths (an AIP-134 field mask); an empty
 	// paths slice means a full replace. The record is identified by pc.Name and

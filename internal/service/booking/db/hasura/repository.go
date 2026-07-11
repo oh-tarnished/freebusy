@@ -14,6 +14,7 @@ import (
 	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
 	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -212,9 +213,13 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 }
 
 // ListBookings returns a page of bookings ordered by params.OrderBy.
-func (r *BookingRepository) ListBookings(ctx context.Context, params types.ListParams) ([]*bookingpbv1.Booking, string, error) {
+func (r *BookingRepository) ListBookings(ctx context.Context, in repox.ListInput) ([]*bookingpbv1.Booking, string, error) {
+	fin, err := types.FilterxFromRaw(in)
+	if err != nil {
+		return nil, "", err
+	}
 	rows, next, err := filterx.Hasura[bookingschema.BookingResource](booking.BookingFilterSpec, r.svc.Query.Booking.Resource).
-		List(ctx, types.FilterxInput(params))
+		List(ctx, fin)
 	if err != nil {
 		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}

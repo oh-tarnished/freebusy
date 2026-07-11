@@ -1,15 +1,11 @@
 package gorm
 
 import (
-	"time"
-
-	"github.com/lib/pq"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
-	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 // unitGraph is the set of rows a single Unit materializes into: the unit row,
@@ -30,34 +26,24 @@ type unitGraph struct {
 	promoCodes    []*property.UnitApplicablePromoCodes
 }
 
-// buildUnitGraph turns a proto Unit into its row graph under propertyID, minting
-// a fresh ULID for every row. The unit's identity (ID/Name/Etag) and every
+// buildUnitGraph turns a proto Unit into its row graph under propertyID. The
+// generated converters carry each row's field mass; this wires fresh ULIDs and
+// the value-object foreign keys. The unit's identity (ID/Name/Etag) and every
 // child's unit_id FK are stamped by the repository.
 func buildUnitGraph(u *propertypbv1.Unit, propertyID string) *unitGraph {
 	g := &unitGraph{}
-	state := property.UnitStateActive
-	g.unit = &property.Unit{
-		DisplayName:  u.GetDisplayName(),
-		Description:  strOrNil(u.GetDescription()),
-		Type:         unitTypeToModel(u.GetType()),
-		BookingMode:  bookingModeToModel(u.GetBookingMode()),
-		Capacity:     nilIfZeroInt32(u.GetCapacity()),
-		MaxOccupancy: nilIfZeroInt32(u.GetMaxOccupancy()),
-		TimeZone:     u.GetTimeZone(),
-		PricingUnit:  pricingUnitToModel(u.GetPricingUnit()),
-		Duration:     durationToStr(u.GetDuration()),
-		Tags:         pq.StringArray(u.GetTags()),
-		Attributes:   structToJSON(u.GetAttributes()),
-		State:        &state,
-		PropertyID:   propertyID,
-	}
+	g.unit = property.UnitFromProto(u)
+	g.unit.Name = "" // identity is the repository's
+	g.unit.Etag = nil
+	g.unit.PropertyID = propertyID
 	if p := moneyToModel(u.GetPrice()); p != nil {
 		g.price = p
 		g.unit.PriceID = &p.ID
 	}
 
 	for _, ro := range u.GetRateOverrides() {
-		row := &property.RateOverride{ID: ulid.GenerateString(), Weekdays: weekdaysToStr(ro.GetWeekdays())}
+		row := property.RateOverrideFromProto(ro)
+		row.ID = ulid.GenerateString()
 		if dr := dateRangeToModel(ro.GetDateRange()); dr != nil {
 			g.dates = append(g.dates, dr)
 			row.DateRangeID = &dr.ID
@@ -69,7 +55,8 @@ func buildUnitGraph(u *propertypbv1.Unit, propertyID string) *unitGraph {
 		g.rateOverrides = append(g.rateOverrides, row)
 	}
 	for _, ld := range u.GetLosDiscounts() {
-		row := &property.LosDiscount{ID: ulid.GenerateString(), MinNights: ld.GetMinNights(), PercentOff: nilIfZeroInt32(ld.GetPercentOff())}
+		row := property.LosDiscountFromProto(ld)
+		row.ID = ulid.GenerateString()
 		if amt := moneyToModel(ld.GetAmountOff()); amt != nil {
 			g.moneys = append(g.moneys, amt)
 			row.AmountOffID = &amt.ID
@@ -77,14 +64,8 @@ func buildUnitGraph(u *propertypbv1.Unit, propertyID string) *unitGraph {
 		g.losDiscounts = append(g.losDiscounts, row)
 	}
 	for _, f := range u.GetFees() {
-		row := &property.Fee{
-			ID:          ulid.GenerateString(),
-			Code:        f.GetCode(),
-			DisplayName: strOrNil(f.GetDisplayName()),
-			Percent:     nilIfZeroInt32(f.GetPercent()),
-			PricingUnit: pricingUnitToModel(f.GetPricingUnit()),
-			Taxable:     ptr(f.GetTaxable()),
-		}
+		row := property.FeeFromProto(f)
+		row.ID = ulid.GenerateString()
 		if amt := moneyToModel(f.GetAmount()); amt != nil {
 			g.moneys = append(g.moneys, amt)
 			row.AmountID = &amt.ID
@@ -92,15 +73,14 @@ func buildUnitGraph(u *propertypbv1.Unit, propertyID string) *unitGraph {
 		g.fees = append(g.fees, row)
 	}
 	for _, t := range u.GetTaxes() {
-		g.taxes = append(g.taxes, &property.Tax{
-			ID:          ulid.GenerateString(),
-			Code:        t.GetCode(),
-			DisplayName: strOrNil(t.GetDisplayName()),
-			Percent:     t.GetPercent(),
-		})
+		row := property.TaxFromProto(t)
+		row.ID = ulid.GenerateString()
+		g.taxes = append(g.taxes, row)
 	}
 	for _, m := range u.GetMedia() {
-		g.medias = append(g.medias, unitMediaToModel(m))
+		row := property.UnitMediaFromProto(m)
+		row.ID = ulid.GenerateString()
+		g.medias = append(g.medias, row)
 	}
 	for _, name := range u.GetApplicablePromoCodes() {
 		g.promoCodes = append(g.promoCodes, &property.UnitApplicablePromoCodes{
@@ -112,139 +92,28 @@ func buildUnitGraph(u *propertypbv1.Unit, propertyID string) *unitGraph {
 }
 
 // unitFromModel assembles the protobuf Unit from a stored row and its preloaded
-// associations (price, rate overrides, LOS discounts, fees, taxes, media, and
-// applicable-promo-code join rows).
+// associations. The generated converter covers the flat fields and the price
+// Money; the pricing children, media, and promo-code join rows are layered on
+// through their own generated converters.
 func unitFromModel(m *property.Unit) *propertypbv1.Unit {
-	u := &propertypbv1.Unit{
-		Name:         m.Name,
-		DisplayName:  m.DisplayName,
-		Description:  deref(m.Description),
-		Type:         unitTypeFromModel(m.Type),
-		BookingMode:  bookingModeFromModel(m.BookingMode),
-		Capacity:     deref(m.Capacity),
-		MaxOccupancy: deref(m.MaxOccupancy),
-		TimeZone:     m.TimeZone,
-		Price:        moneyFromModel(m.Price),
-		PricingUnit:  pricingUnitFromModel(m.PricingUnit),
-		Duration:     durationFromStr(m.Duration),
-		Tags:         []string(m.Tags),
-		Attributes:   jsonToStruct(m.Attributes),
-		State:        unitStateFromModel(m.State),
-		CreateTime:   timeToTS(&m.CreateTime),
-		UpdateTime:   timeToTS(&m.UpdateTime),
-		Etag:         deref(m.Etag),
-	}
+	u := property.UnitToProto(m)
 	for i := range m.RateOverrides {
-		u.RateOverrides = append(u.RateOverrides, rateOverrideFromModel(&m.RateOverrides[i]))
+		u.RateOverrides = append(u.RateOverrides, property.RateOverrideToProto(&m.RateOverrides[i]))
 	}
 	for i := range m.LosDiscounts {
-		u.LosDiscounts = append(u.LosDiscounts, losDiscountFromModel(&m.LosDiscounts[i]))
+		u.LosDiscounts = append(u.LosDiscounts, property.LosDiscountToProto(&m.LosDiscounts[i]))
 	}
 	for i := range m.Fees {
-		u.Fees = append(u.Fees, feeFromModel(&m.Fees[i]))
+		u.Fees = append(u.Fees, property.FeeToProto(&m.Fees[i]))
 	}
 	for i := range m.Taxes {
-		u.Taxes = append(u.Taxes, taxFromModel(&m.Taxes[i]))
+		u.Taxes = append(u.Taxes, property.TaxToProto(&m.Taxes[i]))
 	}
 	for i := range m.UnitMedias {
-		u.Media = append(u.Media, unitMediaFromModel(&m.UnitMedias[i]))
+		u.Media = append(u.Media, property.UnitMediaToProto(&m.UnitMedias[i]))
 	}
 	for i := range m.UnitApplicablePromoCodes {
 		u.ApplicablePromoCodes = append(u.ApplicablePromoCodes, m.UnitApplicablePromoCodes[i].PromoCodeID)
 	}
 	return u
-}
-
-func rateOverrideFromModel(r *property.RateOverride) *propertypbv1.RateOverride {
-	return &propertypbv1.RateOverride{
-		DateRange: dateRangeFromModel(r.DateRange),
-		Weekdays:  weekdaysFromStr(r.Weekdays),
-		Price:     moneyFromModel(r.Price),
-	}
-}
-
-func losDiscountFromModel(r *property.LosDiscount) *propertypbv1.LosDiscount {
-	return &propertypbv1.LosDiscount{
-		MinNights:  r.MinNights,
-		PercentOff: deref(r.PercentOff),
-		AmountOff:  moneyFromModel(r.AmountOff),
-	}
-}
-
-func feeFromModel(r *property.Fee) *propertypbv1.Fee {
-	return &propertypbv1.Fee{
-		Code:        r.Code,
-		DisplayName: deref(r.DisplayName),
-		Amount:      moneyFromModel(r.Amount),
-		Percent:     deref(r.Percent),
-		PricingUnit: pricingUnitFromModel(r.PricingUnit),
-		Taxable:     deref(r.Taxable),
-	}
-}
-
-func taxFromModel(r *property.Tax) *propertypbv1.Tax {
-	return &propertypbv1.Tax{
-		Code:        r.Code,
-		DisplayName: deref(r.DisplayName),
-		Percent:     r.Percent,
-	}
-}
-
-func unitMediaToModel(m *propertypbv1.UnitMedia) *property.UnitMedia {
-	return &property.UnitMedia{
-		ID:          ulid.GenerateString(),
-		URI:         m.GetUri(),
-		Type:        mediaTypeToModel(m.GetType()),
-		Title:       strOrNil(m.GetTitle()),
-		Description: strOrNil(m.GetDescription()),
-		MimeType:    strOrNil(m.GetMimeType()),
-		SortOrder:   ptr(m.GetSortOrder()),
-		Primary:     ptr(m.GetPrimary()),
-	}
-}
-
-func unitMediaFromModel(m *property.UnitMedia) *propertypbv1.UnitMedia {
-	return &propertypbv1.UnitMedia{
-		Uri:         m.URI,
-		Type:        mediaTypeFromModel(m.Type),
-		Title:       deref(m.Title),
-		Description: deref(m.Description),
-		MimeType:    deref(m.MimeType),
-		SortOrder:   deref(m.SortOrder),
-		Primary:     deref(m.Primary),
-	}
-}
-
-func unitStateFromModel(s *property.UnitState) propertypbv1.UnitState {
-	if s == nil {
-		return propertypbv1.UnitState_UNIT_STATE_UNSPECIFIED
-	}
-	return propertypbv1.UnitState(propertypbv1.UnitState_value["UNIT_STATE_"+string(*s)])
-}
-
-func nilIfZeroInt32(v int32) *int32 {
-	if v == 0 {
-		return nil
-	}
-	return &v
-}
-
-// durationToStr serializes a proto Duration into the string column the ORM
-// generates for it (Go duration syntax, e.g. "30m0s"), round-tripping exactly.
-func durationToStr(d *durationpb.Duration) *string {
-	if d == nil {
-		return nil
-	}
-	return ptr(d.AsDuration().String())
-}
-
-func durationFromStr(s *string) *durationpb.Duration {
-	if s == nil || *s == "" {
-		return nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil
-	}
-	return durationpb.New(d)
 }

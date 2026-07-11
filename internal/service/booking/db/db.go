@@ -8,9 +8,9 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/database"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/db/gorm"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/db/hasura"
-	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"google.golang.org/genproto/googleapis/type/money"
@@ -29,7 +29,7 @@ type BookingRepository interface {
 	GetBooking(ctx context.Context, name string) (*bookingpbv1.Booking, error)
 
 	// ListBookings returns a page of bookings.
-	ListBookings(ctx context.Context, params types.ListParams) (items []*bookingpbv1.Booking, nextPageToken string, err error)
+	ListBookings(ctx context.Context, in repox.ListInput) (items []*bookingpbv1.Booking, nextPageToken string, err error)
 
 	// ConfirmBooking flips a held booking to CONFIRMED.
 	ConfirmBooking(ctx context.Context, name string) (*bookingpbv1.Booking, error)

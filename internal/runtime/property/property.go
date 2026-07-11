@@ -9,6 +9,7 @@ package property
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -36,17 +37,13 @@ func NewServer(repo propertydb.PropertyRepository) *Server {
 
 // ListProperties returns a page of properties for the given pagination request.
 func (s *Server) ListProperties(ctx context.Context, req *propertypbv1.ListPropertiesRequest) (*propertypbv1.ListPropertiesResponse, error) {
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *propertypbv1.ListPropertiesResponse
-	err = traced(ctx, "ListProperties", func(ctx context.Context) error {
-		items, next, err := s.repo.ListProperties(ctx, types.ListParams{
+	err := traced(ctx, "ListProperties", func(ctx context.Context) error {
+		items, next, err := s.repo.ListProperties(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)
@@ -168,17 +165,13 @@ func (s *Server) ListUnits(ctx context.Context, req *propertypbv1.ListUnitsReque
 	if req.GetParent() == "" {
 		return nil, status.Error(codes.InvalidArgument, "parent is required")
 	}
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *propertypbv1.ListUnitsResponse
-	err = traced(ctx, "ListUnits", func(ctx context.Context) error {
-		items, next, err := s.repo.ListUnits(ctx, req.GetParent(), types.ListParams{
+	err := traced(ctx, "ListUnits", func(ctx context.Context) error {
+		items, next, err := s.repo.ListUnits(ctx, req.GetParent(), repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)
@@ -280,4 +273,3 @@ func (s *Server) DeleteUnit(ctx context.Context, req *propertypbv1.DeleteUnitReq
 	}
 	return &emptypb.Empty{}, nil
 }
-

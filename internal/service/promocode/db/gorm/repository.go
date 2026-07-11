@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -146,12 +147,21 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 // List returns a page of promo codes ordered by params.OrderBy. It fetches one
 // extra row to decide whether a further page exists; the whole association graph
 // is preloaded in batch queries to avoid an N+1.
-func (r *PromoCodeRepository) List(ctx context.Context, params types.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
+func (r *PromoCodeRepository) List(ctx context.Context, in repox.ListInput) ([]*promocodepbv1.PromoCode, string, error) {
+	conds, err := filterx.Parse(in.Filter)
+	if err != nil {
+		return nil, "", repox.MapFilterxErr(err)
+	}
 	models, next, err := filterx.Gorm[promocode.PromoCode](promocode.PromoCodeFilterSpec).
 		Override("state", stateHandler(time.Now().UTC())).
-		List(ctx, preloadGraph(r.db), types.FilterxInput(params))
+		List(ctx, preloadGraph(r.db), filterx.ListInput{
+			PageSize:  in.PageSize,
+			PageToken: in.PageToken,
+			OrderBy:   in.OrderBy,
+			Filter:    conds,
+		})
 	if err != nil {
-		return nil, "", mapGormErr(types.MapFilterxErr(err))
+		return nil, "", mapGormErr(repox.MapFilterxErr(err))
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(models))

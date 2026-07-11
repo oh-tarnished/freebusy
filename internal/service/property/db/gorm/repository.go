@@ -12,6 +12,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -197,10 +198,14 @@ func (r *PropertyRepository) GetProperty(ctx context.Context, name string) (*pro
 	return propertyFromModel(&m), nil
 }
 
-// ListProperties returns a page of properties ordered by params.OrderBy.
-func (r *PropertyRepository) ListProperties(ctx context.Context, params types.ListParams) ([]*propertypbv1.Property, string, error) {
+// ListProperties returns a page of properties ordered by in.OrderBy.
+func (r *PropertyRepository) ListProperties(ctx context.Context, in repox.ListInput) ([]*propertypbv1.Property, string, error) {
+	fin, err := types.FilterxFromRaw(in)
+	if err != nil {
+		return nil, "", err
+	}
 	models, next, err := filterx.Gorm[property.Property](property.PropertyFilterSpec).
-		List(ctx, preloadProperty(r.db), types.FilterxInput(params))
+		List(ctx, preloadProperty(r.db), fin)
 	if err != nil {
 		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}
@@ -247,13 +252,17 @@ func (r *PropertyRepository) GetUnit(ctx context.Context, name string) (*propert
 }
 
 // ListUnits returns a page of units under parent ("properties/{property}").
-func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, params types.ListParams) ([]*propertypbv1.Unit, string, error) {
+func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, in repox.ListInput) ([]*propertypbv1.Unit, string, error) {
 	propertyID, err := types.PropertyID(parent)
 	if err != nil {
 		return nil, "", err
 	}
+	fin, err := types.FilterxFromRaw(in)
+	if err != nil {
+		return nil, "", err
+	}
 	models, next, err := filterx.Gorm[property.Unit](property.UnitFilterSpec).
-		List(ctx, preloadUnit(r.db).Where("property_id = ?", propertyID), types.FilterxInput(params))
+		List(ctx, preloadUnit(r.db).Where("property_id = ?", propertyID), fin)
 	if err != nil {
 		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}

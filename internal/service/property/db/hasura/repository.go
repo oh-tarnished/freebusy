@@ -25,6 +25,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -97,9 +98,13 @@ func (r *PropertyRepository) GetProperty(ctx context.Context, name string) (*pro
 	return propertyFromParts(parts), nil
 }
 
-func (r *PropertyRepository) ListProperties(ctx context.Context, params types.ListParams) ([]*propertypbv1.Property, string, error) {
+func (r *PropertyRepository) ListProperties(ctx context.Context, in repox.ListInput) ([]*propertypbv1.Property, string, error) {
+	fin, err := types.FilterxFromRaw(in)
+	if err != nil {
+		return nil, "", err
+	}
 	rows, next, err := filterx.Hasura[pschema.PropertyProperties](property.PropertyFilterSpec, r.svc.Query.Property.Properties).
-		List(ctx, types.FilterxInput(params))
+		List(ctx, fin)
 	if err != nil {
 		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}
@@ -198,14 +203,18 @@ func (r *PropertyRepository) GetUnit(ctx context.Context, name string) (*propert
 	return unitFromParts(parts), nil
 }
 
-func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, params types.ListParams) ([]*propertypbv1.Unit, string, error) {
+func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, in repox.ListInput) ([]*propertypbv1.Unit, string, error) {
 	propertyID, err := types.PropertyID(parent)
+	if err != nil {
+		return nil, "", err
+	}
+	fin, err := types.FilterxFromRaw(in)
 	if err != nil {
 		return nil, "", err
 	}
 	rows, next, err := filterx.Hasura[pschema.PropertyUnits](property.UnitFilterSpec, r.svc.Query.Property.Units).
 		Scope(unitsql.PropertyId.Eq(propertyID)).
-		List(ctx, types.FilterxInput(params))
+		List(ctx, fin)
 	if err != nil {
 		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -92,14 +93,18 @@ func (r *PropertyRepository) GetLicence(ctx context.Context, name string) (*prop
 // ListLicences returns a page of licences under parent
 // ("properties/{property}") — property-wide and per-unit ones alike; the
 // filter narrows by target, unit, type, state, or expiry_date.
-func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, params types.ListParams) ([]*propertypbv1.Licence, string, error) {
+func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, in repox.ListInput) ([]*propertypbv1.Licence, string, error) {
 	propertyID, err := types.PropertyID(parent)
+	if err != nil {
+		return nil, "", err
+	}
+	fin, err := types.FilterxFromRaw(in)
 	if err != nil {
 		return nil, "", err
 	}
 	rows, next, err := filterx.Hasura[pschema.PropertyLicences](property.LicenceFilterSpec, r.svc.Query.Property.Licences).
 		Scope(licencesql.PropertyId.Eq(propertyID)).
-		List(ctx, types.FilterxInput(params))
+		List(ctx, fin)
 	if err != nil {
 		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
 	}

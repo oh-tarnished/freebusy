@@ -51,13 +51,6 @@ func tsToTime(ts *timestamppb.Timestamp) *time.Time {
 	return &t
 }
 
-func timeToTS(t *time.Time) *timestamppb.Timestamp {
-	if t == nil || t.IsZero() {
-		return nil
-	}
-	return timestamppb.New(*t)
-}
-
 // lastSegment returns the final path component of an AIP resource name
 // ("resources/r1/offerings/o1" -> "o1"), used to populate the join row's id
 // column while the full name round-trips via a separate column.
@@ -79,17 +72,6 @@ func moneyToModel(m *money.Money) *common.Money {
 		CurrencyCode: strOrNil(m.GetCurrencyCode()),
 		Units:        ptr(m.GetUnits()),
 		Nanos:        ptr(m.GetNanos()),
-	}
-}
-
-func moneyFromModel(m *common.Money) *money.Money {
-	if m == nil {
-		return nil
-	}
-	return &money.Money{
-		CurrencyCode: deref(m.CurrencyCode),
-		Units:        deref(m.Units),
-		Nanos:        deref(m.Nanos),
 	}
 }
 
@@ -201,77 +183,22 @@ func buildGraph(pc *promocodepbv1.PromoCode) *promoGraph {
 }
 
 // fromModel assembles the protobuf PromoCode from a stored resource row and its
-// preloaded associations (discount + amount money, window, limits, scope + min
-// money + applicable join rows).
+// preloaded associations. The generated converter covers the flat fields and
+// the whole belongs-to graph (discount + amount money, window, limits, scope +
+// min money); only the scope's applicable join rows and the derived state are
+// layered on here.
 func fromModel(m *promocode.PromoCode) *promocodepbv1.PromoCode {
-	pc := &promocodepbv1.PromoCode{
-		Name:            m.Name,
-		Code:            m.Code,
-		DisplayName:     deref(m.DisplayName),
-		Description:     deref(m.Description),
-		Discount:        discountFromModel(m.Discount),
-		Window:          windowFromModel(m.Window),
-		Limits:          limitsFromModel(m.Limits),
-		Scope:           scopeFromModel(m.Scope),
-		RedemptionCount: deref(m.RedemptionCount),
-		Disabled:        deref(m.Disabled),
-		CreateTime:      timeToTS(&m.CreateTime),
-		UpdateTime:      timeToTS(&m.UpdateTime),
-		Etag:            deref(m.Etag),
+	pc := promocode.PromoCodeToProto(m)
+	if s := m.Scope; s != nil && pc.GetScope() != nil {
+		for i := range s.ScopeApplicableProperties {
+			pc.Scope.ApplicableProperties = append(pc.Scope.ApplicableProperties, s.ScopeApplicableProperties[i].PropertyID)
+		}
+		for i := range s.ScopeApplicableUnits {
+			pc.Scope.ApplicableUnits = append(pc.Scope.ApplicableUnits, s.ScopeApplicableUnits[i].UnitName)
+		}
 	}
 	// Derive the lifecycle state from the window/flags rather than trusting the
 	// possibly-stale stored value (a code becomes EXPIRED purely with time).
 	pc.State = discount.EffectiveState(pc, time.Now().UTC())
 	return pc
-}
-
-func discountFromModel(d *promocode.Discount) *promocodepbv1.Discount {
-	if d == nil {
-		return nil
-	}
-	out := &promocodepbv1.Discount{}
-	if d.AmountCase != nil && *d.AmountCase == promocode.DiscountAmountCaseAmountOff {
-		out.Amount = &promocodepbv1.Discount_AmountOff{AmountOff: moneyFromModel(d.AmountOff)}
-	} else {
-		out.Amount = &promocodepbv1.Discount_PercentOff{PercentOff: deref(d.PercentOff)}
-	}
-	return out
-}
-
-func windowFromModel(w *promocode.RedemptionWindow) *promocodepbv1.RedemptionWindow {
-	if w == nil {
-		return nil
-	}
-	return &promocodepbv1.RedemptionWindow{
-		StartTime: timeToTS(w.StartTime),
-		EndTime:   timeToTS(w.EndTime),
-	}
-}
-
-func limitsFromModel(l *promocode.UsageLimits) *promocodepbv1.UsageLimits {
-	if l == nil {
-		return nil
-	}
-	out := &promocodepbv1.UsageLimits{}
-	if l.MaxRedemptions != nil {
-		out.MaxRedemptions = wrapperspb.Int64(*l.MaxRedemptions)
-	}
-	if l.PerCustomerLimit != nil {
-		out.PerCustomerLimit = wrapperspb.Int32(*l.PerCustomerLimit)
-	}
-	return out
-}
-
-func scopeFromModel(s *promocode.Scope) *promocodepbv1.Scope {
-	if s == nil {
-		return nil
-	}
-	out := &promocodepbv1.Scope{MinSubtotal: moneyFromModel(s.MinSubtotal)}
-	for i := range s.ScopeApplicableProperties {
-		out.ApplicableProperties = append(out.ApplicableProperties, s.ScopeApplicableProperties[i].PropertyID)
-	}
-	for i := range s.ScopeApplicableUnits {
-		out.ApplicableUnits = append(out.ApplicableUnits, s.ScopeApplicableUnits[i].UnitName)
-	}
-	return out
 }

@@ -3,6 +3,7 @@ package property
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"google.golang.org/grpc/codes"
@@ -23,17 +24,13 @@ func (s *Server) ListLicences(ctx context.Context, req *propertypbv1.ListLicence
 	if req.GetParent() == "" {
 		return nil, status.Error(codes.InvalidArgument, "parent is required")
 	}
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *propertypbv1.ListLicencesResponse
-	err = traced(ctx, "ListLicences", func(ctx context.Context) error {
-		items, next, err := s.repo.ListLicences(ctx, req.GetParent(), types.ListParams{
+	err := traced(ctx, "ListLicences", func(ctx context.Context) error {
+		items, next, err := s.repo.ListLicences(ctx, req.GetParent(), repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)

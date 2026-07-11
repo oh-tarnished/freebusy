@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
@@ -127,11 +128,20 @@ func (r *PromoCodeRepository) FindByCode(ctx context.Context, code string) (*pro
 // List returns a page of promo codes ordered by params.OrderBy and narrowed by
 // params.Filter. It fetches one extra row to detect a further page, then hydrates
 // each resource's children.
-func (r *PromoCodeRepository) List(ctx context.Context, params types.ListParams) ([]*promocodepbv1.PromoCode, string, error) {
-	rows, next, err := filterx.Hasura[pcschema.PromocodeResource](promocode.PromoCodeFilterSpec, r.svc.Query.Promocode.Resource).
-		List(ctx, types.FilterxInput(params))
+func (r *PromoCodeRepository) List(ctx context.Context, in repox.ListInput) ([]*promocodepbv1.PromoCode, string, error) {
+	conds, err := filterx.Parse(in.Filter)
 	if err != nil {
-		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
+		return nil, "", repox.MapFilterxErr(err)
+	}
+	rows, next, err := filterx.Hasura[pcschema.PromocodeResource](promocode.PromoCodeFilterSpec, r.svc.Query.Promocode.Resource).
+		List(ctx, filterx.ListInput{
+			PageSize:  in.PageSize,
+			PageToken: in.PageToken,
+			OrderBy:   in.OrderBy,
+			Filter:    conds,
+		})
+	if err != nil {
+		return nil, "", mapHasuraErr(repox.MapFilterxErr(err))
 	}
 
 	items := make([]*promocodepbv1.PromoCode, 0, len(rows))

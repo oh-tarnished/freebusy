@@ -12,9 +12,9 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/database"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/property/db/gorm"
 	"github.com/oh-tarnished/freebusy/internal/service/property/db/hasura"
-	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 )
 
@@ -34,7 +34,8 @@ type PropertyRepository interface {
 	GetProperty(ctx context.Context, name string) (*propertypbv1.Property, error)
 
 	// ListProperties returns a page of properties and an opaque next-page token.
-	ListProperties(ctx context.Context, params types.ListParams) (items []*propertypbv1.Property, nextPageToken string, err error)
+	// in.Filter is the raw AIP-160 expression; providers parse and dispatch it.
+	ListProperties(ctx context.Context, in repox.ListInput) (items []*propertypbv1.Property, nextPageToken string, err error)
 
 	// UpdateProperty persists the fields named by paths (an AIP-134 field mask);
 	// an empty paths slice means a full replace. p.Etag guards against concurrent
@@ -54,7 +55,7 @@ type PropertyRepository interface {
 	GetUnit(ctx context.Context, name string) (*propertypbv1.Unit, error)
 
 	// ListUnits returns a page of units under parent ("properties/{property}").
-	ListUnits(ctx context.Context, parent string, params types.ListParams) (items []*propertypbv1.Unit, nextPageToken string, err error)
+	ListUnits(ctx context.Context, parent string, in repox.ListInput) (items []*propertypbv1.Unit, nextPageToken string, err error)
 
 	// UpdateUnit persists the masked fields of u; an empty mask replaces every
 	// mutable field. u.Etag guards against concurrent writes.
@@ -79,7 +80,7 @@ type PropertyRepository interface {
 	// ("properties/{property}") — property-wide and per-unit ones alike. The
 	// filter narrows by target, unit, type, or state, and supports expiry_date
 	// bounds (`expiry_date <= 2026-08-01`) for renewal-reminder queries.
-	ListLicences(ctx context.Context, parent string, params types.ListParams) (items []*propertypbv1.Licence, nextPageToken string, err error)
+	ListLicences(ctx context.Context, parent string, in repox.ListInput) (items []*propertypbv1.Licence, nextPageToken string, err error)
 
 	// UpdateLicence persists the masked fields of l; an empty mask replaces
 	// every mutable field (target and unit are immutable). l.Etag guards

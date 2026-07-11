@@ -8,6 +8,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	bookingdb "github.com/oh-tarnished/freebusy/internal/service/booking/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -83,17 +84,13 @@ func (s *Server) GetBooking(ctx context.Context, req *bookingpbv1.GetBookingRequ
 
 // ListBookings returns a page of bookings.
 func (s *Server) ListBookings(ctx context.Context, req *bookingpbv1.ListBookingsRequest) (*bookingpbv1.ListBookingsResponse, error) {
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *bookingpbv1.ListBookingsResponse
-	err = traced(ctx, "ListBookings", func(ctx context.Context) error {
-		items, next, err := s.repo.ListBookings(ctx, types.ListParams{
+	err := traced(ctx, "ListBookings", func(ctx context.Context) error {
+		items, next, err := s.repo.ListBookings(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)

@@ -27,6 +27,7 @@ import (
 	orgresourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
@@ -229,11 +230,7 @@ func TestLicenceLifecycleLive(t *testing.T) {
 	}
 }
 
-func listParams(t *testing.T, filter string) types.ListParams {
+func listParams(t *testing.T, filter string) repox.ListInput {
 	t.Helper()
-	conds, err := types.ParseFilter(filter)
-	if err != nil {
-		t.Fatalf("parse filter %q: %v", filter, err)
-	}
-	return types.ListParams{Filter: conds}
+	return repox.ListInput{Filter: filter}
 }

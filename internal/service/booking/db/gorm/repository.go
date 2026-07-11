@@ -16,6 +16,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -265,9 +266,13 @@ func (r *BookingRepository) GetBooking(ctx context.Context, name string) (*booki
 }
 
 // ListBookings returns a page of bookings ordered by params.OrderBy.
-func (r *BookingRepository) ListBookings(ctx context.Context, params types.ListParams) ([]*bookingpbv1.Booking, string, error) {
+func (r *BookingRepository) ListBookings(ctx context.Context, in repox.ListInput) ([]*bookingpbv1.Booking, string, error) {
+	fin, err := types.FilterxFromRaw(in)
+	if err != nil {
+		return nil, "", err
+	}
 	models, next, err := filterx.Gorm[booking.Booking](booking.BookingFilterSpec).
-		List(ctx, preloadBooking(r.db), types.FilterxInput(params))
+		List(ctx, preloadBooking(r.db), fin)
 	if err != nil {
 		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}

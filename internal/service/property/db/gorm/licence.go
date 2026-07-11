@@ -6,6 +6,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/shared"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -69,13 +70,17 @@ func (r *PropertyRepository) GetLicence(ctx context.Context, name string) (*prop
 // ListLicences returns a page of licences under parent
 // ("properties/{property}") — property-wide and per-unit ones alike; the
 // filter narrows by target, unit, type, state, or expiry_date.
-func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, params types.ListParams) ([]*propertypbv1.Licence, string, error) {
+func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, in repox.ListInput) ([]*propertypbv1.Licence, string, error) {
 	propertyID, err := types.PropertyID(parent)
 	if err != nil {
 		return nil, "", err
 	}
+	fin, err := types.FilterxFromRaw(in)
+	if err != nil {
+		return nil, "", err
+	}
 	models, next, err := filterx.Gorm[property.Licence](property.LicenceFilterSpec).
-		List(ctx, r.db.Preload("Attachment").Where("property_id = ?", propertyID), types.FilterxInput(params))
+		List(ctx, r.db.Preload("Attachment").Where("property_id = ?", propertyID), fin)
 	if err != nil {
 		return nil, "", mapGormErr(types.MapFilterxErr(err))
 	}

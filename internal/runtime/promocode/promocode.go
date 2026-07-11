@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	promocodesvc "github.com/oh-tarnished/freebusy/internal/service/promocode"
 	promocodedb "github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -34,17 +35,13 @@ func NewServer(repo promocodedb.PromoCodeRepository) *Server {
 
 // ListPromoCodes returns a page of promo codes for the given pagination request.
 func (s *Server) ListPromoCodes(ctx context.Context, req *promocodepbv1.ListPromoCodesRequest) (*promocodepbv1.ListPromoCodesResponse, error) {
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *promocodepbv1.ListPromoCodesResponse
-	err = traced(ctx, "ListPromoCodes", func(ctx context.Context) error {
-		items, next, err := s.repo.List(ctx, types.ListParams{
+	err := traced(ctx, "ListPromoCodes", func(ctx context.Context) error {
+		items, next, err := s.repo.List(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)
