@@ -24,6 +24,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal"
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
+	bookingrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/booking"
 	propertyrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/property"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -60,7 +61,7 @@ func TestE2E_Gorm(t *testing.T) {
 		t.Fatalf("open postgres: %v", err)
 	}
 	cc := dialServer(t, &database.Connection{PgSQLConn: db}, database.ProviderGorm)
-	serverLifecycle(t, cc, database.ProviderGorm, propertyrepo.NewGorm(db))
+	serverLifecycle(t, cc, database.ProviderGorm, propertyrepo.NewGorm(db), bookingrepo.NewGorm(db))
 }
 
 // TestE2E_Hasura runs the identical client-visible lifecycle with the server
@@ -79,7 +80,7 @@ func TestE2E_Hasura(t *testing.T) {
 		t.Fatalf("connect %s: %v", raw, err)
 	}
 	cc := dialServer(t, &database.Connection{Hasura: svc}, database.ProviderHasura)
-	serverLifecycle(t, cc, database.ProviderHasura, propertyrepo.NewGraphQL(svc))
+	serverLifecycle(t, cc, database.ProviderHasura, propertyrepo.NewGraphQL(svc), bookingrepo.NewGraphQL(svc))
 }
 
 // dialServer assembles the full server on conn/provider, serves it over
@@ -122,9 +123,10 @@ func wantCode(t *testing.T, err error, want codes.Code, what string) {
 // serverLifecycle drives every service through the wire: interceptor
 // rejections, full CRUD with masks and etags, the booking hold flow, promo
 // validation, and the provider-visible filter divergence on derived state.
-// propRepos is the generated repository set for the same backend, used only to
-// clean up the property row — PropertyService archives rather than deletes.
-func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provider, propRepos propertyrepo.Repositories) {
+// propRepos/bookRepos are the generated repository sets for the same backend,
+// used only for cleanup of rows the API deliberately never deletes:
+// PropertyService archives rather than deletes, and bookings only ever cancel.
+func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provider, propRepos propertyrepo.Repositories, bookRepos bookingrepo.Repositories) {
 	t.Helper()
 	ctx := context.Background()
 	suffix := fmt.Sprintf("%d", time.Now().UnixNano()%1_000_000_000)
@@ -215,12 +217,12 @@ func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provid
 	unit, err := props.CreateUnit(ctx, &propertypbv1.CreateUnitRequest{
 		Parent: prop.GetName(),
 		Unit: &propertypbv1.Unit{
-			DisplayName: "e2e-unit-" + suffix,
-			Type:        propertypbv1.UnitType_UNIT_TYPE_ROOM,
-			BookingMode: sharedpbv1.BookingMode_BOOKING_MODE_NIGHTLY,
-			TimeZone:    "UTC",
+			DisplayName:  "e2e-unit-" + suffix,
+			Type:         propertypbv1.UnitType_UNIT_TYPE_ROOM,
+			BookingMode:  sharedpbv1.BookingMode_BOOKING_MODE_NIGHTLY,
+			TimeZone:     "UTC",
 			MaxOccupancy: 2,
-			Price:       &money.Money{CurrencyCode: "USD", Units: 100},
+			Price:        &money.Money{CurrencyCode: "USD", Units: 100},
 		},
 	})
 	if err != nil {
@@ -382,6 +384,11 @@ func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provid
 	cancelled, err := bookings.CancelBooking(ctx, &bookingpbv1.CancelBookingRequest{Name: booking.GetName()})
 	if err != nil || cancelled.GetState() != bookingpbv1.BookingState_BOOKING_STATE_CANCELLED {
 		t.Fatalf("CancelBooking: %v (state %v)", err, cancelled.GetState())
+	}
+	// The API only ever cancels; drop the row so the unit/property teardown
+	// isn't blocked by its RESTRICT reference.
+	if err := bookRepos.Bookings.Delete(ctx, booking.GetName()); err != nil {
+		t.Logf("delete booking row: %v", err)
 	}
 
 	// --- Identity -----------------------------------------------------------

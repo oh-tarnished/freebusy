@@ -96,6 +96,16 @@ test-unit:
 test-hasura url="http://localhost:3280/graphql":
     FREEBUSY_TEST_GRAPHQL_URL={{ url }} go test ./internal/service/booking/db/hasura/ -run Live -v
 
+# End-to-end server suite over bufconn against live Postgres (run `just migrate` first).
+[group('test')]
+e2e-gorm dsn="host=localhost port=5432 user=postgres password=postgrespassword dbname=freebusydb sslmode=disable":
+    FREEBUSY_TEST_POSTGRES_DSN="{{ dsn }}" go test ./internal/e2e/ -run 'TestE2E_Gorm|TestRepositorySmoke.*Gorm' -count=1 -v
+
+# End-to-end server suite over bufconn against the live DDN engine (`ddn run docker-start`).
+[group('test')]
+e2e-hasura url="http://localhost:3280/graphql":
+    FREEBUSY_TEST_GRAPHQL_URL={{ url }} go test ./internal/e2e/ -run 'TestE2E_Hasura|TestRepositorySmoke.*GraphQL' -count=1 -v
+
 # CI-style gate: build, vet, and test.
 [group('test')]
 check: build vet test
