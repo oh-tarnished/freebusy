@@ -40,7 +40,7 @@ A reservation against a unit. The hold lifecycle lives here as states rather tha
 | `units` | `int32` | `OPTIONAL` | Number of units / party size reserved. Defaults to 1. |
 | `window` | `TimeWindow` | `REQUIRED` | The reserved span. For NIGHTLY units this spans check-in to check-out. |
 | `assigned_unit` | `string` | `OUTPUT_ONLY` | Which specific unit of the pool was assigned (the shell's atomic pick). |
-| `state` | `BookingState` | `OUTPUT_ONLY` | Current lifecycle state. |
+| `state` | `BookingState` | `OUTPUT_ONLY` | Current lifecycle state. New bookings start PENDING_HOLD (database default); confirm/cancel transitions move it explicitly. |
 | `hold_expire_time` | `Timestamp` | `OUTPUT_ONLY` | When the pending hold lapses, if not confirmed first. |
 | `price` | `Money` | `OUTPUT_ONLY` | Computed subtotal before discounts. |
 | `promo_code` | `string` | `IMMUTABLE` | The promo code to apply to this booking, set at creation, if any. Format: promo-codes/{promo_code} |

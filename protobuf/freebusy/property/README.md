@@ -54,7 +54,7 @@ A hotel (or other lodging property): the guest-facing venue a chain operates. A 
 | `tags` | `repeated string` | `OPTIONAL` | Arbitrary tags for grouping and filtering (e.g. "beachfront", "5-star"). |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
 | `units` | `repeated string` | `OUTPUT_ONLY` | Resource names of the units (room types) under this property; manage them with the Unit standard methods. Format: properties/{property}/units/{unit} |
-| `state` | `PropertyState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `PropertyState` | `OUTPUT_ONLY` | Lifecycle state. New properties start ACTIVE (database default). |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
@@ -96,7 +96,7 @@ A bookable unit type within a property: a pool of `capacity` interchangeable roo
 | `applicable_promo_codes` | `repeated string` | `OPTIONAL` | Promo codes advertised as applicable to this unit (an allow-list shown to guests). Actual eligibility/validation still happens at booking time. Format: promo-codes/{promo_code} |
 | `tags` | `repeated string` | `OPTIONAL` | Arbitrary tags for grouping and filtering. |
 | `attributes` | `Struct` | `OPTIONAL` | Arbitrary attributes used for templating, policy, and segmentation. |
-| `state` | `UnitState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `UnitState` | `OUTPUT_ONLY` | Lifecycle state. New units start ACTIVE (database default). |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |
@@ -188,7 +188,7 @@ A regulatory licence or certificate held by a Property or one of its Units (e.g.
 | `expiry_date` | `Date` | `OPTIONAL` | Date the licence expires. List calls may filter on this field (e.g. `expiry_date <= 2026-08-01`) to find licences due for renewal. |
 | `attachment` | `Attachment` | `OPTIONAL` | Scanned copy of the licence certificate. |
 | `notes` | `string` | `OPTIONAL` | Any additional free-text notes. |
-| `state` | `LicenceState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `LicenceState` | `OUTPUT_ONLY` | Lifecycle state. New licences start ACTIVE (database default). |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
 | `etag` | `string` | - | Opaque version for optimistic concurrency (AIP-154); echo on update/delete. |

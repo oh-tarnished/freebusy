@@ -80,7 +80,7 @@ A chain: the hotel brand/company that owns one or more properties, and the unit 
 | `display_name` | `string` | `REQUIRED` | Human-friendly organisation name (e.g. "Acme Inc."). |
 | `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across organisations. |
 | `billing_email` | `string` | `OPTIONAL` | Billing contact email. |
-| `state` | `OrganisationState` | `OUTPUT_ONLY` | Lifecycle state. |
+| `state` | `OrganisationState` | `OUTPUT_ONLY` | Lifecycle state. New organisations start ACTIVE (database default). |
 | `settings` | `Struct` | `OPTIONAL` | Arbitrary organisation-level settings. |
 | `member_count` | `int64` | `OUTPUT_ONLY` | Number of members across all states. |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp. |
@@ -98,7 +98,7 @@ The membership of a user in an organisation, with their role.
 | `email` | `string` | `REQUIRED` | The invited email address. |
 | `display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the member. |
 | `role` | `OrganisationRole` | `REQUIRED` | The member's role in the organisation. |
-| `state` | `MemberState` | `OUTPUT_ONLY` | Confirmation state of the membership. |
+| `state` | `MemberState` | `OUTPUT_ONLY` | Confirmation state of the membership. New members start INVITED (database default). |
 | `inviter` | `string` | `OUTPUT_ONLY` | The user who issued the invite. Format: users/{user} |
 | `create_time` | `Timestamp` | `OUTPUT_ONLY` | Creation timestamp (when the invite was created). |
 | `update_time` | `Timestamp` | `OUTPUT_ONLY` | Last-modification timestamp. |
