@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
-	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
+	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 

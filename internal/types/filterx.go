@@ -1,7 +1,7 @@
 package types
 
 import (
-	filterx "github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
+	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 )
 
@@ -36,4 +36,3 @@ func Filterx(conds []FilterCondition) []filterx.Condition {
 	}
 	return out
 }
-

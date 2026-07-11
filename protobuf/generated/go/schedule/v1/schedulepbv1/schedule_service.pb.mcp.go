@@ -8,10 +8,10 @@ package schedulepbv1
 
 import (
 	"context"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/the-protobuf-project/grpc-mcp-gateway/runtime"
 )

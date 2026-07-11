@@ -21,8 +21,8 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal"
 	"github.com/oh-tarnished/freebusy/internal/database"
-	bookingrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/booking"
-	propertyrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/property"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/booking"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/property"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -45,7 +45,7 @@ import (
 func TestE2E_Gorm(t *testing.T) {
 	db := openTestGorm(t)
 	cc := dialServer(t, &database.Connection{PgSQLConn: db, Provider: database.ProviderGorm})
-	serverLifecycle(t, cc, database.ProviderGorm, propertyrepo.NewGorm(db), bookingrepo.NewGorm(db))
+	serverLifecycle(t, cc, database.ProviderGorm, property.NewGorm(db), booking.NewGorm(db))
 }
 
 // TestE2E_Hasura runs the identical client-visible lifecycle with the server
@@ -53,7 +53,7 @@ func TestE2E_Gorm(t *testing.T) {
 func TestE2E_Hasura(t *testing.T) {
 	svc := connectTestGraphQL(t)
 	cc := dialServer(t, &database.Connection{Hasura: svc, Provider: database.ProviderHasura})
-	serverLifecycle(t, cc, database.ProviderHasura, propertyrepo.NewGraphQL(svc), bookingrepo.NewGraphQL(svc))
+	serverLifecycle(t, cc, database.ProviderHasura, property.NewGraphQL(svc), booking.NewGraphQL(svc))
 }
 
 // dialServer assembles the full server on conn/provider, serves it over
@@ -96,7 +96,7 @@ func wantCode(t *testing.T, err error, want codes.Code, what string) {
 // propRepos/bookRepos are the generated repository sets for the same backend,
 // used only for cleanup of rows the API deliberately never deletes:
 // PropertyService archives rather than deletes, and bookings only ever cancel.
-func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provider, propRepos propertyrepo.Repositories, bookRepos bookingrepo.Repositories) {
+func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provider, propRepos property.Repositories, bookRepos booking.Repositories) {
 	t.Helper()
 	ctx := context.Background()
 	suffix := fmt.Sprintf("%d", time.Now().UnixNano()%1_000_000_000)

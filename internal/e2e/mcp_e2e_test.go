@@ -24,7 +24,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal"
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
-	runtimegrpc "github.com/oh-tarnished/runtime-go/grpc"
+	"github.com/oh-tarnished/runtime-go/grpc"
 )
 
 func TestMCP_ValidationAndLifecycle_Gorm(t *testing.T) {
@@ -34,7 +34,7 @@ func TestMCP_ValidationAndLifecycle_Gorm(t *testing.T) {
 		t.Fatalf("assemble service: %v", err)
 	}
 
-	validate, err := runtimegrpc.NewValidationInterceptor()
+	validate, err := grpc.NewValidationInterceptor()
 	if err != nil {
 		t.Fatalf("build validation interceptor: %v", err)
 	}
@@ -49,7 +49,7 @@ func TestMCP_ValidationAndLifecycle_Gorm(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	served := make(chan error, 1)
-	cfg := &runtimegrpc.MCPServerConfig{
+	cfg := &grpc.MCPServerConfig{
 		Name:             "freebusy-e2e",
 		Version:          "0.0.0",
 		Addr:             addr,

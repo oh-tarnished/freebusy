@@ -7,8 +7,8 @@ package internal
 import (
 	"context"
 
-	bookingruntime "github.com/oh-tarnished/freebusy/internal/runtime/booking"
-	propertyruntime "github.com/oh-tarnished/freebusy/internal/runtime/property"
+	"github.com/oh-tarnished/freebusy/internal/runtime/booking"
+	"github.com/oh-tarnished/freebusy/internal/runtime/property"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -34,7 +34,7 @@ type Service struct {
 
 	// booking is the concrete booking server, retained so background tasks (the
 	// hold sweeper) can be started against it in StartBackground.
-	booking *bookingruntime.Server
+	booking *booking.Server
 }
 
 // NewService wraps the assembled service servers as the registered Service. The
@@ -44,10 +44,10 @@ type Service struct {
 // both the PropertyService and the LicenceService.
 func NewService(
 	promoCode promocodepbv1.PromoCodeServiceServer,
-	property *propertyruntime.Server,
+	property *property.Server,
 	organisation orgpbv1.OrganisationServiceServer,
 	schedule schedulepbv1.ScheduleServiceServer,
-	booking *bookingruntime.Server,
+	booking *booking.Server,
 	availability availabilitypbv1.AvailabilityServiceServer,
 	identity identitypbv1.IdentityServiceServer,
 ) *Service {

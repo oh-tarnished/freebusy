@@ -12,7 +12,7 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
-	promocodesvc "github.com/oh-tarnished/freebusy/internal/service/promocode"
+	"github.com/oh-tarnished/freebusy/internal/service/promocode"
 	"github.com/oh-tarnished/freebusy/internal/service/promocode/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
@@ -80,7 +80,7 @@ func (s *Server) GetPromoCode(ctx context.Context, req *promocodepbv1.GetPromoCo
 // window; validate_only runs request validation without persisting.
 func (s *Server) CreatePromoCode(ctx context.Context, req *promocodepbv1.CreatePromoCodeRequest) (*promocodepbv1.PromoCode, error) {
 	pc := req.GetPromoCode()
-	code, err := promocodesvc.ResolveCode(req)
+	code, err := promocode.ResolveCode(req)
 	if err != nil {
 		return nil, err
 	}
