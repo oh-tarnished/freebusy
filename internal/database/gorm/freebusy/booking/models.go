@@ -69,8 +69,8 @@ type Booking struct {
 	Units *int32 `gorm:"column:units" json:"units,omitempty"`
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
 	AssignedUnit *string `gorm:"column:assigned_unit" json:"assigned_unit,omitempty"`
-	// Current lifecycle state.
-	State *BookingState `gorm:"column:state;check:chk_resource_state,state IN ('PENDING_HOLD','CONFIRMED','CANCELLED','EXPIRED','COMPLETED','NO_SHOW')" json:"state,omitempty"`
+	// Current lifecycle state. New bookings start PENDING_HOLD (database default); confirm/cancel transitions move it explicitly.
+	State *BookingState `gorm:"column:state;default:'PENDING_HOLD';check:chk_resource_state,state IN ('PENDING_HOLD','CONFIRMED','CANCELLED','EXPIRED','COMPLETED','NO_SHOW')" json:"state,omitempty"`
 	// When the pending hold lapses, if not confirmed first.
 	HoldExpireTime *time.Time `gorm:"column:hold_expire_time;type:timestamptz" json:"hold_expire_time,omitempty"`
 	// The promo code to apply to this booking, set at creation, if any. Format: promo-codes/{promo_code}

@@ -161,8 +161,8 @@ type Property struct {
 	Tags pq.StringArray `gorm:"column:tags;type:text[]" json:"tags,omitempty"`
 	// Arbitrary attributes used for templating, policy, and segmentation.
 	Attributes json.RawMessage `gorm:"column:attributes;type:jsonb" json:"attributes,omitempty"`
-	// Lifecycle state.
-	State *PropertyState `gorm:"column:state;check:chk_properties_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
+	// Lifecycle state. New properties start ACTIVE (database default).
+	State *PropertyState `gorm:"column:state;default:'ACTIVE';check:chk_properties_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;type:timestamptz;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -215,8 +215,8 @@ type Unit struct {
 	Tags pq.StringArray `gorm:"column:tags;type:text[]" json:"tags,omitempty"`
 	// Arbitrary attributes used for templating, policy, and segmentation.
 	Attributes json.RawMessage `gorm:"column:attributes;type:jsonb" json:"attributes,omitempty"`
-	// Lifecycle state.
-	State *UnitState `gorm:"column:state;check:chk_units_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
+	// Lifecycle state. New units start ACTIVE (database default).
+	State *UnitState `gorm:"column:state;default:'ACTIVE';check:chk_units_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;type:timestamptz;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.
@@ -272,8 +272,8 @@ type Licence struct {
 	ExpiryDate *time.Time `gorm:"column:expiry_date;type:date" json:"expiry_date,omitempty"`
 	// Any additional free-text notes.
 	Notes *string `gorm:"column:notes" json:"notes,omitempty"`
-	// Lifecycle state.
-	State *LicenceState `gorm:"column:state;check:chk_licences_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
+	// Lifecycle state. New licences start ACTIVE (database default).
+	State *LicenceState `gorm:"column:state;default:'ACTIVE';check:chk_licences_state,state IN ('ACTIVE','ARCHIVED')" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime time.Time `gorm:"column:create_time;type:timestamptz;not null;autoCreateTime" json:"create_time"`
 	// Last-modification timestamp.

@@ -67,7 +67,8 @@ type Booking struct {
 	Window *sharedpbv1.TimeWindow `protobuf:"bytes,7,opt,name=window,proto3" json:"window,omitempty"`
 	// Which specific unit of the pool was assigned (the shell's atomic pick).
 	AssignedUnit string `protobuf:"bytes,8,opt,name=assigned_unit,json=assignedUnit,proto3" json:"assigned_unit,omitempty"`
-	// Current lifecycle state.
+	// Current lifecycle state. New bookings start PENDING_HOLD (database
+	// default); confirm/cancel transitions move it explicitly.
 	State BookingState `protobuf:"varint,9,opt,name=state,proto3,enum=freebusy.booking.v1.BookingState" json:"state,omitempty"`
 	// When the pending hold lapses, if not confirmed first.
 	HoldExpireTime *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=hold_expire_time,json=holdExpireTime,proto3" json:"hold_expire_time,omitempty"`
@@ -476,7 +477,7 @@ var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xc4\f\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xd6\f\n" +
 	"\aBooking\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x125\n" +
 	"\x04unit\x18\x03 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
@@ -488,8 +489,8 @@ const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\toccupancy\x18\x1d \x01(\v2\x1e.freebusy.booking.v1.OccupancyB\x03\xe0A\x01R\toccupancy\x12\x19\n" +
 	"\x05units\x18\x06 \x01(\x05B\x03\xe0A\x01R\x05units\x12;\n" +
 	"\x06window\x18\a \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12(\n" +
-	"\rassigned_unit\x18\b \x01(\tB\x03\xe0A\x03R\fassignedUnit\x12<\n" +
-	"\x05state\x18\t \x01(\x0e2!.freebusy.booking.v1.BookingStateB\x03\xe0A\x03R\x05state\x12I\n" +
+	"\rassigned_unit\x18\b \x01(\tB\x03\xe0A\x03R\fassignedUnit\x12N\n" +
+	"\x05state\x18\t \x01(\x0e2!.freebusy.booking.v1.BookingStateB\x15\xe0A\x03\x92\xb5\x18\x0e\x1a\fPENDING_HOLDR\x05state\x12I\n" +
 	"\x10hold_expire_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\x0eholdExpireTime\x12-\n" +
 	"\x05price\x18\v \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x03R\x05price\x12A\n" +

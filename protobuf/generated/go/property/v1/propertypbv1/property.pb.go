@@ -67,7 +67,7 @@ type Property struct {
 	// with the Unit standard methods.
 	// Format: properties/{property}/units/{unit}
 	Units []string `protobuf:"bytes,11,rep,name=units,proto3" json:"units,omitempty"`
-	// Lifecycle state.
+	// Lifecycle state. New properties start ACTIVE (database default).
 	State PropertyState `protobuf:"varint,12,opt,name=state,proto3,enum=freebusy.property.v1.PropertyState" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
@@ -361,7 +361,7 @@ type Unit struct {
 	Tags []string `protobuf:"bytes,18,rep,name=tags,proto3" json:"tags,omitempty"`
 	// Arbitrary attributes used for templating, policy, and segmentation.
 	Attributes *structpb.Struct `protobuf:"bytes,19,opt,name=attributes,proto3" json:"attributes,omitempty"`
-	// Lifecycle state.
+	// Lifecycle state. New units start ACTIVE (database default).
 	State UnitState `protobuf:"varint,20,opt,name=state,proto3,enum=freebusy.property.v1.UnitState" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,21,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
@@ -1097,7 +1097,7 @@ type Licence struct {
 	Attachment *sharedpbv1.Attachment `protobuf:"bytes,9,opt,name=attachment,proto3" json:"attachment,omitempty"`
 	// Any additional free-text notes.
 	Notes string `protobuf:"bytes,10,opt,name=notes,proto3" json:"notes,omitempty"`
-	// Lifecycle state.
+	// Lifecycle state. New licences start ACTIVE (database default).
 	State LicenceState `protobuf:"varint,11,opt,name=state,proto3,enum=freebusy.property.v1.LicenceState" json:"state,omitempty"`
 	// Creation timestamp.
 	CreateTime *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
@@ -1241,7 +1241,7 @@ var File_freebusy_property_v1_property_proto protoreflect.FileDescriptor
 
 const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\x9c\a\n" +
+	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\xa8\a\n" +
 	"\bProperty\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
 	"\forganisation\x18\x02 \x01(\tB-\xe0A\x02\xfaA'\n" +
@@ -1258,8 +1258,8 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	" \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\n" +
 	"attributes\x127\n" +
 	"\x05units\x18\v \x03(\tB!\xe0A\x03\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x05units\x12>\n" +
-	"\x05state\x18\f \x01(\x0e2#.freebusy.property.v1.PropertyStateB\x03\xe0A\x03R\x05state\x12@\n" +
+	"\x19freebusy.property.v1/UnitR\x05units\x12J\n" +
+	"\x05state\x18\f \x01(\x0e2#.freebusy.property.v1.PropertyStateB\x0f\xe0A\x03\x92\xb5\x18\b\x1a\x06ACTIVER\x05state\x12@\n" +
 	"\vcreate_time\x18\r \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
@@ -1274,7 +1274,7 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\rcheckout_time\x18\x02 \x01(\v2\x16.google.type.TimeOfDayB\x03\xe0A\x01R\fcheckoutTime\x12$\n" +
 	"\vhouse_rules\x18\x03 \x03(\tB\x03\xe0A\x01R\n" +
 	"houseRules\x12\x19\n" +
-	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xb5\n" +
+	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xc1\n" +
 	"\n" +
 	"\x04Unit\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12,\n" +
@@ -1299,8 +1299,8 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\x04tags\x18\x12 \x03(\tB\x03\xe0A\x01R\x04tags\x12<\n" +
 	"\n" +
 	"attributes\x18\x13 \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\n" +
-	"attributes\x12:\n" +
-	"\x05state\x18\x14 \x01(\x0e2\x1f.freebusy.property.v1.UnitStateB\x03\xe0A\x03R\x05state\x12@\n" +
+	"attributes\x12F\n" +
+	"\x05state\x18\x14 \x01(\x0e2\x1f.freebusy.property.v1.UnitStateB\x0f\xe0A\x03\x92\xb5\x18\b\x1a\x06ACTIVER\x05state\x12@\n" +
 	"\vcreate_time\x18\x15 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
@@ -1347,7 +1347,7 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\x03Tax\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x1d\n" +
-	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent\"\xd7\x06\n" +
+	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent\"\xe3\x06\n" +
 	"\aLicence\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12@\n" +
 	"\x06target\x18\x02 \x01(\x0e2#.freebusy.property.v1.LicenceTargetB\x03\xe0A\x03R\x06target\x12>\n" +
@@ -1364,8 +1364,8 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"attachment\x18\t \x01(\v2\x1e.freebusy.shared.v1.AttachmentB\x03\xe0A\x01R\n" +
 	"attachment\x12\x19\n" +
 	"\x05notes\x18\n" +
-	" \x01(\tB\x03\xe0A\x01R\x05notes\x12=\n" +
-	"\x05state\x18\v \x01(\x0e2\".freebusy.property.v1.LicenceStateB\x03\xe0A\x03R\x05state\x12@\n" +
+	" \x01(\tB\x03\xe0A\x01R\x05notes\x12I\n" +
+	"\x05state\x18\v \x01(\x0e2\".freebusy.property.v1.LicenceStateB\x0f\xe0A\x03\x92\xb5\x18\b\x1a\x06ACTIVER\x05state\x12@\n" +
 	"\vcreate_time\x18\f \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime\x12@\n" +
 	"\vupdate_time\x18\r \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +

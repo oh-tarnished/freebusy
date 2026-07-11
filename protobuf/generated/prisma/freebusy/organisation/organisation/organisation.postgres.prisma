@@ -26,8 +26,8 @@ model Organisation {
   /// Billing contact email.
   billingEmail String? @map("billing_email")
 
-  /// Lifecycle state.
-  state OrganisationState? @map("state")
+  /// Lifecycle state. New organisations start ACTIVE (database default).
+  state OrganisationState? @default(ACTIVE) @map("state")
 
   /// Arbitrary organisation-level settings.
   settings Json? @map("settings")
@@ -79,8 +79,8 @@ model Member {
   /// The member's role in the organisation.
   role OrganisationRole @default(OWNER) @map("role")
 
-  /// Confirmation state of the membership.
-  state MemberState? @map("state")
+  /// Confirmation state of the membership. New members start INVITED (database default).
+  state MemberState? @default(INVITED) @map("state")
 
   /// The user who issued the invite. Format: users/{user}
   inviterID String? @map("inviter")

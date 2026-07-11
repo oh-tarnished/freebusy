@@ -67,8 +67,8 @@ type Organisation struct {
 	Slug *string `gorm:"column:slug" json:"slug,omitempty"`
 	// Billing contact email.
 	BillingEmail *string `gorm:"column:billing_email" json:"billing_email,omitempty"`
-	// Lifecycle state.
-	State *OrganisationState `gorm:"column:state;check:chk_resource_state,state IN ('ACTIVE','SUSPENDED')" json:"state,omitempty"`
+	// Lifecycle state. New organisations start ACTIVE (database default).
+	State *OrganisationState `gorm:"column:state;default:'ACTIVE';check:chk_resource_state,state IN ('ACTIVE','SUSPENDED')" json:"state,omitempty"`
 	// Arbitrary organisation-level settings.
 	Settings json.RawMessage `gorm:"column:settings;type:jsonb" json:"settings,omitempty"`
 	// Number of members across all states.
@@ -99,8 +99,8 @@ type Member struct {
 	DisplayName *string `gorm:"column:display_name" json:"display_name,omitempty"`
 	// The member's role in the organisation.
 	Role OrganisationRole `gorm:"column:role;not null;default:'OWNER';check:chk_members_role,role IN ('OWNER','ADMIN','MEMBER','VIEWER')" json:"role" validate:"required"`
-	// Confirmation state of the membership.
-	State *MemberState `gorm:"column:state;check:chk_members_state,state IN ('INVITED','ACTIVE','SUSPENDED')" json:"state,omitempty"`
+	// Confirmation state of the membership. New members start INVITED (database default).
+	State *MemberState `gorm:"column:state;default:'INVITED';check:chk_members_state,state IN ('INVITED','ACTIVE','SUSPENDED')" json:"state,omitempty"`
 	// The user who issued the invite. Format: users/{user}
 	InviterID *string `gorm:"column:inviter;index:idx_members_inviter" json:"inviter,omitempty"`
 	// Creation timestamp (when the invite was created).

@@ -87,8 +87,11 @@ message Property {
     (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
   ];
 
-  // Lifecycle state.
-  PropertyState state = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle state. New properties start ACTIVE (database default).
+  PropertyState state = 12 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (orm.v1.column) = {default_value: "ACTIVE"}
+  ];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -221,8 +224,11 @@ message Unit {
   // Arbitrary attributes used for templating, policy, and segmentation.
   google.protobuf.Struct attributes = 19 [(google.api.field_behavior) = OPTIONAL];
 
-  // Lifecycle state.
-  UnitState state = 20 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle state. New units start ACTIVE (database default).
+  UnitState state = 20 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (orm.v1.column) = {default_value: "ACTIVE"}
+  ];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 21 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -422,8 +428,11 @@ message Licence {
   // Any additional free-text notes.
   string notes = 10 [(google.api.field_behavior) = OPTIONAL];
 
-  // Lifecycle state.
-  LicenceState state = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle state. New licences start ACTIVE (database default).
+  LicenceState state = 11 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (orm.v1.column) = {default_value: "ACTIVE"}
+  ];
 
   // Creation timestamp.
   google.protobuf.Timestamp create_time = 12 [(google.api.field_behavior) = OUTPUT_ONLY];

@@ -87,8 +87,12 @@ message Booking {
   // Which specific unit of the pool was assigned (the shell's atomic pick).
   string assigned_unit = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 
-  // Current lifecycle state.
-  BookingState state = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Current lifecycle state. New bookings start PENDING_HOLD (database
+  // default); confirm/cancel transitions move it explicitly.
+  BookingState state = 9 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (orm.v1.column) = {default_value: "PENDING_HOLD"}
+  ];
 
   // When the pending hold lapses, if not confirmed first.
   google.protobuf.Timestamp hold_expire_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];

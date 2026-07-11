@@ -7,6 +7,7 @@ package organisation
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	organisationdb "github.com/oh-tarnished/freebusy/internal/service/organisation/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
@@ -31,17 +32,13 @@ func NewServer(repo organisationdb.OrganisationRepository) *Server {
 // --- Organisation ------------------------------------------------------------
 
 func (s *Server) ListOrganisations(ctx context.Context, req *orgpbv1.ListOrganisationsRequest) (*orgpbv1.ListOrganisationsResponse, error) {
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *orgpbv1.ListOrganisationsResponse
-	err = traced(ctx, "ListOrganisations", func(ctx context.Context) error {
-		items, next, err := s.repo.ListOrganisations(ctx, types.ListParams{
+	err := traced(ctx, "ListOrganisations", func(ctx context.Context) error {
+		items, next, err := s.repo.ListOrganisations(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)
@@ -154,17 +151,13 @@ func (s *Server) ListMembers(ctx context.Context, req *orgpbv1.ListMembersReques
 	if req.GetParent() == "" {
 		return nil, status.Error(codes.InvalidArgument, "parent is required")
 	}
-	filter, err := types.ParseFilter(req.GetFilter())
-	if err != nil {
-		return nil, toStatusErr(err)
-	}
 	var out *orgpbv1.ListMembersResponse
-	err = traced(ctx, "ListMembers", func(ctx context.Context) error {
-		items, next, err := s.repo.ListMembers(ctx, req.GetParent(), types.ListParams{
+	err := traced(ctx, "ListMembers", func(ctx context.Context) error {
+		items, next, err := s.repo.ListMembers(ctx, req.GetParent(), repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
 			OrderBy:   req.GetOrderBy(),
-			Filter:    filter,
+			Filter:    req.GetFilter(),
 		})
 		if err != nil {
 			return toStatusErr(err)

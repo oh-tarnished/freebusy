@@ -38,8 +38,8 @@ model Property {
   /// Arbitrary attributes used for templating, policy, and segmentation.
   attributes Json? @map("attributes")
 
-  /// Lifecycle state.
-  state PropertyState? @map("state")
+  /// Lifecycle state. New properties start ACTIVE (database default).
+  state PropertyState? @default(ACTIVE) @map("state")
 
   /// Creation timestamp.
   createTime DateTime @default(now()) @freebusy.Timestamptz(6) @map("create_time")
@@ -139,8 +139,8 @@ model Unit {
   /// Arbitrary attributes used for templating, policy, and segmentation.
   attributes Json? @map("attributes")
 
-  /// Lifecycle state.
-  state UnitState? @map("state")
+  /// Lifecycle state. New units start ACTIVE (database default).
+  state UnitState? @default(ACTIVE) @map("state")
 
   /// Creation timestamp.
   createTime DateTime @default(now()) @freebusy.Timestamptz(6) @map("create_time")
@@ -244,8 +244,8 @@ model Licence {
   /// Any additional free-text notes.
   notes String? @map("notes")
 
-  /// Lifecycle state.
-  state LicenceState? @map("state")
+  /// Lifecycle state. New licences start ACTIVE (database default).
+  state LicenceState? @default(ACTIVE) @map("state")
 
   /// Creation timestamp.
   createTime DateTime @default(now()) @freebusy.Timestamptz(6) @map("create_time")

@@ -35,8 +35,8 @@ model Booking {
   /// Which specific unit of the pool was assigned (the shell's atomic pick).
   assignedUnit String? @map("assigned_unit")
 
-  /// Current lifecycle state.
-  state BookingState? @map("state")
+  /// Current lifecycle state. New bookings start PENDING_HOLD (database default); confirm/cancel transitions move it explicitly.
+  state BookingState? @default(PENDING_HOLD) @map("state")
 
   /// When the pending hold lapses, if not confirmed first.
   holdExpireTime DateTime? @freebusy.Timestamptz(6) @map("hold_expire_time")

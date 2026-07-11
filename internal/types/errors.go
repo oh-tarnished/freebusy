@@ -1,20 +1,27 @@
 package types
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+)
 
 // Sentinel errors returned by repositories. Adapters translate backend-specific
 // failures into these values so the service layer can map them onto gRPC status
 // codes without importing GORM or GraphQL packages. Compare with errors.Is.
+//
+// The values alias the generated repox sentinels, so hand-written and generated
+// repositories are indistinguishable to the gRPC layer during the migration.
 var (
 	// ErrNotFound indicates the requested record does not exist.
-	ErrNotFound = errors.New("not found")
+	ErrNotFound = repox.ErrNotFound
 	// ErrAlreadyExists indicates a uniqueness conflict on create.
-	ErrAlreadyExists = errors.New("already exists")
+	ErrAlreadyExists = repox.ErrAlreadyExists
 	// ErrConflict indicates an optimistic-concurrency (etag) mismatch.
-	ErrConflict = errors.New("version conflict")
+	ErrConflict = repox.ErrConflict
 	// ErrInvalidArgument indicates a caller-supplied argument was rejected (e.g.
 	// an order_by field outside the sortable allowlist).
-	ErrInvalidArgument = errors.New("invalid argument")
+	ErrInvalidArgument = repox.ErrInvalidArgument
 	// ErrUnimplemented indicates the configured provider does not support the
 	// operation yet (e.g. a repository method pending backend regeneration).
 	ErrUnimplemented = errors.New("unimplemented")

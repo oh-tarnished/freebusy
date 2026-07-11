@@ -46,8 +46,11 @@ message Organisation {
   // Billing contact email.
   string billing_email = 5 [(google.api.field_behavior) = OPTIONAL];
 
-  // Lifecycle state.
-  OrganisationState state = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Lifecycle state. New organisations start ACTIVE (database default).
+  OrganisationState state = 6 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (orm.v1.column) = {default_value: "ACTIVE"}
+  ];
 
   // Arbitrary organisation-level settings.
   google.protobuf.Struct settings = 7 [(google.api.field_behavior) = OPTIONAL];
@@ -100,8 +103,12 @@ message Member {
   // The member's role in the organisation.
   OrganisationRole role = 6 [(google.api.field_behavior) = REQUIRED];
 
-  // Confirmation state of the membership.
-  MemberState state = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+  // Confirmation state of the membership. New members start INVITED
+  // (database default).
+  MemberState state = 7 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (orm.v1.column) = {default_value: "INVITED"}
+  ];
 
   // The user who issued the invite.
   // Format: users/{user}
