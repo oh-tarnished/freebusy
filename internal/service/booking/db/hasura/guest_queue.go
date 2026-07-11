@@ -2,8 +2,11 @@
 package hasura
 
 import (
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/foreignerdetailsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestpreferencesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/iddocumentsql"
 	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
@@ -14,26 +17,26 @@ func queueGuestInserts(tx *runtime.Tx, r *BookingRepository, graphs []guestGraph
 	for i := range graphs {
 		g := &graphs[i]
 		if g.idDoc != nil {
-			var res identityschema.InsertIdentityIdDocumentsResponse
+			var res iddocumentsql.InsertIdentityIdDocumentsResponse
 			tx.Add(r.svc.Mutation.Identity.IdDocuments.CreateOp(*g.idDoc, &res))
 		}
 		if g.foreigner != nil {
-			var res identityschema.InsertIdentityForeignerDetailsResponse
+			var res foreignerdetailsql.InsertIdentityForeignerDetailsResponse
 			tx.Add(r.svc.Mutation.Identity.ForeignerDetails.CreateOp(*g.foreigner, &res))
 		}
 		if g.prefs != nil {
-			var res identityschema.InsertIdentityGuestPreferencesResponse
+			var res guestpreferencesql.InsertIdentityGuestPreferencesResponse
 			tx.Add(r.svc.Mutation.Identity.GuestPreferences.CreateOp(*g.prefs, &res))
 		}
 		if g.permanent != nil {
-			var res commonschema.InsertCommonPostalAddressResponse
+			var res postaladdressql.InsertCommonPostalAddressResponse
 			tx.Add(r.svc.Mutation.Common.PostalAddress.CreateOp(*g.permanent, &res))
 		}
 		if g.local != nil {
-			var res commonschema.InsertCommonPostalAddressResponse
+			var res postaladdressql.InsertCommonPostalAddressResponse
 			tx.Add(r.svc.Mutation.Common.PostalAddress.CreateOp(*g.local, &res))
 		}
-		var gRes identityschema.InsertIdentityGuestsResponse
+		var gRes guestsql.InsertIdentityGuestsResponse
 		tx.Add(r.svc.Mutation.Identity.Guests.CreateOp(g.guest, &gRes))
 	}
 }
@@ -43,29 +46,29 @@ func queueGuestInserts(tx *runtime.Tx, r *BookingRepository, graphs []guestGraph
 // removes every guest row on the booking — including rows a stale snapshot
 // missed — then the snapshot's belongs-to sub-rows (ID documents, foreigner
 // details, preferences, addresses) are deleted by id.
-func queueGuestDeletes(tx *runtime.Tx, r *BookingRepository, bookingID string, guests []identityschema.IdentityGuests) {
-	var delAll identityschema.DeleteIdentityGuestsByBookingIdResponse
+func queueGuestDeletes(tx *runtime.Tx, r *BookingRepository, bookingID string, guests []guestsql.IdentityGuests) {
+	var delAll guestsql.DeleteIdentityGuestsByBookingIdResponse
 	tx.Add(r.svc.Mutation.Identity.Guests.DeleteByBookingIdOp(bookingID, &delAll))
 	for i := range guests {
 		g := &guests[i]
 		if g.IdDocumentId != nil {
-			var res identityschema.DeleteIdentityIdDocumentsByIdResponse
+			var res iddocumentsql.DeleteIdentityIdDocumentsByIdResponse
 			tx.Add(r.svc.Mutation.Identity.IdDocuments.DeleteOp(*g.IdDocumentId, &res))
 		}
 		if g.ForeignerId != nil {
-			var res identityschema.DeleteIdentityForeignerDetailsByIdResponse
+			var res foreignerdetailsql.DeleteIdentityForeignerDetailsByIdResponse
 			tx.Add(r.svc.Mutation.Identity.ForeignerDetails.DeleteOp(*g.ForeignerId, &res))
 		}
 		if g.PreferencesId != nil {
-			var res identityschema.DeleteIdentityGuestPreferencesByIdResponse
+			var res guestpreferencesql.DeleteIdentityGuestPreferencesByIdResponse
 			tx.Add(r.svc.Mutation.Identity.GuestPreferences.DeleteOp(*g.PreferencesId, &res))
 		}
 		if g.PermanentAddressId != nil {
-			var res commonschema.DeleteCommonPostalAddressByIdResponse
+			var res postaladdressql.DeleteCommonPostalAddressByIdResponse
 			tx.Add(r.svc.Mutation.Common.PostalAddress.DeleteOp(*g.PermanentAddressId, &res))
 		}
 		if g.LocalAddressId != nil {
-			var res commonschema.DeleteCommonPostalAddressByIdResponse
+			var res postaladdressql.DeleteCommonPostalAddressByIdResponse
 			tx.Add(r.svc.Mutation.Common.PostalAddress.DeleteOp(*g.LocalAddressId, &res))
 		}
 	}

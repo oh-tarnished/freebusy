@@ -2,11 +2,17 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/discountsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/redemptionwindowsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/usagelimitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/service/promocode/discount"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -14,15 +20,15 @@ import (
 
 // parts holds a stored resource row and the child rows fetched to hydrate it.
 type parts struct {
-	res        *pcschema.PromocodeResource
-	discount   *pcschema.PromocodeDiscounts
-	amountOff  *commonschema.CommonMoneys
-	window     *pcschema.PromocodeRedemptionWindows
-	limits     *pcschema.PromocodeUsageLimits
-	scope      *pcschema.PromocodeScopes
-	minSub     *commonschema.CommonMoneys
-	properties []pcschema.PromocodeScopeApplicableProperties
-	units      []pcschema.PromocodeScopeApplicableUnits
+	res        *resourceql.PromocodeResource
+	discount   *discountsql.PromocodeDiscounts
+	amountOff  *moneysql.CommonMoneys
+	window     *redemptionwindowsql.PromocodeRedemptionWindows
+	limits     *usagelimitsql.PromocodeUsageLimits
+	scope      *scopesql.PromocodeScopes
+	minSub     *moneysql.CommonMoneys
+	properties []scopeapplicablepropertiesql.PromocodeScopeApplicableProperties
+	units      []scopeapplicableunitsql.PromocodeScopeApplicableUnits
 }
 
 // fromParts assembles the protobuf PromoCode from a stored resource row and its
@@ -50,7 +56,7 @@ func fromParts(p parts) *promocodepbv1.PromoCode {
 	return pc
 }
 
-func discountFromModel(d *pcschema.PromocodeDiscounts, amountOff *commonschema.CommonMoneys) *promocodepbv1.Discount {
+func discountFromModel(d *discountsql.PromocodeDiscounts, amountOff *moneysql.CommonMoneys) *promocodepbv1.Discount {
 	if d == nil {
 		return nil
 	}
@@ -63,7 +69,7 @@ func discountFromModel(d *pcschema.PromocodeDiscounts, amountOff *commonschema.C
 	return out
 }
 
-func windowFromModel(w *pcschema.PromocodeRedemptionWindows) *promocodepbv1.RedemptionWindow {
+func windowFromModel(w *redemptionwindowsql.PromocodeRedemptionWindows) *promocodepbv1.RedemptionWindow {
 	if w == nil {
 		return nil
 	}
@@ -73,7 +79,7 @@ func windowFromModel(w *pcschema.PromocodeRedemptionWindows) *promocodepbv1.Rede
 	}
 }
 
-func limitsFromModel(l *pcschema.PromocodeUsageLimits) *promocodepbv1.UsageLimits {
+func limitsFromModel(l *usagelimitsql.PromocodeUsageLimits) *promocodepbv1.UsageLimits {
 	if l == nil {
 		return nil
 	}
@@ -87,7 +93,7 @@ func limitsFromModel(l *pcschema.PromocodeUsageLimits) *promocodepbv1.UsageLimit
 	return out
 }
 
-func scopeFromParts(s *pcschema.PromocodeScopes, minSub *commonschema.CommonMoneys, res []pcschema.PromocodeScopeApplicableProperties, off []pcschema.PromocodeScopeApplicableUnits) *promocodepbv1.Scope {
+func scopeFromParts(s *scopesql.PromocodeScopes, minSub *moneysql.CommonMoneys, res []scopeapplicablepropertiesql.PromocodeScopeApplicableProperties, off []scopeapplicableunitsql.PromocodeScopeApplicableUnits) *promocodepbv1.Scope {
 	if s == nil {
 		return nil
 	}

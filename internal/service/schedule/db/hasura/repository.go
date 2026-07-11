@@ -5,11 +5,10 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
-	exceptionsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
-	recurringschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
-	refundschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
-	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 )
@@ -62,7 +61,7 @@ func (r *ScheduleRepository) GetSchedule(ctx context.Context, name string) (*sch
 // hydrateSchedule loads a schedule row's belongs-to children (buffers, stay
 // constraints, cancellation policy + refund tiers) and its recurring rules, and
 // returns the ids of the replaceable child rows.
-func (r *ScheduleRepository) hydrateSchedule(ctx context.Context, res *scheduleschema.ScheduleResource) (scheduleParts, scheduleRefs, error) {
+func (r *ScheduleRepository) hydrateSchedule(ctx context.Context, res *resourceql.ScheduleResource) (scheduleParts, scheduleRefs, error) {
 	p := scheduleParts{res: res}
 	refs := scheduleRefs{buffersID: res.BuffersId, stayID: res.StayConstraintsId, cancelID: res.CancellationPolicyId}
 
@@ -83,14 +82,14 @@ func (r *ScheduleRepository) hydrateSchedule(ctx context.Context, res *schedules
 	if res.CancellationPolicyId != nil {
 		p.hasPolicy = true
 		tiers, err := r.svc.Query.Schedule.RefundTiers.List(ctx,
-			refundschema.List().Where(refundschema.CancellationPolicyId.Eq(*res.CancellationPolicyId)))
+			refundtiersql.List().Where(refundtiersql.CancellationPolicyId.Eq(*res.CancellationPolicyId)))
 		if err != nil {
 			return scheduleParts{}, scheduleRefs{}, dbutil.MapHasuraErr(err)
 		}
 		p.refundTiers = tiers
 	}
 	rules, err := r.svc.Query.Schedule.RecurringRules.List(ctx,
-		recurringschema.List().Where(recurringschema.ScheduleId.Eq(res.Id)))
+		recurringrulesql.List().Where(recurringrulesql.ScheduleId.Eq(res.Id)))
 	if err != nil {
 		return scheduleParts{}, scheduleRefs{}, dbutil.MapHasuraErr(err)
 	}
@@ -104,7 +103,7 @@ func (r *ScheduleRepository) hydrateSchedule(ctx context.Context, res *schedules
 // exceptionNames returns the resource names of a unit's availability exceptions.
 func (r *ScheduleRepository) exceptionNames(ctx context.Context, unitID string) ([]string, error) {
 	rows, err := r.svc.Query.Schedule.AvailabilityExceptions.List(ctx,
-		exceptionsql.List().Where(exceptionsql.UnitId.Eq(unitID)).OrderBy(exceptionsql.CreateTime.Asc()))
+		availabilityexceptionsql.List().Where(availabilityexceptionsql.UnitId.Eq(unitID)).OrderBy(availabilityexceptionsql.CreateTime.Asc()))
 	if err != nil {
 		return nil, dbutil.MapHasuraErr(err)
 	}

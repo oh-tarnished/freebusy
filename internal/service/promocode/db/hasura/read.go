@@ -3,11 +3,11 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
-	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
@@ -46,7 +46,7 @@ func (r *PromoCodeRepository) List(ctx context.Context, in repox.ListInput) ([]*
 
 // hydrate fetches a resource row's child rows (discount + amount money, window,
 // limits, scope + min money + applicable join rows) and assembles the proto.
-func (r *PromoCodeRepository) hydrate(ctx context.Context, res *pcschema.PromocodeResource) (*promocodepbv1.PromoCode, error) {
+func (r *PromoCodeRepository) hydrate(ctx context.Context, res *resourceql.PromocodeResource) (*promocodepbv1.PromoCode, error) {
 	p, _, err := r.fetchParts(ctx, res)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (r *PromoCodeRepository) hydrate(ctx context.Context, res *pcschema.Promoco
 
 // fetchParts loads the child rows for res and also returns the ids of those rows
 // (refs) so writers can delete the superseded ones.
-func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *pcschema.PromocodeResource) (parts, promoRefs, error) {
+func (r *PromoCodeRepository) fetchParts(ctx context.Context, res *resourceql.PromocodeResource) (parts, promoRefs, error) {
 	p := parts{res: res}
 	refs := promoRefs{discountID: res.DiscountId, windowID: res.WindowId, limitsID: res.LimitsId, scopeID: res.ScopeId}
 

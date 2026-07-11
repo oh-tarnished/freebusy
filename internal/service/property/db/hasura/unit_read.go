@@ -3,21 +3,20 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -90,8 +89,8 @@ func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, in re
 // fetchUnitParts loads a unit's price and pricing children (rate overrides, LOS
 // discounts, fees, taxes), media, and applicable-promo-code rows, resolving the
 // Money/DateRange value-objects each references, and returns the deletable ids.
-func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *pschema.PropertyUnits) (unitParts, unitRefs, error) {
-	p := unitParts{res: res, moneyByID: map[string]*commonschema.CommonMoneys{}, dateByID: map[string]*sharedschema.SharedDateRanges{}}
+func (r *PropertyRepository) fetchUnitParts(ctx context.Context, res *unitsql.PropertyUnits) (unitParts, unitRefs, error) {
+	p := unitParts{res: res, moneyByID: map[string]*moneysql.CommonMoneys{}, dateByID: map[string]*daterangesql.SharedDateRanges{}}
 	var refs unitRefs
 
 	if res.PriceId != nil {

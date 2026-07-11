@@ -4,11 +4,11 @@ package hasura
 import (
 	"context"
 	"fmt"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
-	refundtiersql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
 	schedresourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"google.golang.org/genproto/googleapis/type/money"
@@ -17,7 +17,7 @@ import (
 // computeRefund resolves the unit's cancellation policy (from its schedule) and
 // returns the refund percent, amount, and a human summary for the booking's lead
 // time. No matching tier (or no policy) means non-refundable.
-func (r *BookingRepository) computeRefund(ctx context.Context, res *bookingschema.BookingResource) (int32, *money.Money, string, error) {
+func (r *BookingRepository) computeRefund(ctx context.Context, res *resourceql.BookingResource) (int32, *money.Money, string, error) {
 	if res.TotalId == nil {
 		return 0, nil, "non-refundable", nil
 	}

@@ -2,11 +2,12 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/contactsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"time"
 
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"google.golang.org/genproto/googleapis/type/money"
@@ -15,10 +16,10 @@ import (
 // bookingParts is a booking row plus its hydrated value-objects and the unit's
 // full resource name.
 type bookingParts struct {
-	res      *bookingschema.BookingResource
+	res      *resourceql.BookingResource
 	unitName string
-	contact  *sharedschema.SharedContacts
-	window   *sharedschema.SharedTimeWindows
+	contact  *contactsql.SharedContacts
+	window   *timewindowsql.SharedTimeWindows
 	price    *money.Money
 	discount *money.Money
 	total    *money.Money

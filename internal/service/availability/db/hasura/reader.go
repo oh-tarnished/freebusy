@@ -6,16 +6,15 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	feesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
 	losdiscountsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
-	propertyschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	taxesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
-	recurringsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
-	schedresourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
-	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/service/availability/engine"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -50,7 +49,7 @@ func (r *AvailabilityReader) GetUnit(ctx context.Context, unitName string) (*eng
 }
 
 // buildUnitInfo assembles the engine UnitInfo for one unit row.
-func (r *AvailabilityReader) buildUnitInfo(ctx context.Context, u *propertyschema.PropertyUnits) (*engine.UnitInfo, error) {
+func (r *AvailabilityReader) buildUnitInfo(ctx context.Context, u *unitsql.PropertyUnits) (*engine.UnitInfo, error) {
 	info := &engine.UnitInfo{
 		ID:          u.Id,
 		Name:        u.Name,
@@ -76,7 +75,7 @@ func (r *AvailabilityReader) buildUnitInfo(ctx context.Context, u *propertyschem
 	if err != nil {
 		return nil, err
 	}
-	sched, err := r.svc.Query.Schedule.Resource.Find(ctx, schedresourceql.List().Where(schedresourceql.Name.Eq(scheduleName)))
+	sched, err := r.svc.Query.Schedule.Resource.Find(ctx, resourceql.List().Where(resourceql.Name.Eq(scheduleName)))
 	if err != nil {
 		return nil, mapErr(err)
 	}
@@ -89,7 +88,7 @@ func (r *AvailabilityReader) buildUnitInfo(ctx context.Context, u *propertyschem
 }
 
 // pricing loads a unit's base price and pricing children as engine inputs.
-func (r *AvailabilityReader) pricing(ctx context.Context, u *propertyschema.PropertyUnits) (*money.Money, []pricing.Fee, []pricing.Tax, []pricing.LosDiscount, error) {
+func (r *AvailabilityReader) pricing(ctx context.Context, u *unitsql.PropertyUnits) (*money.Money, []pricing.Fee, []pricing.Tax, []pricing.LosDiscount, error) {
 	var price *money.Money
 	if u.PriceId != nil {
 		m, err := r.money(ctx, *u.PriceId)
@@ -141,7 +140,7 @@ func (r *AvailabilityReader) pricing(ctx context.Context, u *propertyschema.Prop
 
 // applySchedulePolicy fills the stay/notice/buffer/open-hours policy from a
 // schedule row.
-func (r *AvailabilityReader) applySchedulePolicy(ctx context.Context, info *engine.UnitInfo, sched *scheduleschema.ScheduleResource) error {
+func (r *AvailabilityReader) applySchedulePolicy(ctx context.Context, info *engine.UnitInfo, sched *resourceql.ScheduleResource) error {
 	if sched.StayConstraintsId != nil {
 		sc, err := r.svc.Query.Schedule.StayConstraints.Get(ctx, *sched.StayConstraintsId)
 		if err != nil {
@@ -167,7 +166,7 @@ func (r *AvailabilityReader) applySchedulePolicy(ctx context.Context, info *engi
 			info.EndDelta = durationFromStr(repox.Deref(b.EndDelta))
 		}
 	}
-	rules, err := r.svc.Query.Schedule.RecurringRules.List(ctx, recurringsql.List().Where(recurringsql.ScheduleId.Eq(sched.Id)))
+	rules, err := r.svc.Query.Schedule.RecurringRules.List(ctx, recurringrulesql.List().Where(recurringrulesql.ScheduleId.Eq(sched.Id)))
 	if err != nil {
 		return mapErr(err)
 	}

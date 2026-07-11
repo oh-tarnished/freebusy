@@ -8,7 +8,7 @@ import (
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	propertiesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	unitsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
-	availexcsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
 	"github.com/oh-tarnished/freebusy/internal/service/availability/engine"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/the-protobuf-project/runtime-go/network/graphql"
@@ -79,9 +79,9 @@ func (r *AvailabilityReader) ClosuresForUnits(ctx context.Context, unitIDs []str
 	if len(unitIDs) == 0 {
 		return out, nil
 	}
-	rows, err := r.svc.Query.Schedule.AvailabilityExceptions.List(ctx, availexcsql.List().Where(availexcsql.And(
-		availexcsql.UnitId.In(unitIDs...),
-		availexcsql.Kind.Eq("CLOSURE"),
+	rows, err := r.svc.Query.Schedule.AvailabilityExceptions.List(ctx, availabilityexceptionsql.List().Where(availabilityexceptionsql.And(
+		availabilityexceptionsql.UnitId.In(unitIDs...),
+		availabilityexceptionsql.Kind.Eq("CLOSURE"),
 	)))
 	if err != nil {
 		return nil, mapErr(err)

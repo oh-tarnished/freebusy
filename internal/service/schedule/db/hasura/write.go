@@ -2,10 +2,14 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/buffersettingsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/cancellationpoliciesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/stayconstraintsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
-	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -47,15 +51,15 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 
 	tx := r.svc.Mutation.Tx()
 	if g.buffers != nil {
-		var res scheduleschema.InsertScheduleBufferSettingsResponse
+		var res buffersettingsql.InsertScheduleBufferSettingsResponse
 		tx.Add(r.svc.Mutation.Schedule.BufferSettings.CreateOp(*g.buffers, &res))
 	}
 	if g.stayConstraints != nil {
-		var res scheduleschema.InsertScheduleStayConstraintsResponse
+		var res stayconstraintsql.InsertScheduleStayConstraintsResponse
 		tx.Add(r.svc.Mutation.Schedule.StayConstraints.CreateOp(*g.stayConstraints, &res))
 	}
 	if g.cancellationPolicy != nil {
-		var res scheduleschema.InsertScheduleCancellationPoliciesResponse
+		var res cancellationpoliciesql.InsertScheduleCancellationPoliciesResponse
 		tx.Add(r.svc.Mutation.Schedule.CancellationPolicies.CreateOp(*g.cancellationPolicy, &res))
 	}
 
@@ -66,7 +70,7 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 			CancellationPolicyId: dbutil.NullableStr(g.schedule.CancellationPolicyId),
 			Etag:                 graphql.Value(ulid.GenerateString()),
 		}
-		var updRes scheduleschema.UpdateScheduleResourceByIdResponse
+		var updRes resourceql.UpdateScheduleResourceByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.Resource.UpdateOp(existing.Id, patch, &updRes))
 		r.queueScheduleChildren(tx, g, existing.Id)
 		queueScheduleChildDeletes(tx, r, oldRefs)
@@ -74,7 +78,7 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 		g.schedule.Id = ulid.GenerateString()
 		g.schedule.Name = s.GetName()
 		g.schedule.Etag = ulid.GenerateString()
-		var res scheduleschema.InsertScheduleResourceResponse
+		var res resourceql.InsertScheduleResourceResponse
 		tx.Add(r.svc.Mutation.Schedule.Resource.CreateOp(g.schedule, &res))
 		r.queueScheduleChildren(tx, g, g.schedule.Id)
 	}
@@ -89,12 +93,12 @@ func (r *ScheduleRepository) UpdateSchedule(ctx context.Context, s *schedulepbv1
 // new cancellation policy, recurring rules referencing scheduleID).
 func (r *ScheduleRepository) queueScheduleChildren(tx *runtime.Tx, g *scheduleGraph, scheduleID string) {
 	for i := range g.refundTiers {
-		var res scheduleschema.InsertScheduleRefundTiersResponse
+		var res refundtiersql.InsertScheduleRefundTiersResponse
 		tx.Add(r.svc.Mutation.Schedule.RefundTiers.CreateOp(g.refundTiers[i], &res))
 	}
 	for i := range g.recurringRules {
 		g.recurringRules[i].ScheduleId = scheduleID
-		var res scheduleschema.InsertScheduleRecurringRulesResponse
+		var res recurringrulesql.InsertScheduleRecurringRulesResponse
 		tx.Add(r.svc.Mutation.Schedule.RecurringRules.CreateOp(g.recurringRules[i], &res))
 	}
 }
@@ -104,19 +108,19 @@ func (r *ScheduleRepository) queueScheduleChildren(tx *runtime.Tx, g *scheduleGr
 // cascade in the DB when the policy is deleted.
 func queueScheduleChildDeletes(tx *runtime.Tx, r *ScheduleRepository, refs scheduleRefs) {
 	for _, id := range refs.recurringIDs {
-		var res scheduleschema.DeleteScheduleRecurringRulesByIdResponse
+		var res recurringrulesql.DeleteScheduleRecurringRulesByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.RecurringRules.DeleteOp(id, &res))
 	}
 	if refs.cancelID != nil {
-		var res scheduleschema.DeleteScheduleCancellationPoliciesByIdResponse
+		var res cancellationpoliciesql.DeleteScheduleCancellationPoliciesByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.CancellationPolicies.DeleteOp(*refs.cancelID, &res))
 	}
 	if refs.buffersID != nil {
-		var res scheduleschema.DeleteScheduleBufferSettingsByIdResponse
+		var res buffersettingsql.DeleteScheduleBufferSettingsByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.BufferSettings.DeleteOp(*refs.buffersID, &res))
 	}
 	if refs.stayID != nil {
-		var res scheduleschema.DeleteScheduleStayConstraintsByIdResponse
+		var res stayconstraintsql.DeleteScheduleStayConstraintsByIdResponse
 		tx.Add(r.svc.Mutation.Schedule.StayConstraints.DeleteOp(*refs.stayID, &res))
 	}
 }

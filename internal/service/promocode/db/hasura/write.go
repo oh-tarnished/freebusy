@@ -2,12 +2,17 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/discountsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/redemptionwindowsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/usagelimitsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
-	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -67,28 +72,28 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 	tx := r.svc.Mutation.Tx()
 
 	// 1. Insert the new Money rows and children.
-	moneyRes := make([]commonschema.InsertCommonMoneysResponse, len(g.moneys))
+	moneyRes := make([]moneysql.InsertCommonMoneysResponse, len(g.moneys))
 	for i, m := range g.moneys {
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(m, &moneyRes[i]))
 	}
-	var discRes pcschema.InsertPromocodeDiscountsResponse
+	var discRes discountsql.InsertPromocodeDiscountsResponse
 	tx.Add(r.svc.Mutation.Promocode.Discounts.CreateOp(g.discount, &discRes))
 	if g.window != nil {
-		var wRes pcschema.InsertPromocodeRedemptionWindowsResponse
+		var wRes redemptionwindowsql.InsertPromocodeRedemptionWindowsResponse
 		tx.Add(r.svc.Mutation.Promocode.RedemptionWindows.CreateOp(*g.window, &wRes))
 	}
 	if g.limits != nil {
-		var lRes pcschema.InsertPromocodeUsageLimitsResponse
+		var lRes usagelimitsql.InsertPromocodeUsageLimitsResponse
 		tx.Add(r.svc.Mutation.Promocode.UsageLimits.CreateOp(*g.limits, &lRes))
 	}
 	if g.scope != nil {
-		var sRes pcschema.InsertPromocodeScopesResponse
+		var sRes scopesql.InsertPromocodeScopesResponse
 		tx.Add(r.svc.Mutation.Promocode.Scopes.CreateOp(*g.scope, &sRes))
-		resRes := make([]pcschema.InsertPromocodeScopeApplicablePropertiesResponse, len(g.properties))
+		resRes := make([]scopeapplicablepropertiesql.InsertPromocodeScopeApplicablePropertiesResponse, len(g.properties))
 		for i, row := range g.properties {
 			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableProperties.CreateOp(row, &resRes[i]))
 		}
-		offRes := make([]pcschema.InsertPromocodeScopeApplicableUnitsResponse, len(g.units))
+		offRes := make([]scopeapplicableunitsql.InsertPromocodeScopeApplicableUnitsResponse, len(g.units))
 		for i, row := range g.units {
 			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableUnits.CreateOp(row, &offRes[i]))
 		}
@@ -108,7 +113,7 @@ func (r *PromoCodeRepository) Update(ctx context.Context, pc *promocodepbv1.Prom
 		Etag:        graphql.Value(ulid.GenerateString()),
 		UpdateTime:  graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
-	var updRes pcschema.UpdatePromocodeResourceByIdResponse
+	var updRes resourceql.UpdatePromocodeResourceByIdResponse
 	tx.Add(r.svc.Mutation.Promocode.Resource.UpdateOp(id, patch, &updRes))
 
 	// 3. Delete the superseded children in foreign-key order.
@@ -142,7 +147,7 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 	tx := r.svc.Mutation.Tx()
 	// Delete the resource first (its redemptions cascade in the DB), then the
 	// now-unreferenced children.
-	var delRes pcschema.DeletePromocodeResourceByIdResponse
+	var delRes resourceql.DeletePromocodeResourceByIdResponse
 	tx.Add(r.svc.Mutation.Promocode.Resource.DeleteOp(id, &delRes))
 	queueChildDeletes(tx, r, refs)
 
@@ -154,31 +159,31 @@ func (r *PromoCodeRepository) Delete(ctx context.Context, name string) error {
 // discount, then the Money rows those children referenced.
 func queueChildDeletes(tx *runtime.Tx, r *PromoCodeRepository, refs promoRefs) {
 	for _, jid := range refs.resourceJoinIDs {
-		var out pcschema.DeletePromocodeScopeApplicablePropertiesByIdResponse
+		var out scopeapplicablepropertiesql.DeletePromocodeScopeApplicablePropertiesByIdResponse
 		tx.Add(r.svc.Mutation.Promocode.ScopeApplicableProperties.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.offeringJoinIDs {
-		var out pcschema.DeletePromocodeScopeApplicableUnitsByIdResponse
+		var out scopeapplicableunitsql.DeletePromocodeScopeApplicableUnitsByIdResponse
 		tx.Add(r.svc.Mutation.Promocode.ScopeApplicableUnits.DeleteOp(jid, &out))
 	}
 	if refs.scopeID != nil {
-		var out pcschema.DeletePromocodeScopesByIdResponse
+		var out scopesql.DeletePromocodeScopesByIdResponse
 		tx.Add(r.svc.Mutation.Promocode.Scopes.DeleteOp(*refs.scopeID, &out))
 	}
 	if refs.windowID != nil {
-		var out pcschema.DeletePromocodeRedemptionWindowsByIdResponse
+		var out redemptionwindowsql.DeletePromocodeRedemptionWindowsByIdResponse
 		tx.Add(r.svc.Mutation.Promocode.RedemptionWindows.DeleteOp(*refs.windowID, &out))
 	}
 	if refs.limitsID != nil {
-		var out pcschema.DeletePromocodeUsageLimitsByIdResponse
+		var out usagelimitsql.DeletePromocodeUsageLimitsByIdResponse
 		tx.Add(r.svc.Mutation.Promocode.UsageLimits.DeleteOp(*refs.limitsID, &out))
 	}
 	if refs.discountID != "" {
-		var out pcschema.DeletePromocodeDiscountsByIdResponse
+		var out discountsql.DeletePromocodeDiscountsByIdResponse
 		tx.Add(r.svc.Mutation.Promocode.Discounts.DeleteOp(refs.discountID, &out))
 	}
 	for _, mid := range refs.moneyIDs {
-		var out commonschema.DeleteCommonMoneysByIdResponse
+		var out moneysql.DeleteCommonMoneysByIdResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.DeleteOp(mid, &out))
 	}
 }

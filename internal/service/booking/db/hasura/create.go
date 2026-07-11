@@ -3,14 +3,14 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/occupanciesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/contactsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
 	moneysql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
@@ -139,20 +139,20 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 	}
 
 	tx := r.svc.Mutation.Tx()
-	var winRes sharedschema.InsertSharedTimeWindowsResponse
+	var winRes timewindowsql.InsertSharedTimeWindowsResponse
 	tx.Add(r.svc.Mutation.Shared.TimeWindows.CreateOp(window, &winRes))
 	if contact != nil {
-		var cRes sharedschema.InsertSharedContactsResponse
+		var cRes contactsql.InsertSharedContactsResponse
 		tx.Add(r.svc.Mutation.Shared.Contacts.CreateOp(*contact, &cRes))
 	}
 	queueMoneyInserts(tx, r, priceIn, discountIn, totalIn)
 	// Occupancy is belongs-to (before the booking); guests are has-many (after,
 	// carrying the booking_id FK).
 	if occupancy != nil {
-		var oRes bookingschema.InsertBookingOccupanciesResponse
+		var oRes occupanciesql.InsertBookingOccupanciesResponse
 		tx.Add(r.svc.Mutation.Booking.Occupancies.CreateOp(*occupancy, &oRes))
 	}
-	var bRes bookingschema.InsertBookingResourceResponse
+	var bRes resourceql.InsertBookingResourceResponse
 	tx.Add(r.svc.Mutation.Booking.Resource.CreateOp(bi, &bRes))
 	queueGuestInserts(tx, r, guestGraphs)
 	if err := tx.Commit(ctx); err != nil {
@@ -174,7 +174,7 @@ func queueMoneyInserts(tx *runtime.Tx, r *BookingRepository, moneys ...*moneysql
 		if mi == nil {
 			continue
 		}
-		var res commonschema.InsertCommonMoneysResponse
+		var res moneysql.InsertCommonMoneysResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(*mi, &res))
 	}
 }

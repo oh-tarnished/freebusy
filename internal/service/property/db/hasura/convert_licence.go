@@ -10,9 +10,7 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
@@ -98,7 +96,7 @@ func attachmentInput(a *sharedpbv1.Attachment, now time.Time) *attachmentsql.Cre
 	}
 }
 
-func attachmentFromModel(a *sharedschema.SharedAttachments) *sharedpbv1.Attachment {
+func attachmentFromModel(a *attachmentsql.SharedAttachments) *sharedpbv1.Attachment {
 	if a == nil {
 		return nil
 	}
@@ -160,7 +158,7 @@ func buildLicenceGraph(l *propertypbv1.Licence, propertyID string, unitID *strin
 // licenceFromParts re-hydrates the proto from a licence row and its resolved
 // attachment (nil when the licence has none). The unit resource name is
 // rebuilt from the stored parent property and bare unit ids.
-func licenceFromParts(res *pschema.PropertyLicences, att *sharedschema.SharedAttachments) *propertypbv1.Licence {
+func licenceFromParts(res *licencesql.PropertyLicences, att *attachmentsql.SharedAttachments) *propertypbv1.Licence {
 	var unit string
 	if res.Unit != nil && *res.Unit != "" {
 		unit, _ = types.UnitName(res.PropertyId, *res.Unit)

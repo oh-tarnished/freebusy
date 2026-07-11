@@ -13,9 +13,7 @@ import (
 	"time"
 
 	moneysql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	contactsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/contactsql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	timewindowsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -93,7 +91,7 @@ func moneyInput(m *money.Money) moneysql.CreateInput {
 	}
 }
 
-func moneyFromSchema(m *commonschema.CommonMoneys) *money.Money {
+func moneyFromSchema(m *moneysql.CommonMoneys) *money.Money {
 	if m == nil {
 		return nil
 	}
@@ -116,7 +114,7 @@ func contactInput(c *sharedpbv1.Contact) *contactsql.CreateInput {
 	}
 }
 
-func contactFromSchema(c *sharedschema.SharedContacts) *sharedpbv1.Contact {
+func contactFromSchema(c *contactsql.SharedContacts) *sharedpbv1.Contact {
 	if c == nil {
 		return nil
 	}
@@ -135,7 +133,7 @@ func windowInput(w *sharedpbv1.TimeWindow) timewindowsql.CreateInput {
 	}
 }
 
-func windowFromSchema(w *sharedschema.SharedTimeWindows) *sharedpbv1.TimeWindow {
+func windowFromSchema(w *timewindowsql.SharedTimeWindows) *sharedpbv1.TimeWindow {
 	if w == nil {
 		return nil
 	}

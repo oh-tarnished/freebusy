@@ -2,25 +2,31 @@
 package hasura
 
 import (
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 )
 
 type unitParts struct {
-	res           *pschema.PropertyUnits
-	price         *commonschema.CommonMoneys
-	rateOverrides []pschema.PropertyRateOverrides
-	losDiscounts  []pschema.PropertyLosDiscounts
-	fees          []pschema.PropertyFees
-	taxes         []pschema.PropertyTaxes
-	medias        []pschema.PropertyUnitMedias
-	promoCodes    []pschema.PropertyUnitApplicablePromoCodes
-	moneyByID     map[string]*commonschema.CommonMoneys
-	dateByID      map[string]*sharedschema.SharedDateRanges
+	res           *unitsql.PropertyUnits
+	price         *moneysql.CommonMoneys
+	rateOverrides []rateoverridesql.PropertyRateOverrides
+	losDiscounts  []losdiscountsql.PropertyLosDiscounts
+	fees          []feesql.PropertyFees
+	taxes         []taxesql.PropertyTaxes
+	medias        []unitmediasql.PropertyUnitMedias
+	promoCodes    []unitapplicablepromocodesql.PropertyUnitApplicablePromoCodes
+	moneyByID     map[string]*moneysql.CommonMoneys
+	dateByID      map[string]*daterangesql.SharedDateRanges
 	licenceNames  []string
 }
 
@@ -94,7 +100,7 @@ func unitFromParts(p unitParts) *propertypbv1.Unit {
 	return out
 }
 
-func unitMediaFromModel(m *pschema.PropertyUnitMedias) *propertypbv1.UnitMedia {
+func unitMediaFromModel(m *unitmediasql.PropertyUnitMedias) *propertypbv1.UnitMedia {
 	return &propertypbv1.UnitMedia{
 		Uri:         m.Uri,
 		Type:        mediaTypeFromStr(m.Type),

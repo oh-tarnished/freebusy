@@ -4,14 +4,23 @@ package hasura
 import (
 	"context"
 	"fmt"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/policiesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -52,7 +61,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 
 	tx := r.svc.Mutation.Tx()
 	if g.price != nil {
-		var out commonschema.InsertCommonMoneysResponse
+		var out moneysql.InsertCommonMoneysResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(*g.price, &out))
 	}
 	patch := unitsql.UpdateInput{
@@ -70,7 +79,7 @@ func (r *PropertyRepository) UpdateUnit(ctx context.Context, u *propertypbv1.Uni
 		Etag:         graphql.Value(ulid.GenerateString()),
 		UpdateTime:   graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
-	var updRes pschema.UpdatePropertyUnitsByIdResponse
+	var updRes unitsql.UpdatePropertyUnitsByIdResponse
 	tx.Add(r.svc.Mutation.Property.Units.UpdateOp(id, patch, &updRes))
 
 	queueUnitChildInserts(tx, r, g, id)
@@ -112,14 +121,14 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 	}
 	tx := r.svc.Mutation.Tx()
 	for i := range licences {
-		var out pschema.DeletePropertyLicencesByIdResponse
+		var out licencesql.DeletePropertyLicencesByIdResponse
 		tx.Add(r.svc.Mutation.Property.Licences.DeleteOp(licences[i].Id, &out))
 		if aid := licences[i].AttachmentId; aid != nil {
-			var aOut sharedschema.DeleteSharedAttachmentsByIdResponse
+			var aOut attachmentsql.DeleteSharedAttachmentsByIdResponse
 			tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*aid, &aOut))
 		}
 	}
-	var delRes pschema.DeletePropertyUnitsByIdResponse
+	var delRes unitsql.DeletePropertyUnitsByIdResponse
 	tx.Add(r.svc.Mutation.Property.Units.DeleteOp(id, &delRes))
 	queueValueObjectDeletes(tx, r, refs.moneyIDs, refs.dateIDs)
 	return dbutil.MapHasuraErr(tx.Commit(ctx))
@@ -129,15 +138,15 @@ func (r *PropertyRepository) DeleteUnit(ctx context.Context, name string, force 
 // rows and its now-unreferenced address / policy rows.
 func queuePropertyChildDeletes(tx *runtime.Tx, r *PropertyRepository, refs propertyRefs) {
 	for _, mid := range refs.mediaIDs {
-		var out pschema.DeletePropertyMediasByIdResponse
+		var out mediasql.DeletePropertyMediasByIdResponse
 		tx.Add(r.svc.Mutation.Property.Medias.DeleteOp(mid, &out))
 	}
 	if refs.addressID != nil {
-		var out commonschema.DeleteCommonPostalAddressByIdResponse
+		var out postaladdressql.DeleteCommonPostalAddressByIdResponse
 		tx.Add(r.svc.Mutation.Common.PostalAddress.DeleteOp(*refs.addressID, &out))
 	}
 	if refs.policyID != nil {
-		var out pschema.DeletePropertyPoliciesByIdResponse
+		var out policiesql.DeletePropertyPoliciesByIdResponse
 		tx.Add(r.svc.Mutation.Property.Policies.DeleteOp(*refs.policyID, &out))
 	}
 }
@@ -146,27 +155,27 @@ func queuePropertyChildDeletes(tx *runtime.Tx, r *PropertyRepository, refs prope
 // promo child rows and the Money/DateRange value-objects they referenced.
 func queueUnitChildDeletes(tx *runtime.Tx, r *PropertyRepository, refs unitRefs) {
 	for _, jid := range refs.rateIDs {
-		var out pschema.DeletePropertyRateOverridesByIdResponse
+		var out rateoverridesql.DeletePropertyRateOverridesByIdResponse
 		tx.Add(r.svc.Mutation.Property.RateOverrides.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.losIDs {
-		var out pschema.DeletePropertyLosDiscountsByIdResponse
+		var out losdiscountsql.DeletePropertyLosDiscountsByIdResponse
 		tx.Add(r.svc.Mutation.Property.LosDiscounts.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.feeIDs {
-		var out pschema.DeletePropertyFeesByIdResponse
+		var out feesql.DeletePropertyFeesByIdResponse
 		tx.Add(r.svc.Mutation.Property.Fees.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.taxIDs {
-		var out pschema.DeletePropertyTaxesByIdResponse
+		var out taxesql.DeletePropertyTaxesByIdResponse
 		tx.Add(r.svc.Mutation.Property.Taxes.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.mediaIDs {
-		var out pschema.DeletePropertyUnitMediasByIdResponse
+		var out unitmediasql.DeletePropertyUnitMediasByIdResponse
 		tx.Add(r.svc.Mutation.Property.UnitMedias.DeleteOp(jid, &out))
 	}
 	for _, jid := range refs.promoIDs {
-		var out pschema.DeletePropertyUnitApplicablePromoCodesByIdResponse
+		var out unitapplicablepromocodesql.DeletePropertyUnitApplicablePromoCodesByIdResponse
 		tx.Add(r.svc.Mutation.Property.UnitApplicablePromoCodes.DeleteOp(jid, &out))
 	}
 	queueValueObjectDeletes(tx, r, refs.moneyIDs, refs.dateIDs)
@@ -174,11 +183,11 @@ func queueUnitChildDeletes(tx *runtime.Tx, r *PropertyRepository, refs unitRefs)
 
 func queueValueObjectDeletes(tx *runtime.Tx, r *PropertyRepository, moneyIDs, dateIDs []string) {
 	for _, mid := range moneyIDs {
-		var out commonschema.DeleteCommonMoneysByIdResponse
+		var out moneysql.DeleteCommonMoneysByIdResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.DeleteOp(mid, &out))
 	}
 	for _, did := range dateIDs {
-		var out sharedschema.DeleteSharedDateRangesByIdResponse
+		var out daterangesql.DeleteSharedDateRangesByIdResponse
 		tx.Add(r.svc.Mutation.Shared.DateRanges.DeleteOp(did, &out))
 	}
 }

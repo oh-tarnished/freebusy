@@ -3,12 +3,12 @@ package hasura
 import (
 	"errors"
 	"fmt"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"strconv"
 	"strings"
 	"time"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	unitsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/the-protobuf-project/runtime-go/network/graphql"
@@ -59,7 +59,7 @@ func parseDate(s string, loc *time.Location) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, loc)
 }
 
-func moneyFromSchema(m *commonschema.CommonMoneys) *money.Money {
+func moneyFromSchema(m *moneysql.CommonMoneys) *money.Money {
 	if m == nil {
 		return nil
 	}

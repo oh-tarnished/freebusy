@@ -3,12 +3,12 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/occupanciesql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
 	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/party"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -95,7 +95,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 	}
 	tx := r.svc.Mutation.Tx()
 	if res.OccupancyId != nil {
-		var delOcc bookingschema.DeleteBookingOccupanciesByIdResponse
+		var delOcc occupanciesql.DeleteBookingOccupanciesByIdResponse
 		tx.Add(r.svc.Mutation.Booking.Occupancies.DeleteOp(*res.OccupancyId, &delOcc))
 	}
 	queueGuestDeletes(tx, r, id, oldGuests)

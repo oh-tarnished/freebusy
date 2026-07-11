@@ -2,14 +2,13 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -23,7 +22,7 @@ import (
 // and the nullable unit reference say which is which.
 
 // attachment resolves a licence's attachment row, or nil when it has none.
-func (r *PropertyRepository) attachment(ctx context.Context, id *string) (*sharedschema.SharedAttachments, error) {
+func (r *PropertyRepository) attachment(ctx context.Context, id *string) (*attachmentsql.SharedAttachments, error) {
 	if id == nil {
 		return nil, nil
 	}
@@ -58,10 +57,10 @@ func (r *PropertyRepository) CreateLicence(ctx context.Context, parent string, l
 
 	tx := r.svc.Mutation.Tx()
 	if g.attachment != nil {
-		var res sharedschema.InsertSharedAttachmentsResponse
+		var res attachmentsql.InsertSharedAttachmentsResponse
 		tx.Add(r.svc.Mutation.Shared.Attachments.CreateOp(*g.attachment, &res))
 	}
-	var licRes pschema.InsertPropertyLicencesResponse
+	var licRes licencesql.InsertPropertyLicencesResponse
 	tx.Add(r.svc.Mutation.Property.Licences.CreateOp(g.licence, &licRes))
 	if err := tx.Commit(ctx); err != nil {
 		return nil, dbutil.MapHasuraErr(err)

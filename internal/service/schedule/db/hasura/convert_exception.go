@@ -6,10 +6,8 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
-	exceptionsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
-	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/availabilityexceptionsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
@@ -20,14 +18,14 @@ import (
 // exceptionGraph is the insert graph an AvailabilityException materializes into:
 // the exception row plus its belongs-to TimeWindow or DateRange span.
 type exceptionGraph struct {
-	exc    exceptionsql.CreateInput
+	exc    availabilityexceptionsql.CreateInput
 	window *timewindowsql.CreateInput
 	dates  *daterangesql.CreateInput
 }
 
 func buildExceptionGraph(e *schedulepbv1.AvailabilityException, propertyID, unitID string, now time.Time) *exceptionGraph {
 	g := &exceptionGraph{}
-	g.exc = exceptionsql.CreateInput{
+	g.exc = availabilityexceptionsql.CreateInput{
 		Kind:       kindToStr(e.GetKind()),
 		Reason:     e.GetReason(),
 		PropertyId: propertyID,
@@ -56,7 +54,7 @@ func buildExceptionGraph(e *schedulepbv1.AvailabilityException, propertyID, unit
 	return g
 }
 
-func exceptionFromParts(res *scheduleschema.ScheduleAvailabilityExceptions, window *sharedschema.SharedTimeWindows, dates *sharedschema.SharedDateRanges) *schedulepbv1.AvailabilityException {
+func exceptionFromParts(res *availabilityexceptionsql.ScheduleAvailabilityExceptions, window *timewindowsql.SharedTimeWindows, dates *daterangesql.SharedDateRanges) *schedulepbv1.AvailabilityException {
 	out := &schedulepbv1.AvailabilityException{
 		Name:       res.Name,
 		Kind:       kindFromStr(res.Kind),

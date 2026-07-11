@@ -3,12 +3,11 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
-
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 )
 
-func (r *PropertyRepository) money(ctx context.Context, id string) (*commonschema.CommonMoneys, error) {
+func (r *PropertyRepository) money(ctx context.Context, id string) (*moneysql.CommonMoneys, error) {
 	m, err := r.svc.Query.Common.Moneys.Get(ctx, id)
 	if err != nil {
 		return nil, dbutil.MapHasuraErr(err)

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/discountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/redemptionwindowsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
@@ -67,7 +66,7 @@ func moneyInput(id string, m *money.Money) moneysql.CreateInput {
 	}
 }
 
-func moneyFromModel(m *commonschema.CommonMoneys) *money.Money {
+func moneyFromModel(m *moneysql.CommonMoneys) *money.Money {
 	if m == nil {
 		return nil
 	}

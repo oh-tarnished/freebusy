@@ -10,13 +10,12 @@ package hasura
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
-	buffersschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/buffersettingsql"
-	cancelschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/cancellationpoliciesql"
-	recurringschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
-	refundschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/buffersettingsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/cancellationpoliciesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/recurringrulesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/refundtiersql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/resourceql"
-	scheduleschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/schemaql"
-	stayschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/stayconstraintsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/scheduleql/stayconstraintsql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 )
@@ -31,11 +30,11 @@ import (
 // ids (schedule_id, cancellation_policy_id) are stamped as the inputs are built.
 type scheduleGraph struct {
 	schedule           resourceql.CreateInput
-	buffers            *buffersschema.CreateInput
-	stayConstraints    *stayschema.CreateInput
-	cancellationPolicy *cancelschema.CreateInput
-	refundTiers        []refundschema.CreateInput
-	recurringRules     []recurringschema.CreateInput
+	buffers            *buffersettingsql.CreateInput
+	stayConstraints    *stayconstraintsql.CreateInput
+	cancellationPolicy *cancellationpoliciesql.CreateInput
+	refundTiers        []refundtiersql.CreateInput
+	recurringRules     []recurringrulesql.CreateInput
 }
 
 // buildScheduleGraph turns a proto Schedule into its insert graph under
@@ -47,7 +46,7 @@ func buildScheduleGraph(s *schedulepbv1.Schedule, propertyID string) *scheduleGr
 
 	if b := s.GetBuffers(); b != nil {
 		id := ulid.GenerateString()
-		g.buffers = &buffersschema.CreateInput{
+		g.buffers = &buffersettingsql.CreateInput{
 			Id:         id,
 			StartDelta: durationToStr(b.GetStartDelta()),
 			EndDelta:   durationToStr(b.GetEndDelta()),
@@ -59,7 +58,7 @@ func buildScheduleGraph(s *schedulepbv1.Schedule, propertyID string) *scheduleGr
 	}
 	if sc := s.GetStayConstraints(); sc != nil {
 		id := ulid.GenerateString()
-		g.stayConstraints = &stayschema.CreateInput{
+		g.stayConstraints = &stayconstraintsql.CreateInput{
 			Id:               id,
 			MinNights:        sc.GetMinNights(),
 			MaxNights:        sc.GetMaxNights(),
@@ -72,10 +71,10 @@ func buildScheduleGraph(s *schedulepbv1.Schedule, propertyID string) *scheduleGr
 	}
 	if cp := s.GetCancellationPolicy(); cp != nil {
 		id := ulid.GenerateString()
-		g.cancellationPolicy = &cancelschema.CreateInput{Id: id}
+		g.cancellationPolicy = &cancellationpoliciesql.CreateInput{Id: id}
 		g.schedule.CancellationPolicyId = id
 		for _, t := range cp.GetTiers() {
-			g.refundTiers = append(g.refundTiers, refundschema.CreateInput{
+			g.refundTiers = append(g.refundTiers, refundtiersql.CreateInput{
 				Id:                   ulid.GenerateString(),
 				CancellationPolicyId: id,
 				Cutoff:               durationToStr(t.GetCutoff()),
@@ -84,7 +83,7 @@ func buildScheduleGraph(s *schedulepbv1.Schedule, propertyID string) *scheduleGr
 		}
 	}
 	for _, r := range s.GetRecurringRules() {
-		g.recurringRules = append(g.recurringRules, recurringschema.CreateInput{
+		g.recurringRules = append(g.recurringRules, recurringrulesql.CreateInput{
 			Id:     ulid.GenerateString(),
 			Rrule:  r.GetRrule(),
 			Opens:  r.GetOpens(),
@@ -96,11 +95,11 @@ func buildScheduleGraph(s *schedulepbv1.Schedule, propertyID string) *scheduleGr
 
 // scheduleParts is a schedule row plus its hydrated child rows.
 type scheduleParts struct {
-	res         *scheduleschema.ScheduleResource
-	buffers     *scheduleschema.ScheduleBufferSettings
-	stay        *scheduleschema.ScheduleStayConstraints
-	refundTiers []scheduleschema.ScheduleRefundTiers
-	recurring   []scheduleschema.ScheduleRecurringRules
+	res         *resourceql.ScheduleResource
+	buffers     *buffersettingsql.ScheduleBufferSettings
+	stay        *stayconstraintsql.ScheduleStayConstraints
+	refundTiers []refundtiersql.ScheduleRefundTiers
+	recurring   []recurringrulesql.ScheduleRecurringRules
 	hasPolicy   bool
 }
 

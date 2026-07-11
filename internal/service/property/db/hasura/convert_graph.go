@@ -6,11 +6,9 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/policiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -75,10 +73,10 @@ func buildPropertyGraph(p *propertypbv1.Property, now time.Time) *propertyGraph 
 }
 
 type propertyParts struct {
-	res          *pschema.PropertyProperties
-	address      *commonschema.CommonPostalAddress
-	policy       *pschema.PropertyPolicies
-	medias       []pschema.PropertyMedias
+	res          *propertiesql.PropertyProperties
+	address      *postaladdressql.CommonPostalAddress
+	policy       *policiesql.PropertyPolicies
+	medias       []mediasql.PropertyMedias
 	unitNames    []string
 	licenceNames []string
 }
@@ -108,7 +106,7 @@ func propertyFromParts(p propertyParts) *propertypbv1.Property {
 	return out
 }
 
-func policyFromModel(p *pschema.PropertyPolicies) *propertypbv1.Policy {
+func policyFromModel(p *policiesql.PropertyPolicies) *propertypbv1.Policy {
 	if p == nil {
 		return nil
 	}
@@ -120,7 +118,7 @@ func policyFromModel(p *pschema.PropertyPolicies) *propertypbv1.Policy {
 	}
 }
 
-func mediaFromModel(m *pschema.PropertyMedias) *propertypbv1.Media {
+func mediaFromModel(m *mediasql.PropertyMedias) *propertypbv1.Media {
 	return &propertypbv1.Media{
 		Uri:         m.Uri,
 		Type:        mediaTypeFromStr(m.Type),

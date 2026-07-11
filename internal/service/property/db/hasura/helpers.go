@@ -1,17 +1,16 @@
 package hasura
 
 import (
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitapplicablepromocodesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitmediasql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
 	"github.com/the-protobuf-project/runtime-go/network/runtime"
 )
 
@@ -55,10 +54,10 @@ type unitRefs struct {
 // unit id) that reference them.
 func queueUnitInserts(tx *runtime.Tx, r *PropertyRepository, g *unitGraph, unitID string) {
 	if g.price != nil {
-		var res commonschema.InsertCommonMoneysResponse
+		var res moneysql.InsertCommonMoneysResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(*g.price, &res))
 	}
-	var uRes pschema.InsertPropertyUnitsResponse
+	var uRes unitsql.InsertPropertyUnitsResponse
 	tx.Add(r.svc.Mutation.Property.Units.CreateOp(g.unit, &uRes))
 	queueUnitChildInserts(tx, r, g, unitID)
 }
@@ -67,40 +66,40 @@ func queueUnitInserts(tx *runtime.Tx, r *PropertyRepository, g *unitGraph, unitI
 // the price Money or the unit row) — used by update, where the price is inserted
 // separately and the unit is patched rather than created.
 func queueUnitChildInserts(tx *runtime.Tx, r *PropertyRepository, g *unitGraph, unitID string) {
-	moneyRes := make([]commonschema.InsertCommonMoneysResponse, len(g.moneys))
+	moneyRes := make([]moneysql.InsertCommonMoneysResponse, len(g.moneys))
 	for i := range g.moneys {
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(g.moneys[i], &moneyRes[i]))
 	}
-	dateRes := make([]sharedschema.InsertSharedDateRangesResponse, len(g.dates))
+	dateRes := make([]daterangesql.InsertSharedDateRangesResponse, len(g.dates))
 	for i := range g.dates {
 		tx.Add(r.svc.Mutation.Shared.DateRanges.CreateOp(g.dates[i], &dateRes[i]))
 	}
-	roRes := make([]pschema.InsertPropertyRateOverridesResponse, len(g.rateOverrides))
+	roRes := make([]rateoverridesql.InsertPropertyRateOverridesResponse, len(g.rateOverrides))
 	for i := range g.rateOverrides {
 		g.rateOverrides[i].UnitId = unitID
 		tx.Add(r.svc.Mutation.Property.RateOverrides.CreateOp(g.rateOverrides[i], &roRes[i]))
 	}
-	ldRes := make([]pschema.InsertPropertyLosDiscountsResponse, len(g.losDiscounts))
+	ldRes := make([]losdiscountsql.InsertPropertyLosDiscountsResponse, len(g.losDiscounts))
 	for i := range g.losDiscounts {
 		g.losDiscounts[i].UnitId = unitID
 		tx.Add(r.svc.Mutation.Property.LosDiscounts.CreateOp(g.losDiscounts[i], &ldRes[i]))
 	}
-	feeRes := make([]pschema.InsertPropertyFeesResponse, len(g.fees))
+	feeRes := make([]feesql.InsertPropertyFeesResponse, len(g.fees))
 	for i := range g.fees {
 		g.fees[i].UnitId = unitID
 		tx.Add(r.svc.Mutation.Property.Fees.CreateOp(g.fees[i], &feeRes[i]))
 	}
-	taxRes := make([]pschema.InsertPropertyTaxesResponse, len(g.taxes))
+	taxRes := make([]taxesql.InsertPropertyTaxesResponse, len(g.taxes))
 	for i := range g.taxes {
 		g.taxes[i].UnitId = unitID
 		tx.Add(r.svc.Mutation.Property.Taxes.CreateOp(g.taxes[i], &taxRes[i]))
 	}
-	mediaRes := make([]pschema.InsertPropertyUnitMediasResponse, len(g.medias))
+	mediaRes := make([]unitmediasql.InsertPropertyUnitMediasResponse, len(g.medias))
 	for i := range g.medias {
 		g.medias[i].UnitId = unitID
 		tx.Add(r.svc.Mutation.Property.UnitMedias.CreateOp(g.medias[i], &mediaRes[i]))
 	}
-	codeRes := make([]pschema.InsertPropertyUnitApplicablePromoCodesResponse, len(g.promoCodes))
+	codeRes := make([]unitapplicablepromocodesql.InsertPropertyUnitApplicablePromoCodesResponse, len(g.promoCodes))
 	for i := range g.promoCodes {
 		g.promoCodes[i].UnitId = unitID
 		tx.Add(r.svc.Mutation.Property.UnitApplicablePromoCodes.CreateOp(g.promoCodes[i], &codeRes[i]))

@@ -3,14 +3,13 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	moneysql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -110,7 +109,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	// Stage 1: create the replacement rows (window + price breakdown). Additive
 	// only — safe to reap if the CAS below loses.
 	ins := r.svc.Mutation.Tx()
-	var winRes sharedschema.InsertSharedTimeWindowsResponse
+	var winRes timewindowsql.InsertSharedTimeWindowsResponse
 	ins.Add(r.svc.Mutation.Shared.TimeWindows.CreateOp(window, &winRes))
 	queueMoneyInserts(ins, r, priceIn, discountIn, totalIn)
 	if err := ins.Commit(ctx); err != nil {
@@ -130,11 +129,11 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	}
 	if casErr != nil {
 		reap := r.svc.Mutation.Tx()
-		var delW sharedschema.DeleteSharedTimeWindowsByIdResponse
+		var delW timewindowsql.DeleteSharedTimeWindowsByIdResponse
 		reap.Add(r.svc.Mutation.Shared.TimeWindows.DeleteOp(window.Id, &delW))
 		for _, in := range []*moneysql.CreateInput{priceIn, discountIn, totalIn} {
 			if in != nil {
-				var delM commonschema.DeleteCommonMoneysByIdResponse
+				var delM moneysql.DeleteCommonMoneysByIdResponse
 				reap.Add(r.svc.Mutation.Common.Moneys.DeleteOp(in.Id, &delM))
 			}
 		}
@@ -146,11 +145,11 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 	// consistent, so a failure here must not fail the reschedule — it only
 	// leaves orphaned value-object rows.
 	drop := r.svc.Mutation.Tx()
-	var delW sharedschema.DeleteSharedTimeWindowsByIdResponse
+	var delW timewindowsql.DeleteSharedTimeWindowsByIdResponse
 	drop.Add(r.svc.Mutation.Shared.TimeWindows.DeleteOp(res.WindowId, &delW))
 	for _, mid := range []*string{res.PriceId, res.DiscountId, res.TotalId} {
 		if mid != nil {
-			var delM commonschema.DeleteCommonMoneysByIdResponse
+			var delM moneysql.DeleteCommonMoneysByIdResponse
 			drop.Add(r.svc.Mutation.Common.Moneys.DeleteOp(*mid, &delM))
 		}
 	}

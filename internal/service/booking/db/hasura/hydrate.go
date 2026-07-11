@@ -3,14 +3,15 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/foreignerdetailsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestpreferencesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/iddocumentsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
-	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
@@ -18,7 +19,7 @@ import (
 )
 
 // hydrateBooking loads a booking row's value-objects and resolves its unit name.
-func (r *BookingRepository) hydrateBooking(ctx context.Context, res *bookingschema.BookingResource) (*bookingpbv1.Booking, error) {
+func (r *BookingRepository) hydrateBooking(ctx context.Context, res *resourceql.BookingResource) (*bookingpbv1.Booking, error) {
 	parts := bookingParts{res: res}
 
 	unitName, err := r.unitName(ctx, res.Unit)
@@ -88,10 +89,10 @@ func (r *BookingRepository) loadGuests(ctx context.Context, bookingID string) ([
 	out := make([]*identitypbv1.Guest, 0, len(rows))
 	for i := range rows {
 		g := &rows[i]
-		var doc *identityschema.IdentityIdDocuments
-		var foreigner *identityschema.IdentityForeignerDetails
-		var prefs *identityschema.IdentityGuestPreferences
-		var perm, loc *commonschema.CommonPostalAddress
+		var doc *iddocumentsql.IdentityIdDocuments
+		var foreigner *foreignerdetailsql.IdentityForeignerDetails
+		var prefs *guestpreferencesql.IdentityGuestPreferences
+		var perm, loc *postaladdressql.CommonPostalAddress
 		if g.IdDocumentId != nil {
 			if doc, err = r.svc.Query.Identity.IdDocuments.Get(ctx, *g.IdDocumentId); err != nil {
 				return nil, dbutil.MapHasuraErr(err)
@@ -173,7 +174,7 @@ func (r *BookingRepository) unitName(ctx context.Context, unitID string) (string
 
 // overlaps reports whether stored window w overlaps target [start,end) as UTC
 // instants (half-open: touching endpoints do not overlap).
-func overlaps(w *sharedschema.SharedTimeWindows, target *sharedpbv1.TimeWindow) bool {
+func overlaps(w *timewindowsql.SharedTimeWindows, target *sharedpbv1.TimeWindow) bool {
 	ws, we := strToTS(w.StartTime), strToTS(w.EndTime)
 	if ws == nil || we == nil || target == nil {
 		return false

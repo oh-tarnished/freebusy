@@ -2,12 +2,13 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/policiesql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -47,11 +48,11 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 
 	tx := r.svc.Mutation.Tx()
 	if g.address != nil {
-		var out commonschema.InsertCommonPostalAddressResponse
+		var out postaladdressql.InsertCommonPostalAddressResponse
 		tx.Add(r.svc.Mutation.Common.PostalAddress.CreateOp(*g.address, &out))
 	}
 	if g.policy != nil {
-		var out pschema.InsertPropertyPoliciesResponse
+		var out policiesql.InsertPropertyPoliciesResponse
 		tx.Add(r.svc.Mutation.Property.Policies.CreateOp(*g.policy, &out))
 	}
 	patch := propertiesql.UpdateInput{
@@ -66,12 +67,12 @@ func (r *PropertyRepository) UpdateProperty(ctx context.Context, p *propertypbv1
 		Etag:         graphql.Value(ulid.GenerateString()),
 		UpdateTime:   graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
-	var updRes pschema.UpdatePropertyPropertiesByIdResponse
+	var updRes propertiesql.UpdatePropertyPropertiesByIdResponse
 	tx.Add(r.svc.Mutation.Property.Properties.UpdateOp(id, patch, &updRes))
 
 	for i := range g.medias {
 		g.medias[i].PropertyId = id
-		var out pschema.InsertPropertyMediasResponse
+		var out mediasql.InsertPropertyMediasResponse
 		tx.Add(r.svc.Mutation.Property.Medias.CreateOp(g.medias[i], &out))
 	}
 	queuePropertyChildDeletes(tx, r, old)

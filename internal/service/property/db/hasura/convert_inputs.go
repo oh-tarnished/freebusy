@@ -7,9 +7,7 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	"github.com/the-protobuf-project/runtime-go/network/graphql"
@@ -26,7 +24,7 @@ func moneyInput(id string, m *money.Money) moneysql.CreateInput {
 	}
 }
 
-func moneyFromModel(m *commonschema.CommonMoneys) *money.Money {
+func moneyFromModel(m *moneysql.CommonMoneys) *money.Money {
 	if m == nil {
 		return nil
 	}
@@ -54,7 +52,7 @@ func addressInput(id string, a *postaladdress.PostalAddress) postaladdressql.Cre
 	}
 }
 
-func addressFromModel(a *commonschema.CommonPostalAddress) *postaladdress.PostalAddress {
+func addressFromModel(a *postaladdressql.CommonPostalAddress) *postaladdress.PostalAddress {
 	if a == nil {
 		return nil
 	}
@@ -81,7 +79,7 @@ func dateRangeInput(id string, d *sharedpbv1.DateRange) daterangesql.CreateInput
 	}
 }
 
-func dateRangeFromModel(d *sharedschema.SharedDateRanges) *sharedpbv1.DateRange {
+func dateRangeFromModel(d *daterangesql.SharedDateRanges) *sharedpbv1.DateRange {
 	if d == nil {
 		return nil
 	}

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
-	orgresourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/resourceql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/organisationql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
@@ -45,7 +45,7 @@ func seedUnit(t *testing.T, svc *freebusyql.Service) (propertyName, unitName str
 	now := dbutil.TsToStr(timestamppb.New(time.Now().UTC()))
 	orgID, propID, unitID := ulid.GenerateString(), ulid.GenerateString(), ulid.GenerateString()
 
-	if _, err := svc.Mutation.Organisation.Resource.Create(ctx, orgresourceql.CreateInput{
+	if _, err := svc.Mutation.Organisation.Resource.Create(ctx, resourceql.CreateInput{
 		Id:          orgID,
 		Name:        "organisations/" + orgID,
 		DisplayName: "it-org",

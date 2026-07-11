@@ -3,12 +3,11 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
-	sharedschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -50,7 +49,7 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 
 	tx := r.svc.Mutation.Tx()
 	if g.attachment != nil {
-		var out sharedschema.InsertSharedAttachmentsResponse
+		var out attachmentsql.InsertSharedAttachmentsResponse
 		tx.Add(r.svc.Mutation.Shared.Attachments.CreateOp(*g.attachment, &out))
 	}
 	patch := licencesql.UpdateInput{
@@ -64,10 +63,10 @@ func (r *PropertyRepository) UpdateLicence(ctx context.Context, l *propertypbv1.
 		Etag:             graphql.Value(ulid.GenerateString()),
 		UpdateTime:       graphql.Value(dbutil.TsToStr(timestamppb.New(now))),
 	}
-	var updRes pschema.UpdatePropertyLicencesByIdResponse
+	var updRes licencesql.UpdatePropertyLicencesByIdResponse
 	tx.Add(r.svc.Mutation.Property.Licences.UpdateOp(id, patch, &updRes))
 	if res.AttachmentId != nil {
-		var out sharedschema.DeleteSharedAttachmentsByIdResponse
+		var out attachmentsql.DeleteSharedAttachmentsByIdResponse
 		tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*res.AttachmentId, &out))
 	}
 	if err := tx.Commit(ctx); err != nil {
@@ -90,10 +89,10 @@ func (r *PropertyRepository) DeleteLicence(ctx context.Context, name string) err
 		return types.ErrNotFound
 	}
 	tx := r.svc.Mutation.Tx()
-	var delRes pschema.DeletePropertyLicencesByIdResponse
+	var delRes licencesql.DeletePropertyLicencesByIdResponse
 	tx.Add(r.svc.Mutation.Property.Licences.DeleteOp(id, &delRes))
 	if res.AttachmentId != nil {
-		var out sharedschema.DeleteSharedAttachmentsByIdResponse
+		var out attachmentsql.DeleteSharedAttachmentsByIdResponse
 		tx.Add(r.svc.Mutation.Shared.Attachments.DeleteOp(*res.AttachmentId, &out))
 	}
 	return dbutil.MapHasuraErr(tx.Commit(ctx))

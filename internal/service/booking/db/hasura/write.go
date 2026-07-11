@@ -2,12 +2,11 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -124,12 +123,12 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 	refundID := ""
 	if amount != nil {
 		mi := moneyInput(amount)
-		var mRes commonschema.InsertCommonMoneysResponse
+		var mRes moneysql.InsertCommonMoneysResponse
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(mi, &mRes))
 		patch.RefundAmountId = graphql.Value(mi.Id)
 		refundID = mi.Id
 	}
-	var updRes bookingschema.UpdateBookingResourceByIdResponse
+	var updRes resourceql.UpdateBookingResourceByIdResponse
 	tx.Add(r.svc.Mutation.Booking.Resource.UpdateOp(id, patch, &updRes, resourceql.Update().PreCheck(match)))
 	if err := tx.Commit(ctx); err != nil {
 		return nil, dbutil.MapHasuraErr(err)

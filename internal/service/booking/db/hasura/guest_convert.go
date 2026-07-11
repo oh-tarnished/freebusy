@@ -7,7 +7,6 @@ import (
 	"time"
 
 	postaladdressql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
 	"google.golang.org/genproto/googleapis/type/date"
@@ -34,7 +33,7 @@ func addressInput(a *postaladdress.PostalAddress) *postaladdressql.CreateInput {
 	}
 }
 
-func addressFromSchema(a *commonschema.CommonPostalAddress) *postaladdress.PostalAddress {
+func addressFromSchema(a *postaladdressql.CommonPostalAddress) *postaladdress.PostalAddress {
 	if a == nil {
 		return nil
 	}

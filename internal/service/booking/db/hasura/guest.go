@@ -4,14 +4,11 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	occupanciesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/occupanciesql"
-	bookingschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/schemaql"
 	postaladdressql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	foreignerdetailsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/foreignerdetailsql"
 	guestpreferencesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestpreferencesql"
 	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
 	iddocumentsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/iddocumentsql"
-	identityschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/schemaql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -33,7 +30,7 @@ func occupancyInput(o *bookingpbv1.Occupancy) *occupanciesql.CreateInput {
 	}
 }
 
-func occupancyFromSchema(o *bookingschema.BookingOccupancies) *bookingpbv1.Occupancy {
+func occupancyFromSchema(o *occupanciesql.BookingOccupancies) *bookingpbv1.Occupancy {
 	if o == nil {
 		return nil
 	}
@@ -133,7 +130,7 @@ func buildGuestGraphs(guests []*identitypbv1.Guest, bookingID string) []guestGra
 }
 
 // guestFromSchema hydrates a protobuf Guest from its stored rows.
-func guestFromSchema(g *identityschema.IdentityGuests, doc *identityschema.IdentityIdDocuments, f *identityschema.IdentityForeignerDetails, p *identityschema.IdentityGuestPreferences, perm, loc *commonschema.CommonPostalAddress) *identitypbv1.Guest {
+func guestFromSchema(g *guestsql.IdentityGuests, doc *iddocumentsql.IdentityIdDocuments, f *foreignerdetailsql.IdentityForeignerDetails, p *guestpreferencesql.IdentityGuestPreferences, perm, loc *postaladdressql.CommonPostalAddress) *identitypbv1.Guest {
 	out := &identitypbv1.Guest{
 		DisplayName:      g.DisplayName,
 		Primary:          repox.Deref(g.Primary),

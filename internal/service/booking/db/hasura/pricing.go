@@ -2,13 +2,13 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
-	scopeunitsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
 	feesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
 	losdiscountsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
-	propertyschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	taxesql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
 	"github.com/oh-tarnished/freebusy/internal/service/booking/pricing"
 	"google.golang.org/genproto/googleapis/type/money"
@@ -17,7 +17,7 @@ import (
 // pricingInputs loads a unit's pricing configuration (base price, fees, taxes,
 // LOS discounts) and, when promoID is set, the promo's discount and scope, into
 // the provider-neutral pricing.Inputs. The caller fills Nights and Units.
-func (r *BookingRepository) pricingInputs(ctx context.Context, unit *propertyschema.PropertyUnits, promoID string) (pricing.Inputs, error) {
+func (r *BookingRepository) pricingInputs(ctx context.Context, unit *unitsql.PropertyUnits, promoID string) (pricing.Inputs, error) {
 	in := pricing.Inputs{BookingMode: unit.BookingMode}
 
 	if unit.PriceId != nil {
@@ -122,7 +122,7 @@ func (r *BookingRepository) loadPromo(ctx context.Context, promoID string) (*pri
 				return nil, err
 			}
 		}
-		units, err := r.svc.Query.Promocode.ScopeApplicableUnits.List(ctx, scopeunitsql.List().Where(scopeunitsql.ScopeId.Eq(*res.ScopeId)))
+		units, err := r.svc.Query.Promocode.ScopeApplicableUnits.List(ctx, scopeapplicableunitsql.List().Where(scopeapplicableunitsql.ScopeId.Eq(*res.ScopeId)))
 		if err != nil {
 			return nil, dbutil.MapHasuraErr(err)
 		}

@@ -8,13 +8,18 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/discountsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/redemptionwindowsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/usagelimitsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/resourceql"
-	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -55,33 +60,33 @@ func (r *PromoCodeRepository) Create(ctx context.Context, pc *promocodepbv1.Prom
 
 	tx := r.svc.Mutation.Tx()
 
-	moneyRes := make([]commonschema.InsertCommonMoneysResponse, len(g.moneys))
+	moneyRes := make([]moneysql.InsertCommonMoneysResponse, len(g.moneys))
 	for i, m := range g.moneys {
 		tx.Add(r.svc.Mutation.Common.Moneys.CreateOp(m, &moneyRes[i]))
 	}
-	var discRes pcschema.InsertPromocodeDiscountsResponse
+	var discRes discountsql.InsertPromocodeDiscountsResponse
 	tx.Add(r.svc.Mutation.Promocode.Discounts.CreateOp(g.discount, &discRes))
 	if g.window != nil {
-		var wRes pcschema.InsertPromocodeRedemptionWindowsResponse
+		var wRes redemptionwindowsql.InsertPromocodeRedemptionWindowsResponse
 		tx.Add(r.svc.Mutation.Promocode.RedemptionWindows.CreateOp(*g.window, &wRes))
 	}
 	if g.limits != nil {
-		var lRes pcschema.InsertPromocodeUsageLimitsResponse
+		var lRes usagelimitsql.InsertPromocodeUsageLimitsResponse
 		tx.Add(r.svc.Mutation.Promocode.UsageLimits.CreateOp(*g.limits, &lRes))
 	}
 	if g.scope != nil {
-		var sRes pcschema.InsertPromocodeScopesResponse
+		var sRes scopesql.InsertPromocodeScopesResponse
 		tx.Add(r.svc.Mutation.Promocode.Scopes.CreateOp(*g.scope, &sRes))
-		resRes := make([]pcschema.InsertPromocodeScopeApplicablePropertiesResponse, len(g.properties))
+		resRes := make([]scopeapplicablepropertiesql.InsertPromocodeScopeApplicablePropertiesResponse, len(g.properties))
 		for i, row := range g.properties {
 			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableProperties.CreateOp(row, &resRes[i]))
 		}
-		offRes := make([]pcschema.InsertPromocodeScopeApplicableUnitsResponse, len(g.units))
+		offRes := make([]scopeapplicableunitsql.InsertPromocodeScopeApplicableUnitsResponse, len(g.units))
 		for i, row := range g.units {
 			tx.Add(r.svc.Mutation.Promocode.ScopeApplicableUnits.CreateOp(row, &offRes[i]))
 		}
 	}
-	var resourceRes pcschema.InsertPromocodeResourceResponse
+	var resourceRes resourceql.InsertPromocodeResourceResponse
 	tx.Add(r.svc.Mutation.Promocode.Resource.CreateOp(g.resource, &resourceRes))
 
 	if err := tx.Commit(ctx); err != nil {

@@ -8,16 +8,17 @@ package hasura
 
 import (
 	"context"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/postaladdressql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/policiesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/property"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
-	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/licencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
-	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/unitsql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -53,16 +54,16 @@ func (r *PropertyRepository) CreateProperty(ctx context.Context, p *propertypbv1
 
 	tx := r.svc.Mutation.Tx()
 	if g.address != nil {
-		var res commonschema.InsertCommonPostalAddressResponse
+		var res postaladdressql.InsertCommonPostalAddressResponse
 		tx.Add(r.svc.Mutation.Common.PostalAddress.CreateOp(*g.address, &res))
 	}
 	if g.policy != nil {
-		var res pschema.InsertPropertyPoliciesResponse
+		var res policiesql.InsertPropertyPoliciesResponse
 		tx.Add(r.svc.Mutation.Property.Policies.CreateOp(*g.policy, &res))
 	}
-	var propRes pschema.InsertPropertyPropertiesResponse
+	var propRes propertiesql.InsertPropertyPropertiesResponse
 	tx.Add(r.svc.Mutation.Property.Properties.CreateOp(g.property, &propRes))
-	mediaRes := make([]pschema.InsertPropertyMediasResponse, len(g.medias))
+	mediaRes := make([]mediasql.InsertPropertyMediasResponse, len(g.medias))
 	for i := range g.medias {
 		g.medias[i].PropertyId = id
 		tx.Add(r.svc.Mutation.Property.Medias.CreateOp(g.medias[i], &mediaRes[i]))
@@ -115,7 +116,7 @@ func (r *PropertyRepository) ListProperties(ctx context.Context, in repox.ListIn
 
 // fetchPropertyParts loads a property row's address, policy, media, and child
 // unit names, and returns the ids of the deletable child rows.
-func (r *PropertyRepository) fetchPropertyParts(ctx context.Context, res *pschema.PropertyProperties) (propertyParts, propertyRefs, error) {
+func (r *PropertyRepository) fetchPropertyParts(ctx context.Context, res *propertiesql.PropertyProperties) (propertyParts, propertyRefs, error) {
 	p := propertyParts{res: res}
 	refs := propertyRefs{addressID: res.AddressId, policyID: res.PolicyId}
 
