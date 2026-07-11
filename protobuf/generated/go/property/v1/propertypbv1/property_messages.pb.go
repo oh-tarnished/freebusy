@@ -27,7 +27,7 @@ const (
 // Request message for ListProperties.
 type ListPropertiesRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maximum number of properties to return. The server may cap this.
+	// Maximum number of properties to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListProperties call, for pagination.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
@@ -419,7 +419,7 @@ type ListUnitsRequest struct {
 	// The parent property whose units to list.
 	// Format: properties/{property}
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
-	// Maximum number of units to return. The server may cap this.
+	// Maximum number of units to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListUnits call's next_page_token.
 	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
@@ -792,7 +792,7 @@ type ListLicencesRequest struct {
 	// ones alike; narrow with `filter`.
 	// Format: properties/{property}
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
-	// Maximum number of licences to return. The server may cap this.
+	// Maximum number of licences to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListLicences call's next_page_token.
 	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`

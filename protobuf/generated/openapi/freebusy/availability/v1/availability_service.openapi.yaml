@@ -467,7 +467,7 @@ components:
                          ascending.
                 pageSize:
                     type: integer
-                    description: Maximum number of matches to return. The server may cap this.
+                    description: Maximum number of matches to return. Must be at most 1000; larger values are rejected.
                     format: int32
                 pageToken:
                     type: string

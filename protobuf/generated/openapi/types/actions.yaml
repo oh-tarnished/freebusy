@@ -44,7 +44,9 @@ components:
               description: Cached display name of the member.
               type: string
             email:
-              description: The invited email address.
+              description: The invited email address. Format is enforced at the entry
+                point (InviteMemberRequest.email), not on the stored field, so legacy
+                rows never brick a role update.
               type: string
             etag:
               description: Opaque version for optimistic concurrency (AIP-154); echo
@@ -66,7 +68,8 @@ components:
               - ORGANISATION_ROLE_VIEWER
               type: string
             state:
-              description: Confirmation state of the membership.
+              description: Confirmation state of the membership. New members start
+                INVITED (database default).
               enum:
               - MEMBER_STATE_UNSPECIFIED
               - MEMBER_STATE_INVITED
@@ -97,7 +100,9 @@ components:
               description: Cached display name of the member.
               type: string
             email:
-              description: The invited email address.
+              description: The invited email address. Format is enforced at the entry
+                point (InviteMemberRequest.email), not on the stored field, so legacy
+                rows never brick a role update.
               type: string
             etag:
               description: Opaque version for optimistic concurrency (AIP-154); echo
@@ -119,7 +124,8 @@ components:
               - ORGANISATION_ROLE_VIEWER
               type: string
             state:
-              description: Confirmation state of the membership.
+              description: Confirmation state of the membership. New members start
+                INVITED (database default).
               enum:
               - MEMBER_STATE_UNSPECIFIED
               - MEMBER_STATE_INVITED

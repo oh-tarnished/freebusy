@@ -163,7 +163,7 @@ Request message for SearchAvailability. Sweeps the catalog for units that are bo
 | `units` | `int32` | `OPTIONAL` | Number of units / party size required free. Defaults to 1. |
 | `filter` | `string` | `OPTIONAL` | Filter (AIP-160) over unit fields to narrow the catalog, e.g. `type = UNIT_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match. |
 | `order_by` | `string` | `OPTIONAL` | Sort order for matches, e.g. "price" or "price desc". Defaults to price ascending. |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of matches to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of matches to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous SearchAvailability call's next_page_token. |
 | `include_unavailable` | `bool` | `OPTIONAL` | If true, include units that matched the filter but are not bookable for the period (with bookable=false), instead of dropping them. |
 | `property` | `string` | `OPTIONAL` | Scope the search to a single property (hotel). Empty searches all properties. Format: properties/{property} |

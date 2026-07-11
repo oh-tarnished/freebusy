@@ -1,6 +1,8 @@
 // Package types holds the shared, provider-agnostic vocabulary for the freebusy
 // API conventions (Google AIP): sentinel errors, list pagination/ordering,
-// field-mask handling, and resource-name parsing. It depends on nothing in the
-// project, so every layer — services, the database adapters, future packages —
-// can share these without coupling to a concrete ORM or GraphQL client.
+// field-mask handling, and resource-name parsing. Its error sentinels alias the
+// generated repox ones and its filter shapes bridge to the generated filterx
+// engines, so hand-written and generated repositories are indistinguishable to
+// the gRPC layer; beyond those two bridges it stays free of ORM and GraphQL
+// concerns.
 package types

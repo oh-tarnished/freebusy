@@ -153,7 +153,7 @@ components:
           description: Any additional free-text notes.
           type: string
         state:
-          description: Lifecycle state.
+          description: Lifecycle state. New licences start ACTIVE (database default).
           enum:
           - LICENCE_STATE_UNSPECIFIED
           - LICENCE_STATE_ACTIVE
@@ -562,7 +562,7 @@ components:
               type: string
           type: object
         state:
-          description: Lifecycle state.
+          description: Lifecycle state. New properties start ACTIVE (database default).
           enum:
           - PROPERTY_STATE_UNSPECIFIED
           - PROPERTY_STATE_ACTIVE
@@ -1018,7 +1018,7 @@ components:
             type: object
           type: array
         state:
-          description: Lifecycle state.
+          description: Lifecycle state. New units start ACTIVE (database default).
           enum:
           - UNIT_STATE_UNSPECIFIED
           - UNIT_STATE_ACTIVE

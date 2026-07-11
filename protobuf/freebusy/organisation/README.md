@@ -79,7 +79,7 @@ A chain: the hotel brand/company that owns one or more properties, and the unit 
 | `name` | `string` | `IDENTIFIER` | The organisation name. Format: organisations/{organisation} |
 | `display_name` | `string` | `REQUIRED` | Human-friendly organisation name (e.g. "Acme Inc."). |
 | `slug` | `string` | `OPTIONAL` | URL-safe slug, unique across organisations. |
-| `billing_email` | `string` | `OPTIONAL` | Billing contact email. |
+| `billing_email` | `string` | `OPTIONAL` | Billing contact email. Format is validated where the value enters the system (request-entry), not here — a stored value predating stricter rules must never brick an unrelated update. |
 | `state` | `OrganisationState` | `OUTPUT_ONLY` | Lifecycle state. New organisations start ACTIVE (database default). |
 | `settings` | `Struct` | `OPTIONAL` | Arbitrary organisation-level settings. |
 | `member_count` | `int64` | `OUTPUT_ONLY` | Number of members across all states. |
@@ -95,7 +95,7 @@ The membership of a user in an organisation, with their role.
 | --- | --- | --- | --- |
 | `name` | `string` | `IDENTIFIER` | The member name. Format: organisations/{organisation}/members/{member} |
 | `user` | `string` | `OUTPUT_ONLY` | The user, once the invite is accepted. Format: users/{user} |
-| `email` | `string` | `REQUIRED` | The invited email address. |
+| `email` | `string` | `REQUIRED` | The invited email address. Format is enforced at the entry point (InviteMemberRequest.email), not on the stored field, so legacy rows never brick a role update. |
 | `display_name` | `string` | `OUTPUT_ONLY` | Cached display name of the member. |
 | `role` | `OrganisationRole` | `REQUIRED` | The member's role in the organisation. |
 | `state` | `MemberState` | `OUTPUT_ONLY` | Confirmation state of the membership. New members start INVITED (database default). |
@@ -110,7 +110,7 @@ Request message for ListOrganisations.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of organisations to return. The server may cap this. Zero lets the server pick a default. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of organisations to return. Must be at most 1000; larger values are rejected. Zero lets the server pick a default. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListOrganisations call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression over organisation fields (e.g. display_name). |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc". |
@@ -167,7 +167,7 @@ Request message for ListMembers.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The organisation whose members to list. Format: organisations/{organisation} |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of members to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of members to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListMembers call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `role = ADMIN` or `state = ACTIVE`. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc". |

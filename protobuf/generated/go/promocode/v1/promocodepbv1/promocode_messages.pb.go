@@ -28,7 +28,7 @@ const (
 // Request message for ListPromoCodes.
 type ListPromoCodesRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maximum number of promo codes to return. The server may cap this.
+	// Maximum number of promo codes to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListPromoCodes call's next_page_token.
 	PageToken string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
@@ -668,7 +668,7 @@ type ListRedemptionsRequest struct {
 	// The promo code whose redemptions to list.
 	// Format: promoCodes/{promo_code}
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
-	// Maximum number of redemptions to return. The server may cap this.
+	// Maximum number of redemptions to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListRedemptions call's next_page_token.
 	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`

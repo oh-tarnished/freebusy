@@ -124,7 +124,7 @@ Request message for ListUsers. Users are global; use OrganisationService and the
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of users to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of users to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListUsers call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. a match on display_name or email. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |

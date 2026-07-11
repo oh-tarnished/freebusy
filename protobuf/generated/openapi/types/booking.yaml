@@ -685,7 +685,8 @@ components:
           format: int32
           type: integer
         state:
-          description: Current lifecycle state.
+          description: Current lifecycle state. New bookings start PENDING_HOLD (database
+            default); confirm/cancel transitions move it explicitly.
           enum:
           - BOOKING_STATE_UNSPECIFIED
           - BOOKING_STATE_PENDING_HOLD

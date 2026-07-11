@@ -276,7 +276,7 @@ message SearchAvailabilityRequest {
   // ascending.
   string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
 
-  // Maximum number of matches to return. The server may cap this.
+  // Maximum number of matches to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 6 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {

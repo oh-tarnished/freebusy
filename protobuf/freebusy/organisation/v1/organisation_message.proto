@@ -16,7 +16,7 @@ option java_package = "dev.ohtarnished.freebusy.organisation.v1";
 
 // Request message for ListOrganisations.
 message ListOrganisationsRequest {
-  // Maximum number of organisations to return. The server may cap this. Zero lets
+  // Maximum number of organisations to return. Must be at most 1000; larger values are rejected. Zero lets
   // the server pick a default.
   int32 page_size = 1 [
     (google.api.field_behavior) = OPTIONAL,
@@ -126,7 +126,7 @@ message ListMembersRequest {
     (buf.validate.field).string.pattern = "^organisations/[^/]+$"
   ];
 
-  // Maximum number of members to return. The server may cap this.
+  // Maximum number of members to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 2 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {

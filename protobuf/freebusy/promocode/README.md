@@ -99,7 +99,7 @@ Request message for ListPromoCodes.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of promo codes to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of promo codes to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListPromoCodes call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression over promo code fields, e.g. `state = ACTIVE` or a substring match on code/display_name (AIP-160). |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "code" or "create_time desc". |
@@ -194,7 +194,7 @@ Request message for ListRedemptions.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The promo code whose redemptions to list. Format: promoCodes/{promo_code} |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of redemptions to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of redemptions to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListRedemptions call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression over redemption fields, e.g. `customer = "users/123"` (AIP-160). |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "redeemed_time desc". |

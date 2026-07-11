@@ -102,6 +102,9 @@ func TestValidationInterceptor_Services(t *testing.T) {
 		{"org create ok", &orgpbv1.CreateOrganisationRequest{Organisation: &orgpbv1.Organisation{DisplayName: "Acme"}}, false},
 		{"org update missing name", &orgpbv1.UpdateOrganisationRequest{Organisation: &orgpbv1.Organisation{DisplayName: "Acme"}}, true},
 		{"org invite bad email", &orgpbv1.InviteMemberRequest{Parent: "organisations/o1", Email: "nope", Role: orgpbv1.OrganisationRole_ORGANISATION_ROLE_ADMIN}, true},
+		// Stored-field emails are validated at request entry only: a member row
+		// created under looser rules must still accept a role-only update.
+		{"member update with legacy email ok", &orgpbv1.UpdateMemberRequest{Member: &orgpbv1.Member{Name: "organisations/o1/members/m1", Email: "ops@intranet", Role: orgpbv1.OrganisationRole_ORGANISATION_ROLE_ADMIN}}, false},
 		{"org invite unset role", &orgpbv1.InviteMemberRequest{Parent: "organisations/o1", Email: "a@b.co"}, true},
 		{"org invite ok", &orgpbv1.InviteMemberRequest{Parent: "organisations/o1", Email: "a@b.co", Role: orgpbv1.OrganisationRole_ORGANISATION_ROLE_ADMIN}, false},
 		{"org list page_size too big", &orgpbv1.ListOrganisationsRequest{PageSize: 5000}, true},

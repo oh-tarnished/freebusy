@@ -27,7 +27,7 @@ const (
 // Request message for ListOrganisations.
 type ListOrganisationsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maximum number of organisations to return. The server may cap this. Zero lets
+	// Maximum number of organisations to return. Must be at most 1000; larger values are rejected. Zero lets
 	// the server pick a default.
 	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListOrganisations call's next_page_token.
@@ -383,7 +383,7 @@ type ListMembersRequest struct {
 	// The organisation whose members to list.
 	// Format: organisations/{organisation}
 	Parent string `protobuf:"bytes,1,opt,name=parent,proto3" json:"parent,omitempty"`
-	// Maximum number of members to return. The server may cap this.
+	// Maximum number of members to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous ListMembers call's next_page_token.
 	PageToken string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`

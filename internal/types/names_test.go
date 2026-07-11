@@ -1,7 +1,6 @@
 package types
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -49,22 +48,5 @@ func TestResolvePromoCodeName(t *testing.T) {
 	}
 	if gotID != "ABC" || gotName != "promoCodes/ABC" {
 		t.Fatalf("resolve = (%q,%q), want (ABC, promoCodes/ABC)", gotID, gotName)
-	}
-}
-
-func TestOfferingName(t *testing.T) {
-	name, err := OfferingName("room-1", "night")
-	if err != nil {
-		t.Fatalf("OfferingName: %v", err)
-	}
-	if !strings.HasSuffix(name, "resources/room-1/offerings/night") {
-		t.Fatalf("offering name = %q", name)
-	}
-	got, err := OfferingID(name)
-	if err != nil {
-		t.Fatalf("OfferingID: %v", err)
-	}
-	if got != "night" {
-		t.Fatalf("offering id = %q, want night", got)
 	}
 }

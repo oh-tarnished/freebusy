@@ -227,8 +227,8 @@ components:
           description: Sort order, e.g. "code" or "create_time desc".
           type: string
         pageSize:
-          description: Maximum number of promo codes to return. The server may cap
-            this.
+          description: Maximum number of promo codes to return. Must be at most 1000;
+            larger values are rejected.
           format: int32
           type: integer
         pageToken:
@@ -424,8 +424,8 @@ components:
           description: Sort order, e.g. "redeemed_time desc".
           type: string
         pageSize:
-          description: Maximum number of redemptions to return. The server may cap
-            this.
+          description: Maximum number of redemptions to return. Must be at most 1000;
+            larger values are rejected.
           format: int32
           type: integer
         pageToken:

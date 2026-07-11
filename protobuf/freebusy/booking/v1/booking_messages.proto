@@ -80,7 +80,7 @@ message GetBookingGuestsRequest {
 
 // Request message for ListBookings.
 message ListBookingsRequest {
-  // Maximum number of bookings to return. The server may cap this.
+  // Maximum number of bookings to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 1 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {

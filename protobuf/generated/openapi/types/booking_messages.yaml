@@ -705,7 +705,8 @@ components:
               format: int32
               type: integer
             state:
-              description: Current lifecycle state.
+              description: Current lifecycle state. New bookings start PENDING_HOLD
+                (database default); confirm/cancel transitions move it explicitly.
               enum:
               - BOOKING_STATE_UNSPECIFIED
               - BOOKING_STATE_PENDING_HOLD
@@ -800,7 +801,8 @@ components:
           description: Sort order, e.g. "create_time desc" or "window.start_time".
           type: string
         pageSize:
-          description: Maximum number of bookings to return. The server may cap this.
+          description: Maximum number of bookings to return. Must be at most 1000;
+            larger values are rejected.
           format: int32
           type: integer
         pageToken:
@@ -1519,7 +1521,8 @@ components:
                 format: int32
                 type: integer
               state:
-                description: Current lifecycle state.
+                description: Current lifecycle state. New bookings start PENDING_HOLD
+                  (database default); confirm/cancel transitions move it explicitly.
                 enum:
                 - BOOKING_STATE_UNSPECIFIED
                 - BOOKING_STATE_PENDING_HOLD

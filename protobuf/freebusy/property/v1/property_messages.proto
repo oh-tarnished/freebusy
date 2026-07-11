@@ -16,7 +16,7 @@ option java_package = "dev.ohtarnished.freebusy.property.v1";
 
 // Request message for ListProperties.
 message ListPropertiesRequest {
-  // Maximum number of properties to return. The server may cap this.
+  // Maximum number of properties to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 1 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {
@@ -142,7 +142,7 @@ message ListUnitsRequest {
     (buf.validate.field).string.pattern = "^properties/[^/]+$"
   ];
 
-  // Maximum number of units to return. The server may cap this.
+  // Maximum number of units to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 2 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {
@@ -275,7 +275,7 @@ message ListLicencesRequest {
     (buf.validate.field).string.pattern = "^properties/[^/]+$"
   ];
 
-  // Maximum number of licences to return. The server may cap this.
+  // Maximum number of licences to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 2 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {

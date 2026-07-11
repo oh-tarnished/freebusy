@@ -222,7 +222,7 @@ Request message for ListProperties.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of properties to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of properties to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListProperties call, for pagination. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `organisation = "organisations/7"`, `state = PROPERTY_STATE_ACTIVE`, `tags:"beachfront"`, or a display_name match. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
@@ -286,7 +286,7 @@ Request message for ListUnits.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The parent property whose units to list. Format: properties/{property} |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of units to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of units to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListUnits call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `type = UNIT_TYPE_ROOM`, `state = UNIT_STATE_ACTIVE`, or a match on display_name. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "display_name" or "create_time desc". |
@@ -344,7 +344,7 @@ Request message for ListLicences.
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
 | `parent` | `string` | `REQUIRED` | The parent property whose licences to list — property-wide and per-unit ones alike; narrow with `filter`. Format: properties/{property} |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of licences to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of licences to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListLicences call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `type = LICENCE_TYPE_FIRE_SAFETY`, `target = LICENCE_TARGET_UNIT`, `unit = properties/p1/units/u1`, or `expiry_date <= 2026-08-01` to find licences due for renewal. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "expiry_date" or "create_time desc". |

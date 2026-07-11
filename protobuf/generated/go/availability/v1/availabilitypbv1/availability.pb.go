@@ -999,7 +999,7 @@ type SearchAvailabilityRequest struct {
 	// Sort order for matches, e.g. "price" or "price desc". Defaults to price
 	// ascending.
 	OrderBy string `protobuf:"bytes,5,opt,name=order_by,json=orderBy,proto3" json:"order_by,omitempty"`
-	// Maximum number of matches to return. The server may cap this.
+	// Maximum number of matches to return. Must be at most 1000; larger values are rejected.
 	PageSize int32 `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	// Page token from a previous SearchAvailability call's next_page_token.
 	PageToken string `protobuf:"bytes,7,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`

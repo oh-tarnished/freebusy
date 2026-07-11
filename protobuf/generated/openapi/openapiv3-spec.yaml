@@ -250,7 +250,7 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          description: Maximum number of bookings to return. The server may cap this.
+          description: Maximum number of bookings to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -1293,7 +1293,7 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          description: Maximum number of users to return. The server may cap this.
+          description: Maximum number of users to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -1419,7 +1419,7 @@ paths:
         - name: pageSize
           in: query
           description: |-
-            Maximum number of organisations to return. The server may cap this. Zero lets
+            Maximum number of organisations to return. Must be at most 1000; larger values are rejected. Zero lets
              the server pick a default.
           schema:
             type: integer
@@ -1629,7 +1629,7 @@ paths:
             type: string
         - name: pageSize
           in: query
-          description: Maximum number of members to return. The server may cap this.
+          description: Maximum number of members to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -1840,7 +1840,7 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          description: Maximum number of promo codes to return. The server may cap this.
+          description: Maximum number of promo codes to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -2084,7 +2084,7 @@ paths:
             type: string
         - name: pageSize
           in: query
-          description: Maximum number of redemptions to return. The server may cap this.
+          description: Maximum number of redemptions to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -2211,7 +2211,7 @@ paths:
             type: string
         - name: pageSize
           in: query
-          description: Maximum number of licences to return. The server may cap this.
+          description: Maximum number of licences to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -2437,7 +2437,7 @@ paths:
       parameters:
         - name: pageSize
           in: query
-          description: Maximum number of properties to return. The server may cap this.
+          description: Maximum number of properties to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -2612,7 +2612,7 @@ paths:
             type: string
         - name: pageSize
           in: query
-          description: Maximum number of units to return. The server may cap this.
+          description: Maximum number of units to return. Must be at most 1000; larger values are rejected.
           schema:
             type: integer
             format: int32
@@ -3968,7 +3968,7 @@ components:
              ascending.
         pageSize:
           type: integer
-          description: Maximum number of matches to return. The server may cap this.
+          description: Maximum number of matches to return. Must be at most 1000; larger values are rejected.
           format: int32
         pageToken:
           type: string
@@ -4196,7 +4196,9 @@ components:
         state:
           readOnly: true
           type: integer
-          description: Current lifecycle state.
+          description: |-
+            Current lifecycle state. New bookings start PENDING_HOLD (database
+             default); confirm/cancel transitions move it explicitly.
           format: enum
         holdExpireTime:
           readOnly: true
@@ -5330,7 +5332,10 @@ components:
              Format: users/{user}
         email:
           type: string
-          description: The invited email address.
+          description: |-
+            The invited email address. Format is enforced at the entry point
+             (InviteMemberRequest.email), not on the stored field, so legacy rows
+             never brick a role update.
         displayName:
           readOnly: true
           type: string
@@ -5342,7 +5347,9 @@ components:
         state:
           readOnly: true
           type: integer
-          description: Confirmation state of the membership.
+          description: |-
+            Confirmation state of the membership. New members start INVITED
+             (database default).
           format: enum
         inviter:
           readOnly: true
@@ -5382,11 +5389,14 @@ components:
           description: URL-safe slug, unique across organisations.
         billingEmail:
           type: string
-          description: Billing contact email.
+          description: |-
+            Billing contact email. Format is validated where the value enters the
+             system (request-entry), not here — a stored value predating stricter rules
+             must never brick an unrelated update.
         state:
           readOnly: true
           type: integer
-          description: Lifecycle state.
+          description: Lifecycle state. New organisations start ACTIVE (database default).
           format: enum
         settings:
           type: object
@@ -5751,7 +5761,7 @@ components:
         state:
           readOnly: true
           type: integer
-          description: Lifecycle state.
+          description: Lifecycle state. New licences start ACTIVE (database default).
           format: enum
         createTime:
           readOnly: true
@@ -5998,7 +6008,7 @@ components:
         state:
           readOnly: true
           type: integer
-          description: Lifecycle state.
+          description: Lifecycle state. New properties start ACTIVE (database default).
           format: enum
         createTime:
           readOnly: true
@@ -6231,7 +6241,7 @@ components:
         state:
           readOnly: true
           type: integer
-          description: Lifecycle state.
+          description: Lifecycle state. New units start ACTIVE (database default).
           format: enum
         createTime:
           readOnly: true

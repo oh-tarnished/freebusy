@@ -184,7 +184,7 @@ Request message for ListBookings.
 
 | Field | Type | Behavior | Description |
 | --- | --- | --- | --- |
-| `page_size` | `int32` | `OPTIONAL` | Maximum number of bookings to return. The server may cap this. |
+| `page_size` | `int32` | `OPTIONAL` | Maximum number of bookings to return. Must be at most 1000; larger values are rejected. |
 | `page_token` | `string` | `OPTIONAL` | Page token from a previous ListBookings call's next_page_token. |
 | `filter` | `string` | `OPTIONAL` | Filter expression (AIP-160), e.g. `unit = "properties/9/units/42"`, `customer = "users/7"`, `state = CONFIRMED`, or a window overlap predicate. |
 | `order_by` | `string` | `OPTIONAL` | Sort order, e.g. "create_time desc" or "window.start_time". |

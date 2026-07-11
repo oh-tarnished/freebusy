@@ -40,7 +40,9 @@ type Organisation struct {
 	DisplayName string `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// URL-safe slug, unique across organisations.
 	Slug string `protobuf:"bytes,4,opt,name=slug,proto3" json:"slug,omitempty"`
-	// Billing contact email.
+	// Billing contact email. Format is validated where the value enters the
+	// system (request-entry), not here — a stored value predating stricter rules
+	// must never brick an unrelated update.
 	BillingEmail string `protobuf:"bytes,5,opt,name=billing_email,json=billingEmail,proto3" json:"billing_email,omitempty"`
 	// Lifecycle state. New organisations start ACTIVE (database default).
 	State OrganisationState `protobuf:"varint,6,opt,name=state,proto3,enum=freebusy.organisation.v1.OrganisationState" json:"state,omitempty"`
@@ -167,7 +169,9 @@ type Member struct {
 	// The user, once the invite is accepted.
 	// Format: users/{user}
 	User string `protobuf:"bytes,3,opt,name=user,proto3" json:"user,omitempty"`
-	// The invited email address.
+	// The invited email address. Format is enforced at the entry point
+	// (InviteMemberRequest.email), not on the stored field, so legacy rows
+	// never brick a role update.
 	Email string `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
 	// Cached display name of the member.
 	DisplayName string `protobuf:"bytes,5,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
@@ -293,12 +297,12 @@ var File_freebusy_organisation_v1_organisation_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a\x1bbuf/validate/validate.proto\x1a$freebusy/organisation/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"\xfc\x04\n" +
+	"+freebusy/organisation/v1/organisation.proto\x12\x18freebusy.organisation.v1\x1a\x1bbuf/validate/validate.proto\x1a$freebusy/organisation/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"\xf2\x04\n" +
 	"\fOrganisation\x126\n" +
 	"\x04name\x18\x01 \x01(\tB\"\xe0A\b\xbaH\x1c\xd8\x01\x01r\x172\x15^organisations/[^/]+$R\x04name\x12,\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12\x17\n" +
-	"\x04slug\x18\x04 \x01(\tB\x03\xe0A\x01R\x04slug\x122\n" +
-	"\rbilling_email\x18\x05 \x01(\tB\r\xe0A\x01\xbaH\a\xd8\x01\x01r\x02`\x01R\fbillingEmail\x12R\n" +
+	"\x04slug\x18\x04 \x01(\tB\x03\xe0A\x01R\x04slug\x12(\n" +
+	"\rbilling_email\x18\x05 \x01(\tB\x03\xe0A\x01R\fbillingEmail\x12R\n" +
 	"\x05state\x18\x06 \x01(\x0e2+.freebusy.organisation.v1.OrganisationStateB\x0f\xe0A\x03\x92\xb5\x18\b\x1a\x06ACTIVER\x05state\x128\n" +
 	"\bsettings\x18\a \x01(\v2\x17.google.protobuf.StructB\x03\xe0A\x01R\bsettings\x12&\n" +
 	"\fmember_count\x18\b \x01(\x03B\x03\xe0A\x03R\vmemberCount\x12@\n" +
@@ -308,12 +312,12 @@ const file_freebusy_organisation_v1_organisation_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
 	"\x04etag\x18\v \x01(\tR\x04etag:e\xeaAb\n" +
-	"%freebusy.organisation.v1/Organisation\x12\x1corganisations/{organisation}*\rorganisations2\forganisationJ\x04\b\x02\x10\x03\"\xb5\x05\n" +
+	"%freebusy.organisation.v1/Organisation\x12\x1corganisations/{organisation}*\rorganisations2\forganisationJ\x04\b\x02\x10\x03\"\xab\x05\n" +
 	"\x06Member\x12D\n" +
 	"\x04name\x18\x01 \x01(\tB0\xe0A\b\xbaH*\xd8\x01\x01r%2#^organisations/[^/]+/members/[^/]+$R\x04name\x125\n" +
 	"\x04user\x18\x03 \x01(\tB!\xe0A\x03\xfaA\x1b\n" +
-	"\x19freebusy.identity.v1/UserR\x04user\x12)\n" +
-	"\x05email\x18\x04 \x01(\tB\x13\xe0A\x02\xbaH\a\xd8\x01\x01r\x02`\x01\x9a\xb5\x18\x02\x18\x01R\x05email\x12&\n" +
+	"\x19freebusy.identity.v1/UserR\x04user\x12\x1f\n" +
+	"\x05email\x18\x04 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\x05email\x12&\n" +
 	"\fdisplay_name\x18\x05 \x01(\tB\x03\xe0A\x03R\vdisplayName\x12K\n" +
 	"\x04role\x18\x06 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\v\xe0A\x02\xbaH\x05\x82\x01\x02\x10\x01R\x04role\x12M\n" +
 	"\x05state\x18\a \x01(\x0e2%.freebusy.organisation.v1.MemberStateB\x10\xe0A\x03\x92\xb5\x18\t\x1a\aINVITEDR\x05state\x12;\n" +

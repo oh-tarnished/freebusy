@@ -10,9 +10,7 @@ package config
 import (
 	"embed"
 	"fmt"
-	"os"
 
-	"github.com/oh-tarnished/freebusy/shared"
 	"github.com/oh-tarnished/runtime-go/grpc/options"
 )
 
@@ -145,66 +143,4 @@ type HasuraConfig struct {
 	URL string `koanf:"url"`
 	// AdminSecret is sent as the x-hasura-admin-secret header (empty to omit).
 	AdminSecret string `koanf:"admin_secret"`
-}
-
-// loadedConfig holds the parsed configuration singleton.
-var loadedConfig *AppConfig
-
-func init() {
-	// 1. Embedded production defaults (always present).
-	data, err := configFS.ReadFile("freebusy.release.toml")
-	if err != nil {
-		panic(fmt.Sprintf("embedded config not found: %v", err))
-	}
-	if err := shared.LoadTomlBytes(data); err != nil {
-		panic(fmt.Sprintf("failed to load embedded config: %v", err))
-	}
-
-	// 2. Optional local-dev overlay (developer machines only). Keys it defines
-	// win; everything else falls through to the embedded release defaults.
-	if overlay, err := os.ReadFile(devOverlayPath); err == nil {
-		if err := shared.LoadTomlBytes(overlay); err != nil {
-			panic(fmt.Sprintf("failed to load dev overlay %q: %v", devOverlayPath, err))
-		}
-	}
-
-	loadedConfig = &AppConfig{}
-	if err := shared.Getconfig().Toml.Unmarshal("", loadedConfig); err != nil {
-		panic(fmt.Sprintf("failed to unmarshal config: %v", err))
-	}
-
-	if loadedConfig.Meta.Name == "" || loadedConfig.Meta.Version == "" {
-		panic(fmt.Sprintf("config invalid: name=%q version=%q",
-			loadedConfig.Meta.Name, loadedConfig.Meta.Version))
-	}
-	if !loadedConfig.Server.Environment.IsValid() {
-		panic(fmt.Sprintf("config invalid: server.environment=%q (want development|debug|staging|production)",
-			loadedConfig.Server.Environment))
-	}
-	if loadedConfig.Server.EnableMCP && !validMCPTransport(loadedConfig.Server.MCP.Transport) {
-		panic(fmt.Sprintf("config invalid: server.mcp.transport=%q (want stdio|streamable-http|sse)",
-			loadedConfig.Server.MCP.Transport))
-	}
-	if loadedConfig.Server.ExperimentalHTTP3 && !loadedConfig.Server.TLS.Enabled() {
-		panic("config invalid: server.experimental_http3 requires server.tls.cert_file and server.tls.key_file")
-	}
-}
-
-// validMCPTransport reports whether t is one of the supported MCP transports.
-// MCPTransport carries no validity method of its own, so the check lives here.
-func validMCPTransport(t options.MCPTransport) bool {
-	switch t {
-	case options.MCPTransportStdio, options.MCPTransportStreamableHTTP, options.MCPTransportSSE:
-		return true
-	default:
-		return false
-	}
-}
-
-// Get returns the loaded application configuration.
-func Get() *AppConfig {
-	if loadedConfig == nil {
-		panic("configuration not initialized")
-	}
-	return loadedConfig
 }

@@ -48,12 +48,10 @@ message Organisation {
   // URL-safe slug, unique across organisations.
   string slug = 4 [(google.api.field_behavior) = OPTIONAL];
 
-  // Billing contact email.
-  string billing_email = 5 [
-    (google.api.field_behavior) = OPTIONAL,
-    (buf.validate.field).string.email = true,
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
-  ];
+  // Billing contact email. Format is validated where the value enters the
+  // system (request-entry), not here — a stored value predating stricter rules
+  // must never brick an unrelated update.
+  string billing_email = 5 [(google.api.field_behavior) = OPTIONAL];
 
   // Lifecycle state. New organisations start ACTIVE (database default).
   OrganisationState state = 6 [
@@ -104,12 +102,12 @@ message Member {
     (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
   ];
 
-  // The invited email address.
+  // The invited email address. Format is enforced at the entry point
+  // (InviteMemberRequest.email), not on the stored field, so legacy rows
+  // never brick a role update.
   string email = 4 [
     (google.api.field_behavior) = REQUIRED,
-    (orm.v1.query) = {search: true},
-    (buf.validate.field).string.email = true,
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+    (orm.v1.query) = {search: true}
   ];
 
   // Cached display name of the member.

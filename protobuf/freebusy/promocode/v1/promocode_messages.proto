@@ -18,7 +18,7 @@ option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 
 // Request message for ListPromoCodes.
 message ListPromoCodesRequest {
-  // Maximum number of promo codes to return. The server may cap this.
+  // Maximum number of promo codes to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 1 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {
@@ -232,7 +232,7 @@ message ListRedemptionsRequest {
     (buf.validate.field).string.pattern = "^promoCodes/[^/]+$"
   ];
 
-  // Maximum number of redemptions to return. The server may cap this.
+  // Maximum number of redemptions to return. Must be at most 1000; larger values are rejected.
   int32 page_size = 2 [
     (google.api.field_behavior) = OPTIONAL,
     (buf.validate.field).int32 = {
