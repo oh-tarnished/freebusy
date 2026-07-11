@@ -477,17 +477,18 @@ var File_freebusy_booking_v1_booking_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_proto_rawDesc = "" +
 	"\n" +
-	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xd6\f\n" +
-	"\aBooking\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x125\n" +
-	"\x04unit\x18\x03 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04unit\x12=\n" +
-	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
-	"\x19freebusy.identity.v1/UserR\bcustomer\x12:\n" +
+	"!freebusy/booking/v1/booking.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1ffreebusy/booking/v1/enums.proto\x1a freebusy/identity/v1/guest.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\xb6\r\n" +
+	"\aBooking\x121\n" +
+	"\x04name\x18\x01 \x01(\tB\x1d\xe0A\b\xbaH\x17\xd8\x01\x01r\x122\x10^bookings/[^/]+$R\x04name\x12]\n" +
+	"\x04unit\x18\x03 \x01(\tBI\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH%\xd8\x01\x01r 2\x1e^properties/[^/]+/units/[^/]+$R\x04unit\x12T\n" +
+	"\bcustomer\x18\x05 \x01(\tB8\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/User\xbaH\x14\xd8\x01\x01r\x0f2\r^users/[^/]+$R\bcustomer\x12:\n" +
 	"\acontact\x18\x18 \x01(\v2\x1b.freebusy.shared.v1.ContactB\x03\xe0A\x01R\acontact\x128\n" +
 	"\x06guests\x18\x1c \x03(\v2\x1b.freebusy.identity.v1.GuestB\x03\xe0A\x01R\x06guests\x12A\n" +
-	"\toccupancy\x18\x1d \x01(\v2\x1e.freebusy.booking.v1.OccupancyB\x03\xe0A\x01R\toccupancy\x12\x19\n" +
-	"\x05units\x18\x06 \x01(\x05B\x03\xe0A\x01R\x05units\x12;\n" +
+	"\toccupancy\x18\x1d \x01(\v2\x1e.freebusy.booking.v1.OccupancyB\x03\xe0A\x01R\toccupancy\x12 \n" +
+	"\x05units\x18\x06 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x05units\x12;\n" +
 	"\x06window\x18\a \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x12(\n" +
 	"\rassigned_unit\x18\b \x01(\tB\x03\xe0A\x03R\fassignedUnit\x12N\n" +
 	"\x05state\x18\t \x01(\x0e2!.freebusy.booking.v1.BookingStateB\x15\xe0A\x03\x92\xb5\x18\x0e\x1a\fPENDING_HOLDR\x05state\x12I\n" +

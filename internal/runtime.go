@@ -12,6 +12,7 @@ import (
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
 	"github.com/oh-tarnished/runtime-go/grpc"
+	stdgrpc "google.golang.org/grpc"
 )
 
 // newServiceInstance assembles the freebusy services (opening the configured
@@ -53,15 +54,40 @@ func newServiceInstance() (*Service, error) {
 // servers with the hybrid server's gRPC multiplexer.
 func registerGRPCServers(svc *Service) grpc.Option {
 	return grpc.WithGRPCServers(func(s *grpc.GRPCServer) {
-		promocodepbv1.RegisterPromoCodeServiceServer(s, svc)
-		propertypbv1.RegisterPropertyServiceServer(s, svc)
-		propertypbv1.RegisterLicenceServiceServer(s, svc)
-		orgpbv1.RegisterOrganisationServiceServer(s, svc)
-		schedulepbv1.RegisterScheduleServiceServer(s, svc)
-		bookingpbv1.RegisterBookingServiceServer(s, svc)
-		availabilitypbv1.RegisterAvailabilityServiceServer(s, svc)
-		identitypbv1.RegisterIdentityServiceServer(s, svc)
+		registerServices(s, svc)
 	})
+}
+
+// registerServices registers every freebusy service on a gRPC registrar — the
+// hybrid server's multiplexer in production, a plain server in the e2e suites.
+func registerServices(s stdgrpc.ServiceRegistrar, svc *Service) {
+	promocodepbv1.RegisterPromoCodeServiceServer(s, svc)
+	propertypbv1.RegisterPropertyServiceServer(s, svc)
+	propertypbv1.RegisterLicenceServiceServer(s, svc)
+	orgpbv1.RegisterOrganisationServiceServer(s, svc)
+	schedulepbv1.RegisterScheduleServiceServer(s, svc)
+	bookingpbv1.RegisterBookingServiceServer(s, svc)
+	availabilitypbv1.RegisterAvailabilityServiceServer(s, svc)
+	identitypbv1.RegisterIdentityServiceServer(s, svc)
+}
+
+// NewGRPCServer assembles the freebusy service against the configured (or
+// test-overridden — see database.SetTestBackend) backend and returns a plain
+// gRPC server carrying the production unary interceptor chain with every
+// service registered. It is the seam the e2e suites serve over bufconn; the
+// caller owns Serve and Stop.
+func NewGRPCServer() (*stdgrpc.Server, *Service, error) {
+	svc, err := newServiceInstance()
+	if err != nil {
+		return nil, nil, err
+	}
+	validate, err := validationInterceptor()
+	if err != nil {
+		return nil, nil, err
+	}
+	srv := stdgrpc.NewServer(stdgrpc.ChainUnaryInterceptor(validate))
+	registerServices(srv, svc)
+	return srv, svc, nil
 }
 
 // registerHTTPGateways returns a server option that registers the REST gateways

@@ -36,7 +36,11 @@ message Booking {
 
   // The booking name.
   // Format: bookings/{booking}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^bookings/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
@@ -45,7 +49,9 @@ message Booking {
   // Format: properties/{property}/units/{unit}
   string unit = 3 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Field number of the removed `offering` field; never reuse it. A unit now
@@ -56,7 +62,9 @@ message Booking {
   // Format: users/{user}
   string customer = 5 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"},
+    (buf.validate.field).string.pattern = "^users/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Contact details for the booker. Required when `customer` is unset (a guest /
@@ -79,7 +87,10 @@ message Booking {
   Occupancy occupancy = 29 [(google.api.field_behavior) = OPTIONAL];
 
   // Number of units / party size reserved. Defaults to 1.
-  int32 units = 6 [(google.api.field_behavior) = OPTIONAL];
+  int32 units = 6 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // The reserved span. For NIGHTLY units this spans check-in to check-out.
   freebusy.shared.v1.TimeWindow window = 7 [(google.api.field_behavior) = REQUIRED];

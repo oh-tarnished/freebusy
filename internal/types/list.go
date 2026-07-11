@@ -7,26 +7,12 @@ import (
 	"strings"
 )
 
-// Pagination defaults applied by PageBounds when ListParams omits or overshoots
-// the page size.
+// Pagination defaults applied by PageBounds when the request omits or
+// overshoots the page size.
 const (
 	defaultPageSize = 50
 	maxPageSize     = 1000
 )
-
-// ListParams carries pagination and ordering for List calls. PageToken is an
-// opaque cursor produced by a prior List call; an empty token requests the first
-// page. OrderBy is an AIP-132 order_by string validated by the adapter against a
-// sortable-field allowlist.
-type ListParams struct {
-	PageSize  int32
-	PageToken string
-	OrderBy   string
-	// Filter is the parsed, AND-combined set of filter conditions (AIP-160).
-	// Empty means no filtering. Adapters validate each condition's Field against
-	// the columns they can filter and translate the rest to their backend query.
-	Filter []FilterCondition
-}
 
 // OrderTerm is a validated sort instruction: a backend-neutral field name plus
 // direction. Adapters map Field to their own physical column (GORM) or GraphQL
@@ -69,18 +55,18 @@ func ParseOrderBy(orderBy string) ([]OrderTerm, error) {
 	return terms, nil
 }
 
-// PageBounds resolves the limit/offset window for a List call from params. It
-// clamps the page size to [1, maxPageSize] (defaulting when unset) and decodes
-// the opaque page token into an offset; a malformed token decodes to offset 0.
-func PageBounds(params ListParams) (limit, offset int) {
-	limit = int(params.PageSize)
+// PageBounds resolves the limit/offset window for a List call. It clamps the
+// page size to [1, maxPageSize] (defaulting when unset) and decodes the opaque
+// page token into an offset; a malformed token decodes to offset 0.
+func PageBounds(pageSize int32, pageToken string) (limit, offset int) {
+	limit = int(pageSize)
 	switch {
 	case limit <= 0:
 		limit = defaultPageSize
 	case limit > maxPageSize:
 		limit = maxPageSize
 	}
-	return limit, decodeOffset(params.PageToken)
+	return limit, decodeOffset(pageToken)
 }
 
 // EncodeOffset produces the opaque page token addressing the row at the given

@@ -26,14 +26,6 @@ import (
 
 func ptr[T any](v T) *T { return &v }
 
-func deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
 // strOrNil maps an empty proto string (which cannot represent NULL) to a nil
 // column pointer, so unset optional strings stay NULL in the database.
 func strOrNil(s string) *string {

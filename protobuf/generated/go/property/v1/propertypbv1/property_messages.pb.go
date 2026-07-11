@@ -7,6 +7,7 @@
 package propertypbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -1154,9 +1155,9 @@ var File_freebusy_property_v1_property_messages_proto protoreflect.FileDescripto
 
 const file_freebusy_property_v1_property_messages_proto_rawDesc = "" +
 	"\n" +
-	",freebusy/property/v1/property_messages.proto\x12\x14freebusy.property.v1\x1a#freebusy/property/v1/property.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9a\x01\n" +
-	"\x15ListPropertiesRequest\x12 \n" +
-	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	",freebusy/property/v1/property_messages.proto\x12\x14freebusy.property.v1\x1a\x1bbuf/validate/validate.proto\x1a#freebusy/property/v1/property.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xa4\x01\n" +
+	"\x15ListPropertiesRequest\x12*\n" +
+	"\tpage_size\x18\x01 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
@@ -1165,84 +1166,96 @@ const file_freebusy_property_v1_property_messages_proto_rawDesc = "" +
 	"\n" +
 	"properties\x18\x01 \x03(\v2\x1e.freebusy.property.v1.PropertyR\n" +
 	"properties\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"O\n" +
-	"\x12GetPropertyRequest\x129\n" +
-	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x04name\"\xaa\x01\n" +
-	"\x15CreatePropertyRequest\x12?\n" +
-	"\bproperty\x18\x01 \x01(\v2\x1e.freebusy.property.v1.PropertyB\x03\xe0A\x02R\bproperty\x12$\n" +
-	"\vproperty_id\x18\x02 \x01(\tB\x03\xe0A\x01R\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"h\n" +
+	"\x12GetPropertyRequest\x12R\n" +
+	"\x04name\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x04name\"\xdc\x03\n" +
+	"\x15CreatePropertyRequest\x12\xd5\x02\n" +
+	"\bproperty\x18\x01 \x01(\v2\x1e.freebusy.property.v1.PropertyB\x98\x02\xe0A\x02\xbaH\x91\x02\xba\x01Z\n" +
+	"\x1ccreate_property.organisation\x12!property.organisation is required\x1a\x17this.organisation != ''\xba\x01Z\n" +
+	"\x1ccreate_property.display_name\x12!property.display_name is required\x1a\x17this.display_name != ''\xba\x01Q\n" +
+	"\x19create_property.time_zone\x12\x1eproperty.time_zone is required\x1a\x14this.time_zone != ''\xc8\x01\x01R\bproperty\x12?\n" +
+	"\vproperty_id\x18\x02 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\n" +
 	"propertyId\x12*\n" +
 	"\n" +
-	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x9a\x01\n" +
-	"\x15UpdatePropertyRequest\x12?\n" +
-	"\bproperty\x18\x01 \x01(\v2\x1e.freebusy.property.v1.PropertyB\x03\xe0A\x02R\bproperty\x12@\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x9d\x02\n" +
+	"\x15UpdatePropertyRequest\x12\xc1\x01\n" +
+	"\bproperty\x18\x01 \x01(\v2\x1e.freebusy.property.v1.PropertyB\x84\x01\xe0A\x02\xbaH~\xba\x01x\n" +
+	"\x14update_property.name\x127property.name must be of the form properties/{property}\x1a'this.name.matches('^properties/[^/]+$')\xc8\x01\x01R\bproperty\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"S\n" +
-	"\x16ArchivePropertyRequest\x129\n" +
-	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x04name\"U\n" +
-	"\x18UnarchivePropertyRequest\x129\n" +
-	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x04name\"\xd4\x01\n" +
-	"\x10ListUnitsRequest\x12=\n" +
-	"\x06parent\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x06parent\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"updateMask\"l\n" +
+	"\x16ArchivePropertyRequest\x12R\n" +
+	"\x04name\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x04name\"n\n" +
+	"\x18UnarchivePropertyRequest\x12R\n" +
+	"\x04name\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x04name\"\xf7\x01\n" +
+	"\x10ListUnitsRequest\x12V\n" +
+	"\x06parent\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x06parent\x12*\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
 	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\"m\n" +
 	"\x11ListUnitsResponse\x120\n" +
 	"\x05units\x18\x01 \x03(\v2\x1a.freebusy.property.v1.UnitR\x05units\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"G\n" +
-	"\x0eGetUnitRequest\x125\n" +
-	"\x04name\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04name\"\xd1\x01\n" +
-	"\x11CreateUnitRequest\x12=\n" +
-	"\x06parent\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x06parent\x123\n" +
-	"\x04unit\x18\x02 \x01(\v2\x1a.freebusy.property.v1.UnitB\x03\xe0A\x02R\x04unit\x12\x1c\n" +
-	"\aunit_id\x18\x03 \x01(\tB\x03\xe0A\x01R\x06unitId\x12*\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"l\n" +
+	"\x0eGetUnitRequest\x12Z\n" +
+	"\x04name\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x04name\"\xbf\x04\n" +
+	"\x11CreateUnitRequest\x12V\n" +
+	"\x06parent\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x06parent\x12\xec\x02\n" +
+	"\x04unit\x18\x02 \x01(\v2\x1a.freebusy.property.v1.UnitB\xbb\x02\xe0A\x02\xbaH\xb4\x02\xba\x01R\n" +
+	"\x18create_unit.display_name\x12\x1dunit.display_name is required\x1a\x17this.display_name != ''\xba\x019\n" +
+	"\x10create_unit.type\x12\x15unit.type is required\x1a\x0ethis.type != 0\xba\x01Q\n" +
+	"\x18create_unit.booking_mode\x12\x1dunit.booking_mode is required\x1a\x16this.booking_mode != 0\xba\x01I\n" +
+	"\x15create_unit.time_zone\x12\x1aunit.time_zone is required\x1a\x14this.time_zone != ''\xc8\x01\x01R\x04unit\x127\n" +
+	"\aunit_id\x18\x03 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\x06unitId\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x8a\x01\n" +
-	"\x11UpdateUnitRequest\x123\n" +
-	"\x04unit\x18\x01 \x01(\v2\x1a.freebusy.property.v1.UnitB\x03\xe0A\x02R\x04unit\x12@\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xa0\x02\n" +
+	"\x11UpdateUnitRequest\x12\xc8\x01\n" +
+	"\x04unit\x18\x01 \x01(\v2\x1a.freebusy.property.v1.UnitB\x97\x01\xe0A\x02\xbaH\x90\x01\xba\x01\x89\x01\n" +
+	"\x10update_unit.name\x12@unit.name must be of the form properties/{property}/units/{unit}\x1a3this.name.matches('^properties/[^/]+/units/[^/]+$')\xc8\x01\x01R\x04unit\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"e\n" +
-	"\x11DeleteUnitRequest\x125\n" +
-	"\x04name\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04name\x12\x19\n" +
-	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xd7\x01\n" +
-	"\x13ListLicencesRequest\x12=\n" +
-	"\x06parent\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x06parent\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"updateMask\"\x8a\x01\n" +
+	"\x11DeleteUnitRequest\x12Z\n" +
+	"\x04name\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x04name\x12\x19\n" +
+	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xfa\x01\n" +
+	"\x13ListLicencesRequest\x12V\n" +
+	"\x06parent\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x06parent\x12*\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
 	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\"y\n" +
 	"\x14ListLicencesResponse\x129\n" +
 	"\blicences\x18\x01 \x03(\v2\x1d.freebusy.property.v1.LicenceR\blicences\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"M\n" +
-	"\x11GetLicenceRequest\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cfreebusy.property.v1/LicenceR\x04name\"\xe3\x01\n" +
-	"\x14CreateLicenceRequest\x12=\n" +
-	"\x06parent\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x06parent\x12<\n" +
-	"\alicence\x18\x02 \x01(\v2\x1d.freebusy.property.v1.LicenceB\x03\xe0A\x02R\alicence\x12\"\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"u\n" +
+	"\x11GetLicenceRequest\x12`\n" +
+	"\x04name\x18\x01 \x01(\tBL\xe0A\x02\xfaA\x1e\n" +
+	"\x1cfreebusy.property.v1/Licence\xbaH%r#2!^properties/[^/]+/licences/[^/]+$R\x04name\"\x9f\x04\n" +
+	"\x14CreateLicenceRequest\x12V\n" +
+	"\x06parent\x18\x01 \x01(\tB>\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x16r\x142\x12^properties/[^/]+$R\x06parent\x12\x84\x01\n" +
+	"\alicence\x18\x02 \x01(\v2\x1d.freebusy.property.v1.LicenceBK\xe0A\x02\xbaHE\xba\x01?\n" +
+	"\x13create_licence.type\x12\x18licence.type is required\x1a\x0ethis.type != 0\xc8\x01\x01R\alicence\x12=\n" +
 	"\n" +
-	"licence_id\x18\x03 \x01(\tB\x03\xe0A\x01R\tlicenceId\x12*\n" +
+	"licence_id\x18\x03 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\tlicenceId\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x96\x01\n" +
-	"\x14UpdateLicenceRequest\x12<\n" +
-	"\alicence\x18\x01 \x01(\v2\x1d.freebusy.property.v1.LicenceB\x03\xe0A\x02R\alicence\x12@\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId:\xbc\x01\xbaH\xb8\x01\x1a\xb5\x01\n" +
+	"\x1acreate_licence.unit_parent\x12/licence.unit must belong to the parent property\x1af!has(this.licence) || this.licence.unit == '' || this.licence.unit.startsWith(this.parent + '/units/')\"\xbb\x02\n" +
+	"\x14UpdateLicenceRequest\x12\xe0\x01\n" +
+	"\alicence\x18\x01 \x01(\v2\x1d.freebusy.property.v1.LicenceB\xa6\x01\xe0A\x02\xbaH\x9f\x01\xba\x01\x98\x01\n" +
+	"\x13update_licence.name\x12Ilicence.name must be of the form properties/{property}/licences/{licence}\x1a6this.name.matches('^properties/[^/]+/licences/[^/]+$')\xc8\x01\x01R\alicence\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"P\n" +
-	"\x14DeleteLicenceRequest\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xe0A\x02\xfaA\x1e\n" +
-	"\x1cfreebusy.property.v1/LicenceR\x04nameB\x81\x02\n" +
+	"updateMask\"x\n" +
+	"\x14DeleteLicenceRequest\x12`\n" +
+	"\x04name\x18\x01 \x01(\tBL\xe0A\x02\xfaA\x1e\n" +
+	"\x1cfreebusy.property.v1/Licence\xbaH%r#2!^properties/[^/]+/licences/[^/]+$R\x04nameB\x81\x02\n" +
 	"\x18com.freebusy.property.v1B\x15PropertyMessagesProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1;propertypbv1\xa2\x02\x03FPX\xaa\x02\x14Freebusy.Property.V1\xca\x02\x14Freebusy\\Property\\V1\xe2\x02 Freebusy\\Property\\V1\\GPBMetadata\xea\x02\x16Freebusy::Property::V1b\x06proto3"
 
 var (

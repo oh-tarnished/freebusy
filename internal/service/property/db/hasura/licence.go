@@ -102,7 +102,7 @@ func (r *PropertyRepository) ListLicences(ctx context.Context, parent string, in
 	if err != nil {
 		return nil, "", err
 	}
-	rows, next, err := filterx.Hasura[pschema.PropertyLicences](property.LicenceFilterSpec, r.svc.Query.Property.Licences).
+	rows, next, err := filterx.Hasura(property.LicenceFilterSpec, r.svc.Query.Property.Licences).
 		Scope(licencesql.PropertyId.Eq(propertyID)).
 		List(ctx, fin)
 	if err != nil {

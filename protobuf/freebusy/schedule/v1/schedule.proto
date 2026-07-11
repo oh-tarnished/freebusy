@@ -6,6 +6,7 @@ package freebusy.schedule.v1;
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
 
+import "buf/validate/validate.proto";
 import "freebusy/schedule/v1/enums.proto";
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
@@ -24,16 +25,27 @@ option java_package = "dev.ohtarnished.freebusy.schedule.v1";
 // The freebusy engine expands these against the unit's timezone.
 message RecurringRule {
   // RFC 5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR".
-  string rrule = 1 [(google.api.field_behavior) = REQUIRED];
+  string rrule = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.min_len = 1
+  ];
 
   // Local time-of-day the window opens, 24-hour "HH:MM" (e.g. "09:00").
   // Unset (with closes also unset) means open the whole day.
-  string opens = 2 [(google.api.field_behavior) = OPTIONAL];
+  string opens = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Local time-of-day the window closes, 24-hour "HH:MM" (e.g. "17:00").
   // A closes at or before opens means the span crosses midnight into the next
   // day (e.g. opens "22:00", closes "02:00").
-  string closes = 3 [(google.api.field_behavior) = OPTIONAL];
+  string closes = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).string.pattern = "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 }
 
 // Buffer and notice settings applied around bookings.
@@ -57,10 +69,16 @@ message BufferSettings {
 // Stay rules that affect bookability for NIGHTLY units.
 message StayConstraints {
   // Minimum number of nights per booking.
-  int32 min_nights = 1 [(google.api.field_behavior) = OPTIONAL];
+  int32 min_nights = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // Maximum number of nights per booking. Zero means no maximum.
-  int32 max_nights = 2 [(google.api.field_behavior) = OPTIONAL];
+  int32 max_nights = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // Allowed check-in weekdays. Empty means any day.
   repeated freebusy.shared.v1.Weekday checkin_weekdays = 3 [(google.api.field_behavior) = OPTIONAL];
@@ -69,10 +87,16 @@ message StayConstraints {
   repeated freebusy.shared.v1.Weekday checkout_weekdays = 4 [(google.api.field_behavior) = OPTIONAL];
 
   // Earliest a stay may begin, in days from now.
-  int32 advance_min_days = 5 [(google.api.field_behavior) = OPTIONAL];
+  int32 advance_min_days = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // Latest a stay may begin, in days from now. Zero means no limit.
-  int32 advance_max_days = 6 [(google.api.field_behavior) = OPTIONAL];
+  int32 advance_max_days = 6 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 }
 
 // An override of a unit's normal hours on a specific span: a blackout /
@@ -87,13 +111,20 @@ message AvailabilityException {
 
   // The exception name.
   // Format: properties/{property}/units/{unit}/availabilityExceptions/{availability_exception}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+/availabilityExceptions/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
 
   // Whether this span closes the unit or adds extra availability.
-  ExceptionKind kind = 3 [(google.api.field_behavior) = REQUIRED];
+  ExceptionKind kind = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).enum.defined_only = true
+  ];
 
   // The affected span. Exactly one must be set.
   oneof span {
@@ -127,7 +158,11 @@ message Schedule {
 
   // The schedule name.
   // Format: properties/{property}/units/{unit}/schedule
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+/schedule$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Recurring working hours.
   repeated RecurringRule recurring_rules = 2 [(google.api.field_behavior) = OPTIONAL];

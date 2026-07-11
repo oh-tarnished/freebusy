@@ -7,6 +7,7 @@
 package orgpbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -565,46 +566,48 @@ var File_freebusy_organisation_v1_organisation_message_proto protoreflect.FileDe
 
 const file_freebusy_organisation_v1_organisation_message_proto_rawDesc = "" +
 	"\n" +
-	"3freebusy/organisation/v1/organisation_message.proto\x12\x18freebusy.organisation.v1\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x9d\x01\n" +
-	"\x18ListOrganisationsRequest\x12 \n" +
-	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"3freebusy/organisation/v1/organisation_message.proto\x12\x18freebusy.organisation.v1\x1a\x1bbuf/validate/validate.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xa7\x01\n" +
+	"\x18ListOrganisationsRequest\x12*\n" +
+	"\tpage_size\x18\x01 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
 	"\border_by\x18\x04 \x01(\tB\x03\xe0A\x01R\aorderBy\"\x91\x01\n" +
 	"\x19ListOrganisationsResponse\x12L\n" +
 	"\rorganisations\x18\x01 \x03(\v2&.freebusy.organisation.v1.OrganisationR\rorganisations\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"[\n" +
-	"\x16GetOrganisationRequest\x12A\n" +
-	"\x04name\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\x04name\"\xc6\x01\n" +
-	"\x19CreateOrganisationRequest\x12O\n" +
-	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationB\x03\xe0A\x02R\forganisation\x12,\n" +
-	"\x0forganisation_id\x18\x02 \x01(\tB\x03\xe0A\x01R\x0eorganisationId\x12*\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"w\n" +
+	"\x16GetOrganisationRequest\x12]\n" +
+	"\x04name\x18\x01 \x01(\tBI\xe0A\x02\xfaA'\n" +
+	"%freebusy.organisation.v1/Organisation\xbaH\x19r\x172\x15^organisations/[^/]+$R\x04name\"\xcd\x02\n" +
+	"\x19CreateOrganisationRequest\x12\xba\x01\n" +
+	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationBn\xe0A\x02\xbaHh\xba\x01b\n" +
+	" create_organisation.display_name\x12%organisation.display_name is required\x1a\x17this.display_name != ''\xc8\x01\x01R\forganisation\x12G\n" +
+	"\x0forganisation_id\x18\x02 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\x0eorganisationId\x12*\n" +
 	"\n" +
-	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xae\x01\n" +
-	"\x19UpdateOrganisationRequest\x12O\n" +
-	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationB\x03\xe0A\x02R\forganisation\x12@\n" +
+	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xc5\x02\n" +
+	"\x19UpdateOrganisationRequest\x12\xe5\x01\n" +
+	"\forganisation\x18\x01 \x01(\v2&.freebusy.organisation.v1.OrganisationB\x98\x01\xe0A\x02\xbaH\x91\x01\xba\x01\x8a\x01\n" +
+	"\x18update_organisation.name\x12Borganisation.name must be of the form organisations/{organisation}\x1a*this.name.matches('^organisations/[^/]+$')\xc8\x01\x01R\forganisation\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"y\n" +
-	"\x19DeleteOrganisationRequest\x12A\n" +
-	"\x04name\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\x04name\x12\x19\n" +
-	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\xde\x01\n" +
-	"\x12ListMembersRequest\x12E\n" +
-	"\x06parent\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\x06parent\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"updateMask\"\x95\x01\n" +
+	"\x19DeleteOrganisationRequest\x12]\n" +
+	"\x04name\x18\x01 \x01(\tBI\xe0A\x02\xfaA'\n" +
+	"%freebusy.organisation.v1/Organisation\xbaH\x19r\x172\x15^organisations/[^/]+$R\x04name\x12\x19\n" +
+	"\x05force\x18\x02 \x01(\bB\x03\xe0A\x01R\x05force\"\x84\x02\n" +
+	"\x12ListMembersRequest\x12a\n" +
+	"\x06parent\x18\x01 \x01(\tBI\xe0A\x02\xfaA'\n" +
+	"%freebusy.organisation.v1/Organisation\xbaH\x19r\x172\x15^organisations/[^/]+$R\x06parent\x12*\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
 	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\"y\n" +
 	"\x13ListMembersResponse\x12:\n" +
 	"\amembers\x18\x01 \x03(\v2 .freebusy.organisation.v1.MemberR\amembers\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"O\n" +
-	"\x10GetMemberRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.organisation.v1/MemberR\x04nameB\x92\x02\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"y\n" +
+	"\x10GetMemberRequest\x12e\n" +
+	"\x04name\x18\x01 \x01(\tBQ\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.organisation.v1/Member\xbaH'r%2#^organisations/[^/]+/members/[^/]+$R\x04nameB\x92\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\x18OrganisationMessageProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (

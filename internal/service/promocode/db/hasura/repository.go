@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
-	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/promocode"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql"
 	commonschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/schemaql"
@@ -21,6 +20,7 @@ import (
 	pcschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicablepropertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/promocodeql/scopeapplicableunitsql"
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/runtime-go/ulid"
@@ -133,7 +133,7 @@ func (r *PromoCodeRepository) List(ctx context.Context, in repox.ListInput) ([]*
 	if err != nil {
 		return nil, "", repox.MapFilterxErr(err)
 	}
-	rows, next, err := filterx.Hasura[pcschema.PromocodeResource](promocode.PromoCodeFilterSpec, r.svc.Query.Promocode.Resource).
+	rows, next, err := filterx.Hasura(promocode.PromoCodeFilterSpec, r.svc.Query.Promocode.Resource).
 		List(ctx, filterx.ListInput{
 			PageSize:  in.PageSize,
 			PageToken: in.PageToken,

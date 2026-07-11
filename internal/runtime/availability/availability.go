@@ -5,6 +5,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
 	availdb "github.com/oh-tarnished/freebusy/internal/service/availability/db"
 	"github.com/oh-tarnished/freebusy/internal/service/availability/engine"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -70,12 +71,9 @@ func resolvePeriod(u *engine.UnitInfo, window *sharedpbv1.TimeWindow, dr *shared
 
 // computeOne runs a single ComputeAvailabilityRequest against the engine.
 func (s *Server) computeOne(ctx context.Context, req *availabilitypbv1.ComputeAvailabilityRequest) (*availabilitypbv1.UnitAvailability, error) {
-	if req.GetUnit() == "" {
-		return nil, status.Error(codes.InvalidArgument, "unit is required")
-	}
 	info, err := s.reader.GetUnit(ctx, req.GetUnit())
 	if err != nil {
-		return nil, toStatusErr(err)
+		return nil, rpc.ToStatusErr(err)
 	}
 	p, err := resolvePeriod(info, req.GetWindow(), req.GetDateRange())
 	if err != nil {
@@ -83,11 +81,11 @@ func (s *Server) computeOne(ctx context.Context, req *availabilitypbv1.ComputeAv
 	}
 	res, err := s.reader.ActiveBookings(ctx, info.ID, p.start, p.end)
 	if err != nil {
-		return nil, toStatusErr(err)
+		return nil, rpc.ToStatusErr(err)
 	}
 	clo, err := s.reader.Closures(ctx, info.ID, info.TimeZone)
 	if err != nil {
-		return nil, toStatusErr(err)
+		return nil, rpc.ToStatusErr(err)
 	}
 	out := &availabilitypbv1.UnitAvailability{Unit: info.Name, Mode: modeProto(info.Mode)}
 	if info.Mode == engine.ModeNightly {
@@ -101,7 +99,7 @@ func (s *Server) computeOne(ctx context.Context, req *availabilitypbv1.ComputeAv
 // ComputeAvailability computes availability for a unit over a period.
 func (s *Server) ComputeAvailability(ctx context.Context, req *availabilitypbv1.ComputeAvailabilityRequest) (*availabilitypbv1.ComputeAvailabilityResponse, error) {
 	var out *availabilitypbv1.ComputeAvailabilityResponse
-	err := traced(ctx, "ComputeAvailability", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "AvailabilityService", "ComputeAvailability", func(ctx context.Context) error {
 		ua, err := s.computeOne(ctx, req)
 		if err != nil {
 			return err
@@ -114,14 +112,11 @@ func (s *Server) ComputeAvailability(ctx context.Context, req *availabilitypbv1.
 
 // CheckAvailability tests whether one exact span is bookable.
 func (s *Server) CheckAvailability(ctx context.Context, req *availabilitypbv1.CheckAvailabilityRequest) (*availabilitypbv1.CheckAvailabilityResponse, error) {
-	if req.GetUnit() == "" {
-		return nil, status.Error(codes.InvalidArgument, "unit is required")
-	}
 	var out *availabilitypbv1.CheckAvailabilityResponse
-	err := traced(ctx, "CheckAvailability", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "AvailabilityService", "CheckAvailability", func(ctx context.Context) error {
 		info, err := s.reader.GetUnit(ctx, req.GetUnit())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		p, err := resolvePeriod(info, req.GetWindow(), req.GetDateRange())
 		if err != nil {
@@ -129,11 +124,11 @@ func (s *Server) CheckAvailability(ctx context.Context, req *availabilitypbv1.Ch
 		}
 		res, err := s.reader.ActiveBookings(ctx, info.ID, p.start, p.end)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		clo, err := s.reader.Closures(ctx, info.ID, info.TimeZone)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		bookable, free, reasons := engine.CheckSpan(info, p.start, p.end, req.GetUnits(), p.nights, res, clo, time.Now().UTC())
 		out = &availabilitypbv1.CheckAvailabilityResponse{Bookable: bookable, FreeCount: free, Reasons: reasons}
@@ -144,14 +139,11 @@ func (s *Server) CheckAvailability(ctx context.Context, req *availabilitypbv1.Ch
 
 // ComputeBookableRanges computes contiguous bookable ranges within a window.
 func (s *Server) ComputeBookableRanges(ctx context.Context, req *availabilitypbv1.ComputeBookableRangesRequest) (*availabilitypbv1.ComputeBookableRangesResponse, error) {
-	if req.GetUnit() == "" {
-		return nil, status.Error(codes.InvalidArgument, "unit is required")
-	}
 	var out *availabilitypbv1.ComputeBookableRangesResponse
-	err := traced(ctx, "ComputeBookableRanges", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "AvailabilityService", "ComputeBookableRanges", func(ctx context.Context) error {
 		info, err := s.reader.GetUnit(ctx, req.GetUnit())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		p, err := resolvePeriod(info, req.GetWindow(), req.GetDateRange())
 		if err != nil {
@@ -159,11 +151,11 @@ func (s *Server) ComputeBookableRanges(ctx context.Context, req *availabilitypbv
 		}
 		res, err := s.reader.ActiveBookings(ctx, info.ID, p.start, p.end)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		clo, err := s.reader.Closures(ctx, info.ID, info.TimeZone)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = &availabilitypbv1.ComputeBookableRangesResponse{}
 		if info.Mode == engine.ModeNightly {
@@ -185,7 +177,7 @@ func (s *Server) ComputeBookableRanges(ctx context.Context, req *availabilitypbv
 // BatchComputeAvailability computes availability for several units at once.
 func (s *Server) BatchComputeAvailability(ctx context.Context, req *availabilitypbv1.BatchComputeAvailabilityRequest) (*availabilitypbv1.BatchComputeAvailabilityResponse, error) {
 	var out *availabilitypbv1.BatchComputeAvailabilityResponse
-	err := traced(ctx, "BatchComputeAvailability", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "AvailabilityService", "BatchComputeAvailability", func(ctx context.Context) error {
 		resp := &availabilitypbv1.BatchComputeAvailabilityResponse{Units: make([]*availabilitypbv1.UnitAvailability, 0, len(req.GetRequests()))}
 		for _, r := range req.GetRequests() {
 			ua, err := s.computeOne(ctx, r)
@@ -203,14 +195,14 @@ func (s *Server) BatchComputeAvailability(ctx context.Context, req *availability
 // SearchAvailability sweeps the catalog for units bookable over a period.
 func (s *Server) SearchAvailability(ctx context.Context, req *availabilitypbv1.SearchAvailabilityRequest) (*availabilitypbv1.SearchAvailabilityResponse, error) {
 	var out *availabilitypbv1.SearchAvailabilityResponse
-	err := traced(ctx, "SearchAvailability", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "AvailabilityService", "SearchAvailability", func(ctx context.Context) error {
 		desc, err := priceDescending(req.GetOrderBy())
 		if err != nil {
 			return err
 		}
 		units, err := s.reader.SearchUnits(ctx, req.GetProperty(), req.GetOrganisation(), req.GetFilter())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 
 		// Batch the per-unit reads: one bookings query and one closures query over
@@ -234,11 +226,11 @@ func (s *Server) SearchAvailability(ctx context.Context, req *availabilitypbv1.S
 		}
 		bookingsByUnit, err := s.reader.ActiveBookingsForUnits(ctx, unitIDs, lo, hi)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		closuresByUnit, err := s.reader.ClosuresForUnits(ctx, unitIDs, tzByUnit)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 
 		now := time.Now().UTC()
@@ -259,7 +251,7 @@ func (s *Server) SearchAvailability(ctx context.Context, req *availabilitypbv1.S
 		}
 		sortMatches(matches, desc)
 
-		limit, offset := types.PageBounds(types.ListParams{PageSize: req.GetPageSize(), PageToken: req.GetPageToken()})
+		limit, offset := types.PageBounds(req.GetPageSize(), req.GetPageToken())
 		resp := &availabilitypbv1.SearchAvailabilityResponse{}
 		if offset < len(matches) {
 			end := offset + limit

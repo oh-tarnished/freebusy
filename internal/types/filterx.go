@@ -8,9 +8,9 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 )
 
-// This file is the one boundary between the gRPC-layer vocabulary (ListParams,
-// FilterCondition — parsed early so bad input fails before any repository work)
-// and the generated filterx engines the repositories delegate filtering,
+// This file is the one boundary between the gRPC-layer vocabulary
+// (FilterCondition — parsed early so bad input fails before any repository
+// work) and the generated filterx engines the repositories delegate filtering,
 // ordering, and pagination to. The shapes mirror each other one-to-one.
 
 // FilterxFromRaw parses a raw AIP-160 expression off a repox.ListInput and
@@ -28,16 +28,6 @@ func FilterxFromRaw(in repox.ListInput) (filterx.ListInput, error) {
 		OrderBy:   in.OrderBy,
 		Filter:    conds,
 	}, nil
-}
-
-// FilterxInput maps ListParams onto the generated engines' ListInput.
-func FilterxInput(params ListParams) filterx.ListInput {
-	return filterx.ListInput{
-		PageSize:  params.PageSize,
-		PageToken: params.PageToken,
-		OrderBy:   params.OrderBy,
-		Filter:    Filterx(params.Filter),
-	}
 }
 
 // Filterx maps parsed filter conditions onto the generated Condition type.

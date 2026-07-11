@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.promocode.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/promocode/v1/enums.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
@@ -41,7 +42,11 @@ message PromoCode {
 
   // The promo code name.
   // Format: promoCodes/{promo_code}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^promoCodes/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
@@ -127,8 +132,13 @@ message Discount {
   // Exactly one arm is set; which one determines whether the discount is a
   // percentage or a fixed amount.
   oneof amount {
+    option (buf.validate.oneof).required = true;
+
     // Percentage off the subtotal (1-100).
-    int32 percent_off = 1;
+    int32 percent_off = 1 [(buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    }];
 
     // Fixed amount off the subtotal.
     // Normalized into the shared common.moneys table (belongs-to via amount_off_id).
@@ -152,10 +162,16 @@ message RedemptionWindow {
 // (unlimited) is distinct from an explicit value, including 0.
 message UsageLimits {
   // Maximum total redemptions across all customers. Unset means unlimited.
-  google.protobuf.Int64Value max_redemptions = 1 [(google.api.field_behavior) = OPTIONAL];
+  google.protobuf.Int64Value max_redemptions = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int64.gte = 0
+  ];
 
   // Maximum redemptions per customer. Unset means unlimited.
-  google.protobuf.Int32Value per_customer_limit = 2 [(google.api.field_behavior) = OPTIONAL];
+  google.protobuf.Int32Value per_customer_limit = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 }
 
 // Scope restricts which bookings a code applies to. Nested value object →
@@ -170,14 +186,16 @@ message Scope {
   // Format: properties/{property}
   repeated string applicable_properties = 2 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"},
+    (buf.validate.field).repeated.items.string.pattern = "^properties/[^/]+$"
   ];
 
   // Units the code applies to. Empty means all units.
   // Format: properties/{property}/units/{unit}
   repeated string applicable_units = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
+    (buf.validate.field).repeated.items.string.pattern = "^properties/[^/]+/units/[^/]+$"
   ];
 }
 
@@ -198,7 +216,11 @@ message Redemption {
 
   // The redemption resource name.
   // Format: promoCodes/{promo_code}/redemptions/{redemption}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^promoCodes/[^/]+/redemptions/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // The customer who redeemed the code.
   // Format: users/{user}

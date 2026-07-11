@@ -2,7 +2,6 @@ package hasura
 
 import (
 	"encoding/json"
-	"strconv"
 	"strings"
 	"time"
 
@@ -36,17 +35,6 @@ func deref[T any](p *T) T {
 		return zero
 	}
 	return *p
-}
-
-// toBigdec / fromBigdec cross the numeric(precision,scale) boundary: the
-// GraphQL schema carries such columns as arbitrary-precision decimal strings.
-func toBigdec(f float64) graphql.Bigdecimal {
-	return graphql.Bigdecimal(strconv.FormatFloat(f, 'f', -1, 64))
-}
-
-func fromBigdec(b graphql.Bigdecimal) float64 {
-	f, _ := strconv.ParseFloat(string(b), 64)
-	return f
 }
 
 // lastSegment returns the final path component of an AIP resource name.

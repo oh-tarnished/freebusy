@@ -7,6 +7,7 @@
 package sharedpbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	date "google.golang.org/genproto/googleapis/type/date"
@@ -447,20 +448,20 @@ var File_freebusy_shared_v1_types_proto protoreflect.FileDescriptor
 
 const file_freebusy_shared_v1_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\x88\x01\n" +
+	"\x1efreebusy/shared/v1/types.proto\x12\x12freebusy.shared.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\x94\x01\n" +
 	"\n" +
-	"TimeWindow\x12>\n" +
+	"TimeWindow\x12D\n" +
 	"\n" +
-	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x02R\tstartTime\x12:\n" +
-	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x02R\aendTime\"u\n" +
-	"\tDateRange\x125\n" +
+	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\tstartTime\x12@\n" +
+	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\aendTime\"\x81\x01\n" +
+	"\tDateRange\x12;\n" +
 	"\n" +
-	"start_date\x18\x01 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\tstartDate\x121\n" +
-	"\bend_date\x18\x02 \x01(\v2\x11.google.type.DateB\x03\xe0A\x02R\aendDate\"t\n" +
+	"start_date\x18\x01 \x01(\v2\x11.google.type.DateB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\tstartDate\x127\n" +
+	"\bend_date\x18\x02 \x01(\v2\x11.google.type.DateB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\aendDate\"\x9c\x01\n" +
 	"\aContact\x12&\n" +
-	"\fdisplay_name\x18\x01 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x19\n" +
-	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x01R\x05email\x12&\n" +
-	"\fphone_number\x18\x03 \x01(\tB\x03\xe0A\x01R\vphoneNumber\"\x8c\x02\n" +
+	"\fdisplay_name\x18\x01 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12#\n" +
+	"\x05email\x18\x02 \x01(\tB\r\xe0A\x01\xbaH\a\xd8\x01\x01r\x02`\x01R\x05email\x12D\n" +
+	"\fphone_number\x18\x03 \x01(\tB!\xe0A\x01\xbaH\x1b\xd8\x01\x01r\x162\x14^\\+[1-9][0-9]{1,14}$R\vphoneNumber\"\x8c\x02\n" +
 	"\x0ePriceComponent\x12;\n" +
 	"\x04type\x18\x01 \x01(\x0e2'.freebusy.shared.v1.PriceComponent.TypeR\x04type\x12\x12\n" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x12!\n" +

@@ -7,6 +7,7 @@
 package schedulepbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -607,11 +608,12 @@ var File_freebusy_schedule_v1_schedule_proto protoreflect.FileDescriptor
 
 const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/schedule/v1/schedule.proto\x12\x14freebusy.schedule.v1\x1a freebusy/schedule/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"b\n" +
-	"\rRecurringRule\x12\x19\n" +
-	"\x05rrule\x18\x01 \x01(\tB\x03\xe0A\x02R\x05rrule\x12\x19\n" +
-	"\x05opens\x18\x02 \x01(\tB\x03\xe0A\x01R\x05opens\x12\x1b\n" +
-	"\x06closes\x18\x03 \x01(\tB\x03\xe0A\x01R\x06closes\"\xc0\x02\n" +
+	"#freebusy/schedule/v1/schedule.proto\x12\x14freebusy.schedule.v1\x1a\x1bbuf/validate/validate.proto\x1a freebusy/schedule/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"\xbb\x01\n" +
+	"\rRecurringRule\x12 \n" +
+	"\x05rrule\x18\x01 \x01(\tB\n" +
+	"\xe0A\x02\xbaH\x04r\x02\x10\x01R\x05rrule\x12B\n" +
+	"\x05opens\x18\x02 \x01(\tB,\xe0A\x01\xbaH&\xd8\x01\x01r!2\x1f^([01][0-9]|2[0-3]):[0-5][0-9]$R\x05opens\x12D\n" +
+	"\x06closes\x18\x03 \x01(\tB,\xe0A\x01\xbaH&\xd8\x01\x01r!2\x1f^([01][0-9]|2[0-3]):[0-5][0-9]$R\x06closes\"\xc0\x02\n" +
 	"\x0eBufferSettings\x12?\n" +
 	"\vstart_delta\x18\x01 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\n" +
 	"startDelta\x12;\n" +
@@ -620,19 +622,23 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"min_notice\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\tminNotice\x12?\n" +
 	"\vmax_advance\x18\x04 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\n" +
 	"maxAdvance\x120\n" +
-	"\x03gap\x18\x05 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\x03gap\"\xd3\x02\n" +
-	"\x0fStayConstraints\x12\"\n" +
+	"\x03gap\x18\x05 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\x03gap\"\xef\x02\n" +
+	"\x0fStayConstraints\x12)\n" +
 	"\n" +
-	"min_nights\x18\x01 \x01(\x05B\x03\xe0A\x01R\tminNights\x12\"\n" +
+	"min_nights\x18\x01 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\tminNights\x12)\n" +
 	"\n" +
-	"max_nights\x18\x02 \x01(\x05B\x03\xe0A\x01R\tmaxNights\x12K\n" +
+	"max_nights\x18\x02 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\tmaxNights\x12K\n" +
 	"\x10checkin_weekdays\x18\x03 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x0fcheckinWeekdays\x12M\n" +
-	"\x11checkout_weekdays\x18\x04 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x10checkoutWeekdays\x12-\n" +
-	"\x10advance_min_days\x18\x05 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMinDays\x12-\n" +
-	"\x10advance_max_days\x18\x06 \x01(\x05B\x03\xe0A\x01R\x0eadvanceMaxDays\"\x91\x04\n" +
-	"\x15AvailabilityException\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12<\n" +
-	"\x04kind\x18\x03 \x01(\x0e2#.freebusy.schedule.v1.ExceptionKindB\x03\xe0A\x02R\x04kind\x128\n" +
+	"\x11checkout_weekdays\x18\x04 \x03(\x0e2\x1b.freebusy.shared.v1.WeekdayB\x03\xe0A\x01R\x10checkoutWeekdays\x124\n" +
+	"\x10advance_min_days\x18\x05 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x0eadvanceMinDays\x124\n" +
+	"\x10advance_max_days\x18\x06 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x0eadvanceMaxDays\"\xde\x04\n" +
+	"\x15AvailabilityException\x12\\\n" +
+	"\x04name\x18\x01 \x01(\tBH\xe0A\b\xbaHB\xd8\x01\x01r=2;^properties/[^/]+/units/[^/]+/availabilityExceptions/[^/]+$R\x04name\x12D\n" +
+	"\x04kind\x18\x03 \x01(\x0e2#.freebusy.schedule.v1.ExceptionKindB\v\xe0A\x02\xbaH\x05\x82\x01\x02\x10\x01R\x04kind\x128\n" +
 	"\x06window\x18\x04 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
 	"date_range\x18\a \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12!\n" +
@@ -640,9 +646,9 @@ const file_freebusy_schedule_v1_schedule_proto_rawDesc = "" +
 	"\vcreate_time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"createTime:\xb3\x01\xeaA\xaf\x01\n" +
 	"*freebusy.schedule.v1/AvailabilityException\x12Rproperties/{property}/units/{unit}/availabilityExceptions/{availability_exception}*\x16availabilityExceptions2\x15availabilityExceptionB\x06\n" +
-	"\x04spanJ\x04\b\x02\x10\x03\"\xc0\x04\n" +
-	"\bSchedule\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
+	"\x04spanJ\x04\b\x02\x10\x03\"\xf1\x04\n" +
+	"\bSchedule\x12H\n" +
+	"\x04name\x18\x01 \x01(\tB4\xe0A\b\xbaH.\xd8\x01\x01r)2'^properties/[^/]+/units/[^/]+/schedule$R\x04name\x12Q\n" +
 	"\x0frecurring_rules\x18\x02 \x03(\v2#.freebusy.schedule.v1.RecurringRuleB\x03\xe0A\x01R\x0erecurringRules\x12C\n" +
 	"\abuffers\x18\x03 \x01(\v2$.freebusy.schedule.v1.BufferSettingsB\x03\xe0A\x01R\abuffers\x12U\n" +
 	"\x10stay_constraints\x18\x04 \x01(\v2%.freebusy.schedule.v1.StayConstraintsB\x03\xe0A\x01R\x0fstayConstraints\x12R\n" +

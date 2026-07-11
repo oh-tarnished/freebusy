@@ -7,6 +7,7 @@
 package promocodepbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -813,9 +814,9 @@ var File_freebusy_promocode_v1_promocode_messages_proto protoreflect.FileDescrip
 
 const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\n" +
-	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\x9a\x01\n" +
-	"\x15ListPromoCodesRequest\x12 \n" +
-	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	".freebusy/promocode/v1/promocode_messages.proto\x12\x15freebusy.promocode.v1\x1a\x1bbuf/validate/validate.proto\x1a!freebusy/promocode/v1/enums.proto\x1a%freebusy/promocode/v1/promocode.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x17google/type/money.proto\"\xa4\x01\n" +
+	"\x15ListPromoCodesRequest\x12*\n" +
+	"\tpage_size\x18\x01 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
@@ -825,38 +826,41 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"promoCodes\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1d\n" +
 	"\n" +
-	"total_size\x18\x03 \x01(\x05R\ttotalSize\"R\n" +
-	"\x13GetPromoCodeRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\"\xb2\x02\n" +
-	"\x16CreatePromoCodeRequest\x12D\n" +
+	"total_size\x18\x03 \x01(\x05R\ttotalSize\"k\n" +
+	"\x13GetPromoCodeRequest\x12T\n" +
+	"\x04name\x18\x01 \x01(\tB@\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.promocode.v1/PromoCode\xbaH\x16r\x142\x12^promoCodes/[^/]+$R\x04name\"\xc7\x03\n" +
+	"\x16CreatePromoCodeRequest\x12\xbd\x01\n" +
 	"\n" +
-	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12S\n" +
-	"\x0fcode_generation\x18\x05 \x01(\x0e2%.freebusy.promocode.v1.CodeGenerationB\x03\xe0A\x01R\x0ecodeGeneration\x12'\n" +
-	"\rpromo_code_id\x18\x02 \x01(\tB\x03\xe0A\x01R\vpromoCodeId\x12*\n" +
+	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB|\xe0A\x02\xbaHv\xba\x01p\n" +
+	"\x1acreate_promo_code.discount\x12>promo_code.discount is required: set percent_off or amount_off\x1a\x12has(this.discount)\xc8\x01\x01R\tpromoCode\x12S\n" +
+	"\x0fcode_generation\x18\x05 \x01(\x0e2%.freebusy.promocode.v1.CodeGenerationB\x03\xe0A\x01R\x0ecodeGeneration\x12B\n" +
+	"\rpromo_code_id\x18\x02 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\vpromoCodeId\x12*\n" +
 	"\n" +
 	"request_id\x18\x03 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12(\n" +
-	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"\xca\x01\n" +
-	"\x16UpdatePromoCodeRequest\x12D\n" +
+	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"\xd4\x02\n" +
+	"\x16UpdatePromoCodeRequest\x12\xcd\x01\n" +
 	"\n" +
-	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x03\xe0A\x02R\tpromoCode\x12@\n" +
+	"promo_code\x18\x01 \x01(\v2 .freebusy.promocode.v1.PromoCodeB\x8b\x01\xe0A\x02\xbaH\x84\x01\xba\x01~\n" +
+	"\x16update_promo_code.name\x12;promo_code.name must be of the form promoCodes/{promo_code}\x1a'this.name.matches('^promoCodes/[^/]+$')\xc8\x01\x01R\tpromoCode\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
 	"updateMask\x12(\n" +
-	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"\x89\x01\n" +
-	"\x16DeletePromoCodeRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.promocode.v1/PromoCodeR\x04name\x12\x17\n" +
+	"\rvalidate_only\x18\x03 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"\xa2\x01\n" +
+	"\x16DeletePromoCodeRequest\x12T\n" +
+	"\x04name\x18\x01 \x01(\tB@\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.promocode.v1/PromoCode\xbaH\x16r\x142\x12^promoCodes/[^/]+$R\x04name\x12\x17\n" +
 	"\x04etag\x18\x02 \x01(\tB\x03\xe0A\x01R\x04etag\x12\x19\n" +
-	"\x05force\x18\x03 \x01(\bB\x03\xe0A\x01R\x05force\"\xa1\x02\n" +
-	"\x18ValidatePromoCodeRequest\x12\x17\n" +
-	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x123\n" +
-	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x02R\bsubtotal\x12A\n" +
-	"\bproperty\x18\x03 \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\bproperty\x125\n" +
-	"\x04unit\x18\x04 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04unit\x12=\n" +
-	"\bcustomer\x18\x05 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
-	"\x19freebusy.identity.v1/UserR\bcustomer\"\xd6\x02\n" +
+	"\x05force\x18\x03 \x01(\bB\x03\xe0A\x01R\x05force\"\x89\x03\n" +
+	"\x18ValidatePromoCodeRequest\x12\x1e\n" +
+	"\x04code\x18\x01 \x01(\tB\n" +
+	"\xe0A\x02\xbaH\x04r\x02\x10\x01R\x04code\x129\n" +
+	"\bsubtotal\x18\x02 \x01(\v2\x12.google.type.MoneyB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\bsubtotal\x12]\n" +
+	"\bproperty\x18\x03 \x01(\tBA\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x19\xd8\x01\x01r\x142\x12^properties/[^/]+$R\bproperty\x12]\n" +
+	"\x04unit\x18\x04 \x01(\tBI\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH%\xd8\x01\x01r 2\x1e^properties/[^/]+/units/[^/]+$R\x04unit\x12T\n" +
+	"\bcustomer\x18\x05 \x01(\tB8\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/User\xbaH\x14\xd8\x01\x01r\x0f2\r^users/[^/]+$R\bcustomer\"\xd6\x02\n" +
 	"\x19ValidatePromoCodeResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12T\n" +
 	"\x0einvalid_reason\x18\x06 \x01(\x0e2-.freebusy.promocode.v1.PromoCodeInvalidReasonR\rinvalidReason\x12\x16\n" +
@@ -866,13 +870,13 @@ const file_freebusy_promocode_v1_promocode_messages_proto_rawDesc = "" +
 	"\x1ffreebusy.promocode.v1/PromoCodeR\tpromoCode\x12;\n" +
 	"\x0fdiscount_amount\x18\x04 \x01(\v2\x12.google.type.MoneyR\x0ediscountAmount\x123\n" +
 	"\vfinal_total\x18\x05 \x01(\v2\x12.google.type.MoneyR\n" +
-	"finalTotal\"T\n" +
-	"\x14GetRedemptionRequest\x12<\n" +
-	"\x04name\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\n" +
-	" freebusy.promocode.v1/RedemptionR\x04name\"\xdd\x01\n" +
-	"\x16ListRedemptionsRequest\x12@\n" +
-	"\x06parent\x18\x01 \x01(\tB(\xe0A\x02\xfaA\"\x12 freebusy.promocode.v1/RedemptionR\x06parent\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"finalTotal\"\x7f\n" +
+	"\x14GetRedemptionRequest\x12g\n" +
+	"\x04name\x18\x01 \x01(\tBS\xe0A\x02\xfaA\"\n" +
+	" freebusy.promocode.v1/Redemption\xbaH(r&2$^promoCodes/[^/]+/redemptions/[^/]+$R\x04name\"\x80\x02\n" +
+	"\x16ListRedemptionsRequest\x12Y\n" +
+	"\x06parent\x18\x01 \x01(\tBA\xe0A\x02\xfaA\"\x12 freebusy.promocode.v1/Redemption\xbaH\x16r\x142\x12^promoCodes/[^/]+$R\x06parent\x12*\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.organisation.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/organisation/v1/enums.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
@@ -29,7 +30,11 @@ message Organisation {
 
   // The organisation name.
   // Format: organisations/{organisation}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^organisations/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
@@ -44,7 +49,11 @@ message Organisation {
   string slug = 4 [(google.api.field_behavior) = OPTIONAL];
 
   // Billing contact email.
-  string billing_email = 5 [(google.api.field_behavior) = OPTIONAL];
+  string billing_email = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Lifecycle state. New organisations start ACTIVE (database default).
   OrganisationState state = 6 [
@@ -79,7 +88,11 @@ message Member {
 
   // The member name.
   // Format: organisations/{organisation}/members/{member}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^organisations/[^/]+/members/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
@@ -94,14 +107,19 @@ message Member {
   // The invited email address.
   string email = 4 [
     (google.api.field_behavior) = REQUIRED,
-    (orm.v1.query) = {search: true}
+    (orm.v1.query) = {search: true},
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Cached display name of the member.
   string display_name = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // The member's role in the organisation.
-  OrganisationRole role = 6 [(google.api.field_behavior) = REQUIRED];
+  OrganisationRole role = 6 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).enum.defined_only = true
+  ];
 
   // Confirmation state of the membership. New members start INVITED
   // (database default).

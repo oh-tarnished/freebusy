@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.identity.v1;
 
+import "buf/validate/validate.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
@@ -27,7 +28,11 @@ message User {
 
   // The user name. The alias "users/me" resolves to the caller.
   // Format: users/{user}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^users/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Was `uid`; the name's final segment (a ULID) is the canonical ID.
   reserved 2;
@@ -70,14 +75,23 @@ message GetUserRequest {
   // Format: users/{user}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"},
+    (buf.validate.field).string.pattern = "^users/[^/]+$"
   ];
 }
 
 // Request message for UpdateUser.
 message UpdateUserRequest {
   // The user to update; its name identifies the target (typically "users/me").
-  User user = 1 [(google.api.field_behavior) = REQUIRED];
+  User user = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "update_user.name"
+      message: "user.name must be of the form users/{user}"
+      expression: "this.name.matches('^users/[^/]+$')"
+    }
+  ];
 
   // Fields to overwrite. Omit to replace all mutable profile fields.
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
@@ -87,7 +101,13 @@ message UpdateUserRequest {
 // the booking/property services to relate a user to a chain or property.
 message ListUsersRequest {
   // Maximum number of users to return. The server may cap this.
-  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+  int32 page_size = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 1000
+    }
+  ];
 
   // Page token from a previous ListUsers call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];

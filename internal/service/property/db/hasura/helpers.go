@@ -5,7 +5,6 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/feesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/losdiscountsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/mediasql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/propertiesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/rateoverridesql"
 	pschema "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/schemaql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/propertyql/taxesql"
@@ -18,7 +17,6 @@ import (
 
 // List-request constructors, wrapped so the repository reads uniformly and the
 // per-entity ql imports stay in one place.
-func propertiesList() *propertiesql.ListRequest       { return propertiesql.List() }
 func unitsList() *unitsql.ListRequest                 { return unitsql.List() }
 func mediasList() *mediasql.ListRequest               { return mediasql.List() }
 func unitMediasList() *unitmediasql.ListRequest       { return unitmediasql.List() }

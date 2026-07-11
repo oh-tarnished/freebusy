@@ -7,6 +7,7 @@
 package schedulepbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -437,38 +438,41 @@ var File_freebusy_schedule_v1_schedule_messages_proto protoreflect.FileDescripto
 
 const file_freebusy_schedule_v1_schedule_messages_proto_rawDesc = "" +
 	"\n" +
-	",freebusy/schedule/v1/schedule_messages.proto\x12\x14freebusy.schedule.v1\x1a#freebusy/schedule/v1/schedule.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"O\n" +
-	"\x12GetScheduleRequest\x129\n" +
-	"\x04name\x18\x01 \x01(\tB%\xe0A\x02\xfaA\x1f\n" +
-	"\x1dfreebusy.schedule.v1/ScheduleR\x04name\"\x9a\x01\n" +
-	"\x15UpdateScheduleRequest\x12?\n" +
-	"\bschedule\x18\x01 \x01(\v2\x1e.freebusy.schedule.v1.ScheduleB\x03\xe0A\x02R\bschedule\x12@\n" +
+	",freebusy/schedule/v1/schedule_messages.proto\x12\x14freebusy.schedule.v1\x1a\x1bbuf/validate/validate.proto\x1a#freebusy/schedule/v1/schedule.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"}\n" +
+	"\x12GetScheduleRequest\x12g\n" +
+	"\x04name\x18\x01 \x01(\tBS\xe0A\x02\xfaA\x1f\n" +
+	"\x1dfreebusy.schedule.v1/Schedule\xbaH+r)2'^properties/[^/]+/units/[^/]+/schedule$R\x04name\"\xca\x02\n" +
+	"\x15UpdateScheduleRequest\x12\xee\x01\n" +
+	"\bschedule\x18\x01 \x01(\v2\x1e.freebusy.schedule.v1.ScheduleB\xb1\x01\xe0A\x02\xbaH\xaa\x01\xba\x01\xa3\x01\n" +
+	"\x14update_schedule.name\x12Mschedule.name must be of the form properties/{property}/units/{unit}/schedule\x1a<this.name.matches('^properties/[^/]+/units/[^/]+/schedule$')\xc8\x01\x01R\bschedule\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"\xe1\x01\n" +
-	"!ListAvailabilityExceptionsRequest\x129\n" +
-	"\x06parent\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x06parent\x12 \n" +
-	"\tpage_size\x18\x02 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"updateMask\"\x90\x02\n" +
+	"!ListAvailabilityExceptionsRequest\x12^\n" +
+	"\x06parent\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x06parent\x12*\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
 	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\"\xb2\x01\n" +
 	"\"ListAvailabilityExceptionsResponse\x12d\n" +
 	"\x17availability_exceptions\x18\x01 \x03(\v2+.freebusy.schedule.v1.AvailabilityExceptionR\x16availabilityExceptions\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"i\n" +
-	"\x1fGetAvailabilityExceptionRequest\x12F\n" +
-	"\x04name\x18\x01 \x01(\tB2\xe0A\x02\xfaA,\n" +
-	"*freebusy.schedule.v1/AvailabilityExceptionR\x04name\"\xb5\x02\n" +
-	"\"CreateAvailabilityExceptionRequest\x129\n" +
-	"\x06parent\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x06parent\x12g\n" +
-	"\x16availability_exception\x18\x02 \x01(\v2+.freebusy.schedule.v1.AvailabilityExceptionB\x03\xe0A\x02R\x15availabilityException\x12?\n" +
-	"\x19availability_exception_id\x18\x03 \x01(\tB\x03\xe0A\x01R\x17availabilityExceptionId\x12*\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xac\x01\n" +
+	"\x1fGetAvailabilityExceptionRequest\x12\x88\x01\n" +
+	"\x04name\x18\x01 \x01(\tBt\xe0A\x02\xfaA,\n" +
+	"*freebusy.schedule.v1/AvailabilityException\xbaH?r=2;^properties/[^/]+/units/[^/]+/availabilityExceptions/[^/]+$R\x04name\"\xee\x04\n" +
+	"\"CreateAvailabilityExceptionRequest\x12^\n" +
+	"\x06parent\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x06parent\x12\xdf\x02\n" +
+	"\x16availability_exception\x18\x02 \x01(\v2+.freebusy.schedule.v1.AvailabilityExceptionB\xfa\x01\xe0A\x02\xbaH\xf3\x01\xba\x01]\n" +
+	"\"create_availability_exception.kind\x12'availability_exception.kind is required\x1a\x0ethis.kind != 0\xba\x01\x8c\x01\n" +
+	"\"create_availability_exception.span\x12<availability_exception must set a span: window or date_range\x1a(has(this.window) || has(this.date_range)\xc8\x01\x01R\x15availabilityException\x12Z\n" +
+	"\x19availability_exception_id\x18\x03 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\x17availabilityExceptionId\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"l\n" +
-	"\"DeleteAvailabilityExceptionRequest\x12F\n" +
-	"\x04name\x18\x01 \x01(\tB2\xe0A\x02\xfaA,\n" +
-	"*freebusy.schedule.v1/AvailabilityExceptionR\x04nameB\x81\x02\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xaf\x01\n" +
+	"\"DeleteAvailabilityExceptionRequest\x12\x88\x01\n" +
+	"\x04name\x18\x01 \x01(\tBt\xe0A\x02\xfaA,\n" +
+	"*freebusy.schedule.v1/AvailabilityException\xbaH?r=2;^properties/[^/]+/units/[^/]+/availabilityExceptions/[^/]+$R\x04nameB\x81\x02\n" +
 	"\x18com.freebusy.schedule.v1B\x15ScheduleMessagesProtoP\x01Z\\github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1;schedulepbv1\xa2\x02\x03FSX\xaa\x02\x14Freebusy.Schedule.V1\xca\x02\x14Freebusy\\Schedule\\V1\xe2\x02 Freebusy\\Schedule\\V1\\GPBMetadata\xea\x02\x16Freebusy::Schedule::V1b\x06proto3"
 
 var (

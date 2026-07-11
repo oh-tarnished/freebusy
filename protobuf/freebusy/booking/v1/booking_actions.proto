@@ -78,7 +78,10 @@ message RescheduleBookingRequest {
   ];
 
   // The new reserved span.
-  freebusy.shared.v1.TimeWindow window = 2 [(google.api.field_behavior) = REQUIRED];
+  freebusy.shared.v1.TimeWindow window = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 
   // The new unit, when changing it as part of the reschedule.
   // Format: properties/{property}/units/{unit}
@@ -101,7 +104,10 @@ message RescheduleBookingRequest {
 message UpdateBookingGuestsRequest {
   // The new guest party and occupancy; its name identifies the target booking.
   // Format: bookings/{booking}/guests
-  BookingGuests booking_guests = 1 [(google.api.field_behavior) = REQUIRED];
+  BookingGuests booking_guests = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 
   // Fields to overwrite. Omit to replace both guests and occupancy.
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];

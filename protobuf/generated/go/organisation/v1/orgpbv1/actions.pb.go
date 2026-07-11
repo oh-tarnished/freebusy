@@ -7,6 +7,7 @@
 package orgpbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -250,23 +251,25 @@ var File_freebusy_organisation_v1_actions_proto protoreflect.FileDescriptor
 
 const file_freebusy_organisation_v1_actions_proto_rawDesc = "" +
 	"\n" +
-	"&freebusy/organisation/v1/actions.proto\x12\x18freebusy.organisation.v1\x1a$freebusy/organisation/v1/enums.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\xe8\x01\n" +
-	"\x13InviteMemberRequest\x12E\n" +
-	"\x06parent\x18\x01 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\x06parent\x12\x19\n" +
-	"\x05email\x18\x02 \x01(\tB\x03\xe0A\x02R\x05email\x12C\n" +
-	"\x04role\x18\x03 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\x03\xe0A\x02R\x04role\x12*\n" +
+	"&freebusy/organisation/v1/actions.proto\x12\x18freebusy.organisation.v1\x1a\x1bbuf/validate/validate.proto\x1a$freebusy/organisation/v1/enums.proto\x1a+freebusy/organisation/v1/organisation.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\"\x95\x02\n" +
+	"\x13InviteMemberRequest\x12a\n" +
+	"\x06parent\x18\x01 \x01(\tBI\xe0A\x02\xfaA'\n" +
+	"%freebusy.organisation.v1/Organisation\xbaH\x19r\x172\x15^organisations/[^/]+$R\x06parent\x12 \n" +
+	"\x05email\x18\x02 \x01(\tB\n" +
+	"\xe0A\x02\xbaH\x04r\x02`\x01R\x05email\x12M\n" +
+	"\x04role\x18\x03 \x01(\x0e2*.freebusy.organisation.v1.OrganisationRoleB\r\xe0A\x02\xbaH\a\x82\x01\x04\x10\x01 \x00R\x04role\x12*\n" +
 	"\n" +
 	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"P\n" +
 	"\x14InviteMemberResponse\x128\n" +
-	"\x06member\x18\x01 \x01(\v2 .freebusy.organisation.v1.MemberR\x06member\"\x96\x01\n" +
-	"\x13UpdateMemberRequest\x12=\n" +
-	"\x06member\x18\x01 \x01(\v2 .freebusy.organisation.v1.MemberB\x03\xe0A\x02R\x06member\x12@\n" +
+	"\x06member\x18\x01 \x01(\v2 .freebusy.organisation.v1.MemberR\x06member\"\xc0\x02\n" +
+	"\x13UpdateMemberRequest\x12\xe6\x01\n" +
+	"\x06member\x18\x01 \x01(\v2 .freebusy.organisation.v1.MemberB\xab\x01\xe0A\x02\xbaH\xa4\x01\xba\x01\x9d\x01\n" +
+	"\x12update_member.name\x12Mmember.name must be of the form organisations/{organisation}/members/{member}\x1a8this.name.matches('^organisations/[^/]+/members/[^/]+$')\xc8\x01\x01R\x06member\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"R\n" +
-	"\x13DeleteMemberRequest\x12;\n" +
-	"\x04name\x18\x01 \x01(\tB'\xe0A\x02\xfaA!\n" +
-	"\x1ffreebusy.organisation.v1/MemberR\x04nameB\x86\x02\n" +
+	"updateMask\"|\n" +
+	"\x13DeleteMemberRequest\x12e\n" +
+	"\x04name\x18\x01 \x01(\tBQ\xe0A\x02\xfaA!\n" +
+	"\x1ffreebusy.organisation.v1/Member\xbaH'r%2#^organisations/[^/]+/members/[^/]+$R\x04nameB\x86\x02\n" +
 	"\x1ccom.freebusy.organisation.v1B\fActionsProtoP\x01ZVgithub.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1;orgpbv1\xa2\x02\x03FOX\xaa\x02\x18Freebusy.Organisation.V1\xca\x02\x18Freebusy\\Organisation\\V1\xe2\x02$Freebusy\\Organisation\\V1\\GPBMetadata\xea\x02\x1aFreebusy::Organisation::V1b\x06proto3"
 
 var (

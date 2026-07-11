@@ -7,6 +7,7 @@
 package propertypbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -1241,11 +1242,11 @@ var File_freebusy_property_v1_property_proto protoreflect.FileDescriptor
 
 const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\xa8\a\n" +
-	"\bProperty\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12Q\n" +
-	"\forganisation\x18\x02 \x01(\tB-\xe0A\x02\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\forganisation\x12,\n" +
+	"#freebusy/property/v1/property.proto\x12\x14freebusy.property.v1\x1a\x1bbuf/validate/validate.proto\x1a freebusy/property/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\x1a google/type/postal_address.proto\x1a\x1bgoogle/type/timeofday.proto\x1a\x18orm/v1/annotations.proto\"\xe3\a\n" +
+	"\bProperty\x123\n" +
+	"\x04name\x18\x01 \x01(\tB\x1f\xe0A\b\xbaH\x19\xd8\x01\x01r\x142\x12^properties/[^/]+$R\x04name\x12p\n" +
+	"\forganisation\x18\x02 \x01(\tBL\xe0A\x02\xfaA'\n" +
+	"%freebusy.organisation.v1/Organisation\xbaH\x1c\xd8\x01\x01r\x172\x15^organisations/[^/]+$R\forganisation\x12,\n" +
 	"\fdisplay_name\x18\x03 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x04 \x01(\tB\x03\xe0A\x01R\vdescription\x129\n" +
 	"\aaddress\x18\x05 \x01(\v2\x1a.google.type.PostalAddressB\x03\xe0A\x01R\aaddress\x12 \n" +
@@ -1274,10 +1275,10 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\rcheckout_time\x18\x02 \x01(\v2\x16.google.type.TimeOfDayB\x03\xe0A\x01R\fcheckoutTime\x12$\n" +
 	"\vhouse_rules\x18\x03 \x03(\tB\x03\xe0A\x01R\n" +
 	"houseRules\x12\x19\n" +
-	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xc1\n" +
+	"\x05notes\x18\x04 \x01(\tB\x03\xe0A\x01R\x05notes\"\xe9\n" +
 	"\n" +
-	"\x04Unit\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12,\n" +
+	"\x04Unit\x12?\n" +
+	"\x04name\x18\x01 \x01(\tB+\xe0A\b\xbaH%\xd8\x01\x01r 2\x1e^properties/[^/]+/units/[^/]+$R\x04name\x12,\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\t\xe0A\x02\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12%\n" +
 	"\vdescription\x18\x03 \x01(\tB\x03\xe0A\x01R\vdescription\x127\n" +
 	"\x04type\x18\x04 \x01(\x0e2\x1e.freebusy.property.v1.UnitTypeB\x03\xe0A\x02R\x04type\x12J\n" +
@@ -1347,12 +1348,12 @@ const file_freebusy_property_v1_property_proto_rawDesc = "" +
 	"\x03Tax\x12\x17\n" +
 	"\x04code\x18\x01 \x01(\tB\x03\xe0A\x02R\x04code\x12&\n" +
 	"\fdisplay_name\x18\x02 \x01(\tB\x03\xe0A\x01R\vdisplayName\x12\x1d\n" +
-	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent\"\xe3\x06\n" +
-	"\aLicence\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12@\n" +
-	"\x06target\x18\x02 \x01(\x0e2#.freebusy.property.v1.LicenceTargetB\x03\xe0A\x03R\x06target\x12>\n" +
-	"\x04unit\x18\x03 \x01(\tB*\xe0A\x01\xe0A\x05\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/Unit\x92\xb5\x18\x02P\x01R\x04unit\x12:\n" +
+	"\apercent\x18\x03 \x01(\x01B\x03\xe0A\x02R\apercent\"\xb6\a\n" +
+	"\aLicence\x12B\n" +
+	"\x04name\x18\x01 \x01(\tB.\xe0A\b\xbaH(\xd8\x01\x01r#2!^properties/[^/]+/licences/[^/]+$R\x04name\x12@\n" +
+	"\x06target\x18\x02 \x01(\x0e2#.freebusy.property.v1.LicenceTargetB\x03\xe0A\x03R\x06target\x12f\n" +
+	"\x04unit\x18\x03 \x01(\tBR\xe0A\x01\xe0A\x05\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH%\xd8\x01\x01r 2\x1e^properties/[^/]+/units/[^/]+$\x92\xb5\x18\x02P\x01R\x04unit\x12:\n" +
 	"\x04type\x18\x04 \x01(\x0e2!.freebusy.property.v1.LicenceTypeB\x03\xe0A\x02R\x04type\x120\n" +
 	"\x0elicence_number\x18\x05 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\rlicenceNumber\x126\n" +
 	"\x11issuing_authority\x18\x06 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\x10issuingAuthority\x125\n" +

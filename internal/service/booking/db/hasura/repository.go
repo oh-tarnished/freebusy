@@ -218,7 +218,7 @@ func (r *BookingRepository) ListBookings(ctx context.Context, in repox.ListInput
 	if err != nil {
 		return nil, "", err
 	}
-	rows, next, err := filterx.Hasura[bookingschema.BookingResource](booking.BookingFilterSpec, r.svc.Query.Booking.Resource).
+	rows, next, err := filterx.Hasura(booking.BookingFilterSpec, r.svc.Query.Booking.Resource).
 		List(ctx, fin)
 	if err != nil {
 		return nil, "", mapHasuraErr(types.MapFilterxErr(err))

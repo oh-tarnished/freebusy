@@ -6,6 +6,7 @@ package freebusy.property.v1;
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
 //     shared-types package; reusing it beats inlining per-package copies. --)
 
+import "buf/validate/validate.proto";
 import "freebusy/property/v1/enums.proto";
 import "freebusy/shared/v1/enums.proto";
 import "freebusy/shared/v1/types.proto";
@@ -40,13 +41,19 @@ message Property {
 
   // The property name.
   // Format: properties/{property}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^properties/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // The chain/brand that owns this property.
   // Format: organisations/{organisation}
   string organisation = 2 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"},
+    (buf.validate.field).string.pattern = "^organisations/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Human-friendly name (e.g. "Grand Beach Resort, Goa").
@@ -147,7 +154,11 @@ message Unit {
 
   // The unit name.
   // Format: properties/{property}/units/{unit}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Human-friendly name (e.g. "Deluxe King", "Sea-View Suite").
   string display_name = 2 [
@@ -384,7 +395,11 @@ message Licence {
 
   // The licence name.
   // Format: properties/{property}/licences/{licence}
-  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+  string name = 1 [
+    (google.api.field_behavior) = IDENTIFIER,
+    (buf.validate.field).string.pattern = "^properties/[^/]+/licences/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // What the licence covers: the whole property, or the single unit named in
   // `unit`. Derived from whether `unit` is set at create time.
@@ -397,7 +412,9 @@ message Licence {
     (google.api.field_behavior) = OPTIONAL,
     (google.api.field_behavior) = IMMUTABLE,
     (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
-    (orm.v1.column) = {on_delete: REFERENTIAL_ACTION_CASCADE}
+    (orm.v1.column) = {on_delete: REFERENTIAL_ACTION_CASCADE},
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // What kind of licence/certificate this is.

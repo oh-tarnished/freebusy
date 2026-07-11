@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
 	identitydb "github.com/oh-tarnished/freebusy/internal/service/identity/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -46,18 +47,15 @@ func resolveName(ctx context.Context, name string) (string, error) {
 
 // GetUser returns a user by resource name; "users/me" resolves to the caller.
 func (s *Server) GetUser(ctx context.Context, req *identitypbv1.GetUserRequest) (*identitypbv1.User, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *identitypbv1.User
-	err := traced(ctx, "GetUser", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "IdentityService", "GetUser", func(ctx context.Context) error {
 		name, err := resolveName(ctx, req.GetName())
 		if err != nil {
 			return err
 		}
 		u, err := s.repo.GetUser(ctx, name)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = u
 		return nil
@@ -68,7 +66,7 @@ func (s *Server) GetUser(ctx context.Context, req *identitypbv1.GetUserRequest) 
 // ListUsers returns a page of users.
 func (s *Server) ListUsers(ctx context.Context, req *identitypbv1.ListUsersRequest) (*identitypbv1.ListUsersResponse, error) {
 	var out *identitypbv1.ListUsersResponse
-	err := traced(ctx, "ListUsers", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "IdentityService", "ListUsers", func(ctx context.Context) error {
 		items, next, err := s.repo.ListUsers(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
@@ -76,7 +74,7 @@ func (s *Server) ListUsers(ctx context.Context, req *identitypbv1.ListUsersReque
 			Filter:    req.GetFilter(),
 		})
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = &identitypbv1.ListUsersResponse{Users: items, NextPageToken: next}
 		return nil
@@ -87,11 +85,8 @@ func (s *Server) ListUsers(ctx context.Context, req *identitypbv1.ListUsersReque
 // UpdateUser updates the signed-in user's profile; "users/me" resolves to the caller.
 func (s *Server) UpdateUser(ctx context.Context, req *identitypbv1.UpdateUserRequest) (*identitypbv1.User, error) {
 	u := req.GetUser()
-	if u == nil || u.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "user.name is required")
-	}
 	var out *identitypbv1.User
-	err := traced(ctx, "UpdateUser", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "IdentityService", "UpdateUser", func(ctx context.Context) error {
 		name, err := resolveName(ctx, u.GetName())
 		if err != nil {
 			return err
@@ -99,7 +94,7 @@ func (s *Server) UpdateUser(ctx context.Context, req *identitypbv1.UpdateUserReq
 		u.Name = name
 		updated, err := s.repo.UpdateUser(ctx, u, req.GetUpdateMask().GetPaths())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = updated
 		return nil

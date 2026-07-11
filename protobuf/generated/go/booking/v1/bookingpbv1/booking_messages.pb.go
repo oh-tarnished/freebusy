@@ -7,6 +7,7 @@
 package bookingpbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -330,22 +331,24 @@ var File_freebusy_booking_v1_booking_messages_proto protoreflect.FileDescriptor
 
 const file_freebusy_booking_v1_booking_messages_proto_rawDesc = "" +
 	"\n" +
-	"*freebusy/booking/v1/booking_messages.proto\x12\x13freebusy.booking.v1\x1a!freebusy/booking/v1/booking.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"\xcd\x01\n" +
-	"\x14CreateBookingRequest\x12;\n" +
-	"\abooking\x18\x01 \x01(\v2\x1c.freebusy.booking.v1.BookingB\x03\xe0A\x02R\abooking\x12*\n" +
+	"*freebusy/booking/v1/booking_messages.proto\x12\x13freebusy.booking.v1\x1a\x1bbuf/validate/validate.proto\x1a!freebusy/booking/v1/booking.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/api/field_info.proto\x1a\x19google/api/resource.proto\"\xfc\x02\n" +
+	"\x14CreateBookingRequest\x12\xce\x01\n" +
+	"\abooking\x18\x01 \x01(\v2\x1c.freebusy.booking.v1.BookingB\x95\x01\xe0A\x02\xbaH\x8e\x01\xba\x01@\n" +
+	"\x13create_booking.unit\x12\x18booking.unit is required\x1a\x0fthis.unit != ''\xba\x01E\n" +
+	"\x15create_booking.window\x12\x1abooking.window is required\x1a\x10has(this.window)\xc8\x01\x01R\abooking\x12*\n" +
 	"\n" +
-	"request_id\x18\x02 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12\"\n" +
+	"request_id\x18\x02 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\x12=\n" +
 	"\n" +
-	"booking_id\x18\x03 \x01(\tB\x03\xe0A\x01R\tbookingId\x12(\n" +
-	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"L\n" +
-	"\x11GetBookingRequest\x127\n" +
-	"\x04name\x18\x01 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/BookingR\x04name\"X\n" +
-	"\x17GetBookingGuestsRequest\x12=\n" +
-	"\x04name\x18\x01 \x01(\tB)\xe0A\x02\xfaA#\n" +
-	"!freebusy.booking.v1/BookingGuestsR\x04name\"\x98\x01\n" +
-	"\x13ListBookingsRequest\x12 \n" +
-	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"booking_id\x18\x03 \x01(\tB\x1e\xe0A\x01\xbaH\x18\xd8\x01\x01r\x132\x11^[a-z0-9-]{1,63}$R\tbookingId\x12(\n" +
+	"\rvalidate_only\x18\x04 \x01(\bB\x03\xe0A\x01R\fvalidateOnly\"c\n" +
+	"\x11GetBookingRequest\x12N\n" +
+	"\x04name\x18\x01 \x01(\tB:\xe0A\x02\xfaA\x1d\n" +
+	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\"v\n" +
+	"\x17GetBookingGuestsRequest\x12[\n" +
+	"\x04name\x18\x01 \x01(\tBG\xe0A\x02\xfaA#\n" +
+	"!freebusy.booking.v1/BookingGuests\xbaH\x1br\x192\x17^bookings/[^/]+/guests$R\x04name\"\xa2\x01\n" +
+	"\x13ListBookingsRequest\x12*\n" +
+	"\tpage_size\x18\x01 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +

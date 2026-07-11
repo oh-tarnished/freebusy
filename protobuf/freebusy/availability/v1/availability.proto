@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.availability.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/availability/v1/enums.proto";
 // (-- api-linter: core::0215::foreign-type-reference=disabled
 //     aip.dev/not-precedent: freebusy.shared.v1 is a deliberate, API-wide
@@ -88,11 +89,14 @@ message ComputeAvailabilityRequest {
   // Format: properties/{property}/units/{unit}
   string unit = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$"
   ];
 
   // The period to compute availability over. Exactly one must be set.
   oneof period {
+    option (buf.validate.oneof).required = true;
+
     // An exact time window, the natural form for TIME_SLOT units.
     freebusy.shared.v1.TimeWindow window = 2;
 
@@ -106,7 +110,10 @@ message ComputeAvailabilityRequest {
   google.protobuf.Duration duration = 3 [(google.api.field_behavior) = OPTIONAL];
 
   // Number of units required to be free. Defaults to 1.
-  int32 units = 5 [(google.api.field_behavior) = OPTIONAL];
+  int32 units = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 }
 
 // Response message for ComputeAvailability.
@@ -130,11 +137,14 @@ message CheckAvailabilityRequest {
   // Format: properties/{property}/units/{unit}
   string unit = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$"
   ];
 
   // The exact span to test for bookability. Exactly one must be set.
   oneof period {
+    option (buf.validate.oneof).required = true;
+
     // An exact time window, the natural form for TIME_SLOT units.
     freebusy.shared.v1.TimeWindow window = 2;
 
@@ -144,7 +154,10 @@ message CheckAvailabilityRequest {
   }
 
   // Number of units required to be free. Defaults to 1.
-  int32 units = 3 [(google.api.field_behavior) = OPTIONAL];
+  int32 units = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 }
 
 // A reason a span is not bookable, as a machine-readable code plus a
@@ -178,11 +191,14 @@ message ComputeBookableRangesRequest {
   // Format: properties/{property}/units/{unit}
   string unit = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$"
   ];
 
   // The period to search within. Exactly one must be set.
   oneof period {
+    option (buf.validate.oneof).required = true;
+
     // An exact time window, the natural form for TIME_SLOT units.
     freebusy.shared.v1.TimeWindow window = 2;
 
@@ -195,7 +211,10 @@ message ComputeBookableRangesRequest {
   google.protobuf.Duration duration = 3 [(google.api.field_behavior) = OPTIONAL];
 
   // Number of units required to be free. Defaults to 1.
-  int32 units = 5 [(google.api.field_behavior) = OPTIONAL];
+  int32 units = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 }
 
 // Response message for ComputeBookableRanges.
@@ -212,7 +231,10 @@ message BatchComputeAvailabilityRequest {
   reserved 2 to 4;
 
   // The individual compute requests. Results are returned in the same order.
-  repeated ComputeAvailabilityRequest requests = 1 [(google.api.field_behavior) = REQUIRED];
+  repeated ComputeAvailabilityRequest requests = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).repeated.min_items = 1
+  ];
 }
 
 // Response message for BatchComputeAvailability.
@@ -230,6 +252,8 @@ message BatchComputeAvailabilityResponse {
 message SearchAvailabilityRequest {
   // The period to search over. Exactly one must be set.
   oneof period {
+    option (buf.validate.oneof).required = true;
+
     // An exact time window, the natural form for TIME_SLOT units.
     freebusy.shared.v1.TimeWindow window = 1;
 
@@ -239,7 +263,10 @@ message SearchAvailabilityRequest {
   }
 
   // Number of units / party size required free. Defaults to 1.
-  int32 units = 3 [(google.api.field_behavior) = OPTIONAL];
+  int32 units = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32.gte = 0
+  ];
 
   // Filter (AIP-160) over unit fields to narrow the catalog, e.g.
   // `type = UNIT_TYPE_ROOM`, `tags:"beachfront"`, or a display_name match.
@@ -250,7 +277,13 @@ message SearchAvailabilityRequest {
   string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
 
   // Maximum number of matches to return. The server may cap this.
-  int32 page_size = 6 [(google.api.field_behavior) = OPTIONAL];
+  int32 page_size = 6 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 1000
+    }
+  ];
 
   // Page token from a previous SearchAvailability call's next_page_token.
   string page_token = 7 [(google.api.field_behavior) = OPTIONAL];
@@ -263,7 +296,9 @@ message SearchAvailabilityRequest {
   // Format: properties/{property}
   string property = 9 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Scope the search to a single organisation (chain). Empty searches all
@@ -271,7 +306,9 @@ message SearchAvailabilityRequest {
   // Format: organisations/{organisation}
   string organisation = 10 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"},
+    (buf.validate.field).string.pattern = "^organisations/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 }
 

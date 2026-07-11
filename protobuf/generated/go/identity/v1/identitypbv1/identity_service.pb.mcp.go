@@ -16,9 +16,9 @@ import (
 )
 
 // JSON schemas for each RPC method, used as the inputSchema for MCP tools.
-var IdentityService_GetUserSchemaJSON = `{"description":"Get a user (\"users/me\" for the signed-in caller), including profile preferences.","properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`
-var IdentityService_ListUsersSchemaJSON = `{"description":"List users; filter by display name or email.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
-var IdentityService_UpdateUserSchemaJSON = `{"description":"Update the signed-in user's profile: display name, avatar, locale, or time zone.","properties":{"update_mask":{"type":"string"},"user":{"properties":{"avatar_url":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"email":{"type":"string"},"etag":{"type":"string"},"locale":{"type":"string"},"name":{"type":"string"},"time_zone":{"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":[],"type":"object"}},"required":["user"],"type":"object"}`
+var IdentityService_GetUserSchemaJSON = `{"description":"Get a user (\"users/me\" for the signed-in caller), including profile preferences.","properties":{"name":{"pattern":"^users/[^/]+$","type":"string"}},"required":["name"],"type":"object"}`
+var IdentityService_ListUsersSchemaJSON = `{"description":"List users; filter by display name or email.","properties":{"filter":{"type":"string"},"order_by":{"type":"string"},"page_size":{"maximum":1000,"minimum":0,"type":"integer"},"page_token":{"type":"string"}},"required":[],"type":"object"}`
+var IdentityService_UpdateUserSchemaJSON = `{"description":"Update the signed-in user's profile: display name, avatar, locale, or time zone.","properties":{"update_mask":{"type":"string"},"user":{"properties":{"avatar_url":{"type":"string"},"create_time":{"format":"date-time","type":["string","null"]},"display_name":{"type":"string"},"email":{"type":"string"},"etag":{"type":"string"},"locale":{"type":"string"},"name":{"pattern":"^users/[^/]+$","type":"string"},"time_zone":{"type":"string"},"update_time":{"format":"date-time","type":["string","null"]}},"required":[],"type":"object"}},"required":["user"],"type":"object"}`
 
 // MCP tool descriptors. Each pairs a schema with a tool name and description
 // so that LLM clients can discover and invoke the underlying RPCs.

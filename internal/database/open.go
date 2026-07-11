@@ -14,6 +14,9 @@ import (
 // returns a Connection carrying the live handle for that provider. The caller
 // passes the Connection to NewFactory.
 func Open() (*Connection, error) {
+	if testBackend != nil {
+		return testBackend.conn, nil
+	}
 	switch providerFromConfig() {
 	case ProviderHasura:
 		return openHasura()

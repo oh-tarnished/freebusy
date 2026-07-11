@@ -39,10 +39,32 @@ func ProviderFromConfig() Provider { return providerFromConfig() }
 // providerFromConfig resolves the configured provider, defaulting to GORM for an
 // empty or unrecognized value.
 func providerFromConfig() Provider {
+	if testBackend != nil {
+		return testBackend.provider
+	}
 	switch strings.ToLower(strings.TrimSpace(config.Get().Database.Provider)) {
 	case string(ProviderHasura):
 		return ProviderHasura
 	default:
 		return ProviderGorm
 	}
+}
+
+// testBackend, when set, overrides both Open and providerFromConfig: the e2e
+// suites inject an explicit connection and provider so the fully assembled
+// server runs against the test backend without touching the loaded config.
+var testBackend *testOverride
+
+type testOverride struct {
+	conn     *Connection
+	provider Provider
+}
+
+// SetTestBackend forces Open to return conn and ProviderFromConfig to report
+// provider until the returned restore func runs. Test seam only — it mutates
+// package state, so don't call it concurrently with Open or with itself.
+func SetTestBackend(conn *Connection, p Provider) (restore func()) {
+	prev := testBackend
+	testBackend = &testOverride{conn: conn, provider: p}
+	return func() { testBackend = prev }
 }

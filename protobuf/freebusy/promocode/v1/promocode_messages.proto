@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.promocode.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/promocode/v1/enums.proto";
 import "freebusy/promocode/v1/promocode.proto";
 import "google/api/field_behavior.proto";
@@ -18,7 +19,13 @@ option java_package = "dev.ohtarnished.freebusy.promocode.v1";
 // Request message for ListPromoCodes.
 message ListPromoCodesRequest {
   // Maximum number of promo codes to return. The server may cap this.
-  int32 page_size = 1 [(google.api.field_behavior) = OPTIONAL];
+  int32 page_size = 1 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 1000
+    }
+  ];
 
   // Page token from a previous ListPromoCodes call's next_page_token.
   string page_token = 2 [(google.api.field_behavior) = OPTIONAL];
@@ -50,7 +57,8 @@ message GetPromoCodeRequest {
   // Format: promoCodes/{promo_code}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.promocode.v1/PromoCode"}
+    (google.api.resource_reference) = {type: "freebusy.promocode.v1/PromoCode"},
+    (buf.validate.field).string.pattern = "^promoCodes/[^/]+$"
   ];
 }
 
@@ -59,7 +67,15 @@ message CreatePromoCodeRequest {
   // The promo code to create. Server-assigned fields are ignored on input:
   // name, state, redemption_count, redemptions, create_time, update_time, etag.
   // promo_code.code is honored only when code_generation is MANUAL (or unset).
-  PromoCode promo_code = 1 [(google.api.field_behavior) = REQUIRED];
+  PromoCode promo_code = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "create_promo_code.discount"
+      message: "promo_code.discount is required: set percent_off or amount_off"
+      expression: "has(this.discount)"
+    }
+  ];
 
   // Whether the human-facing code is supplied by the caller (MANUAL) or minted
   // by the server (AUTO). Unset defaults to MANUAL. When AUTO, promo_code.code
@@ -70,7 +86,11 @@ message CreatePromoCodeRequest {
   CodeGeneration code_generation = 5 [(google.api.field_behavior) = OPTIONAL];
 
   // Optional caller-chosen ID for the promo code; the server generates one if unset.
-  string promo_code_id = 2 [(google.api.field_behavior) = OPTIONAL];
+  string promo_code_id = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).string.pattern = "^[a-z0-9-]{1,63}$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Caller-supplied idempotency key; identical retries return the first result.
   string request_id = 3 [
@@ -87,7 +107,15 @@ message UpdatePromoCodeRequest {
   // The promo code to update; its name identifies the target. For optimistic
   // concurrency, echo the etag you last read (AIP-154); the update fails if it
   // no longer matches.
-  PromoCode promo_code = 1 [(google.api.field_behavior) = REQUIRED];
+  PromoCode promo_code = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "update_promo_code.name"
+      message: "promo_code.name must be of the form promoCodes/{promo_code}"
+      expression: "this.name.matches('^promoCodes/[^/]+$')"
+    }
+  ];
 
   // Fields to overwrite. Omit to replace all mutable fields. Nested fields use
   // dotted paths, e.g. "discount.amount_off", "window.end_time", "scope.min_subtotal".
@@ -103,7 +131,8 @@ message DeletePromoCodeRequest {
   // Format: promoCodes/{promo_code}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.promocode.v1/PromoCode"}
+    (google.api.resource_reference) = {type: "freebusy.promocode.v1/PromoCode"},
+    (buf.validate.field).string.pattern = "^promoCodes/[^/]+$"
   ];
 
   // Optional optimistic-concurrency guard: if set, the delete fails unless it
@@ -119,30 +148,42 @@ message DeletePromoCodeRequest {
 // apply to a prospective booking without redeeming it.
 message ValidatePromoCodeRequest {
   // The human-entered code to validate (e.g. "SUMMER25").
-  string code = 1 [(google.api.field_behavior) = REQUIRED];
+  string code = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.min_len = 1
+  ];
 
   // Subtotal the discount would apply to.
-  google.type.Money subtotal = 2 [(google.api.field_behavior) = REQUIRED];
+  google.type.Money subtotal = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 
   // Property being booked, for scope checks.
   // Format: properties/{property}
   string property = 3 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Property"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Unit being booked, for scope checks.
   // Format: properties/{property}/units/{unit}
   string unit = 4 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"}
+    (google.api.resource_reference) = {type: "freebusy.property.v1/Unit"},
+    (buf.validate.field).string.pattern = "^properties/[^/]+/units/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 
   // Customer redeeming the code, for per-customer limit checks.
   // Format: users/{user}
   string customer = 5 [
     (google.api.field_behavior) = OPTIONAL,
-    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"}
+    (google.api.resource_reference) = {type: "freebusy.identity.v1/User"},
+    (buf.validate.field).string.pattern = "^users/[^/]+$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
   ];
 }
 
@@ -176,7 +217,8 @@ message GetRedemptionRequest {
   // Format: promoCodes/{promo_code}/redemptions/{redemption}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.promocode.v1/Redemption"}
+    (google.api.resource_reference) = {type: "freebusy.promocode.v1/Redemption"},
+    (buf.validate.field).string.pattern = "^promoCodes/[^/]+/redemptions/[^/]+$"
   ];
 }
 
@@ -186,11 +228,18 @@ message ListRedemptionsRequest {
   // Format: promoCodes/{promo_code}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {child_type: "freebusy.promocode.v1/Redemption"}
+    (google.api.resource_reference) = {child_type: "freebusy.promocode.v1/Redemption"},
+    (buf.validate.field).string.pattern = "^promoCodes/[^/]+$"
   ];
 
   // Maximum number of redemptions to return. The server may cap this.
-  int32 page_size = 2 [(google.api.field_behavior) = OPTIONAL];
+  int32 page_size = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 1000
+    }
+  ];
 
   // Page token from a previous ListRedemptions call's next_page_token.
   string page_token = 3 [(google.api.field_behavior) = OPTIONAL];

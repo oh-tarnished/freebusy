@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.organisation.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/organisation/v1/enums.proto";
 import "freebusy/organisation/v1/organisation.proto";
 import "google/api/field_behavior.proto";
@@ -20,14 +21,24 @@ message InviteMemberRequest {
   // Format: organisations/{organisation}
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Organisation"},
+    (buf.validate.field).string.pattern = "^organisations/[^/]+$"
   ];
 
   // Email address to invite.
-  string email = 2 [(google.api.field_behavior) = REQUIRED];
+  string email = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.email = true
+  ];
 
   // Role to grant on acceptance.
-  OrganisationRole role = 3 [(google.api.field_behavior) = REQUIRED];
+  OrganisationRole role = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).enum = {
+      defined_only: true
+      not_in: [0]
+    }
+  ];
 
   // Caller-supplied idempotency key; identical retries return the first result.
   string request_id = 4 [
@@ -46,7 +57,15 @@ message InviteMemberResponse {
 // update_mask to "role" to change it.
 message UpdateMemberRequest {
   // The member to update; its name identifies the target.
-  Member member = 1 [(google.api.field_behavior) = REQUIRED];
+  Member member = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "update_member.name"
+      message: "member.name must be of the form organisations/{organisation}/members/{member}"
+      expression: "this.name.matches('^organisations/[^/]+/members/[^/]+$')"
+    }
+  ];
 
   // Fields to overwrite. Omit to replace all mutable fields.
   google.protobuf.FieldMask update_mask = 2 [(google.api.field_behavior) = OPTIONAL];
@@ -58,6 +77,7 @@ message DeleteMemberRequest {
   // Format: organisations/{organisation}/members/{member}
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Member"}
+    (google.api.resource_reference) = {type: "freebusy.organisation.v1/Member"},
+    (buf.validate.field).string.pattern = "^organisations/[^/]+/members/[^/]+$"
   ];
 }

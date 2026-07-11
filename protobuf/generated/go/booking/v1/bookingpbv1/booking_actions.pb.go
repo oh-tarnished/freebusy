@@ -452,17 +452,17 @@ const file_freebusy_booking_v1_booking_actions_proto_rawDesc = "" +
 	"\x06reason\x18\x02 \x01(\x0e2!.freebusy.booking.v1.CancelReasonB\x03\xe0A\x01R\x06reason\x12\x17\n" +
 	"\x04note\x18\x03 \x01(\tB\x03\xe0A\x01R\x04note\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x8a\x02\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\x90\x02\n" +
 	"\x18RescheduleBookingRequest\x12N\n" +
 	"\x04name\x18\x01 \x01(\tB:\xe0A\x02\xfaA\x1d\n" +
-	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\x12;\n" +
-	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\x03\xe0A\x02R\x06window\x125\n" +
+	"\x1bfreebusy.booking.v1/Booking\xbaH\x14r\x122\x10^bookings/[^/]+$R\x04name\x12A\n" +
+	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\x06window\x125\n" +
 	"\x04unit\x18\x03 \x01(\tB!\xe0A\x01\xfaA\x1b\n" +
 	"\x19freebusy.property.v1/UnitR\x04unit\x12*\n" +
 	"\n" +
-	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xae\x01\n" +
-	"\x1aUpdateBookingGuestsRequest\x12N\n" +
-	"\x0ebooking_guests\x18\x01 \x01(\v2\".freebusy.booking.v1.BookingGuestsB\x03\xe0A\x02R\rbookingGuests\x12@\n" +
+	"request_id\x18\x04 \x01(\tB\v\xe0A\x01\xe2\x8c\xcf\xd7\b\x02\b\x01R\trequestId\"\xb4\x01\n" +
+	"\x1aUpdateBookingGuestsRequest\x12T\n" +
+	"\x0ebooking_guests\x18\x01 \x01(\v2\".freebusy.booking.v1.BookingGuestsB\t\xe0A\x02\xbaH\x03\xc8\x01\x01R\rbookingGuests\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
 	"updateMask\"l\n" +
 	"\x1aPreviewCancellationRequest\x12N\n" +

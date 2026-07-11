@@ -6,9 +6,11 @@ package booking
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
 	bookingdb "github.com/oh-tarnished/freebusy/internal/service/booking/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
@@ -32,16 +34,7 @@ func NewServer(repo bookingdb.BookingRepository) *Server {
 // CreateBooking places a hold on a unit for a window. validate_only checks the
 // request without persisting a hold.
 func (s *Server) CreateBooking(ctx context.Context, req *bookingpbv1.CreateBookingRequest) (*bookingpbv1.Booking, error) {
-	b := req.GetBooking()
-	switch {
-	case b == nil:
-		return nil, status.Error(codes.InvalidArgument, "booking is required")
-	case b.GetUnit() == "":
-		return nil, status.Error(codes.InvalidArgument, "booking.unit is required")
-	case b.GetWindow() == nil:
-		return nil, status.Error(codes.InvalidArgument, "booking.window is required")
-	}
-	b = proto.Clone(b).(*bookingpbv1.Booking)
+	b := proto.Clone(req.GetBooking()).(*bookingpbv1.Booking)
 	if id := req.GetBookingId(); id != "" {
 		name, err := types.BookingName(id)
 		if err != nil {
@@ -54,7 +47,7 @@ func (s *Server) CreateBooking(ctx context.Context, req *bookingpbv1.CreateBooki
 		return b, nil
 	}
 	var out *bookingpbv1.Booking
-	err := traced(ctx, "CreateBooking", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "CreateBooking", func(ctx context.Context) error {
 		created, err := s.repo.CreateBooking(ctx, b)
 		if err != nil {
 			return toStatusErr(err)
@@ -67,11 +60,8 @@ func (s *Server) CreateBooking(ctx context.Context, req *bookingpbv1.CreateBooki
 
 // GetBooking returns a single booking by resource name.
 func (s *Server) GetBooking(ctx context.Context, req *bookingpbv1.GetBookingRequest) (*bookingpbv1.Booking, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *bookingpbv1.Booking
-	err := traced(ctx, "GetBooking", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "GetBooking", func(ctx context.Context) error {
 		b, err := s.repo.GetBooking(ctx, req.GetName())
 		if err != nil {
 			return toStatusErr(err)
@@ -85,7 +75,7 @@ func (s *Server) GetBooking(ctx context.Context, req *bookingpbv1.GetBookingRequ
 // ListBookings returns a page of bookings.
 func (s *Server) ListBookings(ctx context.Context, req *bookingpbv1.ListBookingsRequest) (*bookingpbv1.ListBookingsResponse, error) {
 	var out *bookingpbv1.ListBookingsResponse
-	err := traced(ctx, "ListBookings", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "ListBookings", func(ctx context.Context) error {
 		items, next, err := s.repo.ListBookings(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
@@ -103,11 +93,8 @@ func (s *Server) ListBookings(ctx context.Context, req *bookingpbv1.ListBookings
 
 // ConfirmBooking confirms a held booking.
 func (s *Server) ConfirmBooking(ctx context.Context, req *bookingpbv1.ConfirmBookingRequest) (*bookingpbv1.Booking, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *bookingpbv1.Booking
-	err := traced(ctx, "ConfirmBooking", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "ConfirmBooking", func(ctx context.Context) error {
 		b, err := s.repo.ConfirmBooking(ctx, req.GetName())
 		if err != nil {
 			return toStatusErr(err)
@@ -120,11 +107,8 @@ func (s *Server) ConfirmBooking(ctx context.Context, req *bookingpbv1.ConfirmBoo
 
 // CancelBooking cancels a booking, computing the refund from the cancellation policy.
 func (s *Server) CancelBooking(ctx context.Context, req *bookingpbv1.CancelBookingRequest) (*bookingpbv1.Booking, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *bookingpbv1.Booking
-	err := traced(ctx, "CancelBooking", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "CancelBooking", func(ctx context.Context) error {
 		b, err := s.repo.CancelBooking(ctx, req.GetName(), req.GetReason())
 		if err != nil {
 			return toStatusErr(err)
@@ -137,11 +121,8 @@ func (s *Server) CancelBooking(ctx context.Context, req *bookingpbv1.CancelBooki
 
 // PreviewCancellation reports the refund a cancellation would yield now.
 func (s *Server) PreviewCancellation(ctx context.Context, req *bookingpbv1.PreviewCancellationRequest) (*bookingpbv1.PreviewCancellationResponse, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *bookingpbv1.PreviewCancellationResponse
-	err := traced(ctx, "PreviewCancellation", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "PreviewCancellation", func(ctx context.Context) error {
 		refundable, pct, amount, nonRefundable, summary, err := s.repo.PreviewCancellation(ctx, req.GetName())
 		if err != nil {
 			return toStatusErr(err)
@@ -165,7 +146,7 @@ func (s *Server) GetBookingGuests(ctx context.Context, req *bookingpbv1.GetBooki
 		return nil, status.Error(codes.InvalidArgument, "name must be of the form bookings/{booking}/guests")
 	}
 	var out *bookingpbv1.BookingGuests
-	err := traced(ctx, "GetBookingGuests", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "GetBookingGuests", func(ctx context.Context) error {
 		b, err := s.repo.GetBooking(ctx, bookingName)
 		if err != nil {
 			return toStatusErr(err)
@@ -185,7 +166,7 @@ func (s *Server) UpdateBookingGuests(ctx context.Context, req *bookingpbv1.Updat
 		return nil, status.Error(codes.InvalidArgument, "booking_guests.name must be of the form bookings/{booking}/guests")
 	}
 	var out *bookingpbv1.BookingGuests
-	err := traced(ctx, "UpdateBookingGuests", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "UpdateBookingGuests", func(ctx context.Context) error {
 		b, err := s.repo.UpdateBookingGuests(ctx, bookingName, bg.GetGuests(), bg.GetOccupancy())
 		if err != nil {
 			return toStatusErr(err)
@@ -210,16 +191,21 @@ func bookingNameFromGuestsName(name string) (string, bool) {
 	return booking, true
 }
 
+// toStatusErr maps repository sentinel errors onto gRPC status codes. Booking
+// diverges from the shared rpc.ToStatusErr on conflicts: a capacity/overlap
+// conflict surfaces as FailedPrecondition (the request can't be satisfied in
+// the current state), distinct from an etag Aborted conflict.
+func toStatusErr(err error) error {
+	if errors.Is(err, types.ErrConflict) {
+		return status.Error(codes.FailedPrecondition, err.Error())
+	}
+	return rpc.ToStatusErr(err)
+}
+
 // RescheduleBooking moves a booking to a new span (and optionally unit).
 func (s *Server) RescheduleBooking(ctx context.Context, req *bookingpbv1.RescheduleBookingRequest) (*bookingpbv1.Booking, error) {
-	switch {
-	case req.GetName() == "":
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	case req.GetWindow() == nil:
-		return nil, status.Error(codes.InvalidArgument, "window is required")
-	}
 	var out *bookingpbv1.Booking
-	err := traced(ctx, "RescheduleBooking", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "BookingService", "RescheduleBooking", func(ctx context.Context) error {
 		b, err := s.repo.RescheduleBooking(ctx, req.GetName(), &bookingpbv1.Booking{Window: req.GetWindow()}, req.GetUnit())
 		if err != nil {
 			return toStatusErr(err)

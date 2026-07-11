@@ -7,6 +7,7 @@
 package identitypbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -382,9 +383,9 @@ var File_freebusy_identity_v1_identity_proto protoreflect.FileDescriptor
 
 const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"\xaa\x03\n" +
-	"\x04User\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x19\n" +
+	"#freebusy/identity/v1/identity.proto\x12\x14freebusy.identity.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x18orm/v1/annotations.proto\"\xc1\x03\n" +
+	"\x04User\x12.\n" +
+	"\x04name\x18\x01 \x01(\tB\x1a\xe0A\b\xbaH\x14\xd8\x01\x01r\x0f2\r^users/[^/]+$R\x04name\x12\x19\n" +
 	"\x05email\x18\x03 \x01(\tB\x03\xe0A\x03R\x05email\x12,\n" +
 	"\fdisplay_name\x18\x04 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12\"\n" +
 	"\n" +
@@ -397,16 +398,17 @@ const file_freebusy_identity_v1_identity_proto_rawDesc = "" +
 	" \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x03R\n" +
 	"updateTime\x12\x12\n" +
 	"\x04etag\x18\v \x01(\tR\x04etag:9\xeaA6\n" +
-	"\x19freebusy.identity.v1/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03J\x04\b\b\x10\t\"G\n" +
-	"\x0eGetUserRequest\x125\n" +
-	"\x04name\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.identity.v1/UserR\x04name\"\x8a\x01\n" +
-	"\x11UpdateUserRequest\x123\n" +
-	"\x04user\x18\x01 \x01(\v2\x1a.freebusy.identity.v1.UserB\x03\xe0A\x02R\x04user\x12@\n" +
+	"\x19freebusy.identity.v1/User\x12\fusers/{user}*\x05users2\x04userJ\x04\b\x02\x10\x03J\x04\b\b\x10\t\"[\n" +
+	"\x0eGetUserRequest\x12I\n" +
+	"\x04name\x18\x01 \x01(\tB5\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.identity.v1/User\xbaH\x11r\x0f2\r^users/[^/]+$R\x04name\"\xf6\x01\n" +
+	"\x11UpdateUserRequest\x12\x9e\x01\n" +
+	"\x04user\x18\x01 \x01(\v2\x1a.freebusy.identity.v1.UserBn\xe0A\x02\xbaHh\xba\x01b\n" +
+	"\x10update_user.name\x12*user.name must be of the form users/{user}\x1a\"this.name.matches('^users/[^/]+$')\xc8\x01\x01R\x04user\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x01R\n" +
-	"updateMask\"\x95\x01\n" +
-	"\x10ListUsersRequest\x12 \n" +
-	"\tpage_size\x18\x01 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"updateMask\"\x9f\x01\n" +
+	"\x10ListUsersRequest\x12*\n" +
+	"\tpage_size\x18\x01 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\x02 \x01(\tB\x03\xe0A\x01R\tpageToken\x12\x1b\n" +
 	"\x06filter\x18\x03 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +

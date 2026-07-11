@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package freebusy.shared.v1;
 
+import "buf/validate/validate.proto";
 import "freebusy/shared/v1/enums.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
@@ -18,10 +19,16 @@ option java_package = "dev.ohtarnished.freebusy.shared.v1";
 // for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
 message TimeWindow {
   // Inclusive start of the interval.
-  google.protobuf.Timestamp start_time = 1 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.Timestamp start_time = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 
   // Exclusive end of the interval.
-  google.protobuf.Timestamp end_time = 2 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.Timestamp end_time = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 }
 
 // A half-open range of calendar dates [start_date, end_date), evaluated in the
@@ -29,10 +36,16 @@ message TimeWindow {
 // resources: end_date is the check-out date and is not itself included.
 message DateRange {
   // Inclusive first date of the range.
-  google.type.Date start_date = 1 [(google.api.field_behavior) = REQUIRED];
+  google.type.Date start_date = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 
   // Exclusive end date of the range.
-  google.type.Date end_date = 2 [(google.api.field_behavior) = REQUIRED];
+  google.type.Date end_date = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
 }
 
 // Contact details for the person a booking is for. When a booking carries a
@@ -46,10 +59,18 @@ message Contact {
   string display_name = 1 [(google.api.field_behavior) = OPTIONAL];
 
   // Email address for the confirmation and any follow-ups.
-  string email = 2 [(google.api.field_behavior) = OPTIONAL];
+  string email = 2 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).string.email = true,
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 
   // Phone number in E.164 form (e.g. "+14155552671").
-  string phone_number = 3 [(google.api.field_behavior) = OPTIONAL];
+  string phone_number = 3 [
+    (google.api.field_behavior) = OPTIONAL,
+    (buf.validate.field).string.pattern = "^\\+[1-9][0-9]{1,14}$",
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE
+  ];
 }
 
 // One line in a price breakdown: a base charge, a fee, a tax, or a discount.

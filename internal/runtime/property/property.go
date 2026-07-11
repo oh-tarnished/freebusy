@@ -10,6 +10,7 @@ import (
 	"context"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"github.com/oh-tarnished/freebusy/internal/runtime/rpc"
 	propertydb "github.com/oh-tarnished/freebusy/internal/service/property/db"
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
@@ -38,7 +39,7 @@ func NewServer(repo propertydb.PropertyRepository) *Server {
 // ListProperties returns a page of properties for the given pagination request.
 func (s *Server) ListProperties(ctx context.Context, req *propertypbv1.ListPropertiesRequest) (*propertypbv1.ListPropertiesResponse, error) {
 	var out *propertypbv1.ListPropertiesResponse
-	err := traced(ctx, "ListProperties", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "ListProperties", func(ctx context.Context) error {
 		items, next, err := s.repo.ListProperties(ctx, repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
@@ -46,7 +47,7 @@ func (s *Server) ListProperties(ctx context.Context, req *propertypbv1.ListPrope
 			Filter:    req.GetFilter(),
 		})
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = &propertypbv1.ListPropertiesResponse{Properties: items, NextPageToken: next}
 		return nil
@@ -56,14 +57,11 @@ func (s *Server) ListProperties(ctx context.Context, req *propertypbv1.ListPrope
 
 // GetProperty returns a single property by resource name.
 func (s *Server) GetProperty(ctx context.Context, req *propertypbv1.GetPropertyRequest) (*propertypbv1.Property, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *propertypbv1.Property
-	err := traced(ctx, "GetProperty", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "GetProperty", func(ctx context.Context) error {
 		p, err := s.repo.GetProperty(ctx, req.GetName())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = p
 		return nil
@@ -74,18 +72,7 @@ func (s *Server) GetProperty(ctx context.Context, req *propertypbv1.GetPropertyR
 // CreateProperty creates a property. A caller-supplied property_id fixes the
 // resource name.
 func (s *Server) CreateProperty(ctx context.Context, req *propertypbv1.CreatePropertyRequest) (*propertypbv1.Property, error) {
-	p := req.GetProperty()
-	switch {
-	case p == nil:
-		return nil, status.Error(codes.InvalidArgument, "property is required")
-	case p.GetOrganisation() == "":
-		return nil, status.Error(codes.InvalidArgument, "property.organisation is required")
-	case p.GetDisplayName() == "":
-		return nil, status.Error(codes.InvalidArgument, "property.display_name is required")
-	case p.GetTimeZone() == "":
-		return nil, status.Error(codes.InvalidArgument, "property.time_zone is required")
-	}
-	p = proto.Clone(p).(*propertypbv1.Property)
+	p := proto.Clone(req.GetProperty()).(*propertypbv1.Property)
 	if id := req.GetPropertyId(); id != "" {
 		name, err := types.PropertyName(id)
 		if err != nil {
@@ -94,10 +81,10 @@ func (s *Server) CreateProperty(ctx context.Context, req *propertypbv1.CreatePro
 		p.Name = name
 	}
 	var out *propertypbv1.Property
-	err := traced(ctx, "CreateProperty", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "CreateProperty", func(ctx context.Context) error {
 		created, err := s.repo.CreateProperty(ctx, p)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = created
 		return nil
@@ -109,14 +96,11 @@ func (s *Server) CreateProperty(ctx context.Context, req *propertypbv1.CreatePro
 // replaces every mutable field.
 func (s *Server) UpdateProperty(ctx context.Context, req *propertypbv1.UpdatePropertyRequest) (*propertypbv1.Property, error) {
 	p := req.GetProperty()
-	if p == nil || p.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "property.name is required")
-	}
 	var out *propertypbv1.Property
-	err := traced(ctx, "UpdateProperty", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "UpdateProperty", func(ctx context.Context) error {
 		updated, err := s.repo.UpdateProperty(ctx, p, req.GetUpdateMask().GetPaths())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = updated
 		return nil
@@ -126,14 +110,11 @@ func (s *Server) UpdateProperty(ctx context.Context, req *propertypbv1.UpdatePro
 
 // ArchiveProperty hides a property from the storefront and new bookings.
 func (s *Server) ArchiveProperty(ctx context.Context, req *propertypbv1.ArchivePropertyRequest) (*propertypbv1.Property, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *propertypbv1.Property
-	err := traced(ctx, "ArchiveProperty", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "ArchiveProperty", func(ctx context.Context) error {
 		p, err := s.repo.ArchiveProperty(ctx, req.GetName())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = p
 		return nil
@@ -143,14 +124,11 @@ func (s *Server) ArchiveProperty(ctx context.Context, req *propertypbv1.ArchiveP
 
 // UnarchiveProperty restores an archived property to the active state.
 func (s *Server) UnarchiveProperty(ctx context.Context, req *propertypbv1.UnarchivePropertyRequest) (*propertypbv1.Property, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *propertypbv1.Property
-	err := traced(ctx, "UnarchiveProperty", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "UnarchiveProperty", func(ctx context.Context) error {
 		p, err := s.repo.UnarchiveProperty(ctx, req.GetName())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = p
 		return nil
@@ -162,11 +140,8 @@ func (s *Server) UnarchiveProperty(ctx context.Context, req *propertypbv1.Unarch
 
 // ListUnits returns a page of units under a property.
 func (s *Server) ListUnits(ctx context.Context, req *propertypbv1.ListUnitsRequest) (*propertypbv1.ListUnitsResponse, error) {
-	if req.GetParent() == "" {
-		return nil, status.Error(codes.InvalidArgument, "parent is required")
-	}
 	var out *propertypbv1.ListUnitsResponse
-	err := traced(ctx, "ListUnits", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "ListUnits", func(ctx context.Context) error {
 		items, next, err := s.repo.ListUnits(ctx, req.GetParent(), repox.ListInput{
 			PageSize:  req.GetPageSize(),
 			PageToken: req.GetPageToken(),
@@ -174,7 +149,7 @@ func (s *Server) ListUnits(ctx context.Context, req *propertypbv1.ListUnitsReque
 			Filter:    req.GetFilter(),
 		})
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = &propertypbv1.ListUnitsResponse{Units: items, NextPageToken: next}
 		return nil
@@ -184,14 +159,11 @@ func (s *Server) ListUnits(ctx context.Context, req *propertypbv1.ListUnitsReque
 
 // GetUnit returns a single unit by resource name.
 func (s *Server) GetUnit(ctx context.Context, req *propertypbv1.GetUnitRequest) (*propertypbv1.Unit, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
 	var out *propertypbv1.Unit
-	err := traced(ctx, "GetUnit", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "GetUnit", func(ctx context.Context) error {
 		u, err := s.repo.GetUnit(ctx, req.GetName())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = u
 		return nil
@@ -202,22 +174,7 @@ func (s *Server) GetUnit(ctx context.Context, req *propertypbv1.GetUnitRequest) 
 // CreateUnit creates a unit under a property. A caller-supplied unit_id fixes the
 // resource name.
 func (s *Server) CreateUnit(ctx context.Context, req *propertypbv1.CreateUnitRequest) (*propertypbv1.Unit, error) {
-	u := req.GetUnit()
-	switch {
-	case req.GetParent() == "":
-		return nil, status.Error(codes.InvalidArgument, "parent is required")
-	case u == nil:
-		return nil, status.Error(codes.InvalidArgument, "unit is required")
-	case u.GetDisplayName() == "":
-		return nil, status.Error(codes.InvalidArgument, "unit.display_name is required")
-	case u.GetType() == propertypbv1.UnitType_UNIT_TYPE_UNSPECIFIED:
-		return nil, status.Error(codes.InvalidArgument, "unit.type is required")
-	case u.GetBookingMode() == 0:
-		return nil, status.Error(codes.InvalidArgument, "unit.booking_mode is required")
-	case u.GetTimeZone() == "":
-		return nil, status.Error(codes.InvalidArgument, "unit.time_zone is required")
-	}
-	u = proto.Clone(u).(*propertypbv1.Unit)
+	u := proto.Clone(req.GetUnit()).(*propertypbv1.Unit)
 	if id := req.GetUnitId(); id != "" {
 		pid, err := types.PropertyID(req.GetParent())
 		if err != nil {
@@ -230,10 +187,10 @@ func (s *Server) CreateUnit(ctx context.Context, req *propertypbv1.CreateUnitReq
 		u.Name = name
 	}
 	var out *propertypbv1.Unit
-	err := traced(ctx, "CreateUnit", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "CreateUnit", func(ctx context.Context) error {
 		created, err := s.repo.CreateUnit(ctx, req.GetParent(), u)
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = created
 		return nil
@@ -244,14 +201,11 @@ func (s *Server) CreateUnit(ctx context.Context, req *propertypbv1.CreateUnitReq
 // UpdateUnit applies the update mask to an existing unit.
 func (s *Server) UpdateUnit(ctx context.Context, req *propertypbv1.UpdateUnitRequest) (*propertypbv1.Unit, error) {
 	u := req.GetUnit()
-	if u == nil || u.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "unit.name is required")
-	}
 	var out *propertypbv1.Unit
-	err := traced(ctx, "UpdateUnit", func(ctx context.Context) error {
+	err := rpc.Traced(ctx, "PropertyService", "UpdateUnit", func(ctx context.Context) error {
 		updated, err := s.repo.UpdateUnit(ctx, u, req.GetUpdateMask().GetPaths())
 		if err != nil {
-			return toStatusErr(err)
+			return rpc.ToStatusErr(err)
 		}
 		out = updated
 		return nil
@@ -262,11 +216,8 @@ func (s *Server) UpdateUnit(ctx context.Context, req *propertypbv1.UpdateUnitReq
 // DeleteUnit removes a unit by resource name. Child licences block the delete
 // unless force is set.
 func (s *Server) DeleteUnit(ctx context.Context, req *propertypbv1.DeleteUnitRequest) (*emptypb.Empty, error) {
-	if req.GetName() == "" {
-		return nil, status.Error(codes.InvalidArgument, "name is required")
-	}
-	err := traced(ctx, "DeleteUnit", func(ctx context.Context) error {
-		return toStatusErr(s.repo.DeleteUnit(ctx, req.GetName(), req.GetForce()))
+	err := rpc.Traced(ctx, "PropertyService", "DeleteUnit", func(ctx context.Context) error {
+		return rpc.ToStatusErr(s.repo.DeleteUnit(ctx, req.GetName(), req.GetForce()))
 	})
 	if err != nil {
 		return nil, err

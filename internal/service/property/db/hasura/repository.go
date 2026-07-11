@@ -103,7 +103,7 @@ func (r *PropertyRepository) ListProperties(ctx context.Context, in repox.ListIn
 	if err != nil {
 		return nil, "", err
 	}
-	rows, next, err := filterx.Hasura[pschema.PropertyProperties](property.PropertyFilterSpec, r.svc.Query.Property.Properties).
+	rows, next, err := filterx.Hasura(property.PropertyFilterSpec, r.svc.Query.Property.Properties).
 		List(ctx, fin)
 	if err != nil {
 		return nil, "", mapHasuraErr(types.MapFilterxErr(err))
@@ -212,7 +212,7 @@ func (r *PropertyRepository) ListUnits(ctx context.Context, parent string, in re
 	if err != nil {
 		return nil, "", err
 	}
-	rows, next, err := filterx.Hasura[pschema.PropertyUnits](property.UnitFilterSpec, r.svc.Query.Property.Units).
+	rows, next, err := filterx.Hasura(property.UnitFilterSpec, r.svc.Query.Property.Units).
 		Scope(unitsql.PropertyId.Eq(propertyID)).
 		List(ctx, fin)
 	if err != nil {

@@ -7,6 +7,7 @@
 package availabilitypbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	sharedpbv1 "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	date "google.golang.org/genproto/googleapis/type/date"
@@ -1290,7 +1291,7 @@ var File_freebusy_availability_v1_availability_proto protoreflect.FileDescriptor
 
 const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\n" +
-	"+freebusy/availability/v1/availability.proto\x12\x18freebusy.availability.v1\x1a$freebusy/availability/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\xdd\x01\n" +
+	"+freebusy/availability/v1/availability.proto\x12\x18freebusy.availability.v1\x1a\x1bbuf/validate/validate.proto\x1a$freebusy/availability/v1/enums.proto\x1a\x1efreebusy/shared/v1/enums.proto\x1a\x1efreebusy/shared/v1/types.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x16google/type/date.proto\x1a\x17google/type/money.proto\"\xdd\x01\n" +
 	"\x04Slot\x129\n" +
 	"\n" +
 	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\tstartTime\x125\n" +
@@ -1313,28 +1314,30 @@ const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\x19freebusy.property.v1/UnitR\x04unit\x123\n" +
 	"\x04mode\x18\x02 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x124\n" +
 	"\x05slots\x18\x03 \x03(\v2\x1e.freebusy.availability.v1.SlotR\x05slots\x12C\n" +
-	"\x06nights\x18\x04 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xb4\x02\n" +
-	"\x1aComputeAvailabilityRequest\x125\n" +
-	"\x04unit\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04unit\x128\n" +
+	"\x06nights\x18\x04 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xe7\x02\n" +
+	"\x1aComputeAvailabilityRequest\x12Z\n" +
+	"\x04unit\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x04unit\x128\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
 	"date_range\x18\x06 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12\x19\n" +
-	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
-	"\x06periodJ\x04\b\x04\x10\x05\"\xcd\x01\n" +
+	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12 \n" +
+	"\x05units\x18\x05 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x05unitsB\x0f\n" +
+	"\x06period\x12\x05\xbaH\x02\b\x01J\x04\b\x04\x10\x05\"\xcd\x01\n" +
 	"\x1bComputeAvailabilityResponse\x123\n" +
 	"\x04mode\x18\x01 \x01(\x0e2\x1f.freebusy.shared.v1.BookingModeR\x04mode\x124\n" +
 	"\x05slots\x18\x02 \x03(\v2\x1e.freebusy.availability.v1.SlotR\x05slots\x12C\n" +
-	"\x06nights\x18\x03 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xf6\x01\n" +
-	"\x18CheckAvailabilityRequest\x125\n" +
-	"\x04unit\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04unit\x128\n" +
+	"\x06nights\x18\x03 \x03(\v2+.freebusy.availability.v1.NightAvailabilityR\x06nights\"\xa9\x02\n" +
+	"\x18CheckAvailabilityRequest\x12Z\n" +
+	"\x04unit\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x04unit\x128\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
-	"date_range\x18\x05 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x19\n" +
-	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
-	"\x06periodJ\x04\b\x04\x10\x05\"`\n" +
+	"date_range\x18\x05 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12 \n" +
+	"\x05units\x18\x03 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x05unitsB\x0f\n" +
+	"\x06period\x12\x05\xbaH\x02\b\x01J\x04\b\x04\x10\x05\"`\n" +
 	"\x10UnbookableReason\x122\n" +
 	"\x04code\x18\x01 \x01(\x0e2\x1e.freebusy.availability.v1.CodeR\x04code\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"\x9c\x01\n" +
@@ -1342,39 +1345,41 @@ const file_freebusy_availability_v1_availability_proto_rawDesc = "" +
 	"\bbookable\x18\x01 \x01(\bR\bbookable\x12\x1d\n" +
 	"\n" +
 	"free_count\x18\x02 \x01(\x05R\tfreeCount\x12D\n" +
-	"\areasons\x18\x03 \x03(\v2*.freebusy.availability.v1.UnbookableReasonR\areasons\"\xb6\x02\n" +
-	"\x1cComputeBookableRangesRequest\x125\n" +
-	"\x04unit\x18\x01 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x04unit\x128\n" +
+	"\areasons\x18\x03 \x03(\v2*.freebusy.availability.v1.UnbookableReasonR\areasons\"\xe9\x02\n" +
+	"\x1cComputeBookableRangesRequest\x12Z\n" +
+	"\x04unit\x18\x01 \x01(\tBF\xe0A\x02\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x04unit\x128\n" +
 	"\x06window\x18\x02 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
 	"date_range\x18\x06 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12:\n" +
-	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12\x19\n" +
-	"\x05units\x18\x05 \x01(\x05B\x03\xe0A\x01R\x05unitsB\b\n" +
-	"\x06periodJ\x04\b\x04\x10\x05\"`\n" +
+	"\bduration\x18\x03 \x01(\v2\x19.google.protobuf.DurationB\x03\xe0A\x01R\bduration\x12 \n" +
+	"\x05units\x18\x05 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x05unitsB\x0f\n" +
+	"\x06period\x12\x05\xbaH\x02\b\x01J\x04\b\x04\x10\x05\"`\n" +
 	"\x1dComputeBookableRangesResponse\x12?\n" +
-	"\x06ranges\x18\x01 \x03(\v2'.freebusy.availability.v1.BookableRangeR\x06ranges\"~\n" +
-	"\x1fBatchComputeAvailabilityRequest\x12U\n" +
-	"\brequests\x18\x01 \x03(\v24.freebusy.availability.v1.ComputeAvailabilityRequestB\x03\xe0A\x02R\brequestsJ\x04\b\x02\x10\x05\"d\n" +
+	"\x06ranges\x18\x01 \x03(\v2'.freebusy.availability.v1.BookableRangeR\x06ranges\"\x86\x01\n" +
+	"\x1fBatchComputeAvailabilityRequest\x12]\n" +
+	"\brequests\x18\x01 \x03(\v24.freebusy.availability.v1.ComputeAvailabilityRequestB\v\xe0A\x02\xbaH\x05\x92\x01\x02\b\x01R\brequestsJ\x04\b\x02\x10\x05\"d\n" +
 	" BatchComputeAvailabilityResponse\x12@\n" +
-	"\x05units\x18\x01 \x03(\v2*.freebusy.availability.v1.UnitAvailabilityR\x05units\"\x89\x04\n" +
+	"\x05units\x18\x01 \x03(\v2*.freebusy.availability.v1.UnitAvailabilityR\x05units\"\xdc\x04\n" +
 	"\x19SearchAvailabilityRequest\x128\n" +
 	"\x06window\x18\x01 \x01(\v2\x1e.freebusy.shared.v1.TimeWindowH\x00R\x06window\x12>\n" +
 	"\n" +
-	"date_range\x18\x02 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12\x19\n" +
-	"\x05units\x18\x03 \x01(\x05B\x03\xe0A\x01R\x05units\x12\x1b\n" +
+	"date_range\x18\x02 \x01(\v2\x1d.freebusy.shared.v1.DateRangeH\x00R\tdateRange\x12 \n" +
+	"\x05units\x18\x03 \x01(\x05B\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x05units\x12\x1b\n" +
 	"\x06filter\x18\x04 \x01(\tB\x03\xe0A\x01R\x06filter\x12\x1e\n" +
-	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\x12 \n" +
-	"\tpage_size\x18\x06 \x01(\x05B\x03\xe0A\x01R\bpageSize\x12\"\n" +
+	"\border_by\x18\x05 \x01(\tB\x03\xe0A\x01R\aorderBy\x12*\n" +
+	"\tpage_size\x18\x06 \x01(\x05B\r\xe0A\x01\xbaH\a\x1a\x05\x18\xe8\a(\x00R\bpageSize\x12\"\n" +
 	"\n" +
 	"page_token\x18\a \x01(\tB\x03\xe0A\x01R\tpageToken\x124\n" +
-	"\x13include_unavailable\x18\b \x01(\bB\x03\xe0A\x01R\x12includeUnavailable\x12A\n" +
-	"\bproperty\x18\t \x01(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\bproperty\x12Q\n" +
+	"\x13include_unavailable\x18\b \x01(\bB\x03\xe0A\x01R\x12includeUnavailable\x12]\n" +
+	"\bproperty\x18\t \x01(\tBA\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x19\xd8\x01\x01r\x142\x12^properties/[^/]+$R\bproperty\x12p\n" +
 	"\forganisation\x18\n" +
-	" \x01(\tB-\xe0A\x01\xfaA'\n" +
-	"%freebusy.organisation.v1/OrganisationR\forganisationB\b\n" +
-	"\x06period\"\xe5\x01\n" +
+	" \x01(\tBL\xe0A\x01\xfaA'\n" +
+	"%freebusy.organisation.v1/Organisation\xbaH\x1c\xd8\x01\x01r\x172\x15^organisations/[^/]+$R\forganisationB\x0f\n" +
+	"\x06period\x12\x05\xbaH\x02\b\x01\"\xe5\x01\n" +
 	"\x11AvailabilityMatch\x122\n" +
 	"\x04unit\x18\x01 \x01(\tB\x1e\xfaA\x1b\n" +
 	"\x19freebusy.property.v1/UnitR\x04unit\x12!\n" +

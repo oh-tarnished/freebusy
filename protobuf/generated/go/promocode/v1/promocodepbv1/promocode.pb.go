@@ -7,6 +7,7 @@
 package promocodepbv1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "github.com/the-protobuf-project/orm/plugin/pb/ormpbv1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	money "google.golang.org/genproto/googleapis/type/money"
@@ -567,9 +568,9 @@ var File_freebusy_promocode_v1_promocode_proto protoreflect.FileDescriptor
 
 const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\n" +
-	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\x81\a\n" +
-	"\tPromoCode\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12#\n" +
+	"%freebusy/promocode/v1/promocode.proto\x12\x15freebusy.promocode.v1\x1a\x1bbuf/validate/validate.proto\x1a!freebusy/promocode/v1/enums.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17google/type/money.proto\x1a\x18orm/v1/annotations.proto\"\x9d\a\n" +
+	"\tPromoCode\x123\n" +
+	"\x04name\x18\x01 \x01(\tB\x1f\xe0A\b\xbaH\x19\xd8\x01\x01r\x142\x12^promoCodes/[^/]+$R\x04name\x12#\n" +
 	"\x04code\x18\x03 \x01(\tB\x0f\xe0A\x02\x92\xb5\x18\x02 \x01\x9a\xb5\x18\x02\x18\x01R\x04code\x12,\n" +
 	"\fdisplay_name\x18\x04 \x01(\tB\t\xe0A\x01\x9a\xb5\x18\x02\x18\x01R\vdisplayName\x12/\n" +
 	"\vdescription\x18\x05 \x01(\tB\r\xe0A\x01\x92\xb5\x18\x06\x12\x04TEXTR\vdescription\x12@\n" +
@@ -588,29 +589,31 @@ const file_freebusy_promocode_v1_promocode_proto_rawDesc = "" +
 	"\x1ffreebusy.promocode.v1/PromoCode\x12\x17promoCodes/{promo_code}*\n" +
 	"promoCodes2\tpromoCode\x8a\xb5\x18\x02\x18\x01J\x04\b\x02\x10\x03J\x04\b\x06\x10\aJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\t\x10\n" +
 	"J\x04\b\n" +
-	"\x10\vJ\x04\b\v\x10\fJ\x04\b\f\x10\rJ\x04\b\r\x10\x0eJ\x04\b\x0e\x10\x0fJ\x04\b\x0f\x10\x10J\x04\b\x16\x10\x17\"l\n" +
-	"\bDiscount\x12!\n" +
-	"\vpercent_off\x18\x01 \x01(\x05H\x00R\n" +
+	"\x10\vJ\x04\b\v\x10\fJ\x04\b\f\x10\rJ\x04\b\r\x10\x0eJ\x04\b\x0e\x10\x0fJ\x04\b\x0f\x10\x10J\x04\b\x16\x10\x17\"~\n" +
+	"\bDiscount\x12,\n" +
+	"\vpercent_off\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x01H\x00R\n" +
 	"percentOff\x123\n" +
 	"\n" +
-	"amount_off\x18\x02 \x01(\v2\x12.google.type.MoneyH\x00R\tamountOffB\b\n" +
-	"\x06amount\"\x8e\x01\n" +
+	"amount_off\x18\x02 \x01(\v2\x12.google.type.MoneyH\x00R\tamountOffB\x0f\n" +
+	"\x06amount\x12\x05\xbaH\x02\b\x01\"\x8e\x01\n" +
 	"\x10RedemptionWindow\x12>\n" +
 	"\n" +
 	"start_time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\tstartTime\x12:\n" +
-	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\aendTime\"\xa8\x01\n" +
-	"\vUsageLimits\x12I\n" +
-	"\x0fmax_redemptions\x18\x01 \x01(\v2\x1b.google.protobuf.Int64ValueB\x03\xe0A\x01R\x0emaxRedemptions\x12N\n" +
-	"\x12per_customer_limit\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueB\x03\xe0A\x01R\x10perCustomerLimit\"\xed\x01\n" +
+	"\bend_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampB\x03\xe0A\x01R\aendTime\"\xb6\x01\n" +
+	"\vUsageLimits\x12P\n" +
+	"\x0fmax_redemptions\x18\x01 \x01(\v2\x1b.google.protobuf.Int64ValueB\n" +
+	"\xe0A\x01\xbaH\x04\"\x02(\x00R\x0emaxRedemptions\x12U\n" +
+	"\x12per_customer_limit\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueB\n" +
+	"\xe0A\x01\xbaH\x04\x1a\x02(\x00R\x10perCustomerLimit\"\xb5\x02\n" +
 	"\x05Scope\x12:\n" +
-	"\fmin_subtotal\x18\x01 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12Z\n" +
-	"\x15applicable_properties\x18\x02 \x03(\tB%\xe0A\x01\xfaA\x1f\n" +
-	"\x1dfreebusy.property.v1/PropertyR\x14applicableProperties\x12L\n" +
-	"\x10applicable_units\x18\x03 \x03(\tB!\xe0A\x01\xfaA\x1b\n" +
-	"\x19freebusy.property.v1/UnitR\x0fapplicableUnits\"\xa1\x03\n" +
+	"\fmin_subtotal\x18\x01 \x01(\v2\x12.google.type.MoneyB\x03\xe0A\x01R\vminSubtotal\x12x\n" +
+	"\x15applicable_properties\x18\x02 \x03(\tBC\xe0A\x01\xfaA\x1f\n" +
+	"\x1dfreebusy.property.v1/Property\xbaH\x1b\x92\x01\x18\"\x16r\x142\x12^properties/[^/]+$R\x14applicableProperties\x12v\n" +
+	"\x10applicable_units\x18\x03 \x03(\tBK\xe0A\x01\xfaA\x1b\n" +
+	"\x19freebusy.property.v1/Unit\xbaH'\x92\x01$\"\"r 2\x1e^properties/[^/]+/units/[^/]+$R\x0fapplicableUnits\"\xcf\x03\n" +
 	"\n" +
-	"Redemption\x12\x17\n" +
-	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12=\n" +
+	"Redemption\x12E\n" +
+	"\x04name\x18\x01 \x01(\tB1\xe0A\b\xbaH+\xd8\x01\x01r&2$^promoCodes/[^/]+/redemptions/[^/]+$R\x04name\x12=\n" +
 	"\bcustomer\x18\x02 \x01(\tB!\xe0A\x02\xfaA\x1b\n" +
 	"\x19freebusy.identity.v1/UserR\bcustomer\x12=\n" +
 	"\abooking\x18\x03 \x01(\tB#\xe0A\x02\xfaA\x1d\n" +
