@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-orm 1.4.2
 // 	protoc (unknown)
-// source: freebusy/shared/v1/types.proto
+// source: freebusy/shared/v1/idempotency.proto, freebusy/shared/v1/types.proto
 //
 // database: freebusy
 // schema:   shared

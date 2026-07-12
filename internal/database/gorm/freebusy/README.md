@@ -8,7 +8,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 47 | 27 |
+| 48 | 28 |
 
 ## Entity relationships
 
@@ -84,6 +84,9 @@ erDiagram
     IdDocument {
         string id PK
         string attachment_id FK
+    }
+    IdempotencyKey {
+        string id PK
     }
     Licence {
         string id PK
@@ -979,6 +982,21 @@ Join table for the many-to-many relation Schedule.exceptions ↔ AvailabilityExc
 
 ## Schema `shared`
 
+### `IdempotencyKey` → `idempotency_keys`
+
+The record behind every `request_id` field in this API: it remembers what the first call with a given id returned, so a retry replays that response instead of attempting the write twice. Storage only — no service exposes it, and no caller constructs one. It lives in freebusy.shared.v1 because request_id is API-wide (booking, property, promo code, channel, organisation, schedule) and one interceptor records them all; homing it in any single service's package would make every other service import that service to dedupe its own writes. The id is derived, not random: it is a digest of (method, request_id), so the primary key itself is the uniqueness constraint that makes a concurrent duplicate lose the race rather than double-write.
+
+| Column | Type | Null |
+| --- | --- | --- |
+| `id` | `CHAR(26)` | not null |
+| `name` | `VARCHAR(255)` | not null |
+| `method` | `VARCHAR(255)` | not null |
+| `request_id` | `VARCHAR(255)` | not null |
+| `state` | `IdempotencyState` | not null |
+| `response` | `TEXT` | nullable |
+| `create_time` | `TIMESTAMPTZ` | not null |
+| `update_time` | `TIMESTAMPTZ` | not null |
+
 ### `Contact` → `contacts`
 
 Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
@@ -1039,6 +1057,7 @@ A half-open range of calendar dates [start_date, end_date), evaluated in the res
 
 ### Enums
 
+- `IdempotencyState`: IN_FLIGHT, DONE
 - `Type`: BASE, FEE, TAX, DISCOUNT
 
 ## Schema `common`

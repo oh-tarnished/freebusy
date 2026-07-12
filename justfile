@@ -50,7 +50,7 @@ run:
 # Run once before `just run`. Uses the same config as the server.
 [group('app')]
 migrate:
-    go run ./cmd/migrate
+    go run ./tools/db/gorm/migrate
 
 # Dev convenience: migrate the schema, then run the server.
 [group('app')]

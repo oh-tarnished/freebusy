@@ -46,6 +46,21 @@ type model struct {
 	BackendPort int
 	Timeout     string
 	Services    []service
+
+	// DNSLookupFamily pins address-family resolution for the backend cluster.
+	// STRICT_DNS defaults to AUTO, which prefers AAAA — inside Docker that
+	// resolves host.docker.internal to a non-routable IPv6 and every request
+	// fails with "Network is unreachable". V4_ONLY is the working default.
+	DNSLookupFamily string
+
+	// BackendTLS dials the backend over TLS. The freebusy server terminates TLS
+	// on its gRPC port, so a plaintext upstream is an immediate 503 (UF/UPE).
+	BackendTLS bool
+
+	// BackendSNI is the server name presented upstream. It must match a SAN on
+	// the backend's certificate — the mkcert dev cert carries `freebusy-dev`,
+	// NOT `host.docker.internal`, so the dialled host and the SNI differ.
+	BackendSNI string
 }
 
 // serviceDoc captures just the operationIds from a per-service OpenAPI file;
@@ -69,6 +84,9 @@ func main() {
 		backendPort int
 		cluster     string
 		timeout     string
+		dnsFamily   string
+		backendTLS  bool
+		backendSNI  string
 	)
 	flag.StringVar(&output, "output", defaultOutput, "Path to write the Envoy config")
 	flag.StringVar(&output, "o", defaultOutput, "Path to write the Envoy config (shorthand)")
@@ -79,6 +97,12 @@ func main() {
 	flag.IntVar(&backendPort, "backend-port", 50051, "Port of the freebusy gRPC backend")
 	flag.StringVar(&cluster, "cluster", "freebusy_backend", "Name of the backend cluster")
 	flag.StringVar(&timeout, "timeout", "60s", "Per-route upstream timeout")
+	flag.StringVar(&dnsFamily, "dns-lookup-family", "V4_ONLY",
+		"Address family for backend DNS (V4_ONLY avoids the unroutable Docker IPv6)")
+	flag.BoolVar(&backendTLS, "backend-tls", true,
+		"Dial the backend over TLS (the freebusy gRPC port terminates TLS)")
+	flag.StringVar(&backendSNI, "backend-sni", "freebusy-dev",
+		"SNI/server name presented upstream; must match a SAN on the backend certificate")
 	flag.BoolVar(&verbose, "verbose", false, "Enable verbose (debug) logging")
 	flag.BoolVar(&verbose, "v", false, "Enable verbose (debug) logging (shorthand)")
 	flag.Parse()
@@ -111,6 +135,10 @@ func main() {
 		BackendPort: backendPort,
 		Timeout:     timeout,
 		Services:    services,
+
+		DNSLookupFamily: dnsFamily,
+		BackendTLS:      backendTLS,
+		BackendSNI:      backendSNI,
 	}
 
 	output, _ = filepath.Abs(output)

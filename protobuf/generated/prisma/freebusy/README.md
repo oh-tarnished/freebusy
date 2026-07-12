@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 47 | 27 |
+| 48 | 28 |
 
 ## Entity relationships
 
@@ -82,6 +82,9 @@ erDiagram
     IdDocument {
         string id PK
         string attachment_id FK
+    }
+    IdempotencyKey {
+        string id PK
     }
     Licence {
         string id PK

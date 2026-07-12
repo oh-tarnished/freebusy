@@ -1,0 +1,144 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertSharedIdempotencyKeysObject
+  fields:
+    - name: createTime
+      type: Timestamptz
+    - name: id
+      type: String_1!
+    - name: method
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: requestId
+      type: String_1!
+    - name: response
+      type: String_1
+    - name: state
+      type: Enum
+    - name: updateTime
+      type: Timestamptz!
+  graphql:
+    typeName: InsertSharedIdempotencyKeysObject
+    inputTypeName: InsertSharedIdempotencyKeysObjectInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_shared_idempotency_keys_object
+      fieldMapping:
+        createTime:
+          column:
+            name: create_time
+        id:
+          column:
+            name: id
+        method:
+          column:
+            name: method
+        name:
+          column:
+            name: name
+        requestId:
+          column:
+            name: request_id
+        response:
+          column:
+            name: response
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertSharedIdempotencyKeysObject
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createTime
+          - id
+          - method
+          - name
+          - requestId
+          - response
+          - state
+          - updateTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: InsertSharedIdempotencyKeysResponse
+  description: Responses from the 'insert_shared_idempotency_keys' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[SharedIdempotencyKeys!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: InsertSharedIdempotencyKeysResponse
+    inputTypeName: InsertSharedIdempotencyKeysResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: insert_shared_idempotency_keys_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: InsertSharedIdempotencyKeysResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: InsertSharedIdempotencyKeys
+  outputType: InsertSharedIdempotencyKeysResponse!
+  arguments:
+    - name: objects
+      type: "[InsertSharedIdempotencyKeysObject!]!"
+    - name: postCheck
+      type: SharedIdempotencyKeysBoolExp
+      description: Insert permission predicate over the 'shared_idempotency_keys' collection
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: insert_shared_idempotency_keys
+    argumentMapping:
+      objects: objects
+      postCheck: post_check
+  graphql:
+    rootFieldName: insertSharedIdempotencyKeys
+    rootFieldKind: Mutation
+  description: Insert into the shared_idempotency_keys table
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: InsertSharedIdempotencyKeys
+  permissions:
+    - role: admin
+      allowExecution: true
+

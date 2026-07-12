@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-orm 1.4.2
 // 	protoc (unknown)
-// source: freebusy/shared/v1/types.proto
+// source: freebusy/shared/v1/idempotency.proto, freebusy/shared/v1/types.proto
 //
 // database: freebusy
 // schema:   shared
@@ -15,6 +15,17 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
+)
+
+// Lifecycle of a recorded request. A key is claimed IN_FLIGHT before the handler runs and settles to DONE once its response is recorded; a handler that fails deletes its key, so the caller may genuinely retry.
+type IdempotencyState string
+
+// IdempotencyState values as stored in the database.
+const (
+	// Claimed: a handler is running for this key right now. A second caller arriving here is a concurrent duplicate, not a replay.
+	IdempotencyStateInFlight IdempotencyState = "IN_FLIGHT"
+	// Settled: `response` holds what the first call returned.
+	IdempotencyStateDone IdempotencyState = "DONE"
 )
 
 // What a price line represents.
@@ -31,6 +42,28 @@ const (
 	// A discount (promo code, length-of-stay); `amount` is negative.
 	TypeDiscount Type = "DISCOUNT"
 )
+
+// The record behind every `request_id` field in this API: it remembers what the first call with a given id returned, so a retry replays that response instead of attempting the write twice. Storage only — no service exposes it, and no caller constructs one. It lives in freebusy.shared.v1 because request_id is API-wide (booking, property, promo code, channel, organisation, schedule) and one interceptor records them all; homing it in any single service's package would make every other service import that service to dedupe its own writes. The id is derived, not random: it is a digest of (method, request_id), so the primary key itself is the uniqueness constraint that makes a concurrent duplicate lose the race rather than double-write.
+type IdempotencyKey struct {
+	// Unique identifier for the record.
+	ID string `gorm:"column:id;primaryKey;not null" json:"id"`
+	// The key name. The final segment is a digest of (method, request_id). Format: idempotencyKeys/{idempotency_key}
+	Name string `gorm:"column:name;not null;uniqueIndex" json:"name" validate:"required"`
+	// Fully-qualified RPC that was called, e.g. "/freebusy.booking.v1.BookingService/CreateBooking". Part of the key: the same request_id replayed against a different method is a different request.
+	Method string `gorm:"column:method;not null;uniqueIndex:idx_idempotency_keys_method_request_id,priority:1" json:"method" validate:"required"`
+	// The caller-supplied idempotency key, verbatim from the request's `request_id` field.
+	RequestID string `gorm:"column:request_id;not null;uniqueIndex:idx_idempotency_keys_method_request_id,priority:2" json:"request_id" validate:"required"`
+	// Whether the first call is still running or has settled.
+	State IdempotencyState `gorm:"column:state;not null;default:'IN_FLIGHT';check:chk_idempotency_keys_state,state IN ('IN_FLIGHT','DONE')" json:"state" validate:"required"`
+	// What the first call returned: a google.protobuf.Any holding the response message, encoded as protojson. Empty while IN_FLIGHT. Stored as text rather than bytes so it round-trips identically through GORM and through Hasura's GraphQL, and self-describing (the Any carries its @type) so a replay can rebuild the exact response message without knowing which RPC wrote it.
+	Response *string `gorm:"column:response" json:"response,omitempty"`
+	// When the key was claimed.
+	CreateTime time.Time `gorm:"column:create_time;type:timestamptz;not null;autoCreateTime" json:"create_time"`
+	// When the key settled to DONE.
+	UpdateTime time.Time `gorm:"column:update_time;type:timestamptz;not null;autoUpdateTime" json:"update_time"`
+}
+
+func (*IdempotencyKey) TableName() string { return "shared.idempotency_keys" }
 
 // Contact details for the person a booking is for. When a booking carries a `customer` (a users/{user} reference) these typically mirror the user's profile; for walk-in or email-only bookings made by someone who is not a registered user, this is the only contact information captured. The server requires at least one reachable channel (email or phone) when no customer is set.
 type Contact struct {

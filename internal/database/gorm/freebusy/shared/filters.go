@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-orm 1.4.2
 // 	protoc (unknown)
-// source: freebusy/shared/v1/types.proto
+// source: freebusy/shared/v1/idempotency.proto, freebusy/shared/v1/types.proto
 //
 // database: freebusy
 // schema:   shared
@@ -16,6 +16,30 @@ package shared
 import (
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/filterx"
 )
+
+// IdempotencyKeyFilterSpec is IdempotencyKey's AIP-160 filter / AIP-132 order_by surface,
+// consumed by the filterx.Gorm and filterx.Hasura engines.
+var IdempotencyKeyFilterSpec = filterx.Spec{
+	Table: `"shared"."idempotency_keys"`,
+	Fields: map[string]filterx.FieldSpec{
+		"create_time": {Column: "create_time", Kind: filterx.KindTimestamp},
+		"method":      {Column: "method", Kind: filterx.KindText},
+		"name":        {Column: "name", Kind: filterx.KindText},
+		"request_id":  {Column: "request_id", Kind: filterx.KindText},
+		"response":    {Column: "response", Kind: filterx.KindText},
+		"state":       {Column: "state", Kind: filterx.KindEnum, EnumPrefix: "IDEMPOTENCY_STATE_"},
+		"update_time": {Column: "update_time", Kind: filterx.KindTimestamp},
+	},
+	Sort: map[string]string{
+		"create_time": "create_time",
+		"method":      "method",
+		"name":        "name",
+		"request_id":  "request_id",
+		"response":    "response",
+		"state":       "state",
+		"update_time": "update_time",
+	},
+}
 
 // ContactFilterSpec is Contact's AIP-160 filter / AIP-132 order_by surface,
 // consumed by the filterx.Gorm and filterx.Hasura engines.

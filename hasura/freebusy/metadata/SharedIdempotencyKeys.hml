@@ -1,0 +1,205 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: SharedIdempotencyKeys
+  fields:
+    - name: createTime
+      type: Timestamptz!
+    - name: id
+      type: String_1!
+    - name: method
+      type: String_1!
+    - name: name
+      type: String_1!
+    - name: requestId
+      type: String_1!
+    - name: response
+      type: String_1
+    - name: state
+      type: Enum!
+    - name: updateTime
+      type: Timestamptz!
+  graphql:
+    typeName: SharedIdempotencyKeys
+    inputTypeName: SharedIdempotencyKeysInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: shared_idempotency_keys
+      fieldMapping:
+        createTime:
+          column:
+            name: create_time
+        id:
+          column:
+            name: id
+        method:
+          column:
+            name: method
+        name:
+          column:
+            name: name
+        requestId:
+          column:
+            name: request_id
+        response:
+          column:
+            name: response
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: SharedIdempotencyKeys
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createTime
+          - id
+          - method
+          - name
+          - requestId
+          - response
+          - state
+          - updateTime
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: SharedIdempotencyKeysBoolExp
+  operand:
+    object:
+      type: SharedIdempotencyKeys
+      comparableFields:
+        - fieldName: createTime
+          booleanExpressionType: TimestamptzBoolExp
+        - fieldName: id
+          booleanExpressionType: TextBoolExp
+        - fieldName: method
+          booleanExpressionType: TextBoolExp
+        - fieldName: name
+          booleanExpressionType: TextBoolExp
+        - fieldName: requestId
+          booleanExpressionType: TextBoolExp
+        - fieldName: response
+          booleanExpressionType: TextBoolExp
+        - fieldName: state
+          booleanExpressionType: SharedIdempotencyStateBoolExp
+        - fieldName: updateTime
+          booleanExpressionType: TimestamptzBoolExp
+      comparableRelationships: []
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SharedIdempotencyKeysBoolExp
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SharedIdempotencyKeysAggExp
+  operand:
+    object:
+      aggregatedType: SharedIdempotencyKeys
+      aggregatableFields:
+        - fieldName: createTime
+          aggregateExpression: TimestamptzAggExp
+        - fieldName: id
+          aggregateExpression: TextAggExp
+        - fieldName: method
+          aggregateExpression: TextAggExp
+        - fieldName: name
+          aggregateExpression: TextAggExp
+        - fieldName: requestId
+          aggregateExpression: TextAggExp
+        - fieldName: response
+          aggregateExpression: TextAggExp
+        - fieldName: state
+          aggregateExpression: SharedIdempotencyStateAggExp
+        - fieldName: updateTime
+          aggregateExpression: TimestamptzAggExp
+  count:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: SharedIdempotencyKeysAggExp
+
+---
+kind: OrderByExpression
+version: v1
+definition:
+  name: SharedIdempotencyKeysOrderByExp
+  operand:
+    object:
+      orderedType: SharedIdempotencyKeys
+      orderableFields:
+        - fieldName: createTime
+          orderByExpression: TimestamptzOrderByExp
+        - fieldName: id
+          orderByExpression: String1OrderByExp
+        - fieldName: method
+          orderByExpression: String1OrderByExp
+        - fieldName: name
+          orderByExpression: String1OrderByExp
+        - fieldName: requestId
+          orderByExpression: String1OrderByExp
+        - fieldName: response
+          orderByExpression: String1OrderByExp
+        - fieldName: state
+          orderByExpression: EnumOrderByExp
+        - fieldName: updateTime
+          orderByExpression: TimestamptzOrderByExp
+      orderableRelationships: []
+  graphql:
+    expressionTypeName: SharedIdempotencyKeysOrderByExp
+
+---
+kind: Model
+version: v2
+definition:
+  name: SharedIdempotencyKeys
+  objectType: SharedIdempotencyKeys
+  source:
+    dataConnectorName: freebusy_pgsql
+    collection: shared_idempotency_keys
+  filterExpressionType: SharedIdempotencyKeysBoolExp
+  aggregateExpression: SharedIdempotencyKeysAggExp
+  orderByExpression: SharedIdempotencyKeysOrderByExp
+  graphql:
+    selectMany:
+      queryRootField: sharedIdempotencyKeys
+      subscription:
+        rootField: sharedIdempotencyKeys
+    selectUniques:
+      - queryRootField: sharedIdempotencyKeysById
+        uniqueIdentifier:
+          - id
+        subscription:
+          rootField: sharedIdempotencyKeysById
+    filterInputTypeName: SharedIdempotencyKeysFilterInput
+    aggregate:
+      queryRootField: sharedIdempotencyKeysAggregate
+      subscription:
+        rootField: sharedIdempotencyKeysAggregate
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: SharedIdempotencyKeys
+  permissions:
+    - role: admin
+      select:
+        filter: null
+        allowSubscriptions: true
+

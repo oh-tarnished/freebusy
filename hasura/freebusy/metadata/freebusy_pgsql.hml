@@ -342,6 +342,13 @@ definition:
               unique_columns:
                 - id
         - arguments: {}
+          name: shared_idempotency_keys
+          type: shared_idempotency_keys
+          uniqueness_constraints:
+            idempotency_keys_pkey:
+              unique_columns:
+                - id
+        - arguments: {}
           name: shared_price_components
           type: shared_price_components
           uniqueness_constraints:
@@ -1650,6 +1657,22 @@ definition:
               type:
                 element_type:
                   name: shared_date_ranges
+                  type: named
+                type: array
+          foreign_keys: {}
+        delete_shared_idempotency_keys_by_id_response:
+          description: Responses from the 'delete_shared_idempotency_keys_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: shared_idempotency_keys
                   type: named
                 type: array
           foreign_keys: {}
@@ -4843,6 +4866,63 @@ definition:
                   type: named
                 type: array
           foreign_keys: {}
+        insert_shared_idempotency_keys_object:
+          fields:
+            create_time:
+              type:
+                type: nullable
+                underlying_type:
+                  name: timestamptz
+                  type: named
+            id:
+              type:
+                name: text
+                type: named
+            method:
+              type:
+                name: text
+                type: named
+            name:
+              type:
+                name: text
+                type: named
+            request_id:
+              type:
+                name: text
+                type: named
+            response:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            state:
+              type:
+                type: nullable
+                underlying_type:
+                  name: shared_idempotency_state
+                  type: named
+            update_time:
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
+        insert_shared_idempotency_keys_response:
+          description: Responses from the 'insert_shared_idempotency_keys' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: shared_idempotency_keys
+                  type: named
+                type: array
+          foreign_keys: {}
         insert_shared_price_components_object:
           fields:
             amount_id:
@@ -6407,6 +6487,43 @@ definition:
             start_date:
               type:
                 name: date
+                type: named
+          foreign_keys: {}
+        shared_idempotency_keys:
+          fields:
+            create_time:
+              type:
+                name: timestamptz
+                type: named
+            id:
+              type:
+                name: text
+                type: named
+            method:
+              type:
+                name: text
+                type: named
+            name:
+              type:
+                name: text
+                type: named
+            request_id:
+              type:
+                name: text
+                type: named
+            response:
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+            state:
+              type:
+                name: shared_idempotency_state
+                type: named
+            update_time:
+              type:
+                name: timestamptz
                 type: named
           foreign_keys: {}
         shared_price_components:
@@ -10742,6 +10859,80 @@ definition:
                 name: date
                 type: named
           foreign_keys: {}
+        update_column_shared_idempotency_keys_create_time:
+          description: Update the 'create_time' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_id:
+          description: Update the 'id' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_method:
+          description: Update the 'method' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_name:
+          description: Update the 'name' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_request_id:
+          description: Update the 'request_id' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: text
+                type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_response:
+          description: Update the 'response' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                type: nullable
+                underlying_type:
+                  name: text
+                  type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_state:
+          description: Update the 'state' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: shared_idempotency_state
+                type: named
+          foreign_keys: {}
+        update_column_shared_idempotency_keys_update_time:
+          description: Update the 'update_time' column in the 'shared_idempotency_keys' collection
+          fields:
+            _set:
+              description: Set the column to this value
+              type:
+                name: timestamptz
+                type: named
+          foreign_keys: {}
         update_column_shared_price_components_amount_id:
           description: Update the 'amount_id' column in the 'shared_price_components' collection
           fields:
@@ -13682,6 +13873,82 @@ definition:
                   name: update_column_shared_date_ranges_start_date
                   type: named
           foreign_keys: {}
+        update_shared_idempotency_keys_by_id_response:
+          description: Responses from the 'update_shared_idempotency_keys_by_id' procedure
+          fields:
+            affected_rows:
+              description: The number of rows affected by the mutation
+              type:
+                name: int4
+                type: named
+            returning:
+              description: Data from rows affected by the mutation
+              type:
+                element_type:
+                  name: shared_idempotency_keys
+                  type: named
+                type: array
+          foreign_keys: {}
+        update_shared_idempotency_keys_by_id_update_columns:
+          description: Update the columns of the 'shared_idempotency_keys' collection
+          fields:
+            create_time:
+              description: Update the 'create_time' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_create_time
+                  type: named
+            id:
+              description: Update the 'id' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_id
+                  type: named
+            method:
+              description: Update the 'method' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_method
+                  type: named
+            name:
+              description: Update the 'name' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_name
+                  type: named
+            request_id:
+              description: Update the 'request_id' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_request_id
+                  type: named
+            response:
+              description: Update the 'response' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_response
+                  type: named
+            state:
+              description: Update the 'state' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_state
+                  type: named
+            update_time:
+              description: Update the 'update_time' column in the 'shared_idempotency_keys' collection.
+              type:
+                type: nullable
+                underlying_type:
+                  name: update_column_shared_idempotency_keys_update_time
+                  type: named
+          foreign_keys: {}
         update_shared_price_components_by_id_response:
           description: Responses from the 'update_shared_price_components_by_id' procedure
           fields:
@@ -14576,6 +14843,23 @@ definition:
           name: delete_shared_date_ranges_by_id
           result_type:
             name: delete_shared_date_ranges_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            pre_check:
+              description: Delete permission predicate over the 'shared_idempotency_keys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_idempotency_keys
+                  type: predicate
+          description: Delete any row on the 'shared_idempotency_keys' collection using the 'id' key
+          name: delete_shared_idempotency_keys_by_id
+          result_type:
+            name: delete_shared_idempotency_keys_by_id_response
             type: named
         - arguments:
             key_id:
@@ -15484,6 +15768,25 @@ definition:
           name: insert_shared_date_ranges
           result_type:
             name: insert_shared_date_ranges_response
+            type: named
+        - arguments:
+            objects:
+              type:
+                element_type:
+                  name: insert_shared_idempotency_keys_object
+                  type: named
+                type: array
+            post_check:
+              description: Insert permission predicate over the 'shared_idempotency_keys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_idempotency_keys
+                  type: predicate
+          description: Insert into the shared_idempotency_keys table
+          name: insert_shared_idempotency_keys
+          result_type:
+            name: insert_shared_idempotency_keys_response
             type: named
         - arguments:
             objects:
@@ -16810,6 +17113,34 @@ definition:
           name: update_shared_date_ranges_by_id
           result_type:
             name: update_shared_date_ranges_by_id_response
+            type: named
+        - arguments:
+            key_id:
+              type:
+                name: text
+                type: named
+            post_check:
+              description: Update permission post-condition predicate over the 'shared_idempotency_keys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_idempotency_keys
+                  type: predicate
+            pre_check:
+              description: Update permission pre-condition predicate over the 'shared_idempotency_keys' collection
+              type:
+                type: nullable
+                underlying_type:
+                  object_type_name: shared_idempotency_keys
+                  type: predicate
+            update_columns:
+              type:
+                name: update_shared_idempotency_keys_by_id_update_columns
+                type: named
+          description: Update any row on the 'shared_idempotency_keys' collection using the 'id' key
+          name: update_shared_idempotency_keys_by_id
+          result_type:
+            name: update_shared_idempotency_keys_by_id_response
             type: named
         - arguments:
             key_id:
@@ -18237,6 +18568,36 @@ definition:
             one_of:
               - CLOSURE
               - EXTRA_HOURS
+            type: enum
+        shared_idempotency_state:
+          aggregate_functions:
+            max:
+              type: max
+            min:
+              type: min
+          comparison_operators:
+            _eq:
+              type: equal
+            _gt:
+              type: greater_than
+            _gte:
+              type: greater_than_or_equal
+            _in:
+              type: in
+            _lt:
+              type: less_than
+            _lte:
+              type: less_than_or_equal
+            _neq:
+              argument_type:
+                name: shared_idempotency_state
+                type: named
+              type: custom
+          extraction_functions: {}
+          representation:
+            one_of:
+              - IN_FLIGHT
+              - DONE
             type: enum
         shared_type:
           aggregate_functions:

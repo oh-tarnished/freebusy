@@ -3199,6 +3199,80 @@ definition:
 kind: BooleanExpressionType
 version: v1
 definition:
+  name: SharedIdempotencyStateBoolExp
+  operand:
+    scalar:
+      type: Enum
+      comparisonOperators:
+        - name: _eq
+          argumentType: Enum!
+        - name: _gt
+          argumentType: Enum!
+        - name: _gte
+          argumentType: Enum!
+        - name: _in
+          argumentType: "[Enum!]!"
+        - name: _lt
+          argumentType: Enum!
+        - name: _lte
+          argumentType: Enum!
+        - name: _neq
+          argumentType: Enum!
+      dataConnectorOperatorMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: shared_idempotency_state
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: SharedIdempotencyStateBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: freebusy_pgsql
+  dataConnectorScalarType: shared_idempotency_state
+  representation: Enum
+  graphql:
+    comparisonExpressionTypeName: EnumComparisonExp_26
+
+---
+kind: AggregateExpression
+version: v1
+definition:
+  name: SharedIdempotencyStateAggExp
+  operand:
+    scalar:
+      aggregatedType: Enum
+      aggregationFunctions:
+        - name: max
+          returnType: Enum
+        - name: min
+          returnType: Enum
+      dataConnectorAggregationFunctionMapping:
+        - dataConnectorName: freebusy_pgsql
+          dataConnectorScalarType: shared_idempotency_state
+          functionMapping:
+            max:
+              name: max
+            min:
+              name: min
+  count:
+    enable: true
+    returnType: Int64
+  countDistinct:
+    enable: true
+    returnType: Int64
+  graphql:
+    selectTypeName: SharedIdempotencyStateAggExp
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
   name: SharedTypeBoolExp
   operand:
     scalar:
@@ -3237,7 +3311,7 @@ definition:
   dataConnectorScalarType: shared_type
   representation: Enum
   graphql:
-    comparisonExpressionTypeName: EnumComparisonExp_26
+    comparisonExpressionTypeName: EnumComparisonExp_27
 
 ---
 kind: AggregateExpression

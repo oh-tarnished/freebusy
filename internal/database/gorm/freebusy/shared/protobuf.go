@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-orm 1.4.2
 // 	protoc (unknown)
-// source: freebusy/shared/v1/types.proto
+// source: freebusy/shared/v1/idempotency.proto, freebusy/shared/v1/types.proto
 //
 // database: freebusy
 // schema:   shared
@@ -19,6 +19,47 @@ import (
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+// IdempotencyStateFromProto maps the proto enum onto its stored form ("" for
+// unspecified or unknown values, so the column is omitted / left to default).
+func IdempotencyStateFromProto(v sharedpbv1.IdempotencyState) IdempotencyState {
+	switch v {
+	case sharedpbv1.IdempotencyState_IDEMPOTENCY_STATE_IN_FLIGHT:
+		return IdempotencyStateInFlight
+	case sharedpbv1.IdempotencyState_IDEMPOTENCY_STATE_DONE:
+		return IdempotencyStateDone
+	}
+	return ""
+}
+
+// IdempotencyStateToProto maps the stored form back onto the proto enum
+// (unspecified for empty or unknown values).
+func IdempotencyStateToProto(v IdempotencyState) sharedpbv1.IdempotencyState {
+	switch v {
+	case IdempotencyStateInFlight:
+		return sharedpbv1.IdempotencyState_IDEMPOTENCY_STATE_IN_FLIGHT
+	case IdempotencyStateDone:
+		return sharedpbv1.IdempotencyState_IDEMPOTENCY_STATE_DONE
+	}
+	return 0
+}
+
+// IdempotencyStatePtrFromProto is IdempotencyStateFromProto for nullable columns:
+// unspecified maps to nil.
+func IdempotencyStatePtrFromProto(v sharedpbv1.IdempotencyState) *IdempotencyState {
+	if s := IdempotencyStateFromProto(v); s != "" {
+		return &s
+	}
+	return nil
+}
+
+// IdempotencyStatePtrToProto is IdempotencyStateToProto for nullable columns.
+func IdempotencyStatePtrToProto(v *IdempotencyState) sharedpbv1.IdempotencyState {
+	if v == nil {
+		return 0
+	}
+	return IdempotencyStateToProto(*v)
+}
 
 // TypeFromProto maps the proto enum onto its stored form ("" for
 // unspecified or unknown values, so the column is omitted / left to default).
@@ -67,6 +108,39 @@ func TypePtrToProto(v *Type) sharedpbv1.PriceComponent_Type {
 		return 0
 	}
 	return TypeToProto(*v)
+}
+
+// IdempotencyKeyToProto converts the stored row (with its belongs-to associations,
+// when preloaded) to its proto message. Nil in, nil out.
+func IdempotencyKeyToProto(m *IdempotencyKey) *sharedpbv1.IdempotencyKey {
+	if m == nil {
+		return nil
+	}
+	out := &sharedpbv1.IdempotencyKey{}
+	out.Name = m.Name
+	out.Method = m.Method
+	out.RequestId = m.RequestID
+	out.State = IdempotencyStateToProto(m.State)
+	out.Response = fromPtr(m.Response)
+	out.CreateTime = goValToTs(m.CreateTime)
+	out.UpdateTime = goValToTs(m.UpdateTime)
+	return out
+}
+
+// IdempotencyKeyFromProto maps the proto message's data fields onto a fresh row.
+// It never invents keys or relations: primary keys, resource references, and
+// sub-row graph wiring stay with the caller. Nil in, nil out.
+func IdempotencyKeyFromProto(pb *sharedpbv1.IdempotencyKey) *IdempotencyKey {
+	if pb == nil {
+		return nil
+	}
+	m := &IdempotencyKey{}
+	m.Name = pb.GetName()
+	m.Method = pb.GetMethod()
+	m.RequestID = pb.GetRequestId()
+	m.State = IdempotencyStateFromProto(pb.GetState())
+	m.Response = toPtr(pb.GetResponse())
+	return m
 }
 
 // ContactToProto converts the stored row (with its belongs-to associations,

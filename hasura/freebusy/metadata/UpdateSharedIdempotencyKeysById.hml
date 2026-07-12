@@ -1,0 +1,421 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysCreateTime
+  description: Update the 'create_time' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: Timestamptz!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysCreateTime
+    inputTypeName: UpdateColumnSharedIdempotencyKeysCreateTimeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_create_time
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysCreateTime
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysId
+  description: Update the 'id' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysId
+    inputTypeName: UpdateColumnSharedIdempotencyKeysIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysMethod
+  description: Update the 'method' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysMethod
+    inputTypeName: UpdateColumnSharedIdempotencyKeysMethodInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_method
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysMethod
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysName
+  description: Update the 'name' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysName
+    inputTypeName: UpdateColumnSharedIdempotencyKeysNameInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_name
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysName
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysRequestId
+  description: Update the 'request_id' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: String_1!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysRequestId
+    inputTypeName: UpdateColumnSharedIdempotencyKeysRequestIdInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_request_id
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysRequestId
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysResponse
+  description: Update the 'response' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: String_1
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysResponse
+    inputTypeName: UpdateColumnSharedIdempotencyKeysResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_response
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysState
+  description: Update the 'state' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: Enum!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysState
+    inputTypeName: UpdateColumnSharedIdempotencyKeysStateInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_state
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysState
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateColumnSharedIdempotencyKeysUpdateTime
+  description: Update the 'update_time' column in the 'shared_idempotency_keys' collection
+  fields:
+    - name: set
+      type: Timestamptz!
+      description: Set the column to this value
+  graphql:
+    typeName: UpdateColumnSharedIdempotencyKeysUpdateTime
+    inputTypeName: UpdateColumnSharedIdempotencyKeysUpdateTimeInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_column_shared_idempotency_keys_update_time
+      fieldMapping:
+        set:
+          column:
+            name: _set
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateColumnSharedIdempotencyKeysUpdateTime
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - set
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateSharedIdempotencyKeysByIdUpdateColumns
+  description: Update the columns of the 'shared_idempotency_keys' collection
+  fields:
+    - name: createTime
+      type: UpdateColumnSharedIdempotencyKeysCreateTime
+      description: Update the 'create_time' column in the 'shared_idempotency_keys'
+        collection.
+    - name: id
+      type: UpdateColumnSharedIdempotencyKeysId
+      description: Update the 'id' column in the 'shared_idempotency_keys' collection.
+    - name: method
+      type: UpdateColumnSharedIdempotencyKeysMethod
+      description: Update the 'method' column in the 'shared_idempotency_keys' collection.
+    - name: name
+      type: UpdateColumnSharedIdempotencyKeysName
+      description: Update the 'name' column in the 'shared_idempotency_keys' collection.
+    - name: requestId
+      type: UpdateColumnSharedIdempotencyKeysRequestId
+      description: Update the 'request_id' column in the 'shared_idempotency_keys'
+        collection.
+    - name: response
+      type: UpdateColumnSharedIdempotencyKeysResponse
+      description: Update the 'response' column in the 'shared_idempotency_keys' collection.
+    - name: state
+      type: UpdateColumnSharedIdempotencyKeysState
+      description: Update the 'state' column in the 'shared_idempotency_keys' collection.
+    - name: updateTime
+      type: UpdateColumnSharedIdempotencyKeysUpdateTime
+      description: Update the 'update_time' column in the 'shared_idempotency_keys'
+        collection.
+  graphql:
+    typeName: UpdateSharedIdempotencyKeysByIdUpdateColumns
+    inputTypeName: UpdateSharedIdempotencyKeysByIdUpdateColumnsInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_shared_idempotency_keys_by_id_update_columns
+      fieldMapping:
+        createTime:
+          column:
+            name: create_time
+        id:
+          column:
+            name: id
+        method:
+          column:
+            name: method
+        name:
+          column:
+            name: name
+        requestId:
+          column:
+            name: request_id
+        response:
+          column:
+            name: response
+        state:
+          column:
+            name: state
+        updateTime:
+          column:
+            name: update_time
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateSharedIdempotencyKeysByIdUpdateColumns
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createTime
+          - id
+          - method
+          - name
+          - requestId
+          - response
+          - state
+          - updateTime
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: UpdateSharedIdempotencyKeysByIdResponse
+  description: Responses from the 'update_shared_idempotency_keys_by_id' procedure
+  fields:
+    - name: affectedRows
+      type: Int32!
+      description: The number of rows affected by the mutation
+    - name: returning
+      type: "[SharedIdempotencyKeys!]!"
+      description: Data from rows affected by the mutation
+  graphql:
+    typeName: UpdateSharedIdempotencyKeysByIdResponse
+    inputTypeName: UpdateSharedIdempotencyKeysByIdResponseInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: freebusy_pgsql
+      dataConnectorObjectType: update_shared_idempotency_keys_by_id_response
+      fieldMapping:
+        affectedRows:
+          column:
+            name: affected_rows
+        returning:
+          column:
+            name: returning
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: UpdateSharedIdempotencyKeysByIdResponse
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - affectedRows
+          - returning
+
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateSharedIdempotencyKeysById
+  outputType: UpdateSharedIdempotencyKeysByIdResponse!
+  arguments:
+    - name: keyId
+      type: String_1!
+    - name: postCheck
+      type: SharedIdempotencyKeysBoolExp
+      description: Update permission post-condition predicate over the
+        'shared_idempotency_keys' collection
+    - name: preCheck
+      type: SharedIdempotencyKeysBoolExp
+      description: Update permission pre-condition predicate over the
+        'shared_idempotency_keys' collection
+    - name: updateColumns
+      type: UpdateSharedIdempotencyKeysByIdUpdateColumns!
+  source:
+    dataConnectorName: freebusy_pgsql
+    dataConnectorCommand:
+      procedure: update_shared_idempotency_keys_by_id
+    argumentMapping:
+      keyId: key_id
+      postCheck: post_check
+      preCheck: pre_check
+      updateColumns: update_columns
+  graphql:
+    rootFieldName: updateSharedIdempotencyKeysById
+    rootFieldKind: Mutation
+  description: Update any row on the 'shared_idempotency_keys' collection using the 'id' key
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateSharedIdempotencyKeysById
+  permissions:
+    - role: admin
+      allowExecution: true
+

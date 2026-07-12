@@ -144,6 +144,7 @@ var Default = New().Register(
 	&schedule.CancellationPolicy{},
 	&schedule.RefundTier{},
 	&schedule.ScheduleExceptions{},
+	&shared.IdempotencyKey{},
 	&shared.Contact{},
 	&shared.TimeWindow{},
 	&shared.PriceComponent{},

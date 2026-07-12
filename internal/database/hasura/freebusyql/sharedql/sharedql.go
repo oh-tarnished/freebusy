@@ -14,6 +14,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/attachmentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/contactsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/daterangesql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/idempotencykeysql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/pricecomponentsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/the-protobuf-project/runtime-go/network/runtime"
@@ -35,6 +36,11 @@ type InsertSharedDateRangesResponse = daterangesql.InsertSharedDateRangesRespons
 type SharedDateRanges = daterangesql.SharedDateRanges
 type SharedDateRangesAggExp = daterangesql.SharedDateRangesAggExp
 type UpdateSharedDateRangesByIdResponse = daterangesql.UpdateSharedDateRangesByIdResponse
+type DeleteSharedIdempotencyKeysByIdResponse = idempotencykeysql.DeleteSharedIdempotencyKeysByIdResponse
+type InsertSharedIdempotencyKeysResponse = idempotencykeysql.InsertSharedIdempotencyKeysResponse
+type SharedIdempotencyKeys = idempotencykeysql.SharedIdempotencyKeys
+type SharedIdempotencyKeysAggExp = idempotencykeysql.SharedIdempotencyKeysAggExp
+type UpdateSharedIdempotencyKeysByIdResponse = idempotencykeysql.UpdateSharedIdempotencyKeysByIdResponse
 type DeleteSharedPriceComponentsByIdResponse = pricecomponentsql.DeleteSharedPriceComponentsByIdResponse
 type InsertSharedPriceComponentsResponse = pricecomponentsql.InsertSharedPriceComponentsResponse
 type SharedPriceComponents = pricecomponentsql.SharedPriceComponents
@@ -51,6 +57,7 @@ type QueryHandler struct {
 	Attachments     attachmentsql.QueryHandler
 	Contacts        contactsql.QueryHandler
 	DateRanges      daterangesql.QueryHandler
+	IdempotencyKeys idempotencykeysql.QueryHandler
 	PriceComponents pricecomponentsql.QueryHandler
 	TimeWindows     timewindowsql.QueryHandler
 }
@@ -61,6 +68,7 @@ func NewQuery(gql *runtime.GraphQLClient) QueryHandler {
 		Attachments:     attachmentsql.NewQuery(gql),
 		Contacts:        contactsql.NewQuery(gql),
 		DateRanges:      daterangesql.NewQuery(gql),
+		IdempotencyKeys: idempotencykeysql.NewQuery(gql),
 		PriceComponents: pricecomponentsql.NewQuery(gql),
 		TimeWindows:     timewindowsql.NewQuery(gql),
 	}
@@ -71,6 +79,7 @@ type MutationHandler struct {
 	Attachments     attachmentsql.MutationHandler
 	Contacts        contactsql.MutationHandler
 	DateRanges      daterangesql.MutationHandler
+	IdempotencyKeys idempotencykeysql.MutationHandler
 	PriceComponents pricecomponentsql.MutationHandler
 	TimeWindows     timewindowsql.MutationHandler
 }
@@ -81,6 +90,7 @@ func NewMutation(gql *runtime.GraphQLClient) MutationHandler {
 		Attachments:     attachmentsql.NewMutation(gql),
 		Contacts:        contactsql.NewMutation(gql),
 		DateRanges:      daterangesql.NewMutation(gql),
+		IdempotencyKeys: idempotencykeysql.NewMutation(gql),
 		PriceComponents: pricecomponentsql.NewMutation(gql),
 		TimeWindows:     timewindowsql.NewMutation(gql),
 	}
@@ -91,6 +101,7 @@ type SubscriptionHandler struct {
 	Attachments     attachmentsql.SubscriptionHandler
 	Contacts        contactsql.SubscriptionHandler
 	DateRanges      daterangesql.SubscriptionHandler
+	IdempotencyKeys idempotencykeysql.SubscriptionHandler
 	PriceComponents pricecomponentsql.SubscriptionHandler
 	TimeWindows     timewindowsql.SubscriptionHandler
 }
@@ -101,6 +112,7 @@ func NewSubscription(gql *runtime.GraphQLClient) SubscriptionHandler {
 		Attachments:     attachmentsql.NewSubscription(gql),
 		Contacts:        contactsql.NewSubscription(gql),
 		DateRanges:      daterangesql.NewSubscription(gql),
+		IdempotencyKeys: idempotencykeysql.NewSubscription(gql),
 		PriceComponents: pricecomponentsql.NewSubscription(gql),
 		TimeWindows:     timewindowsql.NewSubscription(gql),
 	}

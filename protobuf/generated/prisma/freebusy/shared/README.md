@@ -6,7 +6,7 @@ Generated from Protobuf by protoc-gen-orm. Source of truth is the `.proto` files
 
 | Models | Enums |
 | ---: | ---: |
-| 5 | 3 |
+| 6 | 4 |
 
 ## Entity relationships
 
@@ -20,6 +20,9 @@ erDiagram
         string id PK
     }
     DateRange {
+        string id PK
+    }
+    IdempotencyKey {
         string id PK
     }
     PriceComponent {
@@ -43,4 +46,5 @@ erDiagram
 ## Subfolders
 
 - [`enums/`](./enums/README.md)
+- [`idempotency/`](./idempotency/README.md)
 - [`types/`](./types/README.md)

@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package freebusy.shared.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+import "orm/v1/annotations.proto";
+
+option go_package = "github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1;sharedpbv1";
+option java_multiple_files = true;
+option java_outer_classname = "IdempotencyProto";
+option java_package = "dev.ohtarnished.freebusy.shared.v1";
+
+// Lifecycle of a recorded request. A key is claimed IN_FLIGHT before the
+// handler runs and settles to DONE once its response is recorded; a handler
+// that fails deletes its key, so the caller may genuinely retry.
+enum IdempotencyState {
+  // Unspecified.
+  IDEMPOTENCY_STATE_UNSPECIFIED = 0;
+
+  // Claimed: a handler is running for this key right now. A second caller
+  // arriving here is a concurrent duplicate, not a replay.
+  IDEMPOTENCY_STATE_IN_FLIGHT = 1;
+
+  // Settled: `response` holds what the first call returned.
+  IDEMPOTENCY_STATE_DONE = 2;
+}
+
+// The record behind every `request_id` field in this API: it remembers what the
+// first call with a given id returned, so a retry replays that response instead
+// of attempting the write twice. Storage only — no service exposes it, and no
+// caller constructs one. It lives in freebusy.shared.v1 because request_id is
+// API-wide (booking, property, promo code, channel, organisation, schedule) and
+// one interceptor records them all; homing it in any single service's package
+// would make every other service import that service to dedupe its own writes.
+//
+// The id is derived, not random: it is a digest of (method, request_id), so the
+// primary key itself is the uniqueness constraint that makes a concurrent
+// duplicate lose the race rather than double-write.
+message IdempotencyKey {
+  option (google.api.resource) = {
+    type: "freebusy.shared.v1/IdempotencyKey"
+    pattern: "idempotencyKeys/{idempotency_key}"
+    singular: "idempotencyKey"
+    plural: "idempotencyKeys"
+  };
+  option (orm.v1.table) = {
+    indexes: [
+      {
+        columns: ["method", "request_id"]
+        unique: true
+      }
+    ]
+  };
+
+  // The key name. The final segment is a digest of (method, request_id).
+  // Format: idempotencyKeys/{idempotency_key}
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // Fully-qualified RPC that was called, e.g.
+  // "/freebusy.booking.v1.BookingService/CreateBooking". Part of the key: the
+  // same request_id replayed against a different method is a different request.
+  string method = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The caller-supplied idempotency key, verbatim from the request's
+  // `request_id` field.
+  string request_id = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // Whether the first call is still running or has settled.
+  IdempotencyState state = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (orm.v1.column) = {default_value: "IN_FLIGHT"}
+  ];
+
+  // What the first call returned: a google.protobuf.Any holding the response
+  // message, encoded as protojson. Empty while IN_FLIGHT. Stored as text rather
+  // than bytes so it round-trips identically through GORM and through Hasura's
+  // GraphQL, and self-describing (the Any carries its @type) so a replay can
+  // rebuild the exact response message without knowing which RPC wrote it.
+  string response = 5 [
+    (google.api.field_behavior) = OPTIONAL,
+    (orm.v1.column) = {type: "TEXT"}
+  ];
+
+  // When the key was claimed.
+  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // When the key settled to DONE.
+  google.protobuf.Timestamp update_time = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
