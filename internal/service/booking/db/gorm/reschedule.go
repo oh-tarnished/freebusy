@@ -77,7 +77,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 			requested = 1
 		}
 		if reserved+int64(requested) > capacity {
-			return types.ErrConflict
+			return types.ErrCapacityExhausted
 		}
 
 		if e := shared.NewTimeWindowStore(tx).Create(ctx, window); e != nil {

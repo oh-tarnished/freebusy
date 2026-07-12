@@ -2,8 +2,10 @@ package gorm
 
 import (
 	"context"
-	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
+	"fmt"
 	"time"
+
+	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/booking"
 	"github.com/oh-tarnished/freebusy/internal/database/gorm/freebusy/common"
@@ -50,7 +52,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 			return e
 		}
 		if m.State == nil || (*m.State != booking.BookingStatePendingHold && *m.State != booking.BookingStateConfirmed) {
-			return types.ErrConflict
+			return fmt.Errorf("%w: the party can only be edited while the booking is on hold or confirmed", types.ErrInvalidState)
 		}
 
 		// Re-validate the party against the unit's max occupancy.
@@ -105,7 +107,7 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 			return e
 		}
 		if m.State == nil || *m.State != booking.BookingStatePendingHold {
-			return types.ErrConflict
+			return fmt.Errorf("%w: only a booking on hold can be confirmed", types.ErrInvalidState)
 		}
 		now := time.Now().UTC()
 		state := booking.BookingStateConfirmed
@@ -133,8 +135,18 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 		if e := preloadBooking(tx.WithContext(ctx)).First(&m, "id = ?", id).Error; e != nil {
 			return e
 		}
-		if m.State != nil && (*m.State == booking.BookingStateCancelled || *m.State == booking.BookingStateExpired) {
-			return types.ErrConflict
+		// Cancelling a cancelled booking is what the caller already asked for, so
+		// it succeeds and returns the booking as it stands. Nothing is recomputed:
+		// re-running the refund would move cancel_time and could land a different
+		// refund percent as the policy's clock advances, which would make a retry
+		// visibly different from the call it retries.
+		if m.State != nil && *m.State == booking.BookingStateCancelled {
+			return nil
+		}
+		// An expired hold is not a cancellable thing — the inventory was released
+		// when it lapsed. This is a state error, not an inventory conflict.
+		if m.State != nil && *m.State == booking.BookingStateExpired {
+			return fmt.Errorf("%w: the hold expired and cannot be cancelled", types.ErrInvalidState)
 		}
 		pct, amount, _, e := r.computeRefund(ctx, tx, &m)
 		if e != nil {

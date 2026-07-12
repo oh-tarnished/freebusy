@@ -3,10 +3,12 @@ package hasura
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/occupanciesql"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
-	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
@@ -43,7 +45,7 @@ func (r *BookingRepository) UpdateBookingGuests(ctx context.Context, name string
 		return nil, types.ErrNotFound
 	}
 	if res.State == nil || (*res.State != "PENDING_HOLD" && *res.State != "CONFIRMED") {
-		return nil, types.ErrConflict
+		return nil, fmt.Errorf("%w: the party can only be edited while the booking is on hold or confirmed", types.ErrInvalidState)
 	}
 
 	// Re-validate the party against the unit's max occupancy.

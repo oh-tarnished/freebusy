@@ -65,7 +65,7 @@ func (r *BookingRepository) RescheduleBooking(ctx context.Context, name string, 
 		capacity = int64(*unit.Capacity)
 	}
 	if reserved+requested > capacity {
-		return nil, types.ErrConflict
+		return nil, types.ErrCapacityExhausted
 	}
 
 	in, err := r.pricingInputs(ctx, unit, repox.Deref(res.PromoCode))

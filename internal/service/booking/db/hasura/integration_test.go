@@ -167,8 +167,8 @@ func TestBookingLifecycleLive(t *testing.T) {
 	if confirmed.GetState() != bookingpbv1.BookingState_BOOKING_STATE_CONFIRMED {
 		t.Fatalf("state=%v, want CONFIRMED", confirmed.GetState())
 	}
-	if _, err := repo.ConfirmBooking(ctx, name); !errors.Is(err, types.ErrConflict) {
-		t.Fatalf("double confirm: err=%v, want ErrConflict", err)
+	if _, err := repo.ConfirmBooking(ctx, name); !errors.Is(err, types.ErrInvalidState) {
+		t.Fatalf("double confirm: err=%v, want ErrInvalidState", err)
 	}
 
 	// Party edits stay legal while CONFIRMED.
@@ -187,7 +187,22 @@ func TestBookingLifecycleLive(t *testing.T) {
 	if cancelled.GetState() != bookingpbv1.BookingState_BOOKING_STATE_CANCELLED {
 		t.Fatalf("state=%v, want CANCELLED", cancelled.GetState())
 	}
-	if _, err := repo.UpdateBookingGuests(ctx, name, nil, nil); !errors.Is(err, types.ErrConflict) {
-		t.Fatalf("party edit on CANCELLED: err=%v, want ErrConflict", err)
+	if _, err := repo.UpdateBookingGuests(ctx, name, nil, nil); !errors.Is(err, types.ErrInvalidState) {
+		t.Fatalf("party edit on CANCELLED: err=%v, want ErrInvalidState", err)
+	}
+
+	// Re-cancelling is idempotent: the caller's intent is already satisfied, so it
+	// returns the cancelled booking rather than an error a client cannot tell
+	// apart from someone taking the last room.
+	recancelled, err := repo.CancelBooking(ctx, name, bookingpbv1.CancelReason_CANCEL_REASON_REQUESTED_BY_CUSTOMER)
+	if err != nil {
+		t.Fatalf("re-cancel should be idempotent: %v", err)
+	}
+	if recancelled.GetState() != bookingpbv1.BookingState_BOOKING_STATE_CANCELLED {
+		t.Fatalf("re-cancel state=%v, want CANCELLED", recancelled.GetState())
+	}
+	if recancelled.GetCancelTime().AsTime() != cancelled.GetCancelTime().AsTime() {
+		t.Fatalf("re-cancel moved cancel_time: %v -> %v; a retry must return the first cancel verbatim",
+			cancelled.GetCancelTime().AsTime(), recancelled.GetCancelTime().AsTime())
 	}
 }

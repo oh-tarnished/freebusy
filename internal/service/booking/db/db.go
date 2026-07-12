@@ -21,9 +21,14 @@ import (
 // internal/types.
 type BookingRepository interface {
 	// CreateBooking places a PENDING_HOLD on a unit for a window (server-computed
-	// price/state/hold-expiry). Rejects with types.ErrConflict when capacity is
-	// exhausted for the window.
+	// price/state/hold-expiry). Rejects with types.ErrCapacityExhausted when the
+	// window is full.
 	CreateBooking(ctx context.Context, b *bookingpbv1.Booking) (*bookingpbv1.Booking, error)
+
+	// PreviewBooking validates and prices a draft without placing a hold: the
+	// same occupancy, capacity, and pricing rules CreateBooking applies, minus
+	// the write. Backs validate_only.
+	PreviewBooking(ctx context.Context, b *bookingpbv1.Booking) (*bookingpbv1.Booking, error)
 
 	// GetBooking returns the booking by resource name.
 	GetBooking(ctx context.Context, name string) (*bookingpbv1.Booking, error)

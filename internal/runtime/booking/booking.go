@@ -6,7 +6,7 @@ package booking
 
 import (
 	"context"
-	"errors"
+
 	"github.com/oh-tarnished/freebusy/internal/database"
 
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
@@ -49,8 +49,19 @@ func (s *Server) CreateBooking(ctx context.Context, req *bookingpbv1.CreateBooki
 		b.Name = name
 	}
 	if req.GetValidateOnly() {
-		// Dry run: the request passed validation; report it without placing a hold.
-		return b, nil
+		// Dry run: price it and check availability + occupancy against the real
+		// rules, but place no hold. This used to echo the draft straight back,
+		// which quoted a total of zero.
+		var out *bookingpbv1.Booking
+		err := rpc.Traced(ctx, "BookingService", "CreateBooking", func(ctx context.Context) error {
+			previewed, err := s.repo.PreviewBooking(ctx, b)
+			if err != nil {
+				return toStatusErr(err)
+			}
+			out = previewed
+			return nil
+		})
+		return out, err
 	}
 	var out *bookingpbv1.Booking
 	err := rpc.Traced(ctx, "BookingService", "CreateBooking", func(ctx context.Context) error {
@@ -146,13 +157,12 @@ func (s *Server) PreviewCancellation(ctx context.Context, req *bookingpbv1.Previ
 }
 
 // toStatusErr maps repository sentinel errors onto gRPC status codes. Booking
-// diverges from the shared rpc.ToStatusErr on conflicts: a capacity/overlap
-// conflict surfaces as FailedPrecondition (the request can't be satisfied in
-// the current state), distinct from an etag Aborted conflict.
+// used to override the shared mapping here, because capacity exhaustion and
+// every other conflict shared one sentinel and only booking cared about the
+// difference. They are separate sentinels now (types.ErrCapacityExhausted,
+// types.ErrInvalidState, types.ErrConflict), each with its own status code and
+// ErrorInfo reason, so the shared mapping is the whole story.
 func toStatusErr(err error) error {
-	if errors.Is(err, types.ErrConflict) {
-		return status.Error(codes.FailedPrecondition, err.Error())
-	}
 	return rpc.ToStatusErr(err)
 }
 

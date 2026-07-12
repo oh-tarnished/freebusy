@@ -95,7 +95,7 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 		capacity = int64(*unit.Capacity)
 	}
 	if reserved+int64(requested) > capacity {
-		return nil, types.ErrConflict
+		return nil, types.ErrCapacityExhausted
 	}
 
 	now := time.Now().UTC()

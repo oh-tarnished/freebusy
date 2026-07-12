@@ -13,6 +13,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/shared"
 	"github.com/the-protobuf-project/runtime-go/grpc"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -27,11 +28,31 @@ func Traced(ctx context.Context, service, method string, fn func(context.Context
 	return observer.Traced(ctx, service, method, fn)
 }
 
+// ErrorDomain scopes the machine-readable reasons below, per AIP-193.
+const ErrorDomain = "freebusy.dev"
+
+// Reasons carried in the google.rpc.ErrorInfo detail. AIP puts both "the
+// inventory ran out" and "this booking is in the wrong state" on
+// FAILED_PRECONDITION, so the status code alone cannot separate them — a client
+// that must tell an idempotent re-cancel apart from someone taking the last room
+// reads the reason, not the code or the message.
+const (
+	// ReasonCapacityExhausted: the unit has no room left for the window.
+	ReasonCapacityExhausted = "CAPACITY_EXHAUSTED"
+	// ReasonInvalidState: the resource's state forbids the transition.
+	ReasonInvalidState = "INVALID_STATE"
+	// ReasonConcurrentModification: an etag/CAS race; the caller may retry.
+	ReasonConcurrentModification = "CONCURRENT_MODIFICATION"
+)
+
 // ToStatusErr maps repository sentinel errors onto gRPC status codes. Errors
-// that are already gRPC statuses (e.g. InvalidArgument from request
-// validation) pass through unchanged; anything else becomes Internal. A
-// conflict maps to Aborted (the optimistic-concurrency retryable); booking
-// overrides that locally to FailedPrecondition for capacity conflicts.
+// that are already gRPC statuses (e.g. InvalidArgument from request validation)
+// pass through unchanged; anything else becomes Internal.
+//
+// The three failure modes that used to share one "conflict" now carry distinct
+// reasons: capacity exhaustion and invalid-state both stay FailedPrecondition
+// (as AIP requires) but are told apart by ErrorInfo.reason, while a CAS race
+// keeps Aborted, the retryable code.
 func ToStatusErr(err error) error {
 	switch {
 	case err == nil:
@@ -40,8 +61,12 @@ func ToStatusErr(err error) error {
 		return status.Error(codes.NotFound, err.Error())
 	case errors.Is(err, types.ErrAlreadyExists):
 		return status.Error(codes.AlreadyExists, err.Error())
+	case errors.Is(err, types.ErrCapacityExhausted):
+		return withReason(codes.FailedPrecondition, err, ReasonCapacityExhausted)
+	case errors.Is(err, types.ErrInvalidState):
+		return withReason(codes.FailedPrecondition, err, ReasonInvalidState)
 	case errors.Is(err, types.ErrConflict):
-		return status.Error(codes.Aborted, err.Error())
+		return withReason(codes.Aborted, err, ReasonConcurrentModification)
 	case errors.Is(err, types.ErrInvalidArgument):
 		return status.Error(codes.InvalidArgument, err.Error())
 	case errors.Is(err, types.ErrUnimplemented):
@@ -51,4 +76,17 @@ func ToStatusErr(err error) error {
 		return err
 	}
 	return status.Error(codes.Internal, err.Error())
+}
+
+// withReason attaches an ErrorInfo detail so clients can branch on a stable
+// reason instead of parsing the message. If the detail cannot be attached the
+// bare status still carries code and message, which is strictly better than
+// failing the call over its own error reporting.
+func withReason(code codes.Code, err error, reason string) error {
+	st := status.New(code, err.Error())
+	detailed, derr := st.WithDetails(&errdetails.ErrorInfo{Reason: reason, Domain: ErrorDomain})
+	if derr != nil {
+		return st.Err()
+	}
+	return detailed.Err()
 }

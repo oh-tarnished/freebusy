@@ -2,9 +2,11 @@ package hasura
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/commonql/moneysql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
-	"time"
 
 	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -58,7 +60,7 @@ func (r *BookingRepository) ConfirmBooking(ctx context.Context, name string) (*b
 		return nil, types.ErrNotFound
 	}
 	if res.State == nil || *res.State != "PENDING_HOLD" {
-		return nil, types.ErrConflict
+		return nil, fmt.Errorf("%w: only a booking on hold can be confirmed", types.ErrInvalidState)
 	}
 	now := time.Now().UTC()
 	patch := resourceql.UpdateInput{
@@ -95,8 +97,16 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 	if res == nil {
 		return nil, types.ErrNotFound
 	}
-	if res.State != nil && (*res.State == "CANCELLED" || *res.State == "EXPIRED") {
-		return nil, types.ErrConflict
+	// Already cancelled: the caller's intent is satisfied. Return the booking as
+	// it stands rather than recomputing a refund whose percent could have drifted
+	// with the policy clock since the original cancel.
+	if res.State != nil && *res.State == "CANCELLED" {
+		return r.GetBooking(ctx, name)
+	}
+	// An expired hold released its inventory when it lapsed; there is nothing to
+	// cancel. A state error, not an inventory conflict.
+	if res.State != nil && *res.State == "EXPIRED" {
+		return nil, fmt.Errorf("%w: the hold expired and cannot be cancelled", types.ErrInvalidState)
 	}
 	pct, amount, _, err := r.computeRefund(ctx, res)
 	if err != nil {
@@ -136,6 +146,17 @@ func (r *BookingRepository) CancelBooking(ctx context.Context, name string, reas
 	if updRes.AffectedRows == 0 {
 		if refundID != "" {
 			_, _ = r.svc.Mutation.Common.Moneys.Delete(ctx, refundID) // reap the orphan
+		}
+		// The guarded update matched nothing: the booking reached a terminal state
+		// between our read and our write. If that state is CANCELLED, a concurrent
+		// cancel beat us to it and the caller's intent is still satisfied — same
+		// answer as the already-cancelled path above. Anything else is a real race.
+		current, err := r.svc.Query.Booking.Resource.Get(ctx, id)
+		if err != nil {
+			return nil, dbutil.MapHasuraErr(err)
+		}
+		if current != nil && current.State != nil && *current.State == "CANCELLED" {
+			return r.GetBooking(ctx, name)
 		}
 		return nil, types.ErrConflict
 	}

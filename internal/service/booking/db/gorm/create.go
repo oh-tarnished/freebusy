@@ -140,7 +140,7 @@ func (r *BookingRepository) CreateBooking(ctx context.Context, b *bookingpbv1.Bo
 			capacity = int64(*unit.Capacity)
 		}
 		if reserved+int64(requested) > capacity {
-			return types.ErrConflict
+			return types.ErrCapacityExhausted
 		}
 		if e := shared.NewTimeWindowStore(tx).Create(ctx, window); e != nil {
 			return e
