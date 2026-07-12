@@ -28,6 +28,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/oh-tarnished/freebusy/internal/database"
 	sharedrepo "github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/shared"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/repox"
 	"github.com/oh-tarnished/freebusy/internal/types"
@@ -57,6 +58,14 @@ const validateOnlyField = "validate_only"
 // longer than any handler runs, so reclaiming a key this old cannot race a
 // handler that is still working.
 const staleAfter = 10 * time.Minute
+
+// New builds the interceptor over conn, following whichever provider the
+// connection was opened for: the generated shared repository speaks both GORM
+// and GraphQL, so idempotency works identically on either backend.
+func New(conn *database.Connection) grpc.UnaryServerInterceptor {
+	repos := sharedrepo.New(repox.Conn{Gorm: conn.PgSQLConn, GraphQL: conn.Hasura})
+	return Interceptor(repos.IdempotencyKeys)
+}
 
 // Interceptor returns the unary interceptor that enforces request_id semantics
 // against repo. Build repo from the live connection (see New) so it follows the

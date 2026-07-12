@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/oh-tarnished/freebusy/config"
+	"github.com/oh-tarnished/freebusy/internal/runtime/idempotency"
 	"github.com/the-protobuf-project/runtime-go/grpc"
 	"github.com/the-protobuf-project/runtime-go/grpc/options"
 )
@@ -72,6 +73,10 @@ func NewServer(name, version string, opts ...options.Options) (*Server, error) {
 func serviceOptions(svc *Service) ([]grpc.Option, error) {
 	opts := []grpc.Option{
 		grpc.WithValidation(),
+		// Honours `request_id` on every RPC that declares it. Runs after
+		// validation (which runtime-go prepends), so a request that never
+		// passed validation cannot claim an idempotency key.
+		grpc.WithUnaryInterceptors(idempotency.New(svc.conn)),
 		registerGRPCServers(svc),
 		registerHTTPGateways(),
 		registerMCPServices(svc),
