@@ -49,6 +49,11 @@ password = ""
 dbname = "freebusydb"
 sslmode = "require"
 timezone = "UTC"
+# Connection-pool bounds; the pool is the process's backpressure point.
+max_open_conns = 25
+max_idle_conns = 25
+conn_max_lifetime_minutes = 30
+conn_max_idle_minutes = 5
 
 [database.hasura]
 url = ""

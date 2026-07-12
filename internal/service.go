@@ -7,6 +7,7 @@ package internal
 import (
 	"context"
 
+	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/runtime/booking"
 	"github.com/oh-tarnished/freebusy/internal/runtime/property"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
@@ -35,6 +36,9 @@ type Service struct {
 	// booking is the concrete booking server, retained so background tasks (the
 	// hold sweeper) can be started against it in StartBackground.
 	booking *booking.Server
+	// conn is the shared database connection every domain runs on, retained so
+	// StartBackground can publish its pool health.
+	conn *database.Connection
 }
 
 // NewService wraps the assembled service servers as the registered Service. The
@@ -65,10 +69,12 @@ func NewService(
 }
 
 // StartBackground launches the service's background tasks, tied to ctx: the
-// booking hold sweeper, which periodically expires lapsed holds. The goroutines
-// exit when ctx is cancelled (on server Stop/Restart).
+// booking hold sweeper, which converges lapsed holds' stored state, and the
+// database pool monitor, which publishes the shared connection pool's health.
+// The goroutines exit when ctx is cancelled (on server Stop/Restart).
 func (s *Service) StartBackground(ctx context.Context) {
 	if s.booking != nil {
 		s.booking.StartHoldSweeper(ctx, 0)
 	}
+	database.StartPoolMonitor(ctx, s.conn, 0)
 }

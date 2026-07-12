@@ -17,7 +17,7 @@ func TestSlotsGatedToOpenHours(t *testing.T) {
 		TimeZone:  "UTC",
 		Duration:  time.Hour,
 		Price:     inr(800),
-		Recurring: []rrule.Rule{{RRule: "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR", Opens: "09:00", Closes: "17:00"}},
+		Recurring: rrule.Compile([]rrule.Rule{{RRule: "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR", Opens: "09:00", Closes: "17:00"}}),
 	}
 	// 2026-12-24 is a Thursday. Window 08:00–11:00 → slots 08–09 (closed), 09–10, 10–11 (open).
 	start := time.Date(2026, 12, 24, 8, 0, 0, 0, time.UTC)

@@ -49,7 +49,7 @@ type UnitInfo struct {
 	EndDelta         time.Duration  // turnover time reserved after each booking
 	CheckinWeekdays  []time.Weekday // allowed check-in days (empty = any)
 	CheckoutWeekdays []time.Weekday // allowed check-out days (empty = any)
-	Recurring        []rrule.Rule   // open-hours rules (empty = always open)
+	Recurring        rrule.Compiled // open-hours rules, pre-parsed (empty = always open)
 }
 
 // Reservation is one active booking's held span and unit count (UTC instants).

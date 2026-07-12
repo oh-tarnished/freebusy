@@ -10,8 +10,9 @@ package config
 import (
 	"embed"
 	"fmt"
+	"time"
 
-	"github.com/oh-tarnished/runtime-go/grpc/options"
+	"github.com/the-protobuf-project/runtime-go/grpc/options"
 )
 
 //go:embed freebusy.release.toml
@@ -126,6 +127,49 @@ type PostgresConfig struct {
 	SSLMode string `koanf:"sslmode"`
 	// TimeZone is the session time zone passed to the driver (e.g. "UTC").
 	TimeZone string `koanf:"timezone"`
+	// MaxOpenConns caps the pool's open connections; excess requests queue on
+	// the pool, making it the process's backpressure point (0 or negative = 25).
+	MaxOpenConns int `koanf:"max_open_conns"`
+	// MaxIdleConns is how many idle connections the pool retains (0 or negative
+	// = MaxOpenConns, so steady traffic reuses instead of churning connections).
+	MaxIdleConns int `koanf:"max_idle_conns"`
+	// ConnMaxLifetimeMinutes recycles connections after this long, so load
+	// re-spreads after database failovers (0 or negative = 30).
+	ConnMaxLifetimeMinutes int `koanf:"conn_max_lifetime_minutes"`
+	// ConnMaxIdleMinutes closes connections idle this long (0 or negative = 5).
+	ConnMaxIdleMinutes int `koanf:"conn_max_idle_minutes"`
+}
+
+// PoolSettings are the resolved connection-pool bounds: PostgresConfig's pool
+// fields with the defaults applied for unset values.
+type PoolSettings struct {
+	MaxOpen     int
+	MaxIdle     int
+	MaxLifetime time.Duration
+	MaxIdleTime time.Duration
+}
+
+// Pool resolves the connection-pool settings, applying defaults for unset fields.
+func (p PostgresConfig) Pool() PoolSettings {
+	s := PoolSettings{
+		MaxOpen:     p.MaxOpenConns,
+		MaxIdle:     p.MaxIdleConns,
+		MaxLifetime: time.Duration(p.ConnMaxLifetimeMinutes) * time.Minute,
+		MaxIdleTime: time.Duration(p.ConnMaxIdleMinutes) * time.Minute,
+	}
+	if s.MaxOpen <= 0 {
+		s.MaxOpen = 25
+	}
+	if s.MaxIdle <= 0 {
+		s.MaxIdle = s.MaxOpen
+	}
+	if s.MaxLifetime <= 0 {
+		s.MaxLifetime = 30 * time.Minute
+	}
+	if s.MaxIdleTime <= 0 {
+		s.MaxIdleTime = 5 * time.Minute
+	}
+	return s
 }
 
 // DSN renders the libpq keyword/value connection string that

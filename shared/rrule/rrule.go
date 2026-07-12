@@ -29,21 +29,40 @@ type Rule struct {
 // Covers reports whether the span [start,end) falls entirely within the open
 // hours defined by rules. An empty rule set means "always open" (returns true),
 // preserving the no-schedule default. start/end should be in the location the
-// rule's local times are expressed in (the unit's timezone).
+// rule's local times are expressed in (the unit's timezone). Callers that
+// evaluate many spans against one rule set should Compile once instead.
 func Covers(rules []Rule, start, end time.Time) bool {
-	if len(rules) == 0 {
-		return true
-	}
-	for i := range rules {
-		if rules[i].covers(start, end) {
-			return true
-		}
-	}
-	return false
+	return Compile(rules).Covers(start, end)
 }
 
-// covers reports whether [start,end) fits within this single rule's window.
-func (r Rule) covers(start, end time.Time) bool {
+// compiledRule is one rule with its recurrence and window pre-parsed: the
+// matching weekdays and the open/close window in minutes since local midnight
+// (close may exceed 24*60 when the window crosses midnight).
+type compiledRule struct {
+	days     map[time.Weekday]bool
+	everyDay bool
+	open     int
+	close    int
+}
+
+// Compiled is an immutable, pre-parsed rule set ready for repeated Covers
+// checks: parse once when a unit's schedule is loaded, evaluate per slot.
+type Compiled struct {
+	rules []compiledRule
+}
+
+// Compile parses each rule's recurrence and open/close window once.
+func Compile(rules []Rule) Compiled {
+	out := make([]compiledRule, 0, len(rules))
+	for i := range rules {
+		out = append(out, compile(rules[i]))
+	}
+	return Compiled{rules: out}
+}
+
+// compile pre-parses one rule, applying the whole-day and midnight-crossing
+// normalizations Covers relies on.
+func compile(r Rule) compiledRule {
 	days, everyDay := parseDays(r.RRule)
 	open, close := parseHM(r.Opens), parseHM(r.Closes)
 	if open < 0 && close < 0 {
@@ -59,19 +78,37 @@ func (r Rule) covers(start, end time.Time) bool {
 	if close <= open {
 		close += 24 * 60 // crosses midnight
 	}
+	return compiledRule{days: days, everyDay: everyDay, open: open, close: close}
+}
 
+// Covers reports whether the span [start,end) falls entirely within the open
+// hours of any rule in the set. An empty set means "always open".
+func (c Compiled) Covers(start, end time.Time) bool {
+	if len(c.rules) == 0 {
+		return true
+	}
+	for i := range c.rules {
+		if c.rules[i].covers(start, end) {
+			return true
+		}
+	}
+	return false
+}
+
+// covers reports whether [start,end) fits within this single rule's window.
+func (r compiledRule) covers(start, end time.Time) bool {
 	startMin := start.Hour()*60 + start.Minute()
 	endMin := startMin + int(end.Sub(start)/time.Minute)
 
 	// Window anchored to start's day.
-	if (everyDay || days[start.Weekday()]) && startMin >= open && endMin <= close {
+	if (r.everyDay || r.days[start.Weekday()]) && startMin >= r.open && endMin <= r.close {
 		return true
 	}
 	// A window that opened the previous day (midnight-crossing) may still cover an
 	// early-morning span; shift the window back a day into start's minute frame.
-	if close > 24*60 {
+	if r.close > 24*60 {
 		prev := start.AddDate(0, 0, -1).Weekday()
-		if (everyDay || days[prev]) && startMin >= open-24*60 && endMin <= close-24*60 {
+		if (r.everyDay || r.days[prev]) && startMin >= r.open-24*60 && endMin <= r.close-24*60 {
 			return true
 		}
 	}

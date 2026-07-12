@@ -3,11 +3,6 @@
 # Recipes run from the repo root so buf/template paths resolve unchanged.
 set working-directory := '../..'
 
-# Locally-built protoc plugins (go install from the orm / grpc-mcp-gateway
-# clones) must shadow any homebrew-installed releases, or a regen silently
-# reverts in-flight generator changes.
-export PATH := env_var('HOME') / 'go/bin' + ':' + env_var('PATH')
-
 # Regenerate everything: Go, OpenAPI (+merge+envoy), ORM, TypeScript, docs.
 [group('codegen')]
 all: deps go openapi envoy orm docs

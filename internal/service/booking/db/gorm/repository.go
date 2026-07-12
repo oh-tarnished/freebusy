@@ -20,12 +20,15 @@ import (
 
 // overlapSQL sums the reserved units of active bookings (held or confirmed) whose
 // window overlaps [start,end) on a unit, for the capacity check. Windows are
-// compared as UTC instants, so the check is timezone-safe.
+// compared as UTC instants, so the check is timezone-safe. A PENDING_HOLD only
+// counts while its hold is unexpired: a lapsed hold frees capacity immediately,
+// without waiting for the sweeper to flip its stored state.
 const overlapSQL = `
 SELECT COALESCE(SUM(COALESCE(b.units, 1)), 0)
 FROM "booking"."resource" b
 JOIN "shared"."time_windows" w ON w.id = b.window_id
 WHERE b.unit = ? AND b.state IN ('PENDING_HOLD','CONFIRMED')
+  AND (b.state <> 'PENDING_HOLD' OR b.hold_expire_time IS NULL OR b.hold_expire_time > now())
   AND w.start_time < ? AND w.end_time > ?`
 
 // BookingRepository is the GORM-backed booking repository.

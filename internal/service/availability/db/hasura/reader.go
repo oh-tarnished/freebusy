@@ -166,12 +166,14 @@ func (r *AvailabilityReader) applySchedulePolicy(ctx context.Context, info *engi
 			info.EndDelta = durationFromStr(repox.Deref(b.EndDelta))
 		}
 	}
-	rules, err := r.svc.Query.Schedule.RecurringRules.List(ctx, recurringrulesql.List().Where(recurringrulesql.ScheduleId.Eq(sched.Id)))
+	rows, err := r.svc.Query.Schedule.RecurringRules.List(ctx, recurringrulesql.List().Where(recurringrulesql.ScheduleId.Eq(sched.Id)))
 	if err != nil {
 		return mapErr(err)
 	}
-	for i := range rules {
-		info.Recurring = append(info.Recurring, rrule.Rule{RRule: rules[i].Rrule, Opens: repox.Deref(rules[i].Opens), Closes: repox.Deref(rules[i].Closes)})
+	rules := make([]rrule.Rule, 0, len(rows))
+	for i := range rows {
+		rules = append(rules, rrule.Rule{RRule: rows[i].Rrule, Opens: repox.Deref(rows[i].Opens), Closes: repox.Deref(rows[i].Closes)})
 	}
+	info.Recurring = rrule.Compile(rules)
 	return nil
 }

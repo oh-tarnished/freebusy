@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
-	"github.com/oh-tarnished/freebusy/shared/rrule"
 )
 
 // CheckSpan tests whether one exact [start,end) span is bookable, returning the
@@ -34,7 +33,7 @@ func CheckSpan(u *UnitInfo, start, end time.Time, unitsReq int32, nights int32, 
 		}
 	}
 	loc := u.loc()
-	if u.Mode == ModeTimeSlot && !rrule.Covers(u.Recurring, start.In(loc), end.In(loc)) {
+	if u.Mode == ModeTimeSlot && !u.Recurring.Covers(start.In(loc), end.In(loc)) {
 		add(availabilitypbv1.Code_CODE_OUTSIDE_HOURS, "the span falls outside the unit's open hours")
 	}
 	if u.Mode == ModeNightly {

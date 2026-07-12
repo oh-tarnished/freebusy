@@ -1,6 +1,6 @@
 package config
 
-import "github.com/oh-tarnished/runtime-go/grpc/options"
+import "github.com/the-protobuf-project/runtime-go/grpc/options"
 
 // GetGRPCOptions builds the hybrid-server options entirely from the loaded
 // config, so identity, listeners, feature flags, and environment all come from

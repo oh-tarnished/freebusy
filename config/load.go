@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/oh-tarnished/freebusy/shared"
-	"github.com/oh-tarnished/runtime-go/grpc/options"
+	"github.com/the-protobuf-project/runtime-go/grpc/options"
 )
 
 // loadedConfig holds the parsed configuration singleton.

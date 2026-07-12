@@ -7,9 +7,10 @@ import (
 	"github.com/oh-tarnished/freebusy/shared"
 )
 
-// defaultSweepInterval is how often the hold sweeper runs. Holds released at most
-// this long after expiry — acceptable, since the capacity check treats an expired
-// hold as active only until it is swept.
+// defaultSweepInterval is how often the hold sweeper runs. The sweep is pure
+// bookkeeping: capacity and availability reads already ignore lapsed holds, so a
+// hold frees inventory the instant it expires. The sweeper only converges the
+// stored state (PENDING_HOLD -> EXPIRED) for list views and reporting.
 const defaultSweepInterval = time.Minute
 
 // StartHoldSweeper launches a background loop that periodically expires lapsed

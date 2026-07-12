@@ -22,13 +22,24 @@ func Open() (*Connection, error) {
 	}
 }
 
-// openGorm dials Postgres with the libpq DSN rendered from config.
+// openGorm dials Postgres with the libpq DSN rendered from config and bounds
+// the connection pool. The pool cap is the process's backpressure point: excess
+// concurrent queries queue on the pool instead of piling onto Postgres.
 func openGorm() (*Connection, error) {
-	dsn := config.Get().Database.Postgres.DSN()
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	pg := config.Get().Database.Postgres
+	db, err := gorm.Open(postgres.Open(pg.DSN()), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("open postgres: %w", err)
 	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, fmt.Errorf("postgres pool handle: %w", err)
+	}
+	pool := pg.Pool()
+	sqlDB.SetMaxOpenConns(pool.MaxOpen)
+	sqlDB.SetMaxIdleConns(pool.MaxIdle)
+	sqlDB.SetConnMaxLifetime(pool.MaxLifetime)
+	sqlDB.SetConnMaxIdleTime(pool.MaxIdleTime)
 	return &Connection{PgSQLConn: db, Provider: ProviderGorm}, nil
 }
 

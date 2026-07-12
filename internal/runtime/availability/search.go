@@ -29,14 +29,17 @@ func (s *Server) SearchAvailability(ctx context.Context, req *availabilitypbv1.S
 
 		// Batch the per-unit reads: one bookings query and one closures query over
 		// the whole candidate set, bounded by the widest period across the units.
+		// Periods are resolved once here and reused by the match loop below.
 		unitIDs := make([]string, 0, len(units))
 		tzByUnit := make(map[string]string, len(units))
+		periods := make([]period, len(units))
 		var lo, hi time.Time
-		for _, u := range units {
+		for i, u := range units {
 			p, perr := resolvePeriod(u, req.GetWindow(), req.GetDateRange())
 			if perr != nil {
 				return perr
 			}
+			periods[i] = p
 			unitIDs = append(unitIDs, u.ID)
 			tzByUnit[u.ID] = u.TimeZone
 			if lo.IsZero() || p.start.Before(lo) {
@@ -57,8 +60,8 @@ func (s *Server) SearchAvailability(ctx context.Context, req *availabilitypbv1.S
 
 		now := time.Now().UTC()
 		matches := make([]*availabilitypbv1.AvailabilityMatch, 0, len(units))
-		for _, u := range units {
-			p, _ := resolvePeriod(u, req.GetWindow(), req.GetDateRange())
+		for i, u := range units {
+			p := periods[i]
 			bookable, _, _ := engine.CheckSpan(u, p.start, p.end, req.GetUnits(), p.nights, bookingsByUnit[u.ID], closuresByUnit[u.ID], now)
 			if !bookable && !req.GetIncludeUnavailable() {
 				continue

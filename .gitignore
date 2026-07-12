@@ -7,3 +7,4 @@
 # Local generator/library clones (consumed via go.mod replace / local plugin builds)
 orm/
 grpc-mcp-gateway/
+runtime-go/

@@ -18,7 +18,7 @@ import (
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/promocode/v1/promocodepbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/property/v1/propertypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/schedule/v1/schedulepbv1"
-	"github.com/oh-tarnished/runtime-go/grpc"
+	"github.com/the-protobuf-project/runtime-go/grpc"
 )
 
 // newServiceInstance assembles the freebusy services on one shared database
@@ -33,7 +33,7 @@ func newServiceInstance(conn *database.Connection) (*Service, error) {
 		}
 		conn = opened
 	}
-	return NewService(
+	svc := NewService(
 		promocode.New(conn),
 		property.New(conn),
 		organisation.New(conn),
@@ -41,7 +41,9 @@ func newServiceInstance(conn *database.Connection) (*Service, error) {
 		booking.New(conn),
 		availability.New(conn),
 		identity.New(conn),
-	), nil
+	)
+	svc.conn = conn
+	return svc, nil
 }
 
 // registerGRPCServers returns a server option that registers the freebusy gRPC

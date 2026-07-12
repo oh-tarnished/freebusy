@@ -12,7 +12,7 @@ import (
 
 	"github.com/oh-tarnished/freebusy/internal/types"
 	"github.com/oh-tarnished/freebusy/shared"
-	"github.com/oh-tarnished/runtime-go/grpc"
+	"github.com/the-protobuf-project/runtime-go/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

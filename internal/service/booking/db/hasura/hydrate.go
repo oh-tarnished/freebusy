@@ -7,15 +7,12 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/foreignerdetailsql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestpreferencesql"
 	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/iddocumentsql"
-	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/sharedql/timewindowsql"
 	"github.com/oh-tarnished/freebusy/internal/service/dbutil"
 
-	resourceql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
-	guestsql "github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/bookingql/resourceql"
+	"github.com/oh-tarnished/freebusy/internal/database/hasura/freebusyql/identityql/guestsql"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
-	"github.com/oh-tarnished/freebusy/protobuf/generated/go/shared/v1/sharedpbv1"
-	"github.com/the-protobuf-project/runtime-go/network/graphql"
 )
 
 // hydrateBooking loads a booking row's value-objects and resolves its unit name.
@@ -123,39 +120,6 @@ func (r *BookingRepository) loadGuests(ctx context.Context, bookingID string) ([
 	return out, nil
 }
 
-// reservedUnits sums the units of active bookings (held or confirmed) on unitID
-// whose window overlaps target, excluding excludeID (empty to exclude none).
-// Windows are compared as UTC instants, so the check is timezone-safe.
-func (r *BookingRepository) reservedUnits(ctx context.Context, unitID string, target *sharedpbv1.TimeWindow, excludeID string) (int64, error) {
-	preds := []graphql.Predicate{resourceql.Unit.Eq(unitID), resourceql.State.In("PENDING_HOLD", "CONFIRMED")}
-	if excludeID != "" {
-		preds = append(preds, resourceql.Id.Neq(excludeID))
-	}
-	rows, err := r.svc.Query.Booking.Resource.List(ctx, resourceql.List().Where(resourceql.And(preds...)))
-	if err != nil {
-		return 0, dbutil.MapHasuraErr(err)
-	}
-	var sum int64
-	for i := range rows {
-		if rows[i].WindowId == "" {
-			continue
-		}
-		w, err := r.svc.Query.Shared.TimeWindows.Get(ctx, rows[i].WindowId)
-		if err != nil {
-			return 0, dbutil.MapHasuraErr(err)
-		}
-		if w == nil || !overlaps(w, target) {
-			continue
-		}
-		u := int64(1)
-		if rows[i].Units != nil && *rows[i].Units > 0 {
-			u = int64(*rows[i].Units)
-		}
-		sum += u
-	}
-	return sum, nil
-}
-
 // unitName resolves a bare unit id to its full resource name (the booking row
 // stores only the id, since its FK targets property.units.id).
 func (r *BookingRepository) unitName(ctx context.Context, unitID string) (string, error) {
@@ -170,14 +134,4 @@ func (r *BookingRepository) unitName(ctx context.Context, unitID string) (string
 		return "", nil
 	}
 	return u.Name, nil
-}
-
-// overlaps reports whether stored window w overlaps target [start,end) as UTC
-// instants (half-open: touching endpoints do not overlap).
-func overlaps(w *timewindowsql.SharedTimeWindows, target *sharedpbv1.TimeWindow) bool {
-	ws, we := strToTS(w.StartTime), strToTS(w.EndTime)
-	if ws == nil || we == nil || target == nil {
-		return false
-	}
-	return ws.AsTime().Before(target.GetEndTime().AsTime()) && we.AsTime().After(target.GetStartTime().AsTime())
 }

@@ -24,7 +24,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal"
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/organisation/v1/orgpbv1"
-	"github.com/oh-tarnished/runtime-go/grpc"
+	"github.com/the-protobuf-project/runtime-go/grpc"
 )
 
 func TestMCP_ValidationAndLifecycle_Gorm(t *testing.T) {

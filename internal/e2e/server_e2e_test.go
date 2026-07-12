@@ -24,6 +24,7 @@ import (
 	"github.com/oh-tarnished/freebusy/internal/database"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/booking"
 	"github.com/oh-tarnished/freebusy/internal/database/repository/freebusy/property"
+	"github.com/oh-tarnished/freebusy/internal/service/booking/db"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/booking/v1/bookingpbv1"
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/identity/v1/identitypbv1"
@@ -39,10 +40,10 @@ import (
 )
 
 func TestE2E_Gorm(t *testing.T) {
-	db := openTestGorm(t)
-	conn := &database.Connection{PgSQLConn: db, Provider: database.ProviderGorm}
+	gdb := openTestGorm(t)
+	conn := &database.Connection{PgSQLConn: gdb, Provider: database.ProviderGorm}
 	cc := dialServer(t, conn)
-	serverLifecycle(t, cc, database.ProviderGorm, property.NewGorm(db), booking.NewGorm(db))
+	serverLifecycle(t, cc, conn, property.NewGorm(gdb), booking.NewGorm(gdb))
 }
 
 // TestE2E_Hasura runs the identical client-visible lifecycle with the server
@@ -51,7 +52,7 @@ func TestE2E_Hasura(t *testing.T) {
 	svc := connectTestGraphQL(t)
 	conn := &database.Connection{Hasura: svc, Provider: database.ProviderHasura}
 	cc := dialServer(t, conn)
-	serverLifecycle(t, cc, database.ProviderHasura, property.NewGraphQL(svc), booking.NewGraphQL(svc))
+	serverLifecycle(t, cc, conn, property.NewGraphQL(svc), booking.NewGraphQL(svc))
 }
 
 // e2eClients bundles the per-service gRPC clients plus the generated
@@ -72,12 +73,13 @@ type e2eClients struct {
 }
 
 // serverLifecycle drives every service through the wire: interceptor
-// rejections, full CRUD with masks and etags, the booking hold flow, promo
-// validation, and the provider-visible filter divergence on derived state.
-// Each flow registers its own t.Cleanup, so teardown runs LIFO in dependency
-// order.
-func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provider, propRepos property.Repositories, bookRepos booking.Repositories) {
+// rejections, full CRUD with masks and etags, the booking hold flow, hold
+// expiry, promo validation, and the provider-visible filter divergence on
+// derived state. Each flow registers its own t.Cleanup, so teardown runs LIFO
+// in dependency order.
+func serverLifecycle(t *testing.T, cc *grpc.ClientConn, conn *database.Connection, propRepos property.Repositories, bookRepos booking.Repositories) {
 	t.Helper()
+	provider := conn.Provider
 	c := &e2eClients{
 		suffix:    fmt.Sprintf("%d", time.Now().UnixNano()%1_000_000_000),
 		orgs:      orgpbv1.NewOrganisationServiceClient(cc),
@@ -98,6 +100,7 @@ func serverLifecycle(t *testing.T, cc *grpc.ClientConn, provider database.Provid
 	scheduleFlow(t, c, unit)
 	promoFlow(t, c, provider)
 	bookingFlow(t, c, unit)
+	holdExpiryFlow(t, c, unit, db.New(conn))
 	identityFlow(t, c)
 }
 

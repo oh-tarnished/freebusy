@@ -1,20 +1,28 @@
 package engine
 
 import (
+	"sync"
 	"time"
 
 	"github.com/oh-tarnished/freebusy/protobuf/generated/go/availability/v1/availabilitypbv1"
-	"github.com/oh-tarnished/freebusy/shared/rrule"
 	"google.golang.org/genproto/googleapis/type/date"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// locations caches loaded timezone locations by IANA name: time.LoadLocation
+// reads tzdata on every call, and search resolves one location per unit.
+var locations sync.Map
+
 // loc returns the unit's timezone location, falling back to UTC.
 func (u *UnitInfo) loc() *time.Location {
+	if l, ok := locations.Load(u.TimeZone); ok {
+		return l.(*time.Location)
+	}
 	l, err := time.LoadLocation(u.TimeZone)
 	if err != nil {
-		return time.UTC
+		l = time.UTC
 	}
+	locations.Store(u.TimeZone, l)
 	return l
 }
 
@@ -97,7 +105,7 @@ func ComputeSlots(u *UnitInfo, start, end time.Time, slotDur time.Duration, unit
 			bufferedFree(u, s, e, res) >= unitsReq &&
 			!closedOver(closures, s, e) &&
 			passesNotice(u, s, now) &&
-			rrule.Covers(u.Recurring, s.In(loc), e.In(loc))
+			u.Recurring.Covers(s.In(loc), e.In(loc))
 		out = append(out, &availabilitypbv1.Slot{
 			StartTime: timestamppb.New(s),
 			EndTime:   timestamppb.New(e),

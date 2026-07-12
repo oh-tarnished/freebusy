@@ -3,6 +3,7 @@ package config
 import (
 	"strings"
 	"testing"
+	"time"
 )
 
 // TestConfigLoadsReleaseDefaults verifies the embedded release config parses and
@@ -31,6 +32,27 @@ func TestConfigLoadsReleaseDefaults(t *testing.T) {
 	}
 	if !cfg.Server.EnableMCP || cfg.Server.MCP.Transport != "streamable-http" {
 		t.Errorf("Server.MCP = %+v, want EnableMCP=true transport=streamable-http", cfg.Server.MCP)
+	}
+}
+
+// TestPostgresPoolDefaults verifies the embedded release config bounds the pool
+// and that Pool() fills defaults for anything left unset.
+func TestPostgresPoolDefaults(t *testing.T) {
+	pool := Get().Database.Postgres.Pool()
+	if pool.MaxOpen != 25 || pool.MaxIdle != 25 {
+		t.Errorf("pool bounds = open:%d idle:%d, want 25/25", pool.MaxOpen, pool.MaxIdle)
+	}
+	if pool.MaxLifetime != 30*time.Minute || pool.MaxIdleTime != 5*time.Minute {
+		t.Errorf("pool lifetimes = %v/%v, want 30m/5m", pool.MaxLifetime, pool.MaxIdleTime)
+	}
+
+	zero := PostgresConfig{}.Pool()
+	if zero.MaxOpen != 25 || zero.MaxIdle != 25 || zero.MaxLifetime != 30*time.Minute || zero.MaxIdleTime != 5*time.Minute {
+		t.Errorf("zero-config pool = %+v, want defaults 25/25/30m/5m", zero)
+	}
+	custom := PostgresConfig{MaxOpenConns: 10}.Pool()
+	if custom.MaxOpen != 10 || custom.MaxIdle != 10 {
+		t.Errorf("custom pool = open:%d idle:%d, want idle to follow open (10/10)", custom.MaxOpen, custom.MaxIdle)
 	}
 }
 

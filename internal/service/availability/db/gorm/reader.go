@@ -29,12 +29,15 @@ func NewAvailabilityReader(db *gorm.DB) *AvailabilityReader {
 }
 
 // activeBookingSQL selects the held/confirmed bookings on a unit whose window
-// overlaps [start,end), for the engine's free-count math.
+// overlaps [start,end), for the engine's free-count math. A PENDING_HOLD only
+// counts while its hold is unexpired: a lapsed hold frees capacity immediately,
+// without waiting for the sweeper to flip its stored state.
 const activeBookingSQL = `
 SELECT w.start_time AS start, w.end_time AS "end", COALESCE(b.units, 1) AS units
 FROM "booking"."resource" b
 JOIN "shared"."time_windows" w ON w.id = b.window_id
 WHERE b.unit = ? AND b.state IN ('PENDING_HOLD','CONFIRMED')
+  AND (b.state <> 'PENDING_HOLD' OR b.hold_expire_time IS NULL OR b.hold_expire_time > now())
   AND w.start_time < ? AND w.end_time > ?`
 
 // activeBookingBatchSQL is activeBookingSQL across many units, carrying b.unit so
@@ -44,6 +47,7 @@ SELECT b.unit AS unit, w.start_time AS start, w.end_time AS "end", COALESCE(b.un
 FROM "booking"."resource" b
 JOIN "shared"."time_windows" w ON w.id = b.window_id
 WHERE b.unit IN ? AND b.state IN ('PENDING_HOLD','CONFIRMED')
+  AND (b.state <> 'PENDING_HOLD' OR b.hold_expire_time IS NULL OR b.hold_expire_time > now())
   AND w.start_time < ? AND w.end_time > ?`
 
 func mapErr(err error) error {
@@ -135,14 +139,16 @@ func buildUnitInfo(u *property.Unit, sched *schedule.Schedule) *engine.UnitInfo 
 		info.StartDelta = durationFromStr(b.StartDelta)
 		info.EndDelta = durationFromStr(b.EndDelta)
 	}
+	rules := make([]rrule.Rule, 0, len(sched.RecurringRules))
 	for i := range sched.RecurringRules {
 		rr := &sched.RecurringRules[i]
-		info.Recurring = append(info.Recurring, rrule.Rule{
+		rules = append(rules, rrule.Rule{
 			RRule:  rr.Rrule,
 			Opens:  repox.Deref(rr.Opens),
 			Closes: repox.Deref(rr.Closes),
 		})
 	}
+	info.Recurring = rrule.Compile(rules)
 	return info
 }
 

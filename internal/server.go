@@ -8,8 +8,8 @@ import (
 	"syscall"
 
 	"github.com/oh-tarnished/freebusy/config"
-	"github.com/oh-tarnished/runtime-go/grpc"
-	"github.com/oh-tarnished/runtime-go/grpc/options"
+	"github.com/the-protobuf-project/runtime-go/grpc"
+	"github.com/the-protobuf-project/runtime-go/grpc/options"
 )
 
 // Server wraps a runtime HybridServer and provides lifecycle helpers
