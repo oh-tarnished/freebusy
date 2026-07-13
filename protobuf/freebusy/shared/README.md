@@ -7,6 +7,20 @@
 
 ## Messages
 
+### IdempotencyKey
+
+The record behind every `request_id` field in this API: it remembers what the first call with a given id returned, so a retry replays that response instead of attempting the write twice. Storage only — no service exposes it, and no caller constructs one. It lives in freebusy.shared.v1 because request_id is API-wide (booking, property, promo code, channel, organisation, schedule) and one interceptor records them all; homing it in any single service's package would make every other service import that service to dedupe its own writes.  The id is derived, not random: it is a digest of (method, request_id), so the primary key itself is the uniqueness constraint that makes a concurrent duplicate lose the race rather than double-write.
+
+| Field | Type | Behavior | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | `IDENTIFIER` | The key name. The final segment is a digest of (method, request_id). Format: idempotencyKeys/{idempotency_key} |
+| `method` | `string` | `REQUIRED` | Fully-qualified RPC that was called, e.g. "/freebusy.booking.v1.BookingService/CreateBooking". Part of the key: the same request_id replayed against a different method is a different request. |
+| `request_id` | `string` | `REQUIRED` | The caller-supplied idempotency key, verbatim from the request's `request_id` field. |
+| `state` | `IdempotencyState` | `REQUIRED` | Whether the first call is still running or has settled. |
+| `response` | `string` | `OPTIONAL` | What the first call returned: a google.protobuf.Any holding the response message, encoded as protojson. Empty while IN_FLIGHT. Stored as text rather than bytes so it round-trips identically through GORM and through Hasura's GraphQL, and self-describing (the Any carries its @type) so a replay can rebuild the exact response message without knowing which RPC wrote it. |
+| `create_time` | `Timestamp` | `OUTPUT_ONLY` | When the key was claimed. |
+| `update_time` | `Timestamp` | `OUTPUT_ONLY` | When the key settled to DONE. |
+
 ### TimeWindow
 
 A half-open time interval [start_time, end_time). Used for query windows and for a booking's reserved span in both TIME_SLOT and NIGHTLY modes.
@@ -108,6 +122,16 @@ Kind of media asset a Media reference points at. Documents (PDFs, house rules, f
 | `MEDIA_TYPE_DOCUMENT` | 3 | A document such as a PDF fact sheet, policy, or house rules. |
 | `MEDIA_TYPE_FLOORPLAN` | 4 | A floor plan diagram. |
 | `MEDIA_TYPE_VIRTUAL_TOUR` | 5 | A 360°/virtual-tour asset. |
+
+### IdempotencyState
+
+Lifecycle of a recorded request. A key is claimed IN_FLIGHT before the handler runs and settles to DONE once its response is recorded; a handler that fails deletes its key, so the caller may genuinely retry.
+
+| Value | Number | Description |
+| --- | --- | --- |
+| `IDEMPOTENCY_STATE_UNSPECIFIED` | 0 | Unspecified. |
+| `IDEMPOTENCY_STATE_IN_FLIGHT` | 1 | Claimed: a handler is running for this key right now. A second caller arriving here is a concurrent duplicate, not a replay. |
+| `IDEMPOTENCY_STATE_DONE` | 2 | Settled: `response` holds what the first call returned. |
 
 ---
 

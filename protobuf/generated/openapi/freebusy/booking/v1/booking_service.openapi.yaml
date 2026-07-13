@@ -79,8 +79,14 @@ paths:
                 - name: validateOnly
                   in: query
                   description: |-
-                    If true, validate the request (availability + policy) and report what would
-                     happen, but place no hold.
+                    If true, price the booking and check it against availability, capacity, and
+                     occupancy, but place no hold. The returned Booking carries price, discount,
+                     total, and the itemized price_components — the same numbers a real create
+                     would charge — with no name or state, because nothing was created. A window
+                     that is already full fails here exactly as it would on create.
+
+                     The quote is indicative, not reserved: it holds nothing, so the capacity it
+                     saw can be taken by someone else before you call again without validate_only.
                   schema:
                     type: boolean
             requestBody:

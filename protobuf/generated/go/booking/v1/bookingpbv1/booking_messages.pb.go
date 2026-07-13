@@ -39,8 +39,14 @@ type CreateBookingRequest struct {
 	RequestId string `protobuf:"bytes,2,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
 	// Optional caller-chosen ID for the booking; the server generates one if unset.
 	BookingId string `protobuf:"bytes,3,opt,name=booking_id,json=bookingId,proto3" json:"booking_id,omitempty"`
-	// If true, validate the request (availability + policy) and report what would
-	// happen, but place no hold.
+	// If true, price the booking and check it against availability, capacity, and
+	// occupancy, but place no hold. The returned Booking carries price, discount,
+	// total, and the itemized price_components — the same numbers a real create
+	// would charge — with no name or state, because nothing was created. A window
+	// that is already full fails here exactly as it would on create.
+	//
+	// The quote is indicative, not reserved: it holds nothing, so the capacity it
+	// saw can be taken by someone else before you call again without validate_only.
 	ValidateOnly  bool `protobuf:"varint,4,opt,name=validate_only,json=validateOnly,proto3" json:"validate_only,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

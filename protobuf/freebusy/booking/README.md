@@ -160,7 +160,7 @@ Request message for CreateBooking. This places a hold transactionally; the reque
 | `booking` | `Booking` | `REQUIRED` | The booking to create. Supply unit, window, and optionally units, customer, contact, notes, attributes, promo_code, and hold_ttl. Provide contact when there is no customer (a guest booking). Output-only fields are ignored. |
 | `request_id` | `string` | `OPTIONAL` | Caller-supplied idempotency key that dedupes retries of this create. Reusing an id returns the booking created by the first call. |
 | `booking_id` | `string` | `OPTIONAL` | Optional caller-chosen ID for the booking; the server generates one if unset. |
-| `validate_only` | `bool` | `OPTIONAL` | If true, validate the request (availability + policy) and report what would happen, but place no hold. |
+| `validate_only` | `bool` | `OPTIONAL` | If true, price the booking and check it against availability, capacity, and occupancy, but place no hold. The returned Booking carries price, discount, total, and the itemized price_components — the same numbers a real create would charge — with no name or state, because nothing was created. A window that is already full fails here exactly as it would on create.  The quote is indicative, not reserved: it holds nothing, so the capacity it saw can be taken by someone else before you call again without validate_only. |
 
 ### GetBookingRequest
 
